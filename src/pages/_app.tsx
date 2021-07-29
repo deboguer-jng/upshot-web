@@ -29,7 +29,7 @@ export default function App({ Component, pageProps }: AppProps) {
     Bugsnag.start({
       apiKey: process.env.NEXT_PUBLIC_BUGSNAG_API_KEY!,
       plugins: [new BugsnagPluginReact()],
-      releaseStage: process.env.NODE_ENV,
+      releaseStage: process.env.NEXT_PUBLIC_ENV,
       /* Prevent error-logging during development & testing. */
       enabledReleaseStages: ['production', 'staging'],
     })
