@@ -1,5 +1,6 @@
+import { css, Global } from '@emotion/react'
 import React from 'react'
-import { createGlobalStyle, ThemeProvider } from 'styled-components'
+import { ThemeProvider } from 'theme-ui'
 
 import darkTheme from './dark'
 interface Props {
@@ -9,8 +10,20 @@ interface Props {
 /**
  * Global CSS for the application.
  */
-export const GlobalStyle = createGlobalStyle`
-`
+export const globalStyles = (
+  <Global
+    styles={css`
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+      }
+    `}
+  />
+)
 
 export default function UpshotThemeProvider({ children }: Props) {
   return <ThemeProvider theme={darkTheme}>{children}</ThemeProvider>

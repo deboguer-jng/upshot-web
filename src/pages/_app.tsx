@@ -7,7 +7,7 @@ import Head from 'next/head'
 import { useEffect } from 'react'
 import { persistor } from 'redux/store'
 import { PersistGate } from 'redux-persist/integration/react'
-import ThemeProvider, { GlobalStyle } from 'themes'
+import ThemeProvider, { globalStyles } from 'themes'
 import { initGA } from 'utils/googleAnalytics'
 
 /**
@@ -42,8 +42,8 @@ export default function App({ Component, pageProps }: AppProps) {
         <link rel="stylesheet" href="https://use.typekit.net/xcj5qri.css" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <GlobalStyle />
       <ThemeProvider>
+        {globalStyles}
         <Web3ReactProvider {...{ getLibrary }}>
           <PersistGate {...{ persistor }}>
             <Component {...pageProps} />

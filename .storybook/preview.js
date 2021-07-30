@@ -1,4 +1,4 @@
-import ThemeProvider, { GlobalStyle } from '../src/themes'
+import ThemeProvider, { globalstyles } from '../src/themes'
 
 export const decorators = [
   (Story) => (
@@ -6,7 +6,7 @@ export const decorators = [
      * Wrap the stories with a styled-components theme provider.
      */
     <ThemeProvider>
-      <GlobalStyle />
+      {globalstyles}
       <Story />
     </ThemeProvider>
   ),
