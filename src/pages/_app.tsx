@@ -1,5 +1,7 @@
 import Bugsnag from '@bugsnag/js'
 import BugsnagPluginReact from '@bugsnag/plugin-react'
+import { ThemeProvider } from '@emotion/react'
+import { globalStyles, theme } from '@upshot-tech/upshot-ui'
 import { Web3ReactProvider } from '@web3-react/core'
 import { providers } from 'ethers'
 import type { AppProps } from 'next/app'
@@ -7,7 +9,6 @@ import Head from 'next/head'
 import { useEffect } from 'react'
 import { persistor } from 'redux/store'
 import { PersistGate } from 'redux-persist/integration/react'
-import ThemeProvider, { globalStyles } from 'themes'
 import { initGA } from 'utils/googleAnalytics'
 
 /**
@@ -42,7 +43,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <link rel="stylesheet" href="https://use.typekit.net/xcj5qri.css" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <ThemeProvider>
+      <ThemeProvider {...{ theme }}>
         {globalStyles}
         <Web3ReactProvider {...{ getLibrary }}>
           <PersistGate {...{ persistor }}>
