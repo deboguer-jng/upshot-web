@@ -2,7 +2,7 @@
 
 A robust and secure source of truth for a varienty of applications at the intersection of DeFi and NFTs.
 
-## Linking the `upshot-ui` design system:
+## Design System link:
 
 ```bash
 # From the upshot-ui directory
