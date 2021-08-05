@@ -24,12 +24,6 @@ yarn
 yarn dev
 ```
 
-### Export Next.js SSG build
-
-```bash
-yarn build
-```
-
 ### Start storybook server
 
 ```bash
@@ -40,4 +34,10 @@ yarn storybook
 
 ```bash
 yarn lint
+```
+
+### Export Next.js SSG build
+
+```bash
+yarn build
 ```
