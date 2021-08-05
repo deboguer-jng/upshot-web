@@ -12,25 +12,31 @@ yarn link
 yarn link @upshot-tech/upshot-ui
 ```
 
-### Development
+### Install dependencies
+
+```bash
+yarn
+```
+
+### Start development server
 
 ```bash
 yarn dev
 ```
 
-### Build
+### Export Next.js SSG build
 
 ```bash
 yarn build
 ```
 
-### Storybook
+### Start storybook server
 
 ```bash
 yarn storybook
 ```
 
-### Formatting
+### Fix code formatting
 
 ```bash
 yarn lint
