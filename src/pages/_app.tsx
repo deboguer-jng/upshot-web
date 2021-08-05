@@ -1,3 +1,5 @@
+import '@upshot-tech/upshot-ui/dist/css/typekit.css'
+
 import Bugsnag from '@bugsnag/js'
 import BugsnagPluginReact from '@bugsnag/plugin-react'
 import { ThemeProvider } from '@emotion/react'
@@ -40,7 +42,6 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="stylesheet" href="https://use.typekit.net/xcj5qri.css" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <ThemeProvider {...{ theme }}>
