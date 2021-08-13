@@ -12,6 +12,8 @@ yarn link
 yarn link @upshot-tech/upshot-ui
 ```
 
+You should `yarn build` in `upshot-ui` before starting the `upshot-web` development server.
+
 ### Install dependencies
 
 ```bash
