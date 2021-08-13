@@ -1,6 +1,6 @@
 import { globalStyles, theme } from '@upshot-tech/upshot-ui'
-import { ThemeProvider } from '@emotion/react'
-import '@upshot-tech/upshot-ui/dist/css/typekit.css'
+import { ThemeProvider, Global } from '@emotion/react'
+import '@upshot-tech/upshot-ui/css/typekit.css'
 
 export const decorators = [
   (Story) => (
@@ -8,7 +8,7 @@ export const decorators = [
      * Wrap the stories with the UpshotUI theme provider.
      */
     <ThemeProvider {...{ theme }}>
-      {globalStyles}
+      <Global styles={globalStyles.styles} />
       <Story />
     </ThemeProvider>
   ),

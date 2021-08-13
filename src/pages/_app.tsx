@@ -1,9 +1,8 @@
-import '@upshot-tech/upshot-ui/dist/css/typekit.css'
+import '@upshot-tech/upshot-ui/css/typekit.css'
 
 import Bugsnag from '@bugsnag/js'
 import BugsnagPluginReact from '@bugsnag/plugin-react'
-import { ThemeProvider } from '@emotion/react'
-import { globalStyles, theme } from '@upshot-tech/upshot-ui'
+import { UpshotThemeProvider } from '@upshot-tech/upshot-ui'
 import { Web3ReactProvider } from '@web3-react/core'
 import { providers } from 'ethers'
 import type { AppProps } from 'next/app'
@@ -25,17 +24,20 @@ const getLibrary = (
 
 export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
-    /* Initialize Google Analytics */
-    initGA(process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS!)
+    /* Initialize telemetry on enabled release stages. */
+    const enabledTelemetryStages = ['production', 'staging']
 
-    /* Initialize Bugsnag */
-    Bugsnag.start({
-      apiKey: process.env.NEXT_PUBLIC_BUGSNAG_API_KEY!,
-      plugins: [new BugsnagPluginReact()],
-      releaseStage: process.env.NEXT_PUBLIC_ENV,
-      /* Prevent error-logging during development & testing. */
-      enabledReleaseStages: ['production', 'staging'],
-    })
+    if (enabledTelemetryStages.includes(process.env.NEXT_PUBLIC_ENV!)) {
+      /* Start google analytics */
+      initGA(process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS!)
+
+      /* Start BugSnag */
+      Bugsnag.start({
+        apiKey: process.env.NEXT_PUBLIC_BUGSNAG_API_KEY!,
+        releaseStage: process.env.NEXT_PUBLIC_ENV,
+        plugins: [new BugsnagPluginReact()],
+      })
+    }
   }, [])
 
   return (
@@ -44,14 +46,14 @@ export default function App({ Component, pageProps }: AppProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <ThemeProvider {...{ theme }}>
-        {globalStyles}
+
+      <UpshotThemeProvider>
         <Web3ReactProvider {...{ getLibrary }}>
           <PersistGate {...{ persistor }}>
             <Component {...pageProps} />
           </PersistGate>
         </Web3ReactProvider>
-      </ThemeProvider>
+      </UpshotThemeProvider>
     </>
   )
 }
