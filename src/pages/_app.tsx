@@ -1,5 +1,6 @@
-import '@upshot-tech/upshot-ui/css/typekit.css'
+import '@upshot-tech/upshot-ui/dist/css/typekit.css'
 
+import { ApolloProvider } from '@apollo/client'
 import Bugsnag from '@bugsnag/js'
 import BugsnagPluginReact from '@bugsnag/plugin-react'
 import { UpshotThemeProvider } from '@upshot-tech/upshot-ui'
@@ -10,6 +11,7 @@ import Head from 'next/head'
 import { useEffect } from 'react'
 import { persistor } from 'redux/store'
 import { PersistGate } from 'redux-persist/integration/react'
+import client from 'utils/apolloClient'
 import { initGA } from 'utils/googleAnalytics'
 
 /**
@@ -48,11 +50,13 @@ export default function App({ Component, pageProps }: AppProps) {
       </Head>
 
       <UpshotThemeProvider>
-        <Web3ReactProvider {...{ getLibrary }}>
-          <PersistGate {...{ persistor }}>
-            <Component {...pageProps} />
-          </PersistGate>
-        </Web3ReactProvider>
+        <ApolloProvider {...{ client }}>
+          <Web3ReactProvider {...{ getLibrary }}>
+            <PersistGate {...{ persistor }}>
+              <Component {...pageProps} />
+            </PersistGate>
+          </Web3ReactProvider>
+        </ApolloProvider>
       </UpshotThemeProvider>
     </>
   )
