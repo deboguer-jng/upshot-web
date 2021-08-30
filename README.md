@@ -4,18 +4,24 @@ A robust and secure source of truth for a varienty of applications at the inters
 
 ## Design System link:
 
+In development, you will want to link this repo with the one containing the Upshot component library, and you can do so with the following commands. Note that the code example below assumes that `upshot-web` and `upshot-ui` both live in the same parent directory.
+
 ```bash
-# From the upshot-ui directory
-yarn link
+cd upshot-web
+yarn install
 cd node_modules/react
 yarn link
 cd ../react-dom
 yarn link
 
-# From the upshot-web directory
-yarn link @upshot-tech/upshot-ui
+cd ../../../upshot-ui
+yarn link
+yarn install
 yarn link react
-yarn link react-doom
+yarn link react-dom
+
+cd ../upshot-web
+yarn link @upshot-tech/upshot-ui
 ```
 
 You should `yarn build` in `upshot-ui` before starting the `upshot-web` development server.
