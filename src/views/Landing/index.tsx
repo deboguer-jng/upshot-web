@@ -1,9 +1,10 @@
 import { AppBar, Chart, Container } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Text } from '@upshot-tech/upshot-ui'
+import { CollectionButton, Image } from '@upshot-tech/upshot-ui'
 
 import ButtonTabs from './ButtonTabs'
 import CollectionPanel from './CollectionPanel'
-import { chartData } from './constants'
+import { chartData, collectionItems } from './constants'
 
 export default function LandingView() {
   return (
@@ -28,7 +29,28 @@ export default function LandingView() {
         <CollectionPanel
           title="Collection Avg. Price"
           subtitle="(Select Collections to change graph)"
-        />
+        >
+          {collectionItems.map(({ text, subText, src }, idx) => (
+            <Flex
+              key={idx}
+              sx={{ alignItems: 'center', color: 'disabled', gap: 2 }}
+            >
+              <Text>{idx + 1}</Text>
+              <CollectionButton
+                icon={
+                  <Image
+                    alt={`${text} Cover Artwork`}
+                    height="100%"
+                    width="100%"
+                    sx={{ borderRadius: 'circle' }}
+                    {...{ src }}
+                  />
+                }
+                {...{ text, subText }}
+              />
+            </Flex>
+          ))}
+        </CollectionPanel>
       </Flex>
       [Footer]
     </Container>

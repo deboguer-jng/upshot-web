@@ -1,9 +1,8 @@
-import { CollectionButton, Panel } from '@upshot-tech/upshot-ui'
-import { Flex, Grid, Icon, Image, Text } from '@upshot-tech/upshot-ui'
+import { Panel } from '@upshot-tech/upshot-ui'
+import { Flex, Grid, Icon, Text } from '@upshot-tech/upshot-ui'
+import React, { forwardRef } from 'react'
 
-import { collectionItems } from './constants'
-
-interface Props {
+interface CollectionPanelProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
    * Title for the panel.
    */
@@ -14,9 +13,12 @@ interface Props {
   subtitle: string
 }
 
-export default function CollectionPanel({ title, subtitle }: Props) {
+export default forwardRef(function CollectionPanel(
+  { title, subtitle, children, ...props }: CollectionPanelProps,
+  ref: React.ForwardedRef<HTMLDivElement>
+) {
   return (
-    <Panel>
+    <Panel {...{ ref, ...props }}>
       <Flex sx={{ flexDirection: 'column', gap: 4 }}>
         <Flex sx={{ flexDirection: 'column' }}>
           <Flex variant="text.h3Secondary" sx={{ gap: 2 }}>
@@ -33,34 +35,8 @@ export default function CollectionPanel({ title, subtitle }: Props) {
             {subtitle}
           </Text>
         </Flex>
-
-        <Grid columns={[1, 1, 2, 3]}>
-          {collectionItems.map(({ text, subText, src }, idx) => (
-            <Flex
-              key={idx}
-              sx={{
-                alignItems: 'center',
-                color: 'disabled',
-                gap: 2,
-              }}
-            >
-              <Text>{idx + 1}</Text>
-              <CollectionButton
-                icon={
-                  <Image
-                    alt={`${text} Cover Artwork`}
-                    height="100%"
-                    width="100%"
-                    sx={{ borderRadius: 'circle' }}
-                    {...{ src }}
-                  />
-                }
-                {...{ text, subText }}
-              />
-            </Flex>
-          ))}
-        </Grid>
+        <Grid columns={[1, 1, 2, 3]} {...{ children }} />
       </Flex>
     </Panel>
   )
-}
+})
