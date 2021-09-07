@@ -78,9 +78,7 @@ export default function LandingView() {
                 <TableCell colSpan={2}>Name</TableCell>
                 {isMobile ? (
                   // Mobile only shows the first and last columns
-                  <TableCell>{`${columns[1]} & ${
-                    columns.slice(-1)[0]
-                  }`}</TableCell>
+                  <TableCell sx={{ minWidth: 100 }}>Details</TableCell>
                 ) : (
                   <>
                     {columns.map((col, key) => (
@@ -118,15 +116,15 @@ export default function LandingView() {
               ))}
             </TableBody>
           </CollectionTable>
-        </ExplorePanel>
 
-        <Flex sx={{ justifyContent: 'center' }}>
-          <Pagination
-            pageCount={100}
-            pageRangeDisplayed={isMobile ? 3 : 5}
-            marginPagesDisplayed={isMobile ? 1 : 5}
-          />
-        </Flex>
+          <Flex sx={{ justifyContent: 'center', marginTop: -1 }}>
+            <Pagination
+              pageCount={100}
+              pageRangeDisplayed={isMobile ? 3 : 5}
+              marginPagesDisplayed={isMobile ? 1 : 5}
+            />
+          </Flex>
+        </ExplorePanel>
       </Flex>
       [Footer]
     </Container>
