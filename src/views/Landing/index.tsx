@@ -1,10 +1,11 @@
 import { AppBar, Chart, Container } from '@upshot-tech/upshot-ui'
-import { Box, Flex, Text } from '@upshot-tech/upshot-ui'
+import { Box, Flex, MiniNftCard, Text } from '@upshot-tech/upshot-ui'
 import { CollectionButton, Image } from '@upshot-tech/upshot-ui'
 
 import ButtonTabs from './ButtonTabs'
 import CollectionPanel from './CollectionPanel'
-import { chartData, collectionItems } from './constants'
+import { cardItems, chartData, collectionItems } from './constants'
+import { MiniNFTContainer } from './Styled'
 
 export default function LandingView() {
   return (
@@ -22,7 +23,7 @@ export default function LandingView() {
         <Text variant="h1Secondary">Top Collections</Text>
         <ButtonTabs />
 
-        <Box sx={{ height: 300, width: '100%' }}>
+        <Box>
           <Chart data={chartData} />
         </Box>
 
@@ -51,6 +52,11 @@ export default function LandingView() {
             </Flex>
           ))}
         </CollectionPanel>
+        <MiniNFTContainer>
+          {cardItems.map(({ image }, key) => (
+            <MiniNftCard price="$20.00" rarity="15%" key={key} {...{ image }} />
+          ))}
+        </MiniNFTContainer>
       </Flex>
       [Footer]
     </Container>

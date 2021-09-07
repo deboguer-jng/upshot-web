@@ -1,5 +1,5 @@
 /**
- * Chart series: Demo values
+ * Chart series
  */
 export const chartData = [
   {
@@ -17,11 +17,18 @@ export const chartData = [
 ]
 
 /**
- * Collection buttons: Demo items
+ * Collection buttons
  */
 const names = ['CryptoPunks', 'Meebits', 'Bored Apes']
 export const collectionItems = [...new Array(12)].map((_, i) => ({
   text: names[i % names.length],
   subText: (Math.random() * 5 + 5).toFixed(1) + 'ETH',
-  src: '/img/demo/' + names[i % names.length] + '.png',
+  src: '/img/demo/collection/' + names[i % names.length] + '.png',
+}))
+
+/**
+ * Mini NFT Cards
+ */
+export const cardItems = [...new Array(6)].map((_, i) => ({
+  image: '/img/demo/cards/' + i + '.png',
 }))
