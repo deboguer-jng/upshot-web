@@ -23,7 +23,7 @@ export default function LandingView() {
         <Text variant="h1Secondary">Top Collections</Text>
         <ButtonTabs />
 
-        <Box sx={{ height: 300, width: '100%' }}>
+        <Box>
           <Chart data={chartData} />
         </Box>
 

@@ -5,7 +5,7 @@ export default function ButtonTabs() {
   const [selected, setSelected] = useState(0)
 
   return (
-    <Flex sx={{ gap: 4 }}>
+    <Flex sx={{ gap: 2, flexWrap: 'wrap' }}>
       {[
         'Average Price',
         'Total Volume',
@@ -14,7 +14,8 @@ export default function ButtonTabs() {
       ].map((children, idx) => (
         <Button
           key={idx}
-          type={selected === idx ? 'primary' : 'secondary'}
+          variant={selected === idx ? 'primary' : 'secondary'}
+          color="primary"
           onClick={() => setSelected(idx)}
           {...{ children }}
         />
