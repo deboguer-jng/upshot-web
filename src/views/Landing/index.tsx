@@ -1,5 +1,5 @@
 import { useBreakpointIndex } from '@theme-ui/match-media'
-import { AppBar, Chart, Container } from '@upshot-tech/upshot-ui'
+import { AppBar, Chart, Container, Pagination } from '@upshot-tech/upshot-ui'
 import { Box, Flex, MiniNftCard, Text } from '@upshot-tech/upshot-ui'
 import { CollectionButton, Image } from '@upshot-tech/upshot-ui'
 import {
@@ -119,6 +119,14 @@ export default function LandingView() {
             </TableBody>
           </CollectionTable>
         </ExplorePanel>
+
+        <Flex sx={{ justifyContent: 'center' }}>
+          <Pagination
+            pageCount={100}
+            pageRangeDisplayed={isMobile ? 3 : 5}
+            marginPagesDisplayed={isMobile ? 1 : 5}
+          />
+        </Flex>
       </Flex>
       [Footer]
     </Container>
