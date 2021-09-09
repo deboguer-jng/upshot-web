@@ -1,6 +1,6 @@
 import { useBreakpointIndex } from '@theme-ui/match-media'
 import { AppBar, Chart, Container, Pagination } from '@upshot-tech/upshot-ui'
-import { Box, Flex, MiniNftCard, Text } from '@upshot-tech/upshot-ui'
+import { Box, Flex, Icon, MiniNftCard, Text } from '@upshot-tech/upshot-ui'
 import { CollectionButton, Image } from '@upshot-tech/upshot-ui'
 import {
   TableBody,
@@ -33,7 +33,7 @@ export default function LandingView() {
       }}
     >
       <AppBar />
-      <Flex sx={{ flex: '1 1 auto', flexDirection: 'column' }}>
+      <Flex sx={{ flex: '1 1 auto', flexDirection: 'column', gap: 5 }}>
         <Text variant="h1Secondary">Top Collections</Text>
         <ButtonTabs />
 
@@ -66,6 +66,16 @@ export default function LandingView() {
             </Flex>
           ))}
         </CollectionPanel>
+        <Flex variant="text.h3Secondary" sx={{ gap: 2 }}>
+          Top Selling NFTs in
+          <Flex
+            color="primary"
+            sx={{ justifyContent: 'center', alignItems: 'center', gap: 2 }}
+          >
+            1 Day
+            <Icon icon="arrowDropUserBubble" color="primary" size={12} />
+          </Flex>
+        </Flex>
         <MiniNFTContainer>
           {cardItems.map(({ image }, key) => (
             <MiniNftCard price="$20.00" rarity="15%" key={key} {...{ image }} />
@@ -92,7 +102,7 @@ export default function LandingView() {
             </TableHead>
             <TableBody>
               {collectionItems.map(({ text, src }, idx) => (
-                <CollectionRow title={text} imageSrc={src} key={idx}>
+                <CollectionRow dark title={text} imageSrc={src} key={idx}>
                   {isMobile ? (
                     <TableCell sx={{ maxWidth: 100 }}>
                       <Flex
