@@ -6,12 +6,7 @@ export default function ButtonTabs() {
 
   return (
     <Flex sx={{ gap: 2, flexWrap: 'wrap' }}>
-      {[
-        'Average Price',
-        'Total Volume',
-        'List To Sale Time',
-        'Floor Price',
-      ].map((children, idx) => (
+      {['Average Price', 'Total Volume', 'Floor Price'].map((children, idx) => (
         <Button
           key={idx}
           variant={selected === idx ? 'primary' : 'secondary'}

@@ -29,6 +29,16 @@ export const collectionItems = [...new Array(12)].map((_, i) => ({
 /**
  * Mini NFT Cards
  */
-export const cardItems = [...new Array(6)].map((_, i) => ({
-  image: '/img/demo/cards/' + i + '.png',
+export const cardItems = [...new Array(12)].map((_, i) => ({
+  image: '/img/demo/cards/' + (i % 6) + '.png',
+}))
+
+/**
+ * Transaction table
+ */
+export const transactionHistory = [...new Array(12)].map((_) => ({
+  date: Date.now(),
+  sender: '0x0',
+  recipient: '0x0',
+  price: '3.50',
 }))

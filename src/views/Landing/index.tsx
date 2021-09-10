@@ -1,3 +1,4 @@
+import { useQuery } from '@apollo/client'
 import { useBreakpointIndex } from '@theme-ui/match-media'
 import { AppBar, Chart, Container, Pagination } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Icon, MiniNftCard, Text } from '@upshot-tech/upshot-ui'
@@ -10,6 +11,11 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
 
+import {
+  GET_TOP_COLLECTIONS,
+  GetTopCollectionsData,
+  GetTopCollectionsVars,
+} from '../../graphql/queries'
 import ButtonTabs from './ButtonTabs'
 import CollectionPanel from './CollectionPanel'
 import { cardItems, chartData, collectionItems } from './constants'
@@ -21,6 +27,13 @@ export default function LandingView() {
   const isMobile = breakpointIndex <= 1
 
   const columns = ['Last Sale', 'Total Sales', '% Change']
+
+  const { loading, error, data } = useQuery<
+    GetTopCollectionsData,
+    GetTopCollectionsVars
+  >(GET_TOP_COLLECTIONS)
+
+  console.log(data)
 
   return (
     <Container
@@ -85,14 +98,22 @@ export default function LandingView() {
           <CollectionTable>
             <TableHead>
               <TableRow>
-                <TableCell colSpan={2}>Name</TableCell>
+                <TableCell colSpan={2} color="grey-500">
+                  Name
+                </TableCell>
                 {isMobile ? (
                   // Mobile only shows the first and last columns
-                  <TableCell sx={{ minWidth: 100 }}>Details</TableCell>
+                  <TableCell sx={{ minWidth: 100 }} color="grey-500">
+                    Details
+                  </TableCell>
                 ) : (
                   <>
                     {columns.map((col, key) => (
-                      <TableCell key={key} sx={{ minWidth: 100 }}>
+                      <TableCell
+                        key={key}
+                        sx={{ minWidth: 100 }}
+                        color="grey-500"
+                      >
                         {col}
                       </TableCell>
                     ))}
