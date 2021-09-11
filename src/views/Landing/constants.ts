@@ -37,7 +37,7 @@ export const cardItems = [...new Array(12)].map((_, i) => ({
  * Transaction table
  */
 export const transactionHistory = [...new Array(12)].map((_) => ({
-  date: Date.now(),
+  date: '05/21/2021',
   sender: '0x0',
   recipient: '0x0',
   price: '3.50',

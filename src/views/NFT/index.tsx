@@ -4,8 +4,6 @@ import { Flex, Grid, Icon, Image, Text } from '@upshot-tech/upshot-ui'
 import {
   Box,
   Chart,
-  CollectionRow,
-  CollectionTable,
   Label,
   LabelAttribute,
   Pagination,
@@ -24,6 +22,10 @@ import {
   collectionItems,
   transactionHistory,
 } from '../Landing/constants'
+
+function CircleColor(props: CircleColorProps) {
+  return
+}
 
 export default function NFTView() {
   const breakpointIndex = useBreakpointIndex()
@@ -359,73 +361,83 @@ export default function NFTView() {
               </Flex>
               <Chart data={chartData} />
               <Panel inner>
-                <Flex
-                  sx={{ alignItems: 'center', justifyContent: 'space-between' }}
-                >
-                  <Text variant="h3Secondary">Transaction History</Text>
-                  <Text>
-                    <InputRoundedSearch hasButton />
-                  </Text>
-                </Flex>
-                <CollectionTable>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell colSpan={2} color="grey-500">
-                        Name
-                      </TableCell>
-                      {isMobile ? (
-                        // Mobile only shows the first and last columns
-                        <TableCell sx={{ minWidth: 100 }} color="grey-500">
-                          Details
-                        </TableCell>
-                      ) : (
-                        <>
-                          {columns.map((col, key) => (
-                            <TableCell
-                              key={key}
-                              sx={{ minWidth: 100 }}
-                              color="grey-500"
-                            >
-                              {col}
-                            </TableCell>
-                          ))}
-                        </>
-                      )}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {collectionItems.map(({ text, src }, idx) => (
-                      <CollectionRow dark title={text} imageSrc={src} key={idx}>
-                        {isMobile ? (
-                          <TableCell sx={{ maxWidth: 100 }}>
-                            <Flex
-                              sx={{
-                                flexDirection: 'column',
-                                alignItems: 'flex-end',
-                              }}
-                            >
-                              <Flex>{columns[1]}</Flex>
-                              <Flex>{columns[columns.length - 1]}</Flex>
-                            </Flex>
-                          </TableCell>
-                        ) : (
-                          columns.map((column, key) => (
-                            <TableCell key={key} sx={{ maxWidth: 100 }}>
-                              {column}
-                            </TableCell>
-                          ))
+                <Flex sx={{ flexDirection: 'column', gap: 4 }}>
+                  <Flex
+                    sx={{
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <Text variant="h3Secondary">Transaction History</Text>
+                    <Text>
+                      <InputRoundedSearch hasButton />
+                    </Text>
+                  </Flex>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell color="grey-500">Date</TableCell>
+                        {!isMobile && (
+                          <>
+                            <TableCell color="grey-500">Sender</TableCell>
+                            <TableCell color="grey-500">Recipient</TableCell>
+                          </>
                         )}
-                      </CollectionRow>
-                    ))}
-                  </TableBody>
-                </CollectionTable>
 
-                <Flex sx={{ justifyContent: 'center', marginTop: -1 }}>
-                  <Pagination
-                    pageCount={100}
-                    pageRangeDisplayed={isMobile ? 3 : 5}
-                    marginPagesDisplayed={isMobile ? 1 : 5}
-                  />
+                        <TableCell color="grey-500">Sale Price</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {transactionHistory.map(
+                        ({ date, sender, recipient, price }, idx) => (
+                          <TableRow key={idx}>
+                            <TableCell sx={{ width: '100%' }}>{date}</TableCell>
+                            {!isMobile && (
+                              <>
+                                <TableCell sx={{ minWidth: 140 }}>
+                                  <Flex sx={{ alignItems: 'center', gap: 2 }}>
+                                    <Box
+                                      sx={{
+                                        borderRadius: 'circle',
+                                        bg: 'yellow',
+                                        width: 3,
+                                        height: 3,
+                                      }}
+                                    />
+                                    <Text>{sender}</Text>
+                                  </Flex>
+                                </TableCell>
+                                <TableCell sx={{ minWidth: 140 }}>
+                                  <Flex sx={{ alignItems: 'center', gap: 2 }}>
+                                    <Box
+                                      sx={{
+                                        borderRadius: 'circle',
+                                        bg: 'purple',
+                                        width: 3,
+                                        height: 3,
+                                      }}
+                                    />
+                                    <Text>{sender}</Text>
+                                  </Flex>
+                                </TableCell>
+                              </>
+                            )}
+                            <TableCell sx={{ minWidth: 100, color: 'pink' }}>
+                              Ξ{price}
+                            </TableCell>
+                          </TableRow>
+                        )
+                      )}
+                    </TableBody>
+                  </Table>
+
+                  <Flex sx={{ justifyContent: 'center', marginTop: -1 }}>
+                    <Pagination
+                      pageCount={100}
+                      pageRangeDisplayed={isMobile ? 3 : 5}
+                      marginPagesDisplayed={isMobile ? 1 : 5}
+                    />
+                  </Flex>
                 </Flex>
               </Panel>
             </Flex>
