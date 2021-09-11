@@ -8,7 +8,6 @@ import { cardItems } from '../Landing/constants'
 export default function SearchView() {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
-  const columns = ['Last Sale', 'Total Sales', '% Change']
 
   return (
     <>

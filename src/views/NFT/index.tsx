@@ -17,15 +17,7 @@ import {
   TableRow,
 } from '@upshot-tech/upshot-ui'
 
-import {
-  chartData,
-  collectionItems,
-  transactionHistory,
-} from '../Landing/constants'
-
-function CircleColor(props: CircleColorProps) {
-  return
-}
+import { chartData, transactionHistory } from '../Landing/constants'
 
 export default function NFTView() {
   const breakpointIndex = useBreakpointIndex()
