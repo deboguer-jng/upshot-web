@@ -18,6 +18,8 @@ jobs:
           node-version: 12.x
       - run: yarn
       - run: yarn build
+      - env:
+        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # - name: Deploy to netlify
       #   uses: netlify/actions/cli@master
