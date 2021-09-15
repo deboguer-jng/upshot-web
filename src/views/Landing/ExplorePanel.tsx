@@ -1,46 +1,264 @@
-import { InputRoundedSearch } from '@upshot-tech/upshot-ui'
-import { Flex, Icon, Panel } from '@upshot-tech/upshot-ui'
-import React, { forwardRef } from 'react'
+import { useQuery } from '@apollo/client'
+import { useBreakpointIndex } from '@theme-ui/match-media'
+import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
+import { InputRoundedSearch, Pagination } from '@upshot-tech/upshot-ui'
+import { Box, Flex, Icon, Panel, Skeleton } from '@upshot-tech/upshot-ui'
+import {
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from '@upshot-tech/upshot-ui'
+import React, { useState } from 'react'
 
-interface ExplorePanelProps extends React.HTMLAttributes<HTMLDivElement> {
-  /**
-   * Title for the panel.
-   */
-  title: string
+import {
+  GET_EXPLORE_NFTS,
+  GetExploreNFTsData,
+  GetExploreNFTsVars,
+} from '../../graphql/queries'
+
+const columns = ['Last Sale', 'Total Sales', '% Change']
+
+const getPriceChangeColor = (val: number) => {
+  switch (true) {
+    case val > 0:
+      return 'green'
+    case val < 0:
+      return 'red'
+    default:
+      return 'text'
+  }
 }
 
-export default forwardRef(function CollectionPanel(
-  { title, children, ...props }: ExplorePanelProps,
-  ref: React.ForwardedRef<HTMLDivElement>
-) {
+const getPriceChangeLabel = (val: number | null) => {
+  if (val === null) return '-'
+
+  const percentChange = val.toFixed(2) + '%'
+  switch (true) {
+    case val > 0:
+      return '+' + percentChange
+    case val < 0:
+      return '-' + percentChange
+    default:
+      return percentChange
+  }
+}
+
+function CollectionTableHead() {
+  const breakpointIndex = useBreakpointIndex()
+  const isMobile = breakpointIndex <= 1
+
   return (
-    <Panel {...{ ref, ...props }}>
-      <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-        <Flex
-          sx={{
-            justifyContent: 'space-between',
-            flexDirection: ['column', 'column', 'row'],
-            gap: 2,
-          }}
-        >
-          <Flex sx={{ flexDirection: 'column' }}>
-            <Flex variant="text.h3Secondary" sx={{ gap: 2 }}>
-              {title}
-              <Flex
-                color="primary"
-                sx={{ justifyContent: 'center', alignItems: 'center', gap: 2 }}
-              >
-                NFTs
-                <Icon icon="arrowDropUserBubble" color="primary" size={12} />
-              </Flex>
-            </Flex>
-          </Flex>
-          <Flex sx={{ justifyContent: 'flex-end', alignItems: 'stretch' }}>
-            <InputRoundedSearch dark fullWidth hasButton />
+    <TableHead>
+      <TableRow>
+        <TableCell colSpan={2} color="grey-500">
+          Name
+        </TableCell>
+        {isMobile ? (
+          // Mobile only shows the first and last columns
+          <TableCell sx={{ minWidth: 100 }} color="grey-500">
+            Details
+          </TableCell>
+        ) : (
+          <>
+            {columns.map((col, key) => (
+              <TableCell key={key} sx={{ minWidth: 100 }} color="grey-500">
+                {col}
+              </TableCell>
+            ))}
+          </>
+        )}
+      </TableRow>
+    </TableHead>
+  )
+}
+
+interface ExplorePanelHeadProps {
+  searchTerm: string
+  onSearch?: (searchTerm: string) => void
+}
+
+function ExplorePanelHead({
+  onSearch,
+  searchTerm: initialSearchTerm,
+}: ExplorePanelHeadProps) {
+  const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm)
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+
+    onSearch?.(searchTerm)
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.currentTarget.value)
+  }
+
+  return (
+    <Flex
+      sx={{
+        justifyContent: 'space-between',
+        flexDirection: ['column', 'column', 'row'],
+        gap: 2,
+      }}
+    >
+      <Flex sx={{ flexDirection: 'column' }}>
+        <Flex variant="text.h3Secondary" sx={{ gap: 2 }}>
+          Explore
+          <Flex
+            color="primary"
+            sx={{ justifyContent: 'center', alignItems: 'center', gap: 2 }}
+          >
+            NFTs
+            <Icon icon="arrowDropUserBubble" color="primary" size={12} />
           </Flex>
         </Flex>
-        {children}
+      </Flex>
+      <Flex sx={{ justifyContent: 'flex-end', alignItems: 'stretch' }}>
+        <form onSubmit={handleSearch}>
+          <InputRoundedSearch
+            dark
+            fullWidth
+            hasButton
+            value={searchTerm}
+            onChange={handleChange}
+          />
+        </form>
+      </Flex>
+    </Flex>
+  )
+}
+
+function ExplorePanelSkeleton({ searchTerm }: { searchTerm: string }) {
+  return (
+    <Panel>
+      <ExplorePanelHead {...{ searchTerm }} />
+      <CollectionTable>
+        <CollectionTableHead />
+        <TableBody>
+          {[...new Array(10)].map((_, idx) => (
+            <Skeleton as="tr" key={idx}>
+              <TableCell colSpan={5}>
+                <Box sx={{ height: 40, width: '100%' }} />
+              </TableCell>
+            </Skeleton>
+          ))}
+        </TableBody>
+      </CollectionTable>
+    </Panel>
+  )
+}
+
+export default function ExplorePanel() {
+  console.log('EXPLORE PANEL')
+  const pageSize = 15
+  const [page, setPage] = useState(1)
+  const [searchTerm, setSearchTerm] = useState('')
+
+  const getOffset = () => (page - 1) * pageSize
+
+  const { loading, error, data } = useQuery<
+    GetExploreNFTsData,
+    GetExploreNFTsVars
+  >(GET_EXPLORE_NFTS, {
+    variables: { limit: pageSize, offset: getOffset(), searchTerm },
+  })
+
+  const breakpointIndex = useBreakpointIndex()
+  const isMobile = breakpointIndex <= 1
+
+  if (loading) return <ExplorePanelSkeleton {...{ searchTerm }} />
+
+  if (error) return <Panel>There was an error processing your request.</Panel>
+
+  if (!data?.assetGlobalSearch.assets.length)
+    return <Panel>No results available.</Panel>
+
+  const handlePageChange = ({ selected }: { selected: number }) => {
+    setPage(selected)
+  }
+
+  const handleSearch = (searchTerm) => setSearchTerm(searchTerm)
+
+  return (
+    <Panel>
+      <Flex sx={{ flexDirection: 'column', gap: 4 }}>
+        <ExplorePanelHead onSearch={handleSearch} {...{ searchTerm }} />
+        <CollectionTable>
+          <CollectionTableHead />
+          <TableBody>
+            {data.assetGlobalSearch.assets.map(
+              (
+                {
+                  name,
+                  previewImageUrl,
+                  totalSaleCount,
+                  priceChangeFromFirstSale,
+                  latestMarketPrice,
+                },
+                idx
+              ) => (
+                <CollectionRow
+                  dark
+                  title={name}
+                  imageSrc={previewImageUrl}
+                  key={idx}
+                >
+                  {isMobile ? (
+                    <TableCell sx={{ maxWidth: 100 }}>
+                      <Flex
+                        sx={{
+                          flexDirection: 'column',
+                          alignItems: 'flex-end',
+                        }}
+                      >
+                        <Flex>{latestMarketPrice}</Flex>
+                        <Flex
+                          sx={{
+                            maxWidth: 100,
+                            color: getPriceChangeColor(
+                              priceChangeFromFirstSale
+                            ),
+                          }}
+                        >
+                          {getPriceChangeLabel(priceChangeFromFirstSale)}
+                        </Flex>
+                      </Flex>
+                    </TableCell>
+                  ) : (
+                    <>
+                      <TableCell sx={{ maxWidth: 100 }}>
+                        {latestMarketPrice}
+                      </TableCell>
+                      <TableCell sx={{ maxWidth: 100 }}>
+                        {totalSaleCount}
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          maxWidth: 100,
+                          color: getPriceChangeColor(priceChangeFromFirstSale),
+                        }}
+                      >
+                        {getPriceChangeLabel(priceChangeFromFirstSale)}
+                      </TableCell>
+                    </>
+                  )}
+                </CollectionRow>
+              )
+            )}
+          </TableBody>
+        </CollectionTable>
+
+        <Flex sx={{ justifyContent: 'center', marginTop: -1 }}>
+          <Pagination
+            forcePage={page}
+            pageCount={Math.ceil(data.assetGlobalSearch.count / pageSize)}
+            pageRangeDisplayed={isMobile ? 3 : 5}
+            marginPagesDisplayed={isMobile ? 1 : 5}
+            onPageChange={handlePageChange}
+          />
+        </Flex>
       </Flex>
     </Panel>
   )
-})
+}

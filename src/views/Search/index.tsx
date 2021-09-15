@@ -1,22 +1,13 @@
 import { useBreakpointIndex } from '@theme-ui/match-media'
 import { AppBar, ButtonDropdown, Container } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Grid, MiniNftCard, Text } from '@upshot-tech/upshot-ui'
-import { InputRounded, Pagination, Radio } from '@upshot-tech/upshot-ui'
-import {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-} from '@upshot-tech/upshot-ui'
-import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
-import { Label } from 'theme-ui'
+import { InputRounded, Pagination } from '@upshot-tech/upshot-ui'
 
-import { cardItems, collectionItems } from '../Landing/constants'
+import { cardItems } from '../Landing/constants'
 
 export default function SearchView() {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
-  const columns = ['Last Sale', 'Total Sales', '% Change']
 
   return (
     <>
@@ -33,7 +24,9 @@ export default function SearchView() {
 
       <Grid
         columns={[1, 1, 1, 3]}
-        sx={{ gridTemplateColumns: ['1fr', '1fr', '1fr', '1fr 3fr 1fr'] }}
+        sx={{
+          gridTemplateColumns: ['1fr', '1fr', '1fr 3fr', '1fr 3fr 1fr'],
+        }}
       >
         <Flex
           paddingX={8}
@@ -51,23 +44,6 @@ export default function SearchView() {
                 <Text variant="h3Secondary" color="grey-500">
                   Search Filters
                 </Text>
-                <Text color="grey-500">Listing Type</Text>
-              </Flex>
-              <Flex>
-                <Label
-                  color="grey-500"
-                  sx={{ alignItems: 'center', minWidth: 120, width: 'auto' }}
-                >
-                  <Radio name="listingType" checked />
-                  Buy Now
-                </Label>
-                <Label
-                  color="grey-500"
-                  sx={{ alignItems: 'center', width: 'auto' }}
-                >
-                  <Radio name="listingType" />
-                  Auctions
-                </Label>
               </Flex>
             </Flex>
           </Box>
@@ -78,28 +54,6 @@ export default function SearchView() {
               <Flex sx={{ gap: 4 }}>
                 <InputRounded placeholder="Ξ Min" sx={{ maxWidth: 128 }} />
                 <InputRounded placeholder="Ξ Max" sx={{ maxWidth: 128 }} />
-              </Flex>
-            </Flex>
-          </Box>
-
-          <Box>
-            <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-              <Text color="grey-500">Collection Type</Text>
-              <Flex sx={{ justifyContent: 'flex-start' }}>
-                <Label
-                  color="grey-500"
-                  sx={{ alignItems: 'center', minWidth: 120, width: 'auto' }}
-                >
-                  <Radio name="collectionType" />
-                  Collectible
-                </Label>
-                <Label
-                  color="grey-500"
-                  sx={{ alignItems: 'center', width: 'auto' }}
-                >
-                  <Radio name="collectionType" checked />
-                  Artwork
-                </Label>
               </Flex>
             </Flex>
           </Box>
@@ -137,7 +91,7 @@ export default function SearchView() {
               gridTemplateColumns: 'repeat(auto-fill, 156px)',
             }}
           >
-            {[...new Array(5)]
+            {[...new Array(3)]
               .map((_) => cardItems)
               .flat()
               .map(({ image }, key) => (
@@ -149,68 +103,6 @@ export default function SearchView() {
                 />
               ))}
           </Grid>
-
-          <Flex sx={{ justifyContent: 'center' }}>
-            <Pagination
-              pageCount={100}
-              pageRangeDisplayed={isMobile ? 3 : 5}
-              marginPagesDisplayed={isMobile ? 1 : 5}
-            />
-          </Flex>
-
-          <Flex sx={{ alignItems: 'center' }}>
-            <Text>Collections</Text>
-            <ButtonDropdown
-              name="Sort By"
-              options={['Relevance']}
-              value="Relevance"
-            />
-          </Flex>
-
-          <CollectionTable>
-            <TableHead>
-              <TableRow>
-                <TableCell colSpan={2}>Name</TableCell>
-                {isMobile ? (
-                  // Mobile only shows the first and last columns
-                  <TableCell sx={{ minWidth: 100 }}>Details</TableCell>
-                ) : (
-                  <>
-                    {columns.map((col, key) => (
-                      <TableCell key={key} sx={{ minWidth: 100 }}>
-                        {col}
-                      </TableCell>
-                    ))}
-                  </>
-                )}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {collectionItems.map(({ text, src }, idx) => (
-                <CollectionRow title={text} imageSrc={src} key={idx}>
-                  {isMobile ? (
-                    <TableCell sx={{ maxWidth: 100 }}>
-                      <Flex
-                        sx={{
-                          flexDirection: 'column',
-                          alignItems: 'flex-end',
-                        }}
-                      >
-                        <Flex>{columns[1]}</Flex>
-                        <Flex>{columns[columns.length - 1]}</Flex>
-                      </Flex>
-                    </TableCell>
-                  ) : (
-                    columns.map((column, key) => (
-                      <TableCell key={key} sx={{ maxWidth: 100 }}>
-                        {column}
-                      </TableCell>
-                    ))
-                  )}
-                </CollectionRow>
-              ))}
-            </TableBody>
-          </CollectionTable>
 
           <Flex sx={{ justifyContent: 'center' }}>
             <Pagination
