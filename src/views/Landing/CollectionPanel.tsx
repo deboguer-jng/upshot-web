@@ -17,8 +17,6 @@ export default forwardRef(function CollectionPanel(
   { title, subtitle, children, ...props }: CollectionPanelProps,
   ref: React.ForwardedRef<HTMLDivElement>
 ) {
-  console.log('COLLECTION PANEL')
-
   return (
     <Panel {...{ ref, ...props }}>
       <Flex sx={{ flexDirection: 'column', gap: 4 }}>

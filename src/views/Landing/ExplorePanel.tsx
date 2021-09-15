@@ -150,7 +150,6 @@ function ExplorePanelSkeleton({ searchTerm }: { searchTerm: string }) {
 }
 
 export default function ExplorePanel() {
-  console.log('EXPLORE PANEL')
   const pageSize = 15
   const [page, setPage] = useState(1)
   const [searchTerm, setSearchTerm] = useState('')

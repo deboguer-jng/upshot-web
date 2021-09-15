@@ -14,7 +14,6 @@ import {
 import CollectionPanel from './CollectionPanel'
 
 export default function CollectionAvgPricePanel() {
-  console.log('PRICE PANEL')
   const { loading, error, data } = useQuery<
     GetCollectionAvgPriceData,
     GetCollectionAvgPriceVars

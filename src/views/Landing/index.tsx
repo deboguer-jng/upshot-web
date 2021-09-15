@@ -1,5 +1,12 @@
 import { AppBar, Container } from '@upshot-tech/upshot-ui'
-import { Flex, Icon, MiniNftCard, Text } from '@upshot-tech/upshot-ui'
+import {
+  Flex,
+  Footer,
+  Icon,
+  MiniNftCard,
+  Navbar,
+  Text,
+} from '@upshot-tech/upshot-ui'
 import { useState } from 'react'
 
 import { METRIC } from './ButtonTabs'
@@ -11,7 +18,6 @@ import { MiniNFTContainer } from './Styled'
 import TopCollectionsChart from './TopCollectionsChart'
 
 export default function LandingView() {
-  console.log('LANDING')
   const [chartMetric, setChartMetric] = useState<METRIC>('AVERAGE')
 
   const handleChange = (updatedChartMetric: METRIC) => {
@@ -28,7 +34,7 @@ export default function LandingView() {
         gap: 4,
       }}
     >
-      <AppBar />
+      <Navbar />
       <Flex sx={{ flex: '1 1 auto', flexDirection: 'column', gap: 5 }}>
         <Text variant="h1Secondary">Top Collections</Text>
         <ButtonTabs onChange={handleChange} />
@@ -53,7 +59,7 @@ export default function LandingView() {
         </MiniNFTContainer>
         <ExplorePanel />
       </Flex>
-      [Footer]
+      <Footer />
     </Container>
   )
 }
