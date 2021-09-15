@@ -18,7 +18,6 @@ export default function TopCollectionsCharts({ metric }: { metric: METRIC }) {
     errorPolicy: 'all',
     variables: { metric },
   }) // Using `all` to include data with errors.
-  console.log('COLLECTION CHART')
 
   /* Wait for response from server. */
   if (loading) return <Chart loading />

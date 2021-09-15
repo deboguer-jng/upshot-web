@@ -1,5 +1,5 @@
 import { useBreakpointIndex } from '@theme-ui/match-media'
-import { AppBar, ButtonDropdown, Container } from '@upshot-tech/upshot-ui'
+import { ButtonDropdown, Container, Navbar } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Grid, MiniNftCard, Text } from '@upshot-tech/upshot-ui'
 import { InputRounded, Pagination } from '@upshot-tech/upshot-ui'
 
@@ -19,7 +19,7 @@ export default function SearchView() {
           gap: 4,
         }}
       >
-        <AppBar />
+        <Navbar />
       </Container>
 
       <Grid
@@ -122,7 +122,7 @@ export default function SearchView() {
           gap: 4,
         }}
       >
-        [Footer]
+        <Footer />
       </Container>
     </>
   )

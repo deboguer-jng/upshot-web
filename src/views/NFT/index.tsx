@@ -1,6 +1,14 @@
 import { useBreakpointIndex } from '@theme-ui/match-media'
 import { AppBar, Container, InputRoundedSearch } from '@upshot-tech/upshot-ui'
-import { Flex, Grid, Icon, Image, Text } from '@upshot-tech/upshot-ui'
+import {
+  Flex,
+  Footer,
+  Grid,
+  Icon,
+  Image,
+  Navbar,
+  Text,
+} from '@upshot-tech/upshot-ui'
 import {
   Box,
   Chart,
@@ -34,7 +42,7 @@ export default function NFTView() {
           gap: 4,
         }}
       >
-        <AppBar />
+        <Navbar />
       </Container>
 
       <Grid
@@ -539,7 +547,7 @@ export default function NFTView() {
           gap: 4,
         }}
       >
-        [Footer]
+        <Footer />
       </Container>
     </Box>
   )

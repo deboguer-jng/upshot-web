@@ -14,13 +14,11 @@ interface ButtonTabsProps {
 }
 
 export default function ButtonTabs({ onChange }: ButtonTabsProps) {
-  console.log('TABS')
   const [selected, setSelected] = useState(0)
 
   const handleChange = (idx: number) => {
     setSelected(idx)
     onChange?.(Object.keys(METRICS)[idx] as METRIC)
-    console.log(idx)
   }
 
   return (
