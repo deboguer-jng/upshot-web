@@ -17,6 +17,8 @@ export default forwardRef(function CollectionPanel(
   { title, subtitle, children, ...props }: CollectionPanelProps,
   ref: React.ForwardedRef<HTMLDivElement>
 ) {
+  console.log('COLLECTION PANEL')
+
   return (
     <Panel {...{ ref, ...props }}>
       <Flex sx={{ flexDirection: 'column', gap: 4 }}>
@@ -30,13 +32,6 @@ export default forwardRef(function CollectionPanel(
           <Flex sx={{ flexDirection: 'column' }}>
             <Flex variant="text.h3Secondary" sx={{ gap: 2 }}>
               {title}
-              <Flex
-                color="primary"
-                sx={{ justifyContent: 'center', alignItems: 'center', gap: 2 }}
-              >
-                High to Low
-                <Icon icon="arrowDropUserBubble" color="primary" size={12} />
-              </Flex>
             </Flex>
             <Text color="grey-500" sx={{ fontSize: 2 }}>
               {subtitle}
