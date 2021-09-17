@@ -122,6 +122,7 @@ export type GetTopSalesData = {
     asset: {
       previewImageUrl: string
       latestMarketPrice: string
+      rarity: number
     }
   }[]
 }
@@ -135,6 +136,7 @@ export const GET_TOP_SALES = gql`
       asset {
         previewImageUrl
         latestMarketPrice
+        rarity
       }
     }
   }

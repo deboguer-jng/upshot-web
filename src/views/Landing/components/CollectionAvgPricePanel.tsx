@@ -4,7 +4,6 @@ import {
   CollectionButton,
   CollectionButtonTemplate,
 } from '@upshot-tech/upshot-ui'
-import { ethers } from 'ethers'
 import { weiToEth } from 'utils/number'
 
 import {
