@@ -13,6 +13,7 @@ import {
   InputRounded,
   Pagination,
 } from '@upshot-tech/upshot-ui'
+import { PAGE_SIZE } from 'constants/'
 import { ethers } from 'ethers'
 import React, { useState } from 'react'
 import { shortenAddress } from 'utils/address'
@@ -25,7 +26,6 @@ import {
 } from './queries'
 
 export default function SearchView() {
-  const pageSize = 15
   const [page, setPage] = useState(0)
 
   const [searchTerm, setSearechTerm] = useState('')
@@ -42,8 +42,8 @@ export default function SearchView() {
     GetAssetsSearchVars
   >(GET_ASSETS_SEARCH, {
     variables: {
-      limit: pageSize,
-      offset: page * pageSize,
+      limit: PAGE_SIZE,
+      offset: page * PAGE_SIZE,
       searchTerm: searchTermsApplied,
       minPrice: minPriceWei,
       maxPrice: maxPriceWei,
@@ -238,7 +238,7 @@ export default function SearchView() {
             {!!data?.assetGlobalSearch?.count && (
               <Pagination
                 forcePage={page}
-                pageCount={Math.ceil(data.assetGlobalSearch.count / pageSize)}
+                pageCount={Math.ceil(data.assetGlobalSearch.count / PAGE_SIZE)}
                 pageRangeDisplayed={isMobile ? 3 : 5}
                 marginPagesDisplayed={isMobile ? 1 : 5}
                 onPageChange={handlePageChange}
