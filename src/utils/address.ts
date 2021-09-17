@@ -1,14 +1,15 @@
 import { ethers } from 'ethers'
 
 /**
- *  Shorten address
+ * Shorten address
  *
  * @param {string} wallet
- * @param {number } chars
+ * @param {number?} charsLeft
+ * @param {number?} charsRight
  * @returns {string} Shortened address
  */
 export function shortenAddress(
-  address: string = '',
+  address: string,
   charsLeft = 4,
   charsRight = 4
 ): string {
