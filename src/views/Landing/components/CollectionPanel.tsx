@@ -1,5 +1,5 @@
 import { InputRoundedSearch } from '@upshot-tech/upshot-ui'
-import { Flex, Grid, Icon, Panel, Text } from '@upshot-tech/upshot-ui'
+import { Flex, Grid, Panel, Text } from '@upshot-tech/upshot-ui'
 import React, { forwardRef } from 'react'
 
 interface CollectionPanelProps extends React.HTMLAttributes<HTMLDivElement> {

@@ -9,16 +9,22 @@ import {
   TableHead,
   TableRow,
 } from '@upshot-tech/upshot-ui'
+import { PAGE_SIZE } from 'constants/'
 import React, { useState } from 'react'
 
 import {
   GET_EXPLORE_NFTS,
   GetExploreNFTsData,
   GetExploreNFTsVars,
-} from '../../graphql/queries'
+} from '../queries'
 
 const columns = ['Last Sale', 'Total Sales', '% Change']
 
+/**
+ * Get price change color.
+ *
+ * @returns green if positive, red if negative.
+ */
 const getPriceChangeColor = (val: number) => {
   switch (true) {
     case val > 0:
@@ -30,6 +36,11 @@ const getPriceChangeColor = (val: number) => {
   }
 }
 
+/**
+ * Get price change label.
+ *
+ * @returns + prefixed percent if positive, - prefixed percent if negative.
+ */
 const getPriceChangeLabel = (val: number | null) => {
   if (val === null) return '-'
 
@@ -150,34 +161,34 @@ function ExplorePanelSkeleton({ searchTerm }: { searchTerm: string }) {
 }
 
 export default function ExplorePanel() {
-  const pageSize = 15
-  const [page, setPage] = useState(1)
-  const [searchTerm, setSearchTerm] = useState('')
+  const breakpointIndex = useBreakpointIndex()
+  const isMobile = breakpointIndex <= 1
 
-  const getOffset = () => (page - 1) * pageSize
+  const [page, setPage] = useState(0)
+  const [searchTerm, setSearchTerm] = useState('')
 
   const { loading, error, data } = useQuery<
     GetExploreNFTsData,
     GetExploreNFTsVars
   >(GET_EXPLORE_NFTS, {
-    variables: { limit: pageSize, offset: getOffset(), searchTerm },
+    variables: { limit: PAGE_SIZE, offset: page * PAGE_SIZE, searchTerm },
   })
-
-  const breakpointIndex = useBreakpointIndex()
-  const isMobile = breakpointIndex <= 1
-
-  if (loading) return <ExplorePanelSkeleton {...{ searchTerm }} />
-
-  if (error) return <Panel>There was an error processing your request.</Panel>
-
-  if (!data?.assetGlobalSearch.assets.length)
-    return <Panel>No results available.</Panel>
 
   const handlePageChange = ({ selected }: { selected: number }) => {
     setPage(selected)
   }
 
   const handleSearch = (searchTerm) => setSearchTerm(searchTerm)
+
+  /* Loading state. */
+  if (loading) return <ExplorePanelSkeleton {...{ searchTerm }} />
+
+  /* Error state. */
+  if (error) return <Panel>There was an error completing your request.</Panel>
+
+  /* No results state. */
+  if (!data?.assetGlobalSearch.assets.length)
+    return <Panel>No results available.</Panel>
 
   return (
     <Panel>
@@ -251,7 +262,7 @@ export default function ExplorePanel() {
         <Flex sx={{ justifyContent: 'center', marginTop: -1 }}>
           <Pagination
             forcePage={page}
-            pageCount={Math.ceil(data.assetGlobalSearch.count / pageSize)}
+            pageCount={Math.ceil(data.assetGlobalSearch.count / PAGE_SIZE)}
             pageRangeDisplayed={isMobile ? 3 : 5}
             marginPagesDisplayed={isMobile ? 1 : 5}
             onPageChange={handlePageChange}

@@ -4,13 +4,13 @@ import {
   CollectionButton,
   CollectionButtonTemplate,
 } from '@upshot-tech/upshot-ui'
-import { ethers } from 'ethers'
+import { weiToEth } from 'utils/number'
 
 import {
   GET_COLLECTION_AVG_PRICE,
   GetCollectionAvgPriceData,
   GetCollectionAvgPriceVars,
-} from '../../graphql/queries'
+} from '../queries'
 import CollectionPanel from './CollectionPanel'
 
 export default function CollectionAvgPricePanel() {
@@ -25,7 +25,7 @@ export default function CollectionAvgPricePanel() {
   if (error)
     return (
       <CollectionPanel {...{ title, subtitle }}>
-        There was an error processing your request.
+        There was an error completing your request.
       </CollectionPanel>
     )
 
@@ -44,7 +44,7 @@ export default function CollectionAvgPricePanel() {
       </CollectionPanel>
     )
 
-  if (!data?.orderedCollectionsByMetricOrSearch.length)
+  if (!data?.orderedCollectionsByMetricSearch.length)
     return (
       <CollectionPanel {...{ title, subtitle }}>
         No results available.
@@ -53,7 +53,7 @@ export default function CollectionAvgPricePanel() {
 
   return (
     <CollectionPanel {...{ title, subtitle }}>
-      {data.orderedCollectionsByMetricOrSearch.map(
+      {data.orderedCollectionsByMetricSearch.map(
         ({ name, imageUrl, average }, idx) => (
           <Flex
             key={idx}
@@ -71,12 +71,7 @@ export default function CollectionAvgPricePanel() {
                 />
               }
               text={name ?? 'Unknown'}
-              subText={
-                average
-                  ? 'Ξ' +
-                    parseFloat(ethers.utils.formatEther(average)).toFixed(2)
-                  : '-'
-              }
+              subText={average ? weiToEth(average) : '-'}
             />
           </Flex>
         )
