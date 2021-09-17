@@ -15,17 +15,15 @@ export default function TopCollectionsCharts({ metric }: { metric: METRIC }) {
     GetTopCollectionsData,
     GetTopCollectionsVars
   >(GET_TOP_COLLECTIONS, {
-    errorPolicy: 'all',
     variables: { metric },
-  }) // Using `all` to include data with errors.
-
-  /* Wait for response from server. */
+  })
+  /* Load state. */
   if (loading) return <Chart loading />
 
-  /* If there was an error, display the error variant. */
-  if (error) return <Chart error /> // Ignored to suppress error reporting.
+  /* Error state. */
+  if (error) return <Chart error />
 
-  /* If no collections with time series data are available, display the noData variant. */
+  /* No results state. */
   if (!data?.orderedCollectionsByMetricSearch?.length) return <Chart noData />
 
   const assetSets = data.orderedCollectionsByMetricSearch.filter(
