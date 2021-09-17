@@ -15,7 +15,7 @@ import {
   GET_EXPLORE_NFTS,
   GetExploreNFTsData,
   GetExploreNFTsVars,
-} from '../../graphql/queries'
+} from '../queries'
 
 const columns = ['Last Sale', 'Total Sales', '% Change']
 
@@ -151,16 +151,14 @@ function ExplorePanelSkeleton({ searchTerm }: { searchTerm: string }) {
 
 export default function ExplorePanel() {
   const pageSize = 15
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState(0)
   const [searchTerm, setSearchTerm] = useState('')
-
-  const getOffset = () => (page - 1) * pageSize
 
   const { loading, error, data } = useQuery<
     GetExploreNFTsData,
     GetExploreNFTsVars
   >(GET_EXPLORE_NFTS, {
-    variables: { limit: pageSize, offset: getOffset(), searchTerm },
+    variables: { limit: pageSize, offset: page * pageSize, searchTerm },
   })
 
   const breakpointIndex = useBreakpointIndex()
@@ -168,7 +166,7 @@ export default function ExplorePanel() {
 
   if (loading) return <ExplorePanelSkeleton {...{ searchTerm }} />
 
-  if (error) return <Panel>There was an error processing your request.</Panel>
+  if (error) return <Panel>There was an error completing your request.</Panel>
 
   if (!data?.assetGlobalSearch.assets.length)
     return <Panel>No results available.</Panel>

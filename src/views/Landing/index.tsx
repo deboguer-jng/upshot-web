@@ -1,21 +1,12 @@
-import { AppBar, Container } from '@upshot-tech/upshot-ui'
-import {
-  Flex,
-  Footer,
-  Icon,
-  MiniNftCard,
-  Navbar,
-  Text,
-} from '@upshot-tech/upshot-ui'
+import { Container } from '@upshot-tech/upshot-ui'
+import { Flex, Footer, Navbar, Text } from '@upshot-tech/upshot-ui'
 import { useState } from 'react'
 
-import { METRIC } from './ButtonTabs'
-import ButtonTabs from './ButtonTabs'
-import CollectionAvgPricePanel from './CollectionAvgPricePanel'
-import { cardItems } from './constants'
-import ExplorePanel from './ExplorePanel'
-import { MiniNFTContainer } from './Styled'
-import TopCollectionsChart from './TopCollectionsChart'
+import ButtonTabs, { METRIC } from './components/ButtonTabs'
+import CollectionAvgPricePanel from './components/CollectionAvgPricePanel'
+import ExplorePanel from './components/ExplorePanel'
+import TopCollectionsChart from './components/TopCollectionsChart'
+import TopSellingNFTs from './components/TopSellingNFTs'
 
 export default function LandingView() {
   const [chartMetric, setChartMetric] = useState<METRIC>('AVERAGE')
@@ -38,25 +29,9 @@ export default function LandingView() {
       <Flex sx={{ flex: '1 1 auto', flexDirection: 'column', gap: 5 }}>
         <Text variant="h1Secondary">Top Collections</Text>
         <ButtonTabs onChange={handleChange} />
-
         <TopCollectionsChart metric={chartMetric} />
-
         <CollectionAvgPricePanel />
-        <Flex variant="text.h3Secondary" sx={{ gap: 2 }}>
-          Top Selling NFTs in
-          <Flex
-            color="primary"
-            sx={{ justifyContent: 'center', alignItems: 'center', gap: 2 }}
-          >
-            1 Day
-            <Icon icon="arrowDropUserBubble" color="primary" size={12} />
-          </Flex>
-        </Flex>
-        <MiniNFTContainer>
-          {cardItems.map(({ image }, key) => (
-            <MiniNftCard price="$20.00" rarity="15%" key={key} {...{ image }} />
-          ))}
-        </MiniNFTContainer>
+        <TopSellingNFTs />
         <ExplorePanel />
       </Flex>
       <Footer />

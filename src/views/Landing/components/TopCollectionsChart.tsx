@@ -2,12 +2,12 @@ import { useQuery } from '@apollo/client'
 import { Chart } from '@upshot-tech/upshot-ui'
 import { ethers } from 'ethers'
 
-import { TimeSeries } from '../../graphql/queries'
 import {
   GET_TOP_COLLECTIONS,
   GetTopCollectionsData,
   GetTopCollectionsVars,
-} from '../../graphql/queries'
+  TimeSeries,
+} from '../queries'
 import { METRIC } from './ButtonTabs'
 
 export default function TopCollectionsCharts({ metric }: { metric: METRIC }) {
@@ -23,16 +23,15 @@ export default function TopCollectionsCharts({ metric }: { metric: METRIC }) {
   if (loading) return <Chart loading />
 
   /* If there was an error, display the error variant. */
-  // if (error) return <Chart error /> // Ignored to suppress error reporting.
+  if (error) return <Chart error /> // Ignored to suppress error reporting.
 
-  /* If no collections with time series data are available, display the noSelected variant. */
-  if (!data?.orderedCollectionsByMetricOrSearch?.length)
-    return <Chart noSelected />
+  /* If no collections with time series data are available, display the noData variant. */
+  if (!data?.orderedCollectionsByMetricSearch?.length) return <Chart noData />
 
-  const assetSets = data.orderedCollectionsByMetricOrSearch.filter(
+  const assetSets = data.orderedCollectionsByMetricSearch.filter(
     ({ timeSeries }) => timeSeries?.length
   )
-  if (!assetSets?.length) return <Chart noSelected />
+  if (!assetSets?.length) return <Chart noData />
 
   /**
    * Reduce the time series to (timestamp, value) tuples.
