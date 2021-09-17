@@ -10,7 +10,6 @@ import {
   TableRow,
 } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE } from 'constants/'
-import { PAGE_SIZE } from 'constants/'
 import React, { useState } from 'react'
 
 import {
@@ -181,13 +180,13 @@ export default function ExplorePanel() {
 
   const handleSearch = (searchTerm) => setSearchTerm(searchTerm)
 
-  /* Loading state */
+  /* Loading state. */
   if (loading) return <ExplorePanelSkeleton {...{ searchTerm }} />
 
-  /* Error state */
+  /* Error state. */
   if (error) return <Panel>There was an error completing your request.</Panel>
 
-  /* No results state */
+  /* No results state. */
   if (!data?.assetGlobalSearch.assets.length)
     return <Panel>No results available.</Panel>
 
