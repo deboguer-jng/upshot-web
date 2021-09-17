@@ -3,10 +3,8 @@ import { ethers } from 'ethers'
 /**
  * Wei to Eth
  *
- * @param {string} wei
- * @param {number} decimals
- * @param {boolean} showPrefix
- * @returns {string}
+ * @returns wei converted to a truncated ether
+ * string with an optional 'Ξ' prefix.
  */
 export const weiToEth = (
   wei: string,
@@ -27,17 +25,17 @@ export const weiToEth = (
 /**
  * Parse Eth String
  *
- * Tries to parse a non-NaN user-provided form input string
- * to ether.
- *
- * @param {string}
- * @returns {string?} parsed ether
+ * @returns truncated ether value if the input
+ * is able to be parsed.
  */
-export const parseEthString = (numStr: string, decimals: number = 4) => {
+export const parseEthString = (ethUnsafe: string, decimals: number = 4) => {
   let eth
 
   try {
-    const wei = ethers.utils.parseEther(numStr)
+    // Attempt to parse the unsafe ether input.
+    const wei = ethers.utils.parseEther(ethUnsafe)
+
+    // If successful, format the value.
     eth = weiToEth(wei.toString(), decimals, false)
   } catch (err) {}
 

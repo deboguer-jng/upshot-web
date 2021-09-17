@@ -3,10 +3,7 @@ import { ethers } from 'ethers'
 /**
  * Shorten address
  *
- * @param {string} wallet
- * @param {number?} charsLeft
- * @param {number?} charsRight
- * @returns {string} Shortened address
+ * @returns a shortened checksummed wallet address.
  */
 export function shortenAddress(
   address: string,
