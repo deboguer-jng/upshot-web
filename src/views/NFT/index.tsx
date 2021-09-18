@@ -1,5 +1,6 @@
+import { useQuery } from '@apollo/client'
 import { useBreakpointIndex } from '@theme-ui/match-media'
-import { AppBar, Container, InputRoundedSearch } from '@upshot-tech/upshot-ui'
+import { Container, InputRoundedSearch } from '@upshot-tech/upshot-ui'
 import {
   Flex,
   Footer,
@@ -24,14 +25,13 @@ import {
   TableHead,
   TableRow,
 } from '@upshot-tech/upshot-ui'
+import { ethers } from 'ethers'
+import { useRouter } from 'next/router'
 
 import { chartData, transactionHistory } from '../Landing/constants'
+import { GET_ASSET, GetAssetData, GetAssetVars } from './queries'
 
-export default function NFTView() {
-  const breakpointIndex = useBreakpointIndex()
-  const isMobile = breakpointIndex <= 1
-  const columns = ['Last Sale', 'Total Sales', '% Change']
-
+function Layout({ children }: { children: React.ReactNode }) {
   return (
     <Box padding={4}>
       <Container
@@ -44,7 +44,72 @@ export default function NFTView() {
       >
         <Navbar />
       </Container>
+      {children}
+      <Container
+        p={4}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 4,
+        }}
+      >
+        <Footer />
+      </Container>
+    </Box>
+  )
+}
 
+export default function NFTView() {
+  const breakpointIndex = useBreakpointIndex()
+  const isMobile = breakpointIndex <= 1
+  const router = useRouter()
+
+  /* Parse assetId from router */
+  const tokenId = router.query.tokenId as string
+  let contractAddress = router.query.contractAddress as string
+  try {
+    contractAddress = ethers.utils.getAddress(contractAddress)
+  } catch (err) {}
+  const id = [contractAddress, tokenId].join('/')
+
+  const { loading, error, data } = useQuery<GetAssetData, GetAssetVars>(
+    GET_ASSET,
+    {
+      variables: { id },
+    }
+  )
+  /* Load state. */
+  if (loading)
+    return (
+      <Layout>
+        <Container sx={{ justifyContent: 'center' }}>Loading...</Container>
+      </Layout>
+    )
+
+  /* Error state. */
+  if (error)
+    return (
+      <Layout>
+        <Container sx={{ justifyContent: 'center' }}>
+          Error loading asset.
+        </Container>
+      </Layout>
+    )
+
+  /* No results state. */
+  if (!data?.assetById)
+    return (
+      <Layout>
+        <Container sx={{ justifyContent: 'center' }}>
+          Unable to load asset.
+        </Container>
+      </Layout>
+    )
+
+  const { name, previewImageUrl } = data.assetById
+
+  return (
+    <Layout>
       <Grid
         columns={[1, 1, 1, 3]}
         sx={{
@@ -52,14 +117,11 @@ export default function NFTView() {
         }}
       >
         <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-          <video
-            autoPlay
-            loop
-            controls
-            controlsList="nodownload"
-            src="https://storage.opensea.io/files/353da0d0012f94fce5999a705d9f5cc3.mp4"
-            style={{
-              borderRadius: '16px',
+          <Image
+            src={previewImageUrl}
+            alt={`Featured image for ${name}`}
+            sx={{
+              borderRadius: 3,
               width: '100%',
             }}
           />
@@ -538,17 +600,6 @@ export default function NFTView() {
           </Panel>
         </Flex>
       </Grid>
-
-      <Container
-        p={4}
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 4,
-        }}
-      >
-        <Footer />
-      </Container>
-    </Box>
+    </Layout>
   )
 }
