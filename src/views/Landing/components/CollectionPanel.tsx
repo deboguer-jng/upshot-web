@@ -1,5 +1,5 @@
 import { InputRoundedSearch } from '@upshot-tech/upshot-ui'
-import { Flex, Grid, Icon, Panel, Text } from '@upshot-tech/upshot-ui'
+import { Flex, Grid, Panel, Text } from '@upshot-tech/upshot-ui'
 import React, { forwardRef } from 'react'
 
 interface CollectionPanelProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -30,13 +30,6 @@ export default forwardRef(function CollectionPanel(
           <Flex sx={{ flexDirection: 'column' }}>
             <Flex variant="text.h3Secondary" sx={{ gap: 2 }}>
               {title}
-              <Flex
-                color="primary"
-                sx={{ justifyContent: 'center', alignItems: 'center', gap: 2 }}
-              >
-                High to Low
-                <Icon icon="arrowDropUserBubble" color="primary" size={12} />
-              </Flex>
             </Flex>
             <Text color="grey-500" sx={{ fontSize: 2 }}>
               {subtitle}

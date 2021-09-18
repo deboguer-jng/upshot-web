@@ -1,22 +1,94 @@
+import { useQuery } from '@apollo/client'
 import { useBreakpointIndex } from '@theme-ui/match-media'
-import { AppBar, ButtonDropdown, Container } from '@upshot-tech/upshot-ui'
-import { Box, Flex, Grid, MiniNftCard, Text } from '@upshot-tech/upshot-ui'
-import { InputRounded, Pagination, Radio } from '@upshot-tech/upshot-ui'
 import {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
+  Button,
+  ButtonDropdown,
+  Container,
+  Footer,
+  Navbar,
 } from '@upshot-tech/upshot-ui'
-import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
-import { Label } from 'theme-ui'
+import { Box, Flex, Grid, MiniNftCard, Text } from '@upshot-tech/upshot-ui'
+import {
+  BlurrySquareTemplate,
+  InputRounded,
+  Pagination,
+} from '@upshot-tech/upshot-ui'
+import { PAGE_SIZE } from 'constants/'
+import { ethers } from 'ethers'
+import React, { useState } from 'react'
+import { shortenAddress } from 'utils/address'
+import { parseEthString, weiToEth } from 'utils/number'
 
-import { cardItems, collectionItems } from '../Landing/constants'
+import {
+  GET_ASSETS_SEARCH,
+  GetAssetsSearchData,
+  GetAssetsSearchVars,
+} from './queries'
 
 export default function SearchView() {
+  const [page, setPage] = useState(0)
+
+  const [searchTerm, setSearechTerm] = useState('')
+  const [searchTermsApplied, setSearchTermsApplied] = useState('')
+
+  const [minPriceEth, setMinPriceEth] = useState('')
+  const [minPriceWei, setMinPriceWei] = useState<string>()
+
+  const [maxPriceEth, setMaxPriceEth] = useState('')
+  const [maxPriceWei, setMaxPriceWei] = useState<string>()
+
+  const { loading, error, data } = useQuery<
+    GetAssetsSearchData,
+    GetAssetsSearchVars
+  >(GET_ASSETS_SEARCH, {
+    variables: {
+      limit: PAGE_SIZE,
+      offset: page * PAGE_SIZE,
+      searchTerm: searchTermsApplied,
+      minPrice: minPriceWei,
+      maxPrice: maxPriceWei,
+    },
+  })
+
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
-  const columns = ['Last Sale', 'Total Sales', '% Change']
+
+  const handleBlurMinPrice = (e: React.FocusEvent<HTMLInputElement>) => {
+    const eth = parseEthString(e.currentTarget.value)
+
+    setMinPriceEth(eth || '')
+  }
+
+  const handleBlurMaxPrice = (e: React.FocusEvent<HTMLInputElement>) => {
+    const eth = parseEthString(e.currentTarget.value)
+
+    setMaxPriceEth(eth || '')
+  }
+
+  const handlePageChange = ({ selected }: { selected: number }) => {
+    setPage(selected)
+  }
+
+  const handleApplyFilters = () => {
+    setSearchTermsApplied(searchTerm)
+
+    let minPriceWei
+    try {
+      if (minPriceEth)
+        minPriceWei = ethers.utils.parseEther(minPriceEth).toString()
+    } catch (err) {}
+
+    let maxPriceWei
+    try {
+      if (maxPriceEth)
+        maxPriceWei = ethers.utils.parseEther(maxPriceEth).toString()
+    } catch (err) {}
+
+    console.log({ searchTerm, minPriceWei, maxPriceWei })
+
+    setMinPriceWei(minPriceWei)
+    setMaxPriceWei(maxPriceWei)
+  }
 
   return (
     <>
@@ -28,12 +100,14 @@ export default function SearchView() {
           gap: 4,
         }}
       >
-        <AppBar />
+        <Navbar />
       </Container>
 
       <Grid
         columns={[1, 1, 1, 3]}
-        sx={{ gridTemplateColumns: ['1fr', '1fr', '1fr', '1fr 3fr 1fr'] }}
+        sx={{
+          gridTemplateColumns: ['1fr', '1fr', '1fr 3fr', '1fr 3fr 1fr'],
+        }}
       >
         <Flex
           paddingX={8}
@@ -51,23 +125,6 @@ export default function SearchView() {
                 <Text variant="h3Secondary" color="grey-500">
                   Search Filters
                 </Text>
-                <Text color="grey-500">Listing Type</Text>
-              </Flex>
-              <Flex>
-                <Label
-                  color="grey-500"
-                  sx={{ alignItems: 'center', minWidth: 120, width: 'auto' }}
-                >
-                  <Radio name="listingType" checked />
-                  Buy Now
-                </Label>
-                <Label
-                  color="grey-500"
-                  sx={{ alignItems: 'center', width: 'auto' }}
-                >
-                  <Radio name="listingType" />
-                  Auctions
-                </Label>
               </Flex>
             </Flex>
           </Box>
@@ -76,30 +133,20 @@ export default function SearchView() {
             <Flex sx={{ flexDirection: 'column', gap: 2 }}>
               <Text color="grey-500">Pricing Range (min - max)</Text>
               <Flex sx={{ gap: 4 }}>
-                <InputRounded placeholder="Ξ Min" sx={{ maxWidth: 128 }} />
-                <InputRounded placeholder="Ξ Max" sx={{ maxWidth: 128 }} />
-              </Flex>
-            </Flex>
-          </Box>
-
-          <Box>
-            <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-              <Text color="grey-500">Collection Type</Text>
-              <Flex sx={{ justifyContent: 'flex-start' }}>
-                <Label
-                  color="grey-500"
-                  sx={{ alignItems: 'center', minWidth: 120, width: 'auto' }}
-                >
-                  <Radio name="collectionType" />
-                  Collectible
-                </Label>
-                <Label
-                  color="grey-500"
-                  sx={{ alignItems: 'center', width: 'auto' }}
-                >
-                  <Radio name="collectionType" checked />
-                  Artwork
-                </Label>
+                <InputRounded
+                  placeholder="Ξ Min"
+                  sx={{ maxWidth: 128 }}
+                  value={minPriceEth}
+                  onBlur={handleBlurMinPrice}
+                  onChange={(e) => setMinPriceEth(e.currentTarget.value)}
+                />
+                <InputRounded
+                  placeholder="Ξ Max"
+                  sx={{ maxWidth: 128 }}
+                  value={maxPriceEth}
+                  onBlur={handleBlurMaxPrice}
+                  onChange={(e) => setMaxPriceEth(e.currentTarget.value)}
+                />
               </Flex>
             </Flex>
           </Box>
@@ -109,8 +156,16 @@ export default function SearchView() {
               <Text variant="h3Secondary" color="grey-500">
                 Keywords
               </Text>
-              <InputRounded placeholder="Search terms" />
+              <InputRounded
+                placeholder="Search terms"
+                value={searchTerm}
+                onChange={(e) => setSearechTerm(e.currentTarget.value)}
+              />
             </Flex>
+          </Box>
+
+          <Box>
+            <Button onClick={handleApplyFilters}>Apply Filters</Button>
           </Box>
         </Flex>
         <Flex
@@ -119,7 +174,7 @@ export default function SearchView() {
         >
           <Flex sx={{ flexDirection: 'column' }}>
             <Text>Search Results for</Text>
-            <Text variant="h1Primary">Monkey</Text>
+            <Text variant="h1Primary">{searchTermsApplied}</Text>
           </Flex>
 
           <Flex sx={{ alignItems: 'center' }}>
@@ -131,93 +186,64 @@ export default function SearchView() {
             />
           </Flex>
 
-          <Grid
-            gap={5}
-            sx={{
-              gridTemplateColumns: 'repeat(auto-fill, 156px)',
-            }}
-          >
-            {[...new Array(5)]
-              .map((_) => cardItems)
-              .flat()
-              .map(({ image }, key) => (
-                <MiniNftCard
-                  price="$20.00"
-                  rarity="15%"
-                  key={key}
-                  {...{ image }}
-                />
-              ))}
-          </Grid>
-
-          <Flex sx={{ justifyContent: 'center' }}>
-            <Pagination
-              pageCount={100}
-              pageRangeDisplayed={isMobile ? 3 : 5}
-              marginPagesDisplayed={isMobile ? 1 : 5}
-            />
-          </Flex>
-
-          <Flex sx={{ alignItems: 'center' }}>
-            <Text>Collections</Text>
-            <ButtonDropdown
-              name="Sort By"
-              options={['Relevance']}
-              value="Relevance"
-            />
-          </Flex>
-
-          <CollectionTable>
-            <TableHead>
-              <TableRow>
-                <TableCell colSpan={2}>Name</TableCell>
-                {isMobile ? (
-                  // Mobile only shows the first and last columns
-                  <TableCell sx={{ minWidth: 100 }}>Details</TableCell>
-                ) : (
-                  <>
-                    {columns.map((col, key) => (
-                      <TableCell key={key} sx={{ minWidth: 100 }}>
-                        {col}
-                      </TableCell>
-                    ))}
-                  </>
-                )}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {collectionItems.map(({ text, src }, idx) => (
-                <CollectionRow title={text} imageSrc={src} key={idx}>
-                  {isMobile ? (
-                    <TableCell sx={{ maxWidth: 100 }}>
-                      <Flex
-                        sx={{
-                          flexDirection: 'column',
-                          alignItems: 'flex-end',
-                        }}
-                      >
-                        <Flex>{columns[1]}</Flex>
-                        <Flex>{columns[columns.length - 1]}</Flex>
-                      </Flex>
-                    </TableCell>
-                  ) : (
-                    columns.map((column, key) => (
-                      <TableCell key={key} sx={{ maxWidth: 100 }}>
-                        {column}
-                      </TableCell>
-                    ))
+          {error ? (
+            <div>There was an error completing your request</div>
+          ) : data?.assetGlobalSearch?.assets.length === 0 ? (
+            <div>No results available.</div>
+          ) : (
+            <Grid
+              gap={5}
+              sx={{
+                gridTemplateColumns: 'repeat(auto-fill, 156px)',
+              }}
+            >
+              {loading
+                ? [...new Array(10)].map((_, idx) => (
+                    <BlurrySquareTemplate key={idx} />
+                  ))
+                : data?.assetGlobalSearch?.assets.map(
+                    (
+                      {
+                        previewImageUrl,
+                        name,
+                        latestMarketPrice,
+                        rarity,
+                        creatorUsername,
+                        creatorAddress,
+                      },
+                      key
+                    ) => (
+                      <MiniNftCard
+                        price={
+                          latestMarketPrice
+                            ? weiToEth(latestMarketPrice)
+                            : undefined
+                        }
+                        rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
+                        image={previewImageUrl}
+                        key={key}
+                        creator={
+                          creatorUsername ||
+                          shortenAddress(creatorAddress, 2, 4)
+                        }
+                        type="search"
+                        {...{ name }}
+                      />
+                    )
                   )}
-                </CollectionRow>
-              ))}
-            </TableBody>
-          </CollectionTable>
+            </Grid>
+          )}
 
           <Flex sx={{ justifyContent: 'center' }}>
-            <Pagination
-              pageCount={100}
-              pageRangeDisplayed={isMobile ? 3 : 5}
-              marginPagesDisplayed={isMobile ? 1 : 5}
-            />
+            {!!data?.assetGlobalSearch?.count && (
+              <Pagination
+                forcePage={page}
+                pageCount={Math.ceil(data.assetGlobalSearch.count / PAGE_SIZE)}
+                pageRangeDisplayed={isMobile ? 3 : 5}
+                marginPagesDisplayed={isMobile ? 1 : 5}
+                onPageChange={handlePageChange}
+              />
+            )}
           </Flex>
         </Flex>
       </Grid>
@@ -230,7 +256,7 @@ export default function SearchView() {
           gap: 4,
         }}
       >
-        [Footer]
+        <Footer />
       </Container>
     </>
   )

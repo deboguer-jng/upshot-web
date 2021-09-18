@@ -3,8 +3,6 @@ import ReactGA from 'react-ga'
 
 /**
  * Log a page view.
- *
- * @param {string} page Page URL
  */
 export const logPageView = (page: string) => {
   ReactGA.set({ page })
@@ -13,11 +11,6 @@ export const logPageView = (page: string) => {
 
 /**
  * Log an event.
- *
- * @param {string} category
- * @param {string} action
- * @param {string?} label
- * @param {number?} value
  */
 export const logEvent = (
   category: string,
@@ -30,9 +23,6 @@ export const logEvent = (
 
 /**
  * Log an exception.
- *
- * @param {string} description
- * @param {boolean?} fatal
  */
 export const logException = (description: string, fatal = false) => {
   ReactGA.exception({ description, fatal })
@@ -40,8 +30,6 @@ export const logException = (description: string, fatal = false) => {
 
 /**
  * Initialize Google Analytics.
- *
- * @param {string} trackingId Google Analytics ID
  */
 export const initGA = (trackingId: string) => {
   ReactGA.initialize(trackingId, { debug: false })
