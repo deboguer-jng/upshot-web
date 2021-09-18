@@ -10,6 +10,12 @@ import {
 } from '../queries'
 import { METRIC } from './ButtonTabs'
 
+const timeSeriesKeys = {
+  AVERAGE: 'average',
+  VOLUME: 'marketCap',
+  FLOOR: 'floor',
+}
+
 export default function TopCollectionsCharts({ metric }: { metric: METRIC }) {
   const { loading, error, data } = useQuery<
     GetTopCollectionsData,
@@ -40,7 +46,10 @@ export default function TopCollectionsCharts({ metric }: { metric: METRIC }) {
     data: (timeSeries as TimeSeries[]).reduce(
       (a: (Date | number)[][], c) => [
         ...a,
-        [c.timestamp * 1000, parseFloat(ethers.utils.formatEther(c.marketCap))],
+        [
+          c.timestamp * 1000,
+          parseFloat(ethers.utils.formatEther(c[timeSeriesKeys[metric]])),
+        ],
       ],
       []
     ),
