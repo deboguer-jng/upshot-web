@@ -6,6 +6,7 @@ import {
   MiniNftCard,
 } from '@upshot-tech/upshot-ui'
 import { formatDistance } from 'date-fns'
+import { useRouter } from 'next/router'
 import { shortenAddress } from 'utils/address'
 import { weiToEth } from 'utils/number'
 
@@ -38,6 +39,7 @@ function TopSellingNFTsHeader() {
 }
 
 export default function TopSellingNFTs() {
+  const router = useRouter()
   const { loading, error, data } = useQuery<GetTopSalesData, GetTopSalesVars>(
     GET_TOP_SALES,
     {
@@ -45,6 +47,10 @@ export default function TopSellingNFTs() {
       variables: { limit: 10, windowSize: 'ALLTIME' },
     }
   ) // Using `all` to include data with errors.
+
+  const handleClickNFT = (id: string) => {
+    router.push('/nft/' + id)
+  }
 
   if (loading)
     return (
@@ -83,21 +89,28 @@ export default function TopSellingNFTs() {
               txAt,
               txFromAddress,
               txToAddress,
-              asset: { previewImageUrl, latestMarketPrice, rarity },
+              asset: { id, previewImageUrl, lastSale, rarity },
             },
             key
           ) => (
-            <MiniNftCard
-              price={
-                latestMarketPrice ? weiToEth(latestMarketPrice) : undefined
-              }
-              to={shortenAddress(txToAddress, 2, 4)}
-              from={shortenAddress(txFromAddress, 2, 4)}
-              rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
-              image={previewImageUrl}
-              date={formatDistance(txAt * 1000, new Date())}
+            <a
               key={key}
-            />
+              onClick={() => handleClickNFT(id)}
+              style={{ cursor: 'pointer' }}
+            >
+              <MiniNftCard
+                price={
+                  lastSale?.ethSalePrice
+                    ? weiToEth(lastSale.ethSalePrice)
+                    : undefined
+                }
+                to={shortenAddress(txToAddress, 2, 4)}
+                from={shortenAddress(txFromAddress, 2, 4)}
+                rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
+                image={previewImageUrl}
+                date={formatDistance(txAt * 1000, new Date())}
+              />
+            </a>
           )
         )}
       </MiniNFTContainer>

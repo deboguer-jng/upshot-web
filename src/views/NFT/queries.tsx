@@ -17,21 +17,37 @@ export type GetAssetData = {
   assetById: {
     name: string
     previewImageUrl: string
-    rarity: string
-    priceChangeFromFirstSale: string
-    latestMarketPrice: string
-    latestAppraisedPrice: string
-    firstSale: {
+    rarity: number
+    priceChangeFromFirstSale: number
+    creatorAddress: string
+    creatorUsername: string
+    creatorAvatar: string
+    collection?: {
+      name: string
+      imageUrl: string
+    }
+    lastSale?: {
+      ethSalePrice: string
+    }
+    latestAppraisal?: {
+      estimatedPrice: string
+    }
+    firstSale?: {
       estimatedPrice: string
     }
     // avgResalePrice: string
-    // traits: {
-    //   displayType: string
-    //   traitType: string
-    //   value: string
-    // }[]
+    traits: {
+      displayType: string
+      traitType: string
+      value: string
+    }[]
+    appraisalHistory: {
+      timestamp
+      estimatedPrice
+    }[]
     txHistory: {
-      timestamp: number
+      timestamp
+      estimatedPrice
     }[]
   }
 }
@@ -43,19 +59,35 @@ export const GET_ASSET = gql`
       previewImageUrl
       rarity
       priceChangeFromFirstSale
-      latestMarketPrice
-      latestAppraisedPrice
+      creatorAddress
+      creatorUsername
+      creatorAvatar
+      collection {
+        name
+        imageUrl
+      }
+      lastSale {
+        ethSalePrice
+      }
+      latestAppraisal {
+        estimatedPrice
+      }
       firstSale {
         estimatedPrice
       }
       # avgResalePrice
-      # traits {
-      #   displayType
-      #   traitType
-      #   value
-      # }
+      traits {
+        displayType
+        traitType
+        value
+      }
+      appraisalHistory {
+        timestamp
+        estimatedPrice
+      }
       txHistory {
         timestamp
+        estimatedPrice
       }
     }
   }

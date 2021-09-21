@@ -16,9 +16,12 @@ export type GetAssetsSearchData = {
   assetGlobalSearch: {
     count: number
     assets: {
+      id: string
       name: string
       previewImageUrl: string
-      latestMarketPrice: string
+      lastSale?: {
+        ethSalePrice: string
+      }
       creatorUsername: string
       creatorAddress: string
       rarity: number
@@ -43,9 +46,12 @@ export const GET_ASSETS_SEARCH = gql`
     ) {
       count
       assets {
+        id
         name
         previewImageUrl
-        latestMarketPrice
+        lastSale {
+          ethSalePrice
+        }
         creatorUsername
         creatorAddress
         rarity

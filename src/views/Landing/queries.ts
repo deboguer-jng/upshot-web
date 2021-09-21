@@ -41,6 +41,7 @@ export const GET_TOP_COLLECTIONS = gql`
 export type GetCollectionAvgPriceVars = {
   metric: string
   limit: number
+  name?: string
 }
 
 export type GetCollectionAvgPriceData = {
@@ -55,8 +56,13 @@ export const GET_COLLECTION_AVG_PRICE = gql`
   query GetCollectionAvgPrice(
     $metric: EOrderedAssetSetMetric!
     $limit: OneToHundredInt!
+    $name: String
   ) {
-    orderedCollectionsByMetricSearch(metric: $metric, limit: $limit) {
+    orderedCollectionsByMetricSearch(
+      metric: $metric
+      limit: $limit
+      name: $name
+    ) {
       name
       imageUrl
       average
@@ -78,11 +84,14 @@ export type GetExploreNFTsData = {
   assetGlobalSearch: {
     count: number
     assets: {
+      id: string
       name: string
       previewImageUrl: string
       totalSaleCount: number
       priceChangeFromFirstSale: number
-      latestMarketPrice: string
+      lastSale: {
+        ethSalePrice: string
+      }
     }[]
   }
 }
@@ -96,6 +105,7 @@ export const GET_EXPLORE_NFTS = gql`
     assetGlobalSearch(limit: $limit, offset: $offset, searchTerm: $searchTerm) {
       count
       assets {
+        id
         name
         previewImageUrl
         totalSaleCount
@@ -120,8 +130,11 @@ export type GetTopSalesData = {
     txToAddress: string
     txAt: number
     asset: {
+      id: string
       previewImageUrl: string
-      latestMarketPrice: string
+      lastSale: {
+        ethSalePrice: string
+      }
       rarity: number
     }
   }[]
@@ -134,8 +147,11 @@ export const GET_TOP_SALES = gql`
       txToAddress
       txAt
       asset {
+        id
         previewImageUrl
-        latestMarketPrice
+        lastSale {
+          ethSalePrice
+        }
         rarity
       }
     }
