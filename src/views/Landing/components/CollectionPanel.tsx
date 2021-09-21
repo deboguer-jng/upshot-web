@@ -11,10 +11,28 @@ interface CollectionPanelProps extends React.HTMLAttributes<HTMLDivElement> {
    * Helper text for the panel.
    */
   subtitle: string
+  /**
+   * Search input props
+   */
+  inputProps?: {
+    value?: string
+    onChange?: React.ChangeEventHandler<HTMLInputElement>
+  }
+  /**
+   * Search form submission
+   */
+  onSearch?: (e: React.FormEvent | React.MouseEvent) => void
 }
 
 export default forwardRef(function CollectionPanel(
-  { title, subtitle, children, ...props }: CollectionPanelProps,
+  {
+    title,
+    subtitle,
+    children,
+    inputProps,
+    onSearch,
+    ...props
+  }: CollectionPanelProps,
   ref: React.ForwardedRef<HTMLDivElement>
 ) {
   return (
@@ -36,7 +54,19 @@ export default forwardRef(function CollectionPanel(
             </Text>
           </Flex>
           <Flex sx={{ justifyContent: 'flex-end', alignItems: 'stretch' }}>
-            <InputRoundedSearch dark fullWidth hasButton />
+            <form onSubmit={onSearch}>
+              <InputRoundedSearch
+                dark
+                fullWidth
+                hasButton
+                value={inputProps?.value}
+                onChange={inputProps?.onChange}
+                buttonProps={{
+                  type: 'button',
+                  onClick: onSearch,
+                }}
+              />
+            </form>
           </Flex>
         </Flex>
         <Grid columns={[1, 1, 2, 3]} {...{ children }} />

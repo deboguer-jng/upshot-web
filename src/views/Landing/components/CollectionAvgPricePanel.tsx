@@ -4,6 +4,7 @@ import {
   CollectionButton,
   CollectionButtonTemplate,
 } from '@upshot-tech/upshot-ui'
+import { useState } from 'react'
 import { weiToEth } from 'utils/number'
 
 import {
@@ -14,10 +15,21 @@ import {
 import CollectionPanel from './CollectionPanel'
 
 export default function CollectionAvgPricePanel() {
+  const [searchTerm, setSearechTerm] = useState('')
+  const [searchTermApplied, setSearchTermApplied] = useState('')
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+
+    setSearchTermApplied(searchTerm)
+  }
+
   const { loading, error, data } = useQuery<
     GetCollectionAvgPriceData,
     GetCollectionAvgPriceVars
-  >(GET_COLLECTION_AVG_PRICE, { variables: { limit: 12, metric: 'AVERAGE' } })
+  >(GET_COLLECTION_AVG_PRICE, {
+    variables: { limit: 12, metric: 'AVERAGE', name: searchTermApplied },
+  })
 
   const title = 'Collection Avg. Price'
   const subtitle = '(Select Collections to change graph)'
@@ -52,7 +64,14 @@ export default function CollectionAvgPricePanel() {
     )
 
   return (
-    <CollectionPanel {...{ title, subtitle }}>
+    <CollectionPanel
+      inputProps={{
+        value: searchTerm,
+        onChange: (e) => setSearechTerm(e.currentTarget.value),
+      }}
+      onSearch={handleSearch}
+      {...{ title, subtitle }}
+    >
       {data.orderedCollectionsByMetricSearch.map(
         ({ name, imageUrl, average }, idx) => (
           <Flex

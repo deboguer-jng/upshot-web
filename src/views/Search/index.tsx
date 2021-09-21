@@ -15,7 +15,8 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE } from 'constants/'
 import { ethers } from 'ethers'
-import React, { useState } from 'react'
+import { useRouter } from 'next/router'
+import React, { useEffect, useState } from 'react'
 import { shortenAddress } from 'utils/address'
 import { parseEthString, weiToEth } from 'utils/number'
 
@@ -26,16 +27,28 @@ import {
 } from './queries'
 
 export default function SearchView() {
+  const router = useRouter()
   const [page, setPage] = useState(0)
 
-  const [searchTerm, setSearechTerm] = useState('')
-  const [searchTermsApplied, setSearchTermsApplied] = useState('')
+  const [searchTerm, setSearechTerm] = useState(
+    (router.query.query as string) ?? ''
+  )
+  const [searchTermApplied, setSearchTermApplied] = useState(
+    (router.query.query as string) ?? ''
+  )
 
   const [minPriceEth, setMinPriceEth] = useState('')
   const [minPriceWei, setMinPriceWei] = useState<string>()
 
   const [maxPriceEth, setMaxPriceEth] = useState('')
   const [maxPriceWei, setMaxPriceWei] = useState<string>()
+
+  const [navSearchTerm, setNavSearchTerm] = useState('')
+  const handleNavSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+
+    router.push(`/search?query=${navSearchTerm}`)
+  }
 
   const { loading, error, data } = useQuery<
     GetAssetsSearchData,
@@ -44,7 +57,7 @@ export default function SearchView() {
     variables: {
       limit: PAGE_SIZE,
       offset: page * PAGE_SIZE,
-      searchTerm: searchTermsApplied,
+      searchTerm: searchTermApplied,
       minPrice: minPriceWei,
       maxPrice: maxPriceWei,
     },
@@ -70,7 +83,7 @@ export default function SearchView() {
   }
 
   const handleApplyFilters = () => {
-    setSearchTermsApplied(searchTerm)
+    setSearchTermApplied(searchTerm)
 
     let minPriceWei
     try {
@@ -90,6 +103,16 @@ export default function SearchView() {
     setMaxPriceWei(maxPriceWei)
   }
 
+  const handleClickNFT = (id: string) => {
+    router.push('/nft/' + id)
+  }
+
+  useEffect(() => {
+    const searchTerm = (router.query.query as string) ?? ''
+    setSearechTerm(searchTerm)
+    setSearchTermApplied(searchTerm)
+  }, [router.query])
+
   return (
     <>
       <Container
@@ -100,7 +123,11 @@ export default function SearchView() {
           gap: 4,
         }}
       >
-        <Navbar />
+        <Navbar
+          searchValue={navSearchTerm}
+          onSearchValueChange={(e) => setNavSearchTerm(e.currentTarget.value)}
+          onSearch={handleNavSearch}
+        />
       </Container>
 
       <Grid
@@ -174,7 +201,7 @@ export default function SearchView() {
         >
           <Flex sx={{ flexDirection: 'column' }}>
             <Text>Search Results for</Text>
-            <Text variant="h1Primary">{searchTermsApplied}</Text>
+            <Text variant="h1Primary">{searchTermApplied}</Text>
           </Flex>
 
           <Flex sx={{ alignItems: 'center' }}>
@@ -204,31 +231,37 @@ export default function SearchView() {
                 : data?.assetGlobalSearch?.assets.map(
                     (
                       {
+                        id,
                         previewImageUrl,
                         name,
-                        latestMarketPrice,
+                        lastSale,
                         rarity,
                         creatorUsername,
                         creatorAddress,
                       },
                       key
                     ) => (
-                      <MiniNftCard
-                        price={
-                          latestMarketPrice
-                            ? weiToEth(latestMarketPrice)
-                            : undefined
-                        }
-                        rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
-                        image={previewImageUrl}
+                      <a
                         key={key}
-                        creator={
-                          creatorUsername ||
-                          shortenAddress(creatorAddress, 2, 4)
-                        }
-                        type="search"
-                        {...{ name }}
-                      />
+                        onClick={() => handleClickNFT(id)}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        <MiniNftCard
+                          price={
+                            lastSale?.ethSalePrice
+                              ? weiToEth(lastSale.ethSalePrice)
+                              : undefined
+                          }
+                          rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
+                          image={previewImageUrl}
+                          creator={
+                            creatorUsername ||
+                            shortenAddress(creatorAddress, 2, 4)
+                          }
+                          type="search"
+                          {...{ name }}
+                        />
+                      </a>
                     )
                   )}
             </Grid>

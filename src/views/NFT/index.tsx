@@ -27,11 +27,24 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { ethers } from 'ethers'
 import { useRouter } from 'next/router'
+import { useState } from 'react'
+import { shortenAddress } from 'utils/address'
+import { getPriceChangeColor } from 'utils/color'
+import { weiToEth } from 'utils/number'
 
 import { chartData, transactionHistory } from '../Landing/constants'
 import { GET_ASSET, GetAssetData, GetAssetVars } from './queries'
 
 function Layout({ children }: { children: React.ReactNode }) {
+  const router = useRouter()
+
+  const [navSearchTerm, setNavSearchTerm] = useState('')
+  const handleNavSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+
+    router.push(`/search?query=${navSearchTerm}`)
+  }
+
   return (
     <Box padding={4}>
       <Container
@@ -42,7 +55,11 @@ function Layout({ children }: { children: React.ReactNode }) {
           gap: 4,
         }}
       >
-        <Navbar />
+        <Navbar
+          searchValue={navSearchTerm}
+          onSearchValueChange={(e) => setNavSearchTerm(e.currentTarget.value)}
+          onSearch={handleNavSearch}
+        />
       </Container>
       {children}
       <Container
@@ -106,7 +123,19 @@ export default function NFTView() {
       </Layout>
     )
 
-  const { name, previewImageUrl } = data.assetById
+  const {
+    name,
+    rarity,
+    previewImageUrl,
+    collection,
+    priceChangeFromFirstSale,
+    firstSale,
+    lastSale,
+    latestAppraisal,
+    creatorAvatar,
+    creatorAddress,
+    creatorUsername,
+  } = data.assetById
 
   return (
     <Layout>
@@ -126,14 +155,16 @@ export default function NFTView() {
             }}
           />
           <Flex sx={{ flexDirection: 'column' }}>
-            <Text variant="h2Primary">Punk #1024</Text>
-            <Label size="md">82% Rarity</Label>
+            <Text variant="h2Primary">{name}</Text>
+            {!!rarity && (
+              <Label size="md">{(rarity * 100).toFixed(2) + '% Rarity'}</Label>
+            )}
           </Flex>
 
           <Flex sx={{ gap: 4, alignItems: 'center' }}>
             <Image
-              src="/img/demo/collection/CryptoPunks.png"
-              alt="Avatar: CryptoPunk"
+              src={collection?.imageUrl ?? '/img/defaultAvatar.png'}
+              alt={`Collection cover: ${collection?.name}`}
               width={32}
               sx={{ borderRadius: 'circle', height: 32, width: 32 }}
             />
@@ -145,7 +176,7 @@ export default function NFTView() {
                 color="grey-300"
                 sx={{ fontWeight: 'bold', lineHeight: 1.25, fontSize: 4 }}
               >
-                CryptoPunks
+                {collection?.name ?? 'Unknown'}
               </Text>
             </Flex>
           </Flex>
@@ -166,8 +197,10 @@ export default function NFTView() {
                   <Flex sx={{ gap: 4 }}>
                     <Flex sx={{ gap: 4, alignItems: 'center' }}>
                       <Image
-                        src="/img/demo/collection/CryptoPunks.png"
-                        alt="Avatar: CryptoPunk"
+                        src={collection?.imageUrl ?? '/img/defaultAvatar.png'}
+                        alt={`Collection cover: ${
+                          collection?.name ?? 'Unknown'
+                        }}`}
                         width={32}
                         sx={{ borderRadius: 'circle', height: 32, width: 32 }}
                       />
@@ -191,15 +224,15 @@ export default function NFTView() {
                             fontSize: 4,
                           }}
                         >
-                          CryptoPunks
+                          {collection?.name}
                         </Text>
                       </Flex>
                     </Flex>
 
                     <Flex sx={{ gap: 4, alignItems: 'center' }}>
                       <Image
-                        src="/img/demo/collection/LarvaLabs.png"
-                        alt="Avatar: LarvaLabs"
+                        src={creatorAvatar ?? '/img/defaultAvatar.png'}
+                        alt="Creator avatar"
                         width={32}
                         sx={{ borderRadius: 'circle', height: 32, width: 32 }}
                       />
@@ -223,43 +256,11 @@ export default function NFTView() {
                             fontSize: 4,
                           }}
                         >
-                          Larva Labs
+                          {creatorUsername || shortenAddress(creatorAddress)}
                         </Text>
                       </Flex>
                     </Flex>
                   </Flex>
-                  <Box>
-                    <Table
-                      sx={{
-                        width: 'auto',
-                        borderSpacing: '16px 4px',
-                        marginLeft: '-16px',
-                      }}
-                    >
-                      <TableBody>
-                        <TableRow>
-                          <TableCell>
-                            <Text color="grey-500" sx={{ fontSize: 2 }}>
-                              Marketplace
-                            </Text>
-                          </TableCell>
-                          <TableCell>
-                            <Text>Rarible</Text>
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>
-                            <Text color="grey-500" sx={{ fontSize: 2 }}>
-                              Editions
-                            </Text>
-                          </TableCell>
-                          <TableCell>
-                            <Text>38</Text>
-                          </TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </Box>
                 </Flex>
               </Panel>
               <Panel sx={{ flexGrow: 1 }}>
@@ -306,15 +307,21 @@ export default function NFTView() {
                               sx={{
                                 fontWeight: 'bold',
                                 fontSize: 5,
-                                color: 'green',
+                                color: getPriceChangeColor(
+                                  priceChangeFromFirstSale ?? 0
+                                ),
                               }}
                             >
-                              +5%
+                              {priceChangeFromFirstSale
+                                ? priceChangeFromFirstSale.toFixed(0) + '%'
+                                : '-'}
                             </Text>
                           </TableCell>
                           <TableCell>
                             <Text sx={{ fontWeight: 'bold', fontSize: 5 }}>
-                              $10,000
+                              {firstSale?.estimatedPrice
+                                ? weiToEth(firstSale?.estimatedPrice)
+                                : '-'}
                             </Text>
                           </TableCell>
                           <TableCell>
@@ -400,202 +407,91 @@ export default function NFTView() {
                       </Text>
                     </Flex>
                   </Flex>
-                  <Chart data={chartData} />
+                  <Chart data={chartData} embedded />
                 </Flex>
               </Panel>
             </Flex>
           </Flex>
           <Panel>
             <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-              <Flex variant="text.h3Secondary" sx={{ gap: 2 }}>
-                <Flex
-                  color="primary"
-                  sx={{
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    gap: 2,
-                  }}
-                >
-                  Sale
-                  <Icon icon="arrowDropUserBubble" color="primary" size={12} />
-                </Flex>
-                History
-              </Flex>
-              <Chart data={chartData} />
-              <Panel inner>
-                <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-                  <Flex
-                    sx={{
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    <Text variant="h3Secondary">Transaction History</Text>
-                    <Text>
-                      <InputRoundedSearch hasButton />
-                    </Text>
-                  </Flex>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell color="grey-500">Date</TableCell>
-                        {!isMobile && (
-                          <>
-                            <TableCell color="grey-500">Sender</TableCell>
-                            <TableCell color="grey-500">Recipient</TableCell>
-                          </>
-                        )}
-
-                        <TableCell color="grey-500">Sale Price</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {transactionHistory.map(
-                        ({ date, sender, recipient, price }, idx) => (
-                          <TableRow key={idx}>
-                            <TableCell sx={{ width: '100%' }}>{date}</TableCell>
-                            {!isMobile && (
-                              <>
-                                <TableCell sx={{ minWidth: 140 }}>
-                                  <Flex sx={{ alignItems: 'center', gap: 2 }}>
-                                    <Box
-                                      sx={{
-                                        borderRadius: 'circle',
-                                        bg: 'yellow',
-                                        width: 3,
-                                        height: 3,
-                                      }}
-                                    />
-                                    <Text>{sender}</Text>
-                                  </Flex>
-                                </TableCell>
-                                <TableCell sx={{ minWidth: 140 }}>
-                                  <Flex sx={{ alignItems: 'center', gap: 2 }}>
-                                    <Box
-                                      sx={{
-                                        borderRadius: 'circle',
-                                        bg: 'purple',
-                                        width: 3,
-                                        height: 3,
-                                      }}
-                                    />
-                                    <Text>{sender}</Text>
-                                  </Flex>
-                                </TableCell>
-                              </>
-                            )}
-                            <TableCell sx={{ minWidth: 100, color: 'pink' }}>
-                              Ξ{price}
-                            </TableCell>
-                          </TableRow>
-                        )
-                      )}
-                    </TableBody>
-                  </Table>
-
-                  <Flex sx={{ justifyContent: 'center', marginTop: -1 }}>
-                    <Pagination
-                      pageCount={100}
-                      pageRangeDisplayed={isMobile ? 3 : 5}
-                      marginPagesDisplayed={isMobile ? 1 : 5}
-                    />
-                  </Flex>
-                </Flex>
-              </Panel>
-            </Flex>
-          </Panel>
-          <Panel sx={{ flexGrow: 1 }}>
-            <Text variant="h3Secondary">Statistics</Text>
-            <Flex
-              sx={{
-                gap: 4,
-                flexDirection: ['column', 'column', 'column', 'row'],
-              }}
-            >
               <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-                <Table
+                <Flex
                   sx={{
-                    borderSpacing: '32px 8px',
-                    marginTop: '-8px',
-                    marginLeft: '-32px',
-                    width: 'auto',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
                   }}
                 >
+                  <Text variant="h3Secondary">Transaction History</Text>
+                  <Text>
+                    <InputRoundedSearch hasButton dark />
+                  </Text>
+                </Flex>
+                <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell>
-                        <Text color="grey-500" sx={{ fontSize: 2 }}>
-                          Price Change
-                          <br />
-                          from Primary Market
-                        </Text>
-                      </TableCell>
-                      <TableCell>
-                        <Text color="grey-500" sx={{ fontSize: 2 }}>
-                          Orginal Primary
-                          <br />
-                          Market Price
-                        </Text>
-                      </TableCell>
-                      <TableCell>
-                        <Text color="grey-500" sx={{ fontSize: 2 }}>
-                          Average
-                          <br />
-                          Resale Price
-                        </Text>
-                      </TableCell>
+                      <TableCell color="grey-500">Date</TableCell>
+                      {!isMobile && (
+                        <>
+                          <TableCell color="grey-500">Sender</TableCell>
+                          <TableCell color="grey-500">Recipient</TableCell>
+                        </>
+                      )}
+
+                      <TableCell color="grey-500">Sale Price</TableCell>
                     </TableRow>
                   </TableHead>
-                  <TableBody sx={{ borderSpacing: '8px' }}>
-                    <TableRow>
-                      <TableCell>
-                        <Text
-                          sx={{
-                            fontWeight: 'bold',
-                            fontSize: 5,
-                            color: 'green',
-                          }}
-                        >
-                          +5%
-                        </Text>
-                      </TableCell>
-                      <TableCell>
-                        <Text sx={{ fontWeight: 'bold', fontSize: 5 }}>
-                          $10,000
-                        </Text>
-                      </TableCell>
-                      <TableCell>
-                        <Text sx={{ fontWeight: 'bold', fontSize: 5 }}>
-                          $12,000
-                        </Text>
-                      </TableCell>
-                    </TableRow>
+                  <TableBody>
+                    {transactionHistory.map(
+                      ({ date, sender, recipient, price }, idx) => (
+                        <TableRow key={idx}>
+                          <TableCell sx={{ width: '100%' }}>{date}</TableCell>
+                          {!isMobile && (
+                            <>
+                              <TableCell sx={{ minWidth: 140 }}>
+                                <Flex sx={{ alignItems: 'center', gap: 2 }}>
+                                  <Box
+                                    sx={{
+                                      borderRadius: 'circle',
+                                      bg: 'yellow',
+                                      width: 3,
+                                      height: 3,
+                                    }}
+                                  />
+                                  <Text>{sender}</Text>
+                                </Flex>
+                              </TableCell>
+                              <TableCell sx={{ minWidth: 140 }}>
+                                <Flex sx={{ alignItems: 'center', gap: 2 }}>
+                                  <Box
+                                    sx={{
+                                      borderRadius: 'circle',
+                                      bg: 'purple',
+                                      width: 3,
+                                      height: 3,
+                                    }}
+                                  />
+                                  <Text>{sender}</Text>
+                                </Flex>
+                              </TableCell>
+                            </>
+                          )}
+                          <TableCell sx={{ minWidth: 100, color: 'pink' }}>
+                            Ξ{price}
+                          </TableCell>
+                        </TableRow>
+                      )
+                    )}
                   </TableBody>
                 </Table>
-                <Text variant="h3Secondary">Attributes</Text>
-                <Grid columns={2}>
-                  {[...new Array(8)].map((val, key) => (
-                    <LabelAttribute
-                      key={key}
-                      variant={Math.random() > 0.5 ? 'percentage' : 'regular'}
-                      percentage="15"
-                    >
-                      Attribute
-                    </LabelAttribute>
-                  ))}
-                </Grid>
+
+                <Flex sx={{ justifyContent: 'center', marginTop: -1 }}>
+                  <Pagination
+                    pageCount={100}
+                    pageRangeDisplayed={isMobile ? 3 : 5}
+                    marginPagesDisplayed={isMobile ? 1 : 5}
+                  />
+                </Flex>
               </Flex>
-              <Box sx={{ flexGrow: 1 }}>
-                <Panel inner>
-                  <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-                    <Text>Attribute Sale History</Text>
-                    <Text color="grey-500" sx={{ fontSize: 3 }}>
-                      Select attributes from this NFT to view the pricing
-                      history of NFTs with similar traits.
-                    </Text>
-                  </Flex>
-                </Panel>
-              </Box>
             </Flex>
           </Panel>
         </Flex>

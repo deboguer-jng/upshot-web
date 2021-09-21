@@ -2,10 +2,10 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'redux/store'
 
 interface UserIdentity {
-  id: string | null
   addresses: string[]
-  username: string | null
-  avatar: string | null
+  id?: string
+  username?: string
+  avatar?: string
 }
 
 export interface UserState {
@@ -21,10 +21,10 @@ const initialState: UserState = {
    * context of the profile page view.
    */
   identity: {
-    id: null,
+    id: undefined,
     addresses: [],
-    username: null,
-    avatar: null,
+    username: undefined,
+    avatar: undefined,
   },
 }
 

@@ -10,7 +10,10 @@ import {
   TableRow,
 } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE } from 'constants/'
+import router from 'next/router'
 import React, { useState } from 'react'
+import { getPriceChangeColor } from 'utils/color'
+import { weiToEth } from 'utils/number'
 
 import {
   GET_EXPLORE_NFTS,
@@ -19,22 +22,6 @@ import {
 } from '../queries'
 
 const columns = ['Last Sale', 'Total Sales', '% Change']
-
-/**
- * Get price change color.
- *
- * @returns green if positive, red if negative.
- */
-const getPriceChangeColor = (val: number) => {
-  switch (true) {
-    case val > 0:
-      return 'green'
-    case val < 0:
-      return 'red'
-    default:
-      return 'text'
-  }
-}
 
 /**
  * Get price change label.
@@ -133,6 +120,10 @@ function ExplorePanelHead({
             hasButton
             value={searchTerm}
             onChange={handleChange}
+            buttonProps={{
+              type: 'button',
+              onClick: handleSearch,
+            }}
           />
         </form>
       </Flex>
@@ -148,7 +139,7 @@ function ExplorePanelSkeleton({ searchTerm }: { searchTerm: string }) {
         <CollectionTableHead />
         <TableBody>
           {[...new Array(10)].map((_, idx) => (
-            <Skeleton as="tr" key={idx}>
+            <Skeleton sx={{ height: 56 }} as="tr" key={idx}>
               <TableCell colSpan={5}>
                 <Box sx={{ height: 40, width: '100%' }} />
               </TableCell>
@@ -190,6 +181,10 @@ export default function ExplorePanel() {
   if (!data?.assetGlobalSearch.assets.length)
     return <Panel>No results available.</Panel>
 
+  const handleShowNFT = (id) => {
+    router.push('/nft/' + id)
+  }
+
   return (
     <Panel>
       <Flex sx={{ flexDirection: 'column', gap: 4 }}>
@@ -200,11 +195,12 @@ export default function ExplorePanel() {
             {data.assetGlobalSearch.assets.map(
               (
                 {
+                  id,
                   name,
                   previewImageUrl,
                   totalSaleCount,
                   priceChangeFromFirstSale,
-                  latestMarketPrice,
+                  lastSale,
                 },
                 idx
               ) => (
@@ -213,6 +209,7 @@ export default function ExplorePanel() {
                   title={name}
                   imageSrc={previewImageUrl}
                   key={idx}
+                  onClick={() => handleShowNFT(id)}
                 >
                   {isMobile ? (
                     <TableCell sx={{ maxWidth: 100 }}>
@@ -222,7 +219,11 @@ export default function ExplorePanel() {
                           alignItems: 'flex-end',
                         }}
                       >
-                        <Flex>{latestMarketPrice}</Flex>
+                        <Flex>
+                          {lastSale?.ethSalePrice
+                            ? weiToEth(lastSale.ethSalePrice)
+                            : undefined}
+                        </Flex>
                         <Flex
                           sx={{
                             maxWidth: 100,
@@ -238,7 +239,9 @@ export default function ExplorePanel() {
                   ) : (
                     <>
                       <TableCell sx={{ maxWidth: 100 }}>
-                        {latestMarketPrice}
+                        {lastSale?.ethSalePrice
+                          ? weiToEth(lastSale.ethSalePrice)
+                          : undefined}
                       </TableCell>
                       <TableCell sx={{ maxWidth: 100 }}>
                         {totalSaleCount}
