@@ -162,6 +162,7 @@ export default function ExplorePanel() {
     GetExploreNFTsData,
     GetExploreNFTsVars
   >(GET_EXPLORE_NFTS, {
+    errorPolicy: 'all',
     variables: { limit: PAGE_SIZE, offset: page * PAGE_SIZE, searchTerm },
   })
 
@@ -198,6 +199,7 @@ export default function ExplorePanel() {
                   id,
                   name,
                   previewImageUrl,
+                  mediaUrl,
                   totalSaleCount,
                   priceChangeFromFirstSale,
                   lastSale,
@@ -207,7 +209,7 @@ export default function ExplorePanel() {
                 <CollectionRow
                   dark
                   title={name}
-                  imageSrc={previewImageUrl}
+                  imageSrc={previewImageUrl ?? mediaUrl}
                   key={idx}
                   onClick={() => handleShowNFT(id)}
                 >
@@ -222,7 +224,7 @@ export default function ExplorePanel() {
                         <Flex>
                           {lastSale?.ethSalePrice
                             ? weiToEth(lastSale.ethSalePrice)
-                            : undefined}
+                            : '-'}
                         </Flex>
                         <Flex
                           sx={{
@@ -241,7 +243,7 @@ export default function ExplorePanel() {
                       <TableCell sx={{ maxWidth: 100 }}>
                         {lastSale?.ethSalePrice
                           ? weiToEth(lastSale.ethSalePrice)
-                          : undefined}
+                          : '-'}
                       </TableCell>
                       <TableCell sx={{ maxWidth: 100 }}>
                         {totalSaleCount}
