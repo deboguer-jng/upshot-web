@@ -89,7 +89,7 @@ export default function TopSellingNFTs() {
               txAt,
               txFromAddress,
               txToAddress,
-              asset: { id, previewImageUrl, lastSale, rarity },
+              asset: { id, previewImageUrl, mediaUrl, lastSale, rarity },
             },
             key
           ) => (
@@ -107,7 +107,7 @@ export default function TopSellingNFTs() {
                 to={shortenAddress(txToAddress, 2, 4)}
                 from={shortenAddress(txFromAddress, 2, 4)}
                 rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
-                image={previewImageUrl}
+                image={previewImageUrl ?? mediaUrl}
                 date={formatDistance(txAt * 1000, new Date())}
               />
             </a>

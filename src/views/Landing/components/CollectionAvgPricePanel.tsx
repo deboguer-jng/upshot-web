@@ -28,6 +28,7 @@ export default function CollectionAvgPricePanel() {
     GetCollectionAvgPriceData,
     GetCollectionAvgPriceVars
   >(GET_COLLECTION_AVG_PRICE, {
+    errorPolicy: 'all',
     variables: { limit: 12, metric: 'AVERAGE', name: searchTermApplied },
   })
 

@@ -21,6 +21,7 @@ export default function TopCollectionsCharts({ metric }: { metric: METRIC }) {
     GetTopCollectionsData,
     GetTopCollectionsVars
   >(GET_TOP_COLLECTIONS, {
+    errorPolicy: 'all',
     variables: { metric },
   })
   /* Load state. */

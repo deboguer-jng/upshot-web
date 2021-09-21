@@ -18,7 +18,8 @@ export type GetAssetsSearchData = {
     assets: {
       id: string
       name: string
-      previewImageUrl: string
+      previewImageUrl?: string
+      mediaUrl: string
       lastSale?: {
         ethSalePrice: string
       }
@@ -49,6 +50,7 @@ export const GET_ASSETS_SEARCH = gql`
         id
         name
         previewImageUrl
+        mediaUrl
         lastSale {
           ethSalePrice
         }
