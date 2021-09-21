@@ -16,7 +16,8 @@ export type GetAssetVars = {
 export type GetAssetData = {
   assetById: {
     name: string
-    previewImageUrl: string
+    previewImageUrl?: string
+    mediaUrl: string
     rarity: number
     priceChangeFromFirstSale: number
     creatorAddress: string
@@ -28,14 +29,24 @@ export type GetAssetData = {
     }
     lastSale?: {
       ethSalePrice: string
+      currencyPriceInUSDT: {
+        closePrice: string
+      }
+      confidence: number
+      timestamp: number
     }
     latestAppraisal?: {
-      estimatedPrice: string
+      ethSalePrice: string
+      currencyPriceInUSDT: {
+        closePrice: string
+      }
+      confidence: number
+      timestamp: number
     }
     firstSale?: {
       estimatedPrice: string
     }
-    // avgResalePrice: string
+    avgResalePrice: string
     traits: {
       displayType: string
       traitType: string
@@ -46,8 +57,12 @@ export type GetAssetData = {
       estimatedPrice
     }[]
     txHistory: {
-      timestamp
-      estimatedPrice
+      assetEvent: {
+        ethPrice: string
+        txAt: number
+        txFromAddress: string
+        txToAddress: string
+      }
     }[]
   }
 }
@@ -57,6 +72,7 @@ export const GET_ASSET = gql`
     assetById(id: $id) {
       name
       previewImageUrl
+      mediaUrl
       rarity
       priceChangeFromFirstSale
       creatorAddress
@@ -68,14 +84,24 @@ export const GET_ASSET = gql`
       }
       lastSale {
         ethSalePrice
+        currencyPriceInUSDT {
+          closePrice
+        }
+        confidence
+        timestamp
       }
       latestAppraisal {
-        estimatedPrice
+        ethSalePrice
+        currencyPriceInUSDT {
+          closePrice
+        }
+        confidence
+        timestamp
       }
       firstSale {
         estimatedPrice
       }
-      # avgResalePrice
+      avgResalePrice
       traits {
         displayType
         traitType
@@ -86,8 +112,12 @@ export const GET_ASSET = gql`
         estimatedPrice
       }
       txHistory {
-        timestamp
-        estimatedPrice
+        assetEvent {
+          ethPrice
+          txAt
+          txFromAddress
+          txToAddress
+        }
       }
     }
   }

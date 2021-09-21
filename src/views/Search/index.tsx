@@ -54,6 +54,7 @@ export default function SearchView() {
     GetAssetsSearchData,
     GetAssetsSearchVars
   >(GET_ASSETS_SEARCH, {
+    errorPolicy: 'all',
     variables: {
       limit: PAGE_SIZE,
       offset: page * PAGE_SIZE,
@@ -127,6 +128,7 @@ export default function SearchView() {
           searchValue={navSearchTerm}
           onSearchValueChange={(e) => setNavSearchTerm(e.currentTarget.value)}
           onSearch={handleNavSearch}
+          onLogoClick={() => router.push('/')}
         />
       </Container>
 
@@ -233,6 +235,7 @@ export default function SearchView() {
                       {
                         id,
                         previewImageUrl,
+                        mediaUrl,
                         name,
                         lastSale,
                         rarity,
@@ -253,7 +256,7 @@ export default function SearchView() {
                               : undefined
                           }
                           rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
-                          image={previewImageUrl}
+                          image={previewImageUrl ?? mediaUrl}
                           creator={
                             creatorUsername ||
                             shortenAddress(creatorAddress, 2, 4)

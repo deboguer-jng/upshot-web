@@ -38,6 +38,7 @@ export default function LandingView() {
         searchValue={navSearchTerm}
         onSearchValueChange={(e) => setNavSearchTerm(e.currentTarget.value)}
         onSearch={handleNavSearch}
+        onLogoClick={() => router.push('/')}
       />
       <Flex sx={{ flex: '1 1 auto', flexDirection: 'column', gap: 5 }}>
         <Text variant="h1Secondary">Top Collections</Text>

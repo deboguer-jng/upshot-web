@@ -1,21 +1,12 @@
 import { useQuery } from '@apollo/client'
 import { useBreakpointIndex } from '@theme-ui/match-media'
-import { Container, InputRoundedSearch } from '@upshot-tech/upshot-ui'
-import {
-  Flex,
-  Footer,
-  Grid,
-  Icon,
-  Image,
-  Navbar,
-  Text,
-} from '@upshot-tech/upshot-ui'
+import { Container } from '@upshot-tech/upshot-ui'
+import { Flex, Footer, Grid, Image, Navbar, Text } from '@upshot-tech/upshot-ui'
 import {
   Box,
   Chart,
   Label,
   LabelAttribute,
-  Pagination,
   Panel,
 } from '@upshot-tech/upshot-ui'
 import {
@@ -25,9 +16,10 @@ import {
   TableHead,
   TableRow,
 } from '@upshot-tech/upshot-ui'
+import { format } from 'date-fns'
 import { ethers } from 'ethers'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { shortenAddress } from 'utils/address'
 import { getPriceChangeColor } from 'utils/color'
 import { weiToEth } from 'utils/number'
@@ -59,6 +51,7 @@ function Layout({ children }: { children: React.ReactNode }) {
           searchValue={navSearchTerm}
           onSearchValueChange={(e) => setNavSearchTerm(e.currentTarget.value)}
           onSearch={handleNavSearch}
+          onLogoClick={() => router.push('/')}
         />
       </Container>
       {children}
@@ -77,22 +70,29 @@ function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function NFTView() {
+  const [id, setId] = useState('')
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
   const router = useRouter()
 
-  /* Parse assetId from router */
-  const tokenId = router.query.tokenId as string
-  let contractAddress = router.query.contractAddress as string
-  try {
-    contractAddress = ethers.utils.getAddress(contractAddress)
-  } catch (err) {}
-  const id = [contractAddress, tokenId].join('/')
+  useEffect(() => {
+    /* Parse assetId from router */
+    const tokenId = router.query.tokenId as string
+    let contractAddress = router.query.contractAddress as string
+    try {
+      contractAddress = ethers.utils.getAddress(contractAddress)
+    } catch (err) {}
+    if (!tokenId || !contractAddress) return
+
+    setId([contractAddress, tokenId].join('/'))
+  }, [router.query])
 
   const { loading, error, data } = useQuery<GetAssetData, GetAssetVars>(
     GET_ASSET,
     {
+      errorPolicy: 'all',
       variables: { id },
+      skip: !id,
     }
   )
   /* Load state. */
@@ -104,14 +104,14 @@ export default function NFTView() {
     )
 
   /* Error state. */
-  if (error)
-    return (
-      <Layout>
-        <Container sx={{ justifyContent: 'center' }}>
-          Error loading asset.
-        </Container>
-      </Layout>
-    )
+  // if (error)
+  //   return (
+  //     <Layout>
+  //       <Container sx={{ justifyContent: 'center' }}>
+  //         Error loading asset.
+  //       </Container>
+  //     </Layout>
+  //   )
 
   /* No results state. */
   if (!data?.assetById)
@@ -127,11 +127,15 @@ export default function NFTView() {
     name,
     rarity,
     previewImageUrl,
+    mediaUrl,
     collection,
     priceChangeFromFirstSale,
     firstSale,
+    traits,
     lastSale,
     latestAppraisal,
+    avgResalePrice,
+    txHistory,
     creatorAvatar,
     creatorAddress,
     creatorUsername,
@@ -147,7 +151,7 @@ export default function NFTView() {
       >
         <Flex sx={{ flexDirection: 'column', gap: 4 }}>
           <Image
-            src={previewImageUrl}
+            src={previewImageUrl ?? mediaUrl}
             alt={`Featured image for ${name}`}
             sx={{
               borderRadius: 3,
@@ -326,7 +330,7 @@ export default function NFTView() {
                           </TableCell>
                           <TableCell>
                             <Text sx={{ fontWeight: 'bold', fontSize: 5 }}>
-                              $12,000
+                              {avgResalePrice ? weiToEth(avgResalePrice) : '-'}
                             </Text>
                           </TableCell>
                         </TableRow>
@@ -336,77 +340,110 @@ export default function NFTView() {
 
                   <Text variant="h3Secondary">Attributes</Text>
                   <Grid columns={2}>
-                    {[...new Array(8)].map((val, key) => (
-                      <LabelAttribute
-                        key={key}
-                        variant={Math.random() > 0.5 ? 'percentage' : 'regular'}
-                        percentage="15"
-                      >
-                        Attribute
-                      </LabelAttribute>
+                    {traits.map(({ value }, idx) => (
+                      <LabelAttribute key={idx}>{value}</LabelAttribute>
                     ))}
                   </Grid>
                 </Flex>
               </Panel>
             </Flex>
             <Flex sx={{ flexDirection: 'column', gap: 4, flexGrow: 1 }}>
-              <Panel sx={{ flexGrow: 1, display: 'flex' }}>
+              <Panel
+                sx={{ flexGrow: 1, display: 'flex', padding: '0!important' }}
+              >
                 <Flex sx={{ flexDirection: 'column', flexGrow: 1 }}>
-                  <Text variant="h3Secondary">Pricing History</Text>
-                  <Flex sx={{ gap: 4, flexGrow: 1 }}>
-                    <Flex sx={{ flexDirection: 'column' }}>
-                      <Text
-                        color="pink"
-                        variant="h3Primary"
-                        sx={{ fontWeight: 'heading' }}
-                      >
-                        Last Sold Value
-                      </Text>
-                      <Label
-                        color="pink"
-                        currencySymbol="$"
-                        variant="currency"
-                        size="lg"
-                      >
-                        10,000
-                      </Label>
-                      <Text variant="h2Primary">Ξ3.50</Text>
-                      <Text variant="small" color="pink">
-                        +20.31 (+16.47%)
-                      </Text>
-                      <Text color="pink" sx={{ fontSize: 2 }}>
-                        FEB 00 2021 00:00
-                      </Text>
-                    </Flex>
-                    <Flex sx={{ flexDirection: 'column' }}>
-                      <Flex sx={{ gap: 4 }}>
-                        <Text
-                          color="primary"
-                          variant="h3Primary"
-                          sx={{ fontWeight: 'heading' }}
-                        >
-                          Last Appraisal Value
-                        </Text>
-
-                        <Label color="blue">78%</Label>
-                      </Flex>
-                      <Label
-                        color="primary"
-                        currencySymbol="$"
-                        variant="currency"
-                        size="lg"
-                      >
-                        10,000
-                      </Label>
-                      <Text variant="h2Primary">Ξ3.50</Text>
-                      <Text variant="small" color="blue">
-                        +20.31 (+16.47%)
-                      </Text>
-                      <Text color="blue" sx={{ fontSize: 2 }}>
-                        FEB 00 2021 00:00
-                      </Text>
-                    </Flex>
+                  <Flex sx={{ padding: '20px', paddingBottom: 0 }}>
+                    <Text variant="h3Secondary">Pricing History</Text>
                   </Flex>
+                  {(!!lastSale || !!latestAppraisal) && (
+                    <Flex sx={{ gap: 4, flexGrow: 1, padding: '20px' }}>
+                      {!!lastSale && (
+                        <Flex sx={{ flexDirection: 'column' }}>
+                          <Text
+                            color="pink"
+                            variant="h3Primary"
+                            sx={{ fontWeight: 'heading' }}
+                          >
+                            Last Sold Value
+                          </Text>
+                          <Label
+                            color="pink"
+                            currencySymbol={lastSale ? '$' : undefined}
+                            variant="currency"
+                            size="lg"
+                          >
+                            Soon
+                          </Label>
+                          <Text variant="h2Primary">
+                            {lastSale?.ethSalePrice
+                              ? weiToEth(lastSale?.ethSalePrice)
+                              : '-'}
+                          </Text>
+                          <Text variant="small" color="pink">
+                            {priceChangeFromFirstSale
+                              ? `(${priceChangeFromFirstSale}%)`
+                              : '-'}
+                          </Text>
+
+                          <Text color="pink" sx={{ fontSize: 2 }}>
+                            {/* {lastSale?.timestamp
+                              ? format(lastSale?.timestamp, 'M/d/yyyy')
+                              : '-'} */}
+                          </Text>
+                        </Flex>
+                      )}
+                      {!!latestAppraisal && (
+                        <Flex sx={{ flexDirection: 'column' }}>
+                          <Flex sx={{ gap: 4 }}>
+                            <Text
+                              color="primary"
+                              variant="h3Primary"
+                              sx={{ fontWeight: 'heading' }}
+                            >
+                              Last Appraisal Value
+                            </Text>
+
+                            <Label color="blue">
+                              {latestAppraisal.confidence
+                                ? (latestAppraisal.confidence * 100).toFixed(
+                                    2
+                                  ) + '%'
+                                : '-'}
+                            </Label>
+                          </Flex>
+                          <Label
+                            color="primary"
+                            currencySymbol="$"
+                            variant="currency"
+                            size="lg"
+                          >
+                            Soon
+                          </Label>
+                          <Text variant="h2Primary">
+                            {latestAppraisal.ethSalePrice
+                              ? weiToEth(latestAppraisal.ethSalePrice)
+                              : '-'}
+                          </Text>
+                          <Text color="blue" sx={{ fontSize: 2 }}>
+                            {latestAppraisal?.timestamp
+                              ? format(
+                                  latestAppraisal.timestamp * 1000,
+                                  'LLL dd yyyy hh:mm'
+                                )
+                              : '-'}
+                          </Text>
+                        </Flex>
+                      )}
+                    </Flex>
+                  )}
+
+                  {!lastSale && !latestAppraisal && (
+                    <Flex sx={{ padding: '20px', flexGrow: 1 }}>
+                      <Text color="grey-500" sx={{ fontSize: 2 }}>
+                        No sales data available.
+                      </Text>
+                    </Flex>
+                  )}
                   <Chart data={chartData} embedded />
                 </Flex>
               </Panel>
@@ -422,9 +459,6 @@ export default function NFTView() {
                   }}
                 >
                   <Text variant="h3Secondary">Transaction History</Text>
-                  <Text>
-                    <InputRoundedSearch hasButton dark />
-                  </Text>
                 </Flex>
                 <Table>
                   <TableHead>
@@ -441,10 +475,13 @@ export default function NFTView() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {transactionHistory.map(
-                      ({ date, sender, recipient, price }, idx) => (
+                    {txHistory
+                      .filter(({ assetEvent }) => !!assetEvent?.txAt)
+                      .map(({ assetEvent }, idx) => (
                         <TableRow key={idx}>
-                          <TableCell sx={{ width: '100%' }}>{date}</TableCell>
+                          <TableCell sx={{ width: '100%' }}>
+                            {format(assetEvent.txAt * 1000, 'M/d/yyyy')}
+                          </TableCell>
                           {!isMobile && (
                             <>
                               <TableCell sx={{ minWidth: 140 }}>
@@ -457,7 +494,15 @@ export default function NFTView() {
                                       height: 3,
                                     }}
                                   />
-                                  <Text>{sender}</Text>
+                                  <Text>
+                                    {assetEvent?.txFromAddress
+                                      ? shortenAddress(
+                                          assetEvent.txFromAddress,
+                                          2,
+                                          4
+                                        )
+                                      : '-'}
+                                  </Text>
                                 </Flex>
                               </TableCell>
                               <TableCell sx={{ minWidth: 140 }}>
@@ -470,27 +515,28 @@ export default function NFTView() {
                                       height: 3,
                                     }}
                                   />
-                                  <Text>{sender}</Text>
+                                  <Text>
+                                    {assetEvent?.txToAddress
+                                      ? shortenAddress(
+                                          assetEvent.txToAddress,
+                                          2,
+                                          4
+                                        )
+                                      : '-'}
+                                  </Text>
                                 </Flex>
                               </TableCell>
                             </>
                           )}
                           <TableCell sx={{ minWidth: 100, color: 'pink' }}>
-                            Ξ{price}
+                            {assetEvent?.ethPrice
+                              ? weiToEth(assetEvent.ethPrice)
+                              : '-'}
                           </TableCell>
                         </TableRow>
-                      )
-                    )}
+                      ))}
                   </TableBody>
                 </Table>
-
-                <Flex sx={{ justifyContent: 'center', marginTop: -1 }}>
-                  <Pagination
-                    pageCount={100}
-                    pageRangeDisplayed={isMobile ? 3 : 5}
-                    marginPagesDisplayed={isMobile ? 1 : 5}
-                  />
-                </Flex>
               </Flex>
             </Flex>
           </Panel>

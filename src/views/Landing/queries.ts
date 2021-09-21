@@ -86,7 +86,8 @@ export type GetExploreNFTsData = {
     assets: {
       id: string
       name: string
-      previewImageUrl: string
+      previewImageUrl?: string
+      mediaUrl: string
       totalSaleCount: number
       priceChangeFromFirstSale: number
       lastSale: {
@@ -108,6 +109,7 @@ export const GET_EXPLORE_NFTS = gql`
         id
         name
         previewImageUrl
+        mediaUrl
         totalSaleCount
         priceChangeFromFirstSale
       }
@@ -131,7 +133,8 @@ export type GetTopSalesData = {
     txAt: number
     asset: {
       id: string
-      previewImageUrl: string
+      previewImageUrl?: string
+      mediaUrl: string
       lastSale: {
         ethSalePrice: string
       }
@@ -149,6 +152,7 @@ export const GET_TOP_SALES = gql`
       asset {
         id
         previewImageUrl
+        mediaUrl
         lastSale {
           ethSalePrice
         }
