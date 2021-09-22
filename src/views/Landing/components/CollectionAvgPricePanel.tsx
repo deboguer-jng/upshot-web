@@ -3,6 +3,7 @@ import { Flex, Image, Text } from '@upshot-tech/upshot-ui'
 import {
   CollectionButton,
   CollectionButtonTemplate,
+  useTheme,
 } from '@upshot-tech/upshot-ui'
 import { useState } from 'react'
 import { weiToEth } from 'utils/number'
@@ -14,9 +15,19 @@ import {
 } from '../queries'
 import CollectionPanel from './CollectionPanel'
 
-export default function CollectionAvgPricePanel() {
+interface CollectionAvgPricePanelProps {
+  selectedCollections: number[]
+  onCollectionSelected: (id: number) => void
+}
+
+export default function CollectionAvgPricePanel({
+  onCollectionSelected,
+  selectedCollections,
+}: CollectionAvgPricePanelProps) {
+  const { theme } = useTheme()
   const [searchTerm, setSearechTerm] = useState('')
   const [searchTermApplied, setSearchTermApplied] = useState('')
+  const selectedCollectionsColors = ['blue', 'pink', 'purple']
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -29,7 +40,11 @@ export default function CollectionAvgPricePanel() {
     GetCollectionAvgPriceVars
   >(GET_COLLECTION_AVG_PRICE, {
     errorPolicy: 'all',
-    variables: { limit: 12, metric: 'AVERAGE', name: searchTermApplied },
+    variables: {
+      limit: 12,
+      metric: 'AVERAGE',
+      name: searchTermApplied,
+    },
   })
 
   const title = 'Collection Avg. Price'
@@ -74,7 +89,7 @@ export default function CollectionAvgPricePanel() {
       {...{ title, subtitle }}
     >
       {data.orderedCollectionsByMetricSearch.map(
-        ({ name, imageUrl, average }, idx) => (
+        ({ id, name, imageUrl, average }, idx) => (
           <Flex
             key={idx}
             sx={{ alignItems: 'center', color: 'disabled', gap: 2 }}
@@ -89,6 +104,14 @@ export default function CollectionAvgPricePanel() {
                   sx={{ borderRadius: 'circle' }}
                   src={imageUrl}
                 />
+              }
+              onClick={() => onCollectionSelected(id)}
+              underglow={
+                selectedCollections.includes(id)
+                  ? (selectedCollectionsColors[
+                      selectedCollections.indexOf(id)
+                    ] as keyof typeof theme.colors)
+                  : undefined
               }
               text={name ?? 'Unknown'}
               subText={average ? weiToEth(average) : '-'}

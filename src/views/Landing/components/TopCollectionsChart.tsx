@@ -16,13 +16,24 @@ const timeSeriesKeys = {
   FLOOR: 'floor',
 }
 
-export default function TopCollectionsCharts({ metric }: { metric: METRIC }) {
+export default function TopCollectionsCharts({
+  metric,
+  selectedCollections,
+}: {
+  metric: METRIC
+  selectedCollections: number[]
+}) {
   const { loading, error, data } = useQuery<
     GetTopCollectionsData,
     GetTopCollectionsVars
   >(GET_TOP_COLLECTIONS, {
     errorPolicy: 'all',
-    variables: { metric },
+    variables: {
+      metric,
+      stringifiedCollectionIds: selectedCollections.length
+        ? `[${selectedCollections.join(',')}]`
+        : undefined,
+    },
   })
   /* Load state. */
   if (loading) return <Chart loading />
