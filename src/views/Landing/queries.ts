@@ -21,8 +21,15 @@ export type GetTopCollectionsData = {
 }
 
 export const GET_TOP_COLLECTIONS = gql`
-  query GetTopCollections($metric: EOrderedAssetSetMetric!) {
-    orderedCollectionsByMetricSearch(metric: $metric, limit: 3) {
+  query GetTopCollections(
+    $metric: EOrderedAssetSetMetric!
+    $stringifiedCollectionIds: String
+  ) {
+    orderedCollectionsByMetricSearch(
+      metric: $metric
+      stringifiedCollectionIds: $stringifiedCollectionIds
+      limit: 3
+    ) {
       name
       timeSeries {
         timestamp
@@ -46,6 +53,7 @@ export type GetCollectionAvgPriceVars = {
 
 export type GetCollectionAvgPriceData = {
   orderedCollectionsByMetricSearch: {
+    id: number
     name?: string
     imageUrl?: string
     average?: string
@@ -63,6 +71,7 @@ export const GET_COLLECTION_AVG_PRICE = gql`
       limit: $limit
       name: $name
     ) {
+      id
       name
       imageUrl
       average
@@ -131,13 +140,11 @@ export type GetTopSalesData = {
     txFromAddress: string
     txToAddress: string
     txAt: number
+    price: string
     asset: {
       id: string
       previewImageUrl?: string
       mediaUrl: string
-      lastSale: {
-        ethSalePrice: string
-      }
       rarity: number
     }
   }[]
@@ -149,13 +156,11 @@ export const GET_TOP_SALES = gql`
       txFromAddress
       txToAddress
       txAt
+      price
       asset {
         id
         previewImageUrl
         mediaUrl
-        lastSale {
-          ethSalePrice
-        }
         rarity
       }
     }

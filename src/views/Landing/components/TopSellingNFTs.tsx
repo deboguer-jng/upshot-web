@@ -44,7 +44,7 @@ export default function TopSellingNFTs() {
     GET_TOP_SALES,
     {
       errorPolicy: 'all',
-      variables: { limit: 10, windowSize: 'ALLTIME' },
+      variables: { limit: 10, windowSize: 'WEEK' },
     }
   ) // Using `all` to include data with errors.
 
@@ -89,7 +89,8 @@ export default function TopSellingNFTs() {
               txAt,
               txFromAddress,
               txToAddress,
-              asset: { id, previewImageUrl, mediaUrl, lastSale, rarity },
+              price,
+              asset: { id, previewImageUrl, mediaUrl, rarity },
             },
             key
           ) => (
@@ -99,11 +100,7 @@ export default function TopSellingNFTs() {
               style={{ cursor: 'pointer' }}
             >
               <MiniNftCard
-                price={
-                  lastSale?.ethSalePrice
-                    ? weiToEth(lastSale.ethSalePrice)
-                    : undefined
-                }
+                price={price ? weiToEth(price) : undefined}
                 to={shortenAddress(txToAddress, 2, 4)}
                 from={shortenAddress(txFromAddress, 2, 4)}
                 rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
