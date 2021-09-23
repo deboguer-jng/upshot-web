@@ -16,6 +16,7 @@ import {
   TableHead,
   TableRow,
 } from '@upshot-tech/upshot-ui'
+import { PIXELATED_CONTRACTS } from 'constants/'
 import { format } from 'date-fns'
 import { ethers } from 'ethers'
 import { useRouter } from 'next/router'
@@ -24,7 +25,6 @@ import { shortenAddress } from 'utils/address'
 import { getPriceChangeColor } from 'utils/color'
 import { weiToEth } from 'utils/number'
 
-import { chartData, transactionHistory } from '../Landing/constants'
 import { GET_ASSET, GetAssetData, GetAssetVars } from './queries'
 
 function Layout({ children }: { children: React.ReactNode }) {
@@ -34,7 +34,7 @@ function Layout({ children }: { children: React.ReactNode }) {
   const handleNavSearch = (e: React.FormEvent) => {
     e.preventDefault()
 
-    router.push(`/search?query=${navSearchTerm}`)
+    router.push(`/search?query=${encodeURIComponent(navSearchTerm)}`)
   }
 
   return (
@@ -136,10 +136,31 @@ export default function NFTView() {
     latestAppraisal,
     avgResalePrice,
     txHistory,
+    appraisalHistory,
     creatorAvatar,
     creatorAddress,
     creatorUsername,
+    contractAddress,
   } = data.assetById
+
+  const salesSeries = txHistory.map(
+    ({ assetEvent: { txAt }, ethSalePrice }) => [
+      txAt,
+      parseFloat(ethers.utils.formatEther(ethSalePrice)),
+    ]
+  )
+
+  const appraisalSeries = appraisalHistory.map(
+    ({ timestamp, estimatedPrice }) => [
+      timestamp,
+      parseFloat(ethers.utils.formatEther(estimatedPrice)),
+    ]
+  )
+
+  const chartData = [
+    { name: 'Sales', data: salesSeries },
+    { name: 'Appraisals', data: appraisalSeries },
+  ]
 
   return (
     <Layout>
@@ -156,6 +177,9 @@ export default function NFTView() {
             sx={{
               borderRadius: 3,
               width: '100%',
+              imageRendering: PIXELATED_CONTRACTS.includes(contractAddress)
+                ? 'pixelated'
+                : 'auto',
             }}
           />
           <Flex sx={{ flexDirection: 'column' }}>
@@ -260,7 +284,9 @@ export default function NFTView() {
                             fontSize: 4,
                           }}
                         >
-                          {creatorUsername || shortenAddress(creatorAddress)}
+                          {creatorUsername ??
+                            shortenAddress(creatorAddress) ??
+                            '/img/defaultAvatar.png'}
                         </Text>
                       </Flex>
                     </Flex>
@@ -424,7 +450,10 @@ export default function NFTView() {
                               ? weiToEth(latestAppraisal.ethSalePrice)
                               : '-'}
                           </Text>
-                          <Text color="blue" sx={{ fontSize: 2 }}>
+                          <Text
+                            color="blue"
+                            sx={{ fontSize: 2, textTransform: 'uppercase' }}
+                          >
                             {latestAppraisal?.timestamp
                               ? format(
                                   latestAppraisal.timestamp * 1000,
@@ -477,7 +506,7 @@ export default function NFTView() {
                   <TableBody>
                     {txHistory
                       .filter(({ assetEvent }) => !!assetEvent?.txAt)
-                      .map(({ assetEvent }, idx) => (
+                      .map(({ assetEvent, ethSalePrice }, idx) => (
                         <TableRow key={idx}>
                           <TableCell sx={{ width: '100%' }}>
                             {format(assetEvent.txAt * 1000, 'M/d/yyyy')}
@@ -529,9 +558,7 @@ export default function NFTView() {
                             </>
                           )}
                           <TableCell sx={{ minWidth: 100, color: 'pink' }}>
-                            {assetEvent?.ethPrice
-                              ? weiToEth(assetEvent.ethPrice)
-                              : '-'}
+                            {ethSalePrice ? weiToEth(ethSalePrice) : '-'}
                           </TableCell>
                         </TableRow>
                       ))}
