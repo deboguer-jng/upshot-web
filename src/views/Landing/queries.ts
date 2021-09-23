@@ -121,6 +121,9 @@ export const GET_EXPLORE_NFTS = gql`
         mediaUrl
         totalSaleCount
         priceChangeFromFirstSale
+        lastSale {
+          ethSalePrice
+        }
       }
     }
   }

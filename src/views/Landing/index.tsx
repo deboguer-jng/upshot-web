@@ -17,7 +17,7 @@ export default function LandingView() {
   const handleNavSearch = (e: React.FormEvent) => {
     e.preventDefault()
 
-    router.push(`/search?query=${navSearchTerm}`)
+    router.push(`/search?query=${encodeURIComponent(navSearchTerm)}`)
   }
 
   const handleChange = (updatedChartMetric: METRIC) => {

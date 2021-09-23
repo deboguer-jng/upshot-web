@@ -20,6 +20,7 @@ export type GetAssetData = {
     mediaUrl: string
     rarity: number
     priceChangeFromFirstSale: number
+    contractAddress: string
     creatorAddress: string
     creatorUsername: string
     creatorAvatar: string
@@ -57,8 +58,8 @@ export type GetAssetData = {
       estimatedPrice
     }[]
     txHistory: {
+      ethSalePrice: string
       assetEvent: {
-        ethSalePrice: string
         txAt: number
         txFromAddress: string
         txToAddress: string
@@ -75,6 +76,7 @@ export const GET_ASSET = gql`
       mediaUrl
       rarity
       priceChangeFromFirstSale
+      contractAddress
       creatorAddress
       creatorUsername
       creatorAvatar
@@ -112,8 +114,8 @@ export const GET_ASSET = gql`
         estimatedPrice
       }
       txHistory {
+        ethSalePrice
         assetEvent {
-          ethSalePrice
           txAt
           txFromAddress
           txToAddress
