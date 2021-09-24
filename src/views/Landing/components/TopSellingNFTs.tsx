@@ -5,6 +5,7 @@ import {
   Icon,
   MiniNftCard,
 } from '@upshot-tech/upshot-ui'
+import { PIXELATED_CONTRACTS } from 'constants/'
 import { formatDistance } from 'date-fns'
 import { useRouter } from 'next/router'
 import { shortenAddress } from 'utils/address'
@@ -90,7 +91,7 @@ export default function TopSellingNFTs() {
               txFromAddress,
               txToAddress,
               price,
-              asset: { id, previewImageUrl, mediaUrl, rarity },
+              asset: { id, contractAddress, previewImageUrl, mediaUrl, rarity },
             },
             key
           ) => (
@@ -106,6 +107,7 @@ export default function TopSellingNFTs() {
                 rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
                 image={previewImageUrl ?? mediaUrl}
                 date={formatDistance(txAt * 1000, new Date())}
+                pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
               />
             </a>
           )

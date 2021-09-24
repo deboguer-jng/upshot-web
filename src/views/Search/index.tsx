@@ -5,7 +5,6 @@ import {
   ButtonDropdown,
   Container,
   Footer,
-  Navbar,
 } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Grid, MiniNftCard, Text } from '@upshot-tech/upshot-ui'
 import {
@@ -13,6 +12,8 @@ import {
   InputRounded,
   Pagination,
 } from '@upshot-tech/upshot-ui'
+import { Nav } from 'components/Nav'
+import { PIXELATED_CONTRACTS } from 'constants/'
 import { PAGE_SIZE } from 'constants/'
 import { ethers } from 'ethers'
 import { useRouter } from 'next/router'
@@ -30,10 +31,18 @@ export default function SearchView() {
   const router = useRouter()
   const [page, setPage] = useState(0)
 
-  const [searchTerm, setSearechTerm] = useState(
+  // @todo Replace these states refs
+  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTermApplied, setSearchTermApplied] = useState('')
+  const [tokenId, setTokenId] = useState('')
+  const [tokenIdApplied, setTokenIdApplied] = useState('')
+  const [attributes, setAttributes] = useState('')
+  const [attributesApplied, setAttributesApplied] = useState('')
+
+  const [collectionName, setCollectionName] = useState(
     (router.query.query as string) ?? ''
   )
-  const [searchTermApplied, setSearchTermApplied] = useState(
+  const [collectionNameApplied, setCollectionNameApplied] = useState(
     (router.query.query as string) ?? ''
   )
 
@@ -42,13 +51,6 @@ export default function SearchView() {
 
   const [maxPriceEth, setMaxPriceEth] = useState('')
   const [maxPriceWei, setMaxPriceWei] = useState<string>()
-
-  const [navSearchTerm, setNavSearchTerm] = useState('')
-  const handleNavSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-
-    router.push(`/search?query=${encodeURIComponent(navSearchTerm)}`)
-  }
 
   const { loading, error, data } = useQuery<
     GetAssetsSearchData,
@@ -59,6 +61,9 @@ export default function SearchView() {
       limit: PAGE_SIZE,
       offset: page * PAGE_SIZE,
       searchTerm: searchTermApplied,
+      collectionName: collectionNameApplied,
+      traits: attributesApplied,
+      tokenId: tokenIdApplied,
       minPrice: minPriceWei,
       maxPrice: maxPriceWei,
     },
@@ -85,6 +90,11 @@ export default function SearchView() {
 
   const handleApplyFilters = () => {
     setSearchTermApplied(searchTerm)
+    setCollectionNameApplied(collectionName)
+    setTokenIdApplied(tokenId)
+    setAttributesApplied(
+      attributes ? JSON.stringify(attributes.split(/\s+/)) : ''
+    )
 
     let minPriceWei
     try {
@@ -98,8 +108,6 @@ export default function SearchView() {
         maxPriceWei = ethers.utils.parseEther(maxPriceEth).toString()
     } catch (err) {}
 
-    console.log({ searchTerm, minPriceWei, maxPriceWei })
-
     setMinPriceWei(minPriceWei)
     setMaxPriceWei(maxPriceWei)
   }
@@ -109,9 +117,9 @@ export default function SearchView() {
   }
 
   useEffect(() => {
-    const searchTerm = (router.query.query as string) ?? ''
-    setSearechTerm(searchTerm)
-    setSearchTermApplied(searchTerm)
+    const collectionName = (router.query.query as string) ?? ''
+    setCollectionName(collectionName)
+    setCollectionNameApplied(collectionName)
   }, [router.query])
 
   return (
@@ -124,12 +132,7 @@ export default function SearchView() {
           gap: 4,
         }}
       >
-        <Navbar
-          searchValue={navSearchTerm}
-          onSearchValueChange={(e) => setNavSearchTerm(e.currentTarget.value)}
-          onSearch={handleNavSearch}
-          onLogoClick={() => router.push('/')}
-        />
+        <Nav />
       </Container>
 
       <Grid
@@ -186,9 +189,35 @@ export default function SearchView() {
                 Keywords
               </Text>
               <InputRounded
-                placeholder="Search terms"
+                placeholder="Keywords"
                 value={searchTerm}
-                onChange={(e) => setSearechTerm(e.currentTarget.value)}
+                onChange={(e) => setSearchTerm(e.currentTarget.value)}
+              />
+            </Flex>
+          </Box>
+
+          <Box>
+            <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+              <Text variant="h3Secondary" color="grey-500">
+                Token ID
+              </Text>
+              <InputRounded
+                placeholder="Token ID"
+                value={tokenId}
+                onChange={(e) => setTokenId(e.currentTarget.value)}
+              />
+            </Flex>
+          </Box>
+
+          <Box>
+            <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+              <Text variant="h3Secondary" color="grey-500">
+                Attributes
+              </Text>
+              <InputRounded
+                placeholder="Search attributes"
+                value={attributes}
+                onChange={(e) => setAttributes(e.currentTarget.value)}
               />
             </Flex>
           </Box>
@@ -203,7 +232,7 @@ export default function SearchView() {
         >
           <Flex sx={{ flexDirection: 'column' }}>
             <Text>Search Results for</Text>
-            <Text variant="h1Primary">{searchTermApplied}</Text>
+            <Text variant="h1Primary">{collectionNameApplied}</Text>
           </Flex>
 
           <Flex sx={{ alignItems: 'center' }}>
@@ -234,6 +263,7 @@ export default function SearchView() {
                     (
                       {
                         id,
+                        contractAddress,
                         previewImageUrl,
                         mediaUrl,
                         name,
@@ -261,6 +291,9 @@ export default function SearchView() {
                             creatorUsername ||
                             shortenAddress(creatorAddress, 2, 4)
                           }
+                          pixelated={PIXELATED_CONTRACTS.includes(
+                            contractAddress
+                          )}
                           type="search"
                           {...{ name }}
                         />

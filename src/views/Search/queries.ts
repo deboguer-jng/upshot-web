@@ -8,6 +8,9 @@ export type GetAssetsSearchVars = {
   limit: number
   offset: number
   searchTerm?: string
+  collectionName?: string
+  tokenId?: string
+  traits?: string
   minPrice?: string
   maxPrice?: string
 }
@@ -23,6 +26,7 @@ export type GetAssetsSearchData = {
       lastSale?: {
         ethSalePrice: string
       }
+      contractAddress: string
       creatorUsername: string
       creatorAddress: string
       rarity: number
@@ -33,6 +37,9 @@ export type GetAssetsSearchData = {
 export const GET_ASSETS_SEARCH = gql`
   query GetAssetsSearch(
     $searchTerm: String
+    $collectionName: String
+    $tokenId: String
+    $traits: String
     $limit: OneToHundredInt!
     $minPrice: String
     $maxPrice: String
@@ -44,6 +51,9 @@ export const GET_ASSETS_SEARCH = gql`
       minPrice: $minPrice
       maxPrice: $maxPrice
       searchTerm: $searchTerm
+      collectionName: $collectionName
+      traits: $traits
+      tokenId: $tokenId
     ) {
       count
       assets {
@@ -54,6 +64,7 @@ export const GET_ASSETS_SEARCH = gql`
         lastSale {
           ethSalePrice
         }
+        contractAddress
         creatorUsername
         creatorAddress
         rarity

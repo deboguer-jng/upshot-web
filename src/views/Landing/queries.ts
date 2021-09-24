@@ -146,6 +146,7 @@ export type GetTopSalesData = {
     price: string
     asset: {
       id: string
+      contractAddress: string
       previewImageUrl?: string
       mediaUrl: string
       rarity: number
@@ -162,6 +163,7 @@ export const GET_TOP_SALES = gql`
       price
       asset {
         id
+        contractAddress
         previewImageUrl
         mediaUrl
         rarity

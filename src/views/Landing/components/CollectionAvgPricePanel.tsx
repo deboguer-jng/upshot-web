@@ -5,7 +5,7 @@ import {
   CollectionButtonTemplate,
   useTheme,
 } from '@upshot-tech/upshot-ui'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { weiToEth } from 'utils/number'
 
 import {
@@ -25,14 +25,14 @@ export default function CollectionAvgPricePanel({
   selectedCollections,
 }: CollectionAvgPricePanelProps) {
   const { theme } = useTheme()
-  const [searchTerm, setSearechTerm] = useState('')
+  const searchTermRef = useRef<HTMLInputElement | null>(null)
   const [searchTermApplied, setSearchTermApplied] = useState('')
   const selectedCollectionsColors = ['blue', 'pink', 'purple']
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
 
-    setSearchTermApplied(searchTerm)
+    setSearchTermApplied(searchTermRef?.current?.value ?? '')
   }
 
   const { loading, error, data } = useQuery<
@@ -82,8 +82,7 @@ export default function CollectionAvgPricePanel({
   return (
     <CollectionPanel
       inputProps={{
-        value: searchTerm,
-        onChange: (e) => setSearechTerm(e.currentTarget.value),
+        ref: searchTermRef,
       }}
       onSearch={handleSearch}
       {...{ title, subtitle }}

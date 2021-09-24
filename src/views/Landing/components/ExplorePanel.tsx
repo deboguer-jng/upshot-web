@@ -11,7 +11,7 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE } from 'constants/'
 import router from 'next/router'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
 import { weiToEth } from 'utils/number'
 
@@ -76,20 +76,12 @@ interface ExplorePanelHeadProps {
   onSearch?: (searchTerm: string) => void
 }
 
-function ExplorePanelHead({
-  onSearch,
-  searchTerm: initialSearchTerm,
-}: ExplorePanelHeadProps) {
-  const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm)
-
+function ExplorePanelHead({ onSearch, searchTerm }: ExplorePanelHeadProps) {
+  const searchTermRef = useRef<HTMLInputElement>(null)
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
 
-    onSearch?.(searchTerm)
-  }
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.currentTarget.value)
+    onSearch?.(searchTermRef?.current?.value ?? '')
   }
 
   return (
@@ -108,7 +100,6 @@ function ExplorePanelHead({
             sx={{ justifyContent: 'center', alignItems: 'center', gap: 2 }}
           >
             NFTs
-            <Icon icon="arrowDropUserBubble" color="primary" size={12} />
           </Flex>
         </Flex>
       </Flex>
@@ -118,8 +109,8 @@ function ExplorePanelHead({
             dark
             fullWidth
             hasButton
-            value={searchTerm}
-            onChange={handleChange}
+            defaultValue={searchTerm}
+            ref={searchTermRef}
             buttonProps={{
               type: 'button',
               onClick: handleSearch,
@@ -180,9 +171,16 @@ export default function ExplorePanel() {
 
   /* No results state. */
   if (!data?.assetGlobalSearch.assets.length)
-    return <Panel>No results available.</Panel>
+    return (
+      <Panel>
+        <Flex sx={{ flexDirection: 'column', gap: 4 }}>
+          <ExplorePanelHead onSearch={handleSearch} {...{ searchTerm }} />
+          <div>No results available.</div>
+        </Flex>
+      </Panel>
+    )
 
-  const handleShowNFT = (id) => {
+  const handleShowNFT = (id: string) => {
     router.push('/nft/' + id)
   }
 
