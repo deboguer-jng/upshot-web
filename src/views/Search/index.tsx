@@ -1,11 +1,6 @@
 import { useQuery } from '@apollo/client'
 import { useBreakpointIndex } from '@theme-ui/match-media'
-import {
-  Button,
-  ButtonDropdown,
-  Container,
-  Footer,
-} from '@upshot-tech/upshot-ui'
+import { Button, Container, Footer } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Grid, MiniNftCard, Text } from '@upshot-tech/upshot-ui'
 import {
   BlurrySquareTemplate,
@@ -32,18 +27,23 @@ export default function SearchView() {
   const [page, setPage] = useState(0)
 
   // @todo Replace these states refs
-  const [searchTerm, setSearchTerm] = useState('')
-  const [searchTermApplied, setSearchTermApplied] = useState('')
+  const [searchTerm, setSearchTerm] = useState(
+    (router.query.query as string) ?? ''
+  )
+  const [searchTermApplied, setSearchTermApplied] = useState(
+    (router.query.query as string) ?? ''
+  )
+
   const [tokenId, setTokenId] = useState('')
   const [tokenIdApplied, setTokenIdApplied] = useState('')
   const [attributes, setAttributes] = useState('')
   const [attributesApplied, setAttributesApplied] = useState('')
 
   const [collectionName, setCollectionName] = useState(
-    (router.query.query as string) ?? ''
+    (router.query.collection as string) ?? ''
   )
   const [collectionNameApplied, setCollectionNameApplied] = useState(
-    (router.query.query as string) ?? ''
+    (router.query.collection as string) ?? ''
   )
 
   const [minPriceEth, setMinPriceEth] = useState('')
@@ -115,12 +115,6 @@ export default function SearchView() {
   const handleClickNFT = (id: string) => {
     router.push('/nft/' + id)
   }
-
-  useEffect(() => {
-    const collectionName = (router.query.query as string) ?? ''
-    setCollectionName(collectionName)
-    setCollectionNameApplied(collectionName)
-  }, [router.query])
 
   return (
     <>
@@ -199,6 +193,19 @@ export default function SearchView() {
           <Box>
             <Flex sx={{ flexDirection: 'column', gap: 2 }}>
               <Text variant="h3Secondary" color="grey-500">
+                Collection
+              </Text>
+              <InputRounded
+                placeholder="Collection"
+                value={collectionName}
+                onChange={(e) => setCollectionName(e.currentTarget.value)}
+              />
+            </Flex>
+          </Box>
+
+          <Box>
+            <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+              <Text variant="h3Secondary" color="grey-500">
                 Token ID
               </Text>
               <InputRounded
@@ -231,17 +238,9 @@ export default function SearchView() {
           sx={{ flex: '1 1 auto', flexDirection: 'column', gap: 4 }}
         >
           <Flex sx={{ flexDirection: 'column' }}>
-            <Text>Search Results for</Text>
+            <Text>Search Results</Text>
             <Text variant="h1Primary">{collectionNameApplied}</Text>
-          </Flex>
-
-          <Flex sx={{ alignItems: 'center' }}>
-            <Text>NFTs</Text>
-            <ButtonDropdown
-              name="Sort By"
-              options={['Most Rare']}
-              value="Most Rare"
-            />
+            <Text variant="h2Primary">{searchTermApplied}</Text>
           </Flex>
 
           {error ? (
