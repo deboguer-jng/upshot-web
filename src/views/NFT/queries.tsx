@@ -31,18 +31,12 @@ export type GetAssetData = {
     lastSale?: {
       ethSalePrice: string
       usdSalePrice: string
-      currencyPriceInUSDT: {
-        closePrice: string
-      }
       confidence: number
       timestamp: number
     }
     latestAppraisal?: {
       ethSalePrice: string
       usdSalePrice: string
-      currencyPriceInUSDT: {
-        closePrice: string
-      }
       confidence: number
       timestamp: number
     }
@@ -89,18 +83,12 @@ export const GET_ASSET = gql`
       lastSale {
         ethSalePrice
         usdSalePrice
-        currencyPriceInUSDT {
-          closePrice
-        }
         confidence
         timestamp
       }
       latestAppraisal {
         ethSalePrice
         usdSalePrice
-        currencyPriceInUSDT {
-          closePrice
-        }
         confidence
         timestamp
       }
