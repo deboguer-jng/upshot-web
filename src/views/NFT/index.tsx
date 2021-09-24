@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client'
 import { useBreakpointIndex } from '@theme-ui/match-media'
 import { Container } from '@upshot-tech/upshot-ui'
-import { Flex, Footer, Grid, Image, Navbar, Text } from '@upshot-tech/upshot-ui'
+import { Flex, Footer, Grid, Image, Text } from '@upshot-tech/upshot-ui'
 import {
   Box,
   Chart,
@@ -16,6 +16,7 @@ import {
   TableHead,
   TableRow,
 } from '@upshot-tech/upshot-ui'
+import { Nav } from 'components/Nav'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { format } from 'date-fns'
 import { ethers } from 'ethers'
@@ -28,15 +29,6 @@ import { weiToEth } from 'utils/number'
 import { GET_ASSET, GetAssetData, GetAssetVars } from './queries'
 
 function Layout({ children }: { children: React.ReactNode }) {
-  const router = useRouter()
-
-  const [navSearchTerm, setNavSearchTerm] = useState('')
-  const handleNavSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-
-    router.push(`/search?query=${encodeURIComponent(navSearchTerm)}`)
-  }
-
   return (
     <Box padding={4}>
       <Container
@@ -47,12 +39,7 @@ function Layout({ children }: { children: React.ReactNode }) {
           gap: 4,
         }}
       >
-        <Navbar
-          searchValue={navSearchTerm}
-          onSearchValueChange={(e) => setNavSearchTerm(e.currentTarget.value)}
-          onSearch={handleNavSearch}
-          onLogoClick={() => router.push('/')}
-        />
+        <Nav />
       </Container>
       {children}
       <Container
@@ -398,7 +385,9 @@ export default function NFTView() {
                             variant="currency"
                             size="lg"
                           >
-                            Soon
+                            {lastSale?.usdSalePrice
+                              ? lastSale.usdSalePrice
+                              : '-'}
                           </Label>
                           <Text variant="h2Primary">
                             {lastSale?.ethSalePrice
@@ -412,9 +401,12 @@ export default function NFTView() {
                           </Text>
 
                           <Text color="pink" sx={{ fontSize: 2 }}>
-                            {/* {lastSale?.timestamp
-                              ? format(lastSale?.timestamp, 'M/d/yyyy')
-                              : '-'} */}
+                            {lastSale?.timestamp
+                              ? format(
+                                  lastSale.timestamp * 1000,
+                                  'LLL dd yyyy hh:mm'
+                                )
+                              : '-'}
                           </Text>
                         </Flex>
                       )}
@@ -443,7 +435,9 @@ export default function NFTView() {
                             variant="currency"
                             size="lg"
                           >
-                            Soon
+                            {latestAppraisal?.usdSalePrice
+                              ? latestAppraisal.usdSalePrice
+                              : '-'}
                           </Label>
                           <Text variant="h2Primary">
                             {latestAppraisal.ethSalePrice

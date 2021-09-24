@@ -1,0 +1,4 @@
+[[redirects]]
+  from = "/nft/:contractAddress/:tokenId"
+  to = "/nft/[contractAddress]/[tokenId].html?assetId=:contractAddress/:tokenId"
+  status = 200

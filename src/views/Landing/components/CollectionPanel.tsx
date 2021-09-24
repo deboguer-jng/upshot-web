@@ -15,8 +15,7 @@ interface CollectionPanelProps extends React.HTMLAttributes<HTMLDivElement> {
    * Search input props
    */
   inputProps?: {
-    value?: string
-    onChange?: React.ChangeEventHandler<HTMLInputElement>
+    ref: React.Ref<HTMLInputElement>
   }
   /**
    * Search form submission
@@ -59,12 +58,11 @@ export default forwardRef(function CollectionPanel(
                 dark
                 fullWidth
                 hasButton
-                value={inputProps?.value}
-                onChange={inputProps?.onChange}
                 buttonProps={{
                   type: 'button',
                   onClick: onSearch,
                 }}
+                {...inputProps}
               />
             </form>
           </Flex>

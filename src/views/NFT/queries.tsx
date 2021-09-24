@@ -30,6 +30,7 @@ export type GetAssetData = {
     }
     lastSale?: {
       ethSalePrice: string
+      usdSalePrice: string
       currencyPriceInUSDT: {
         closePrice: string
       }
@@ -38,6 +39,7 @@ export type GetAssetData = {
     }
     latestAppraisal?: {
       ethSalePrice: string
+      usdSalePrice: string
       currencyPriceInUSDT: {
         closePrice: string
       }
@@ -86,6 +88,7 @@ export const GET_ASSET = gql`
       }
       lastSale {
         ethSalePrice
+        usdSalePrice
         currencyPriceInUSDT {
           closePrice
         }
@@ -94,6 +97,7 @@ export const GET_ASSET = gql`
       }
       latestAppraisal {
         ethSalePrice
+        usdSalePrice
         currencyPriceInUSDT {
           closePrice
         }
