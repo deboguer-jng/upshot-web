@@ -4,10 +4,15 @@ on:
   push:
     branches:
       - staging
+      - main
 
 jobs:
   deploy-staging:
+    if: github.ref == 'refs/heads/staging'
+    name: Deploy to staging
     runs-on: ubuntu-latest
+    environment: staging
+
     steps:
       - uses: actions/checkout@v1
 
@@ -28,6 +33,37 @@ jobs:
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        with:
+          args: deploy --dir=out --prod
+          secrets: '["NETLIFY_AUTH_TOKEN", "NETLIFY_SITE_ID"]'
+
+
+  deploy-prod:
+    if: github.ref == 'refs/heads/main'
+    name: Deploy to production
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      
+      - name: Build codebase
+        run: |
+          yarn
+          yarn build
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Deploy to netlify
+        uses: netlify/actions/cli@master
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.PROD_NETLIFY_SITE_ID }}
         with:
           args: deploy --dir=out --prod
           secrets: '["NETLIFY_AUTH_TOKEN", "NETLIFY_SITE_ID"]'

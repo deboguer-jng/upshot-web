@@ -5,8 +5,8 @@ import { ApolloClient, InMemoryCache } from '@apollo/client'
  */
 const endpointByEnvironment = {
   production: process.env.NEXT_PUBLIC_PRODUCTION_GRAPHQL_ENDPOINT!,
-  staging: process.env.NEXT_PUBLIC_PRODUCTION_GRAPHQL_ENDPOINT!,
-  development: process.env.NEXT_PUBLIC_PRODUCTION_GRAPHQL_ENDPOINT!,
+  staging: process.env.NEXT_PUBLIC_STAGING_GRAPHQL_ENDPOINT!,
+  development: process.env.NEXT_PUBLIC_DEVELOPMENT_GRAPHQL_ENDPOINT!,
 }
 
 /**
