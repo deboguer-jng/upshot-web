@@ -23,7 +23,7 @@ export const Nav = () => {
   }
 
   const handleSearchSuggestionChange = (item) => {
-    setNavSearchTerm(item.name ?? '')
+    router.push(`/search?collection=${encodeURIComponent(item.name)}`)
   }
 
   const handleNavSearch = (e: React.FormEvent) => {
