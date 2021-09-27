@@ -81,7 +81,7 @@ export default function CollectionAvgPricePanel({
             key={idx}
             sx={{ alignItems: 'center', color: 'disabled', gap: 2 }}
           >
-            <Text>{idx + 1}</Text>
+            <Text>{getCellNumber(idx)}</Text>
             <CollectionButtonTemplate />
           </Flex>
         ))}
