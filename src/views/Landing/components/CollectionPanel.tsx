@@ -67,7 +67,7 @@ export default forwardRef(function CollectionPanel(
             </form>
           </Flex>
         </Flex>
-        <Grid columns={[1, 1, 2, 3]} {...{ children }} />
+        <Grid columns={[1, 1, 2, 4]} {...{ children }} />
       </Flex>
     </Panel>
   )

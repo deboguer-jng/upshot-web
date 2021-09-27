@@ -1,4 +1,5 @@
 import { useQuery } from '@apollo/client'
+import { useBreakpointIndex } from '@theme-ui/match-media'
 import { Flex, Image, Text } from '@upshot-tech/upshot-ui'
 import {
   CollectionButton,
@@ -28,6 +29,13 @@ export default function CollectionAvgPricePanel({
   const searchTermRef = useRef<HTMLInputElement | null>(null)
   const [searchTermApplied, setSearchTermApplied] = useState('')
   const selectedCollectionsColors = ['blue', 'pink', 'purple']
+  const breakpointIndex = useBreakpointIndex()
+
+  const getColumns = () => {
+    if (breakpointIndex < 2) return 1
+    if (breakpointIndex < 3) return 2
+    return 4
+  }
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -49,6 +57,13 @@ export default function CollectionAvgPricePanel({
 
   const title = 'Collection Avg. Price'
   const subtitle = '(Select Collections to change graph)'
+  const getCellNumber = (idx: number) => {
+    const columns = getColumns()
+    const row = Math.ceil(idx / columns)
+    const col = idx % columns
+
+    return col * columns + row + 1
+  }
 
   if (error)
     return (
@@ -93,7 +108,7 @@ export default function CollectionAvgPricePanel({
             key={idx}
             sx={{ alignItems: 'center', color: 'disabled', gap: 2 }}
           >
-            <Text>{idx + 1}</Text>
+            <Text>{getCellNumber(idx)}</Text>
             <CollectionButton
               icon={
                 <Image
