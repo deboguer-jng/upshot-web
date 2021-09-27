@@ -45,7 +45,7 @@ export default forwardRef(function CollectionPanel(
           }}
         >
           <Flex sx={{ flexDirection: 'column' }}>
-            <Flex variant="text.h3Secondary" sx={{ gap: 2 }}>
+            <Flex variant="text.h1Secondary" sx={{ gap: 2 }}>
               {title}
             </Flex>
             <Text color="grey-500" sx={{ fontSize: 2 }}>
@@ -67,7 +67,11 @@ export default forwardRef(function CollectionPanel(
             </form>
           </Flex>
         </Flex>
-        <Grid columns={[1, 1, 2, 4]} {...{ children }} />
+        <Grid
+          columns={[1, 1, 2, 4]}
+          sx={{ columnGap: '32px', rowGap: '16px' }}
+          {...{ children }}
+        />
       </Flex>
     </Panel>
   )

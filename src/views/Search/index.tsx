@@ -12,7 +12,7 @@ import { PIXELATED_CONTRACTS } from 'constants/'
 import { PAGE_SIZE } from 'constants/'
 import { ethers } from 'ethers'
 import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { shortenAddress } from 'utils/address'
 import { parseEthString, weiToEth } from 'utils/number'
 
@@ -117,13 +117,14 @@ export default function SearchView() {
   }
 
   return (
-    <>
+    <Flex sx={{ minHeight: '100vh', flexDirection: 'column' }}>
       <Container
         p={4}
         sx={{
           display: 'flex',
           flexDirection: 'column',
           gap: 4,
+          width: '100%',
         }}
       >
         <Nav />
@@ -133,6 +134,7 @@ export default function SearchView() {
         columns={[1, 1, 1, 3]}
         sx={{
           gridTemplateColumns: ['1fr', '1fr', '1fr 3fr', '1fr 3fr 1fr'],
+          flexGrow: 1,
         }}
       >
         <Flex
@@ -233,10 +235,7 @@ export default function SearchView() {
             <Button onClick={handleApplyFilters}>Apply Filters</Button>
           </Box>
         </Flex>
-        <Flex
-          paddingX={8}
-          sx={{ flex: '1 1 auto', flexDirection: 'column', gap: 4 }}
-        >
+        <Flex sx={{ flex: '1 1 auto', flexDirection: 'column', gap: 4 }}>
           <Flex sx={{ flexDirection: 'column' }}>
             <Text>Search Results</Text>
             <Text variant="h1Primary">{collectionNameApplied}</Text>
@@ -255,7 +254,7 @@ export default function SearchView() {
               }}
             >
               {loading
-                ? [...new Array(10)].map((_, idx) => (
+                ? [...new Array(PAGE_SIZE)].map((_, idx) => (
                     <BlurrySquareTemplate key={idx} />
                   ))
                 : data?.assetGlobalSearch?.assets.map(
@@ -326,6 +325,6 @@ export default function SearchView() {
       >
         <Footer />
       </Container>
-    </>
+    </Flex>
   )
 }

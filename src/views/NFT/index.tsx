@@ -30,29 +30,21 @@ import { GET_ASSET, GetAssetData, GetAssetVars } from './queries'
 
 function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <Box padding={4}>
+    <Flex sx={{ minHeight: '100vh', flexDirection: 'column' }}>
       <Container
         p={4}
         sx={{
           display: 'flex',
           flexDirection: 'column',
+          width: '100%',
           gap: 4,
         }}
       >
         <Nav />
-      </Container>
-      {children}
-      <Container
-        p={4}
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 4,
-        }}
-      >
+        {children}
         <Footer />
       </Container>
-    </Box>
+    </Flex>
   )
 }
 
@@ -155,6 +147,7 @@ export default function NFTView() {
         columns={[1, 1, 1, 3]}
         sx={{
           gridTemplateColumns: ['1fr', '1fr', '1fr 3fr'],
+          flexGrow: 1,
         }}
       >
         <Flex sx={{ flexDirection: 'column', gap: 4 }}>
@@ -162,14 +155,14 @@ export default function NFTView() {
             src={previewImageUrl ?? mediaUrl}
             alt={`Featured image for ${name}`}
             sx={{
-              borderRadius: 3,
+              borderRadius: '10px',
               width: '100%',
               imageRendering: PIXELATED_CONTRACTS.includes(contractAddress)
                 ? 'pixelated'
                 : 'auto',
             }}
           />
-          <Flex sx={{ flexDirection: 'column' }}>
+          <Flex sx={{ flexDirection: 'column', gap: 4 }}>
             <Text variant="h2Primary">{name}</Text>
             {!!rarity && (
               <Label size="md">{(rarity * 100).toFixed(2) + '% Rarity'}</Label>
@@ -369,7 +362,7 @@ export default function NFTView() {
                     <Text variant="h3Secondary">Pricing History</Text>
                   </Flex>
                   {(!!lastSale || !!latestAppraisal) && (
-                    <Flex sx={{ gap: 4, flexGrow: 1, padding: '20px' }}>
+                    <Flex sx={{ gap: '40px', flexGrow: 1, padding: '20px' }}>
                       {!!lastSale && (
                         <Flex sx={{ flexDirection: 'column' }}>
                           <Text
@@ -486,7 +479,7 @@ export default function NFTView() {
                 >
                   <Text variant="h3Secondary">Transaction History</Text>
                 </Flex>
-                <Table>
+                <Table sx={{ borderSpacing: '0 10px' }}>
                   <TableHead>
                     <TableRow>
                       <TableCell color="grey-500">Date</TableCell>
