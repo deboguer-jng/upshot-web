@@ -1,10 +1,12 @@
 import { useQuery } from '@apollo/client'
+import { useBreakpointIndex } from '@theme-ui/match-media'
 import { Flex, Image, Text } from '@upshot-tech/upshot-ui'
 import {
   CollectionButton,
   CollectionButtonTemplate,
   useTheme,
 } from '@upshot-tech/upshot-ui'
+import Link from 'next/link'
 import { useRef, useState } from 'react'
 import { weiToEth } from 'utils/number'
 
@@ -28,6 +30,13 @@ export default function CollectionAvgPricePanel({
   const searchTermRef = useRef<HTMLInputElement | null>(null)
   const [searchTermApplied, setSearchTermApplied] = useState('')
   const selectedCollectionsColors = ['blue', 'pink', 'purple']
+  const breakpointIndex = useBreakpointIndex()
+
+  const getColumns = () => {
+    if (breakpointIndex < 2) return 1
+    if (breakpointIndex < 3) return 2
+    return 4
+  }
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -49,6 +58,13 @@ export default function CollectionAvgPricePanel({
 
   const title = 'Collection Avg. Price'
   const subtitle = '(Select Collections to change graph)'
+  const getCellNumber = (idx: number) => {
+    const columns = getColumns()
+    const row = Math.floor(idx / columns)
+    const col = idx % columns
+
+    return col * (columns - 1) + row + 1
+  }
 
   if (error)
     return (
@@ -91,18 +107,27 @@ export default function CollectionAvgPricePanel({
         ({ id, name, imageUrl, average }, idx) => (
           <Flex
             key={idx}
-            sx={{ alignItems: 'center', color: 'disabled', gap: 2 }}
+            sx={{ alignItems: 'center', color: 'disabled', gap: 5 }}
           >
-            <Text>{idx + 1}</Text>
+            <Text>{getCellNumber(idx)}</Text>
             <CollectionButton
               icon={
-                <Image
-                  alt={`${name} Cover Artwork`}
-                  height="100%"
-                  width="100%"
-                  sx={{ borderRadius: 'circle' }}
-                  src={imageUrl}
-                />
+                <Link
+                  passHref
+                  href={
+                    name
+                      ? `/search?collection=${encodeURIComponent(name)}`
+                      : '#'
+                  }
+                >
+                  <Image
+                    alt={`${name} Cover Artwork`}
+                    height="100%"
+                    width="100%"
+                    sx={{ borderRadius: 'circle' }}
+                    src={imageUrl}
+                  />
+                </Link>
               }
               onClick={() => onCollectionSelected(id)}
               underglow={

@@ -26,7 +26,7 @@ export type WINDOW = keyof typeof WINDOWS
 
 function TopSellingNFTsHeader() {
   return (
-    <Flex variant="text.h3Secondary" sx={{ gap: 2 }}>
+    <Flex variant="text.h1Secondary" sx={{ gap: 2 }}>
       Top Selling NFTs in
       <Flex
         color="primary"
