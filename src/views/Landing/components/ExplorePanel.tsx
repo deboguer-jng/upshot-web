@@ -129,7 +129,7 @@ function ExplorePanelSkeleton({ searchTerm }: { searchTerm: string }) {
       <CollectionTable>
         <CollectionTableHead />
         <TableBody>
-          {[...new Array(10)].map((_, idx) => (
+          {[...new Array(PAGE_SIZE)].map((_, idx) => (
             <Skeleton sx={{ height: 56 }} as="tr" key={idx}>
               <TableCell colSpan={5}>
                 <Box sx={{ height: 40, width: '100%' }} />
