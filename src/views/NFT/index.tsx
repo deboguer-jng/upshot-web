@@ -30,21 +30,20 @@ import { GET_ASSET, GetAssetData, GetAssetVars } from './queries'
 
 function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <Flex sx={{ minHeight: '100vh', flexDirection: 'column' }}>
-      <Container
-        p={4}
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          width: '100%',
-          gap: 4,
-        }}
-      >
-        <Nav />
-        {children}
-        <Footer />
-      </Container>
-    </Flex>
+    <Container
+      p={4}
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        minHeight: '100vh',
+        gap: 4,
+      }}
+    >
+      <Nav />
+      {children}
+      <Footer />
+    </Container>
   )
 }
 
@@ -78,7 +77,9 @@ export default function NFTView() {
   if (loading)
     return (
       <Layout>
-        <Container sx={{ justifyContent: 'center' }}>Loading...</Container>
+        <Container sx={{ justifyContent: 'center', flexGrow: 1 }}>
+          Loading...
+        </Container>
       </Layout>
     )
 
@@ -86,7 +87,7 @@ export default function NFTView() {
   // if (error)
   //   return (
   //     <Layout>
-  //       <Container sx={{ justifyContent: 'center' }}>
+  //       <Container sx={{ justifyContent: 'center', flexGrow: 1 }}>
   //         Error loading asset.
   //       </Container>
   //     </Layout>
@@ -96,7 +97,7 @@ export default function NFTView() {
   if (!data?.assetById)
     return (
       <Layout>
-        <Container sx={{ justifyContent: 'center' }}>
+        <Container sx={{ justifyContent: 'center', flexGrow: 1 }}>
           Unable to load asset.
         </Container>
       </Layout>
