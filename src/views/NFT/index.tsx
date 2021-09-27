@@ -400,7 +400,10 @@ export default function NFTView() {
                               : '-'}
                           </Text>
 
-                          <Text color="pink" sx={{ fontSize: 2 }}>
+                          <Text
+                            color="pink"
+                            sx={{ fontSize: 2, textTransform: 'uppercase' }}
+                          >
                             {lastSale?.timestamp
                               ? format(
                                   lastSale.timestamp * 1000,
