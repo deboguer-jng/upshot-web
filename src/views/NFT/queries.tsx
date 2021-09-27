@@ -16,6 +16,7 @@ export type GetAssetVars = {
 export type GetAssetData = {
   assetById: {
     name: string
+    tokenId: string
     previewImageUrl?: string
     mediaUrl: string
     rarity: number
@@ -68,6 +69,7 @@ export const GET_ASSET = gql`
   query GetAssetById($id: String!) {
     assetById(id: $id) {
       name
+      tokenId
       previewImageUrl
       mediaUrl
       rarity

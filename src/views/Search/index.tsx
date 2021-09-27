@@ -14,6 +14,7 @@ import { ethers } from 'ethers'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { shortenAddress } from 'utils/address'
+import { getAssetName } from 'utils/asset'
 import { parseEthString, weiToEth } from 'utils/number'
 
 import {
@@ -265,6 +266,8 @@ export default function SearchView() {
                         previewImageUrl,
                         mediaUrl,
                         name,
+                        collection,
+                        tokenId,
                         lastSale,
                         rarity,
                         creatorUsername,
@@ -293,7 +296,7 @@ export default function SearchView() {
                             contractAddress
                           )}
                           type="search"
-                          {...{ name }}
+                          name={getAssetName(name, collection?.name, tokenId)}
                         />
                       </a>
                     )

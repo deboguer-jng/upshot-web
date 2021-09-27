@@ -23,6 +23,7 @@ import { ethers } from 'ethers'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { shortenAddress } from 'utils/address'
+import { getAssetName } from 'utils/asset'
 import { getPriceChangeColor } from 'utils/color'
 import { weiToEth } from 'utils/number'
 
@@ -109,6 +110,7 @@ export default function NFTView() {
     previewImageUrl,
     mediaUrl,
     collection,
+    tokenId,
     priceChangeFromFirstSale,
     firstSale,
     traits,
@@ -142,6 +144,8 @@ export default function NFTView() {
     { name: 'Appraisals', data: appraisalSeries },
   ]
 
+  const assetName = getAssetName(name, collection?.name, tokenId)
+
   return (
     <Layout>
       <Grid
@@ -154,7 +158,7 @@ export default function NFTView() {
         <Flex sx={{ flexDirection: 'column', gap: 4 }}>
           <Image
             src={previewImageUrl ?? mediaUrl}
-            alt={`Featured image for ${name}`}
+            alt={`Featured image for ${assetName}`}
             sx={{
               borderRadius: '10px',
               width: '100%',
@@ -164,7 +168,7 @@ export default function NFTView() {
             }}
           />
           <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-            <Text variant="h2Primary">{name}</Text>
+            <Text variant="h2Primary">{assetName}</Text>
             {!!rarity && (
               <Label size="md">{(rarity * 100).toFixed(2) + '% Rarity'}</Label>
             )}
