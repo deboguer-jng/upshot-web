@@ -23,6 +23,7 @@ import { ethers } from 'ethers'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { shortenAddress } from 'utils/address'
+import { getAssetName } from 'utils/asset'
 import { getPriceChangeColor } from 'utils/color'
 import { weiToEth } from 'utils/number'
 
@@ -30,21 +31,20 @@ import { GET_ASSET, GetAssetData, GetAssetVars } from './queries'
 
 function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <Flex sx={{ minHeight: '100vh', flexDirection: 'column' }}>
-      <Container
-        p={4}
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          width: '100%',
-          gap: 4,
-        }}
-      >
-        <Nav />
-        {children}
-        <Footer />
-      </Container>
-    </Flex>
+    <Container
+      p={4}
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        minHeight: '100vh',
+        gap: 4,
+      }}
+    >
+      <Nav />
+      {children}
+      <Footer />
+    </Container>
   )
 }
 
@@ -78,7 +78,9 @@ export default function NFTView() {
   if (loading)
     return (
       <Layout>
-        <Container sx={{ justifyContent: 'center' }}>Loading...</Container>
+        <Container sx={{ justifyContent: 'center', flexGrow: 1 }}>
+          Loading...
+        </Container>
       </Layout>
     )
 
@@ -86,7 +88,7 @@ export default function NFTView() {
   // if (error)
   //   return (
   //     <Layout>
-  //       <Container sx={{ justifyContent: 'center' }}>
+  //       <Container sx={{ justifyContent: 'center', flexGrow: 1 }}>
   //         Error loading asset.
   //       </Container>
   //     </Layout>
@@ -96,7 +98,7 @@ export default function NFTView() {
   if (!data?.assetById)
     return (
       <Layout>
-        <Container sx={{ justifyContent: 'center' }}>
+        <Container sx={{ justifyContent: 'center', flexGrow: 1 }}>
           Unable to load asset.
         </Container>
       </Layout>
@@ -108,6 +110,7 @@ export default function NFTView() {
     previewImageUrl,
     mediaUrl,
     collection,
+    tokenId,
     priceChangeFromFirstSale,
     firstSale,
     traits,
@@ -141,6 +144,8 @@ export default function NFTView() {
     { name: 'Appraisals', data: appraisalSeries },
   ]
 
+  const assetName = getAssetName(name, collection?.name, tokenId)
+
   return (
     <Layout>
       <Grid
@@ -153,7 +158,7 @@ export default function NFTView() {
         <Flex sx={{ flexDirection: 'column', gap: 4 }}>
           <Image
             src={previewImageUrl ?? mediaUrl}
-            alt={`Featured image for ${name}`}
+            alt={`Featured image for ${assetName}`}
             sx={{
               borderRadius: '10px',
               width: '100%',
@@ -163,7 +168,7 @@ export default function NFTView() {
             }}
           />
           <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-            <Text variant="h2Primary">{name}</Text>
+            <Text variant="h2Primary">{assetName}</Text>
             {!!rarity && (
               <Label size="md">{(rarity * 100).toFixed(2) + '% Rarity'}</Label>
             )}
