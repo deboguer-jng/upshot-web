@@ -93,7 +93,7 @@ function ExplorePanelHead({ onSearch, searchTerm }: ExplorePanelHeadProps) {
       }}
     >
       <Flex sx={{ flexDirection: 'column' }}>
-        <Flex variant="text.h3Secondary" sx={{ gap: 2 }}>
+        <Flex variant="text.h1Secondary" sx={{ gap: 2 }}>
           Explore
           <Flex
             color="primary"
