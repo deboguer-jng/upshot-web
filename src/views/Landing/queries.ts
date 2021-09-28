@@ -16,7 +16,7 @@ export type TimeSeries = {
 export type GetTopCollectionsData = {
   orderedCollectionsByMetricSearch: {
     name: string
-    timeSeries: TimeSeries[]
+    timeSeries?: TimeSeries[]
   }[]
 }
 
@@ -87,6 +87,7 @@ export type GetExploreNFTsVars = {
   limit: number
   offset: number
   searchTerm: string
+  id?: number
 }
 
 export type GetExploreNFTsData = {
@@ -136,6 +137,7 @@ export const GET_EXPLORE_NFTS = gql`
 export type GetTopSalesVars = {
   windowSize: string
   limit: number
+  id?: number
 }
 
 export type GetTopSalesData = {
