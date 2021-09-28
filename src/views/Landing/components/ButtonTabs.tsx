@@ -26,8 +26,8 @@ export default function ButtonTabs({ onChange }: ButtonTabsProps) {
       {Object.values(METRICS).map((children, idx) => (
         <Button
           key={idx}
-          variant={selected === idx ? 'primary' : 'secondary'}
-          color="primary"
+          variant="primary"
+          toggled={selected === idx}
           onClick={() => handleChange(idx)}
           {...{ children }}
         />
