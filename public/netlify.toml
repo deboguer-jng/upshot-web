@@ -1,9 +1,19 @@
 [[redirects]]
-  from = "/analytics//nft/:contractAddress/:tokenId"
+  from = "/analytics/nft/:contractAddress/:tokenId"
   to = "/analytics/nft/[contractAddress]/[tokenId].html?assetId=:contractAddress/:tokenId"
   status = 200
 
 [[redirects]]
   from = "/analytics/collection/:id"
   to = "/analytics/collection/[id].html?id=:id"
+  status = 200
+
+[[redirects]]
+  from = "/analytics"
+  to = "/analytics.html"
+  status = 200
+
+[[redirects]]
+  from = "/analytics/search"
+  to = "/analytics/search.html"
   status = 200
