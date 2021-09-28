@@ -39,18 +39,18 @@ function TopSellingNFTsHeader() {
   )
 }
 
-export default function TopSellingNFTs() {
+export default function TopSellingNFTs({ id }: { id?: number }) {
   const router = useRouter()
   const { loading, error, data } = useQuery<GetTopSalesData, GetTopSalesVars>(
     GET_TOP_SALES,
     {
       errorPolicy: 'all',
-      variables: { limit: 10, windowSize: 'WEEK' },
+      variables: { limit: 10, windowSize: 'WEEK', id },
     }
   ) // Using `all` to include data with errors.
 
   const handleClickNFT = (id: string) => {
-    router.push('/nft/' + id)
+    router.push('/analytics/nft/' + id)
   }
 
   if (loading)

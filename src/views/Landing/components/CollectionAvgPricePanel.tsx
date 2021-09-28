@@ -58,13 +58,10 @@ export default function CollectionAvgPricePanel({
 
   const title = 'Collection Avg. Price'
   const subtitle = '(Select Collections to change graph)'
-  const getCellNumber = (idx: number) => {
-    const columns = getColumns()
-    const row = Math.floor(idx / columns)
-    const col = idx % columns
 
-    return col * (columns - 1) + row + 1
-  }
+  /* Transposes a horizontally-labeled index to vertical-labeled index */
+  const getCellNumber = (length: number, idx: number) =>
+    idx === length - 1 ? idx : (idx * getColumns()) % (length - 1)
 
   if (error)
     return (
@@ -73,10 +70,14 @@ export default function CollectionAvgPricePanel({
       </CollectionPanel>
     )
 
+  const skeletonCells = [...new Array(12)]
+    .map((_, idx) => idx)
+    .sort((a, b) => getCellNumber(12, a) - getCellNumber(12, b))
+
   if (loading)
     return (
       <CollectionPanel {...{ title, subtitle }}>
-        {[...new Array(12)].map((_, idx) => (
+        {skeletonCells.map((idx) => (
           <Flex
             key={idx}
             sx={{ alignItems: 'center', color: 'disabled', gap: 2 }}
@@ -95,6 +96,17 @@ export default function CollectionAvgPricePanel({
       </CollectionPanel>
     )
 
+  const sorted = data.orderedCollectionsByMetricSearch
+    .map((val, idx) => ({
+      ...val,
+      idx,
+    }))
+    .sort(
+      (a, b) =>
+        getCellNumber(data.orderedCollectionsByMetricSearch.length, a.idx) -
+        getCellNumber(data.orderedCollectionsByMetricSearch.length, b.idx)
+    )
+
   return (
     <CollectionPanel
       inputProps={{
@@ -103,46 +115,37 @@ export default function CollectionAvgPricePanel({
       onSearch={handleSearch}
       {...{ title, subtitle }}
     >
-      {data.orderedCollectionsByMetricSearch.map(
-        ({ id, name, imageUrl, average }, idx) => (
-          <Flex
-            key={idx}
-            sx={{ alignItems: 'center', color: 'disabled', gap: 5 }}
-          >
-            <Text>{getCellNumber(idx)}</Text>
-            <CollectionButton
-              icon={
-                <Link
-                  passHref
-                  href={
-                    name
-                      ? `/search?collection=${encodeURIComponent(name)}`
-                      : '#'
-                  }
-                >
-                  <Image
-                    alt={`${name} Cover Artwork`}
-                    height="100%"
-                    width="100%"
-                    sx={{ borderRadius: 'circle' }}
-                    src={imageUrl}
-                  />
-                </Link>
-              }
-              onClick={() => onCollectionSelected(id)}
-              underglow={
-                selectedCollections.includes(id)
-                  ? (selectedCollectionsColors[
-                      selectedCollections.indexOf(id)
-                    ] as keyof typeof theme.colors)
-                  : undefined
-              }
-              text={name ?? 'Unknown'}
-              subText={average ? weiToEth(average) : '-'}
-            />
-          </Flex>
-        )
-      )}
+      {sorted.map(({ id, name, imageUrl, average, idx }) => (
+        <Flex
+          key={idx}
+          sx={{ alignItems: 'center', color: 'disabled', gap: 5 }}
+        >
+          <Text>{idx + 1}</Text>
+          <CollectionButton
+            icon={
+              <Link passHref href={`/analytics/collection/${id}`}>
+                <Image
+                  alt={`${name} Cover Artwork`}
+                  height="100%"
+                  width="100%"
+                  sx={{ borderRadius: 'circle' }}
+                  src={imageUrl}
+                />
+              </Link>
+            }
+            onClick={() => onCollectionSelected(id)}
+            underglow={
+              selectedCollections.includes(id)
+                ? (selectedCollectionsColors[
+                    selectedCollections.indexOf(id)
+                  ] as keyof typeof theme.colors)
+                : undefined
+            }
+            text={name ?? 'Unknown'}
+            subText={average ? weiToEth(average) : '-'}
+          />
+        </Flex>
+      ))}
     </CollectionPanel>
   )
 }

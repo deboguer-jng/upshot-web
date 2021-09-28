@@ -23,13 +23,13 @@ export const Nav = () => {
   }
 
   const handleSearchSuggestionChange = (item) => {
-    router.push(`/search?collection=${encodeURIComponent(item.name)}`)
+    router.push(`/analytics/search?collection=${encodeURIComponent(item.name)}`)
   }
 
   const handleNavSearch = (e: React.FormEvent) => {
     e.preventDefault()
 
-    router.push(`/search?query=${encodeURIComponent(navSearchTerm)}`)
+    router.push(`/analytics/search?query=${encodeURIComponent(navSearchTerm)}`)
   }
 
   const suggestions = useMemo(() => {
@@ -45,7 +45,7 @@ export const Nav = () => {
       searchValue={navSearchTerm}
       onSearchValueChange={(e) => setNavSearchTerm(e.currentTarget.value)}
       onSearch={handleNavSearch}
-      onLogoClick={() => router.push('/')}
+      onLogoClick={() => router.push('/analytics')}
       onSearchSuggestionChange={handleSearchSuggestionChange}
       onSearchKeyUp={handleNavKeyUp}
       searchSuggestions={suggestions}

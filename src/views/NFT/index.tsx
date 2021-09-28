@@ -373,30 +373,20 @@ export default function NFTView() {
                           <Text
                             color="pink"
                             variant="h3Primary"
-                            sx={{ fontWeight: 'heading' }}
+                            sx={{ fontWeight: 'heading', fontSize: 4 }}
                           >
-                            Last Sold Value
+                            Last Sale
                           </Text>
                           <Label
                             color="pink"
-                            currencySymbol={lastSale ? '$' : undefined}
+                            currencySymbol={lastSale ? 'Ξ' : undefined}
                             variant="currency"
                             size="lg"
                           >
-                            {lastSale?.usdSalePrice
-                              ? lastSale.usdSalePrice
+                            {lastSale?.ethSalePrice
+                              ? weiToEth(lastSale.ethSalePrice, 3, false)
                               : '-'}
                           </Label>
-                          <Text variant="h2Primary">
-                            {lastSale?.ethSalePrice
-                              ? weiToEth(lastSale?.ethSalePrice)
-                              : '-'}
-                          </Text>
-                          <Text variant="small" color="pink">
-                            {priceChangeFromFirstSale
-                              ? `(${priceChangeFromFirstSale}%)`
-                              : '-'}
-                          </Text>
 
                           <Text
                             color="pink"
@@ -417,9 +407,9 @@ export default function NFTView() {
                             <Text
                               color="primary"
                               variant="h3Primary"
-                              sx={{ fontWeight: 'heading' }}
+                              sx={{ fontWeight: 'heading', fontSize: 4 }}
                             >
-                              Last Appraisal Value
+                              Last Appraisal
                             </Text>
 
                             <Label color="blue">
@@ -432,19 +422,14 @@ export default function NFTView() {
                           </Flex>
                           <Label
                             color="primary"
-                            currencySymbol="$"
+                            currencySymbol={lastSale ? 'Ξ' : undefined}
                             variant="currency"
                             size="lg"
                           >
-                            {latestAppraisal?.usdSalePrice
-                              ? latestAppraisal.usdSalePrice
+                            {latestAppraisal?.ethSalePrice
+                              ? weiToEth(latestAppraisal.ethSalePrice, 3, false)
                               : '-'}
                           </Label>
-                          <Text variant="h2Primary">
-                            {latestAppraisal.ethSalePrice
-                              ? weiToEth(latestAppraisal.ethSalePrice)
-                              : '-'}
-                          </Text>
                           <Text
                             color="blue"
                             sx={{ fontSize: 2, textTransform: 'uppercase' }}
