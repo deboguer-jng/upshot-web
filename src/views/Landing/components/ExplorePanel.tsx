@@ -188,7 +188,7 @@ export default function ExplorePanel() {
     <Panel>
       <Flex sx={{ flexDirection: 'column', gap: 4 }}>
         <ExplorePanelHead onSearch={handleSearch} {...{ searchTerm }} />
-        <CollectionTable>
+        <CollectionTable sx={{ tableLayout: 'fixed' }}>
           <CollectionTableHead />
           <TableBody>
             {data.assetGlobalSearch.assets.map(
