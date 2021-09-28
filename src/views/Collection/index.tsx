@@ -126,7 +126,7 @@ export default function CollectionView() {
   const priceSeries =
     timeSeries?.map(({ timestamp, average }) => [
       timestamp,
-      parseFloat(ethers.utils.formatEther(average)),
+      parseFloat(ethers.utils.formatEther(average ?? 0)),
     ]) ?? []
 
   const chartData = [{ name: 'Average', data: priceSeries }]

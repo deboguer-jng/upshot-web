@@ -125,17 +125,19 @@ export default function NFTView() {
     contractAddress,
   } = data.assetById
 
-  const salesSeries = txHistory.map(
-    ({ assetEvent: { txAt }, ethSalePrice }) => [
+  const salesSeries = txHistory
+    .filter(({ ethSalePrice }) => ethSalePrice)
+    .map(({ assetEvent: { txAt }, ethSalePrice }) => [
       txAt,
       parseFloat(ethers.utils.formatEther(ethSalePrice)),
-    ]
-  )
+    ])
 
   const appraisalSeries = appraisalHistory.map(
     ({ timestamp, estimatedPrice }) => [
       timestamp,
-      parseFloat(ethers.utils.formatEther(estimatedPrice)),
+      estimatedPrice
+        ? parseFloat(ethers.utils.formatEther(estimatedPrice))
+        : null,
     ]
   )
 
