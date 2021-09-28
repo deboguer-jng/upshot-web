@@ -114,7 +114,7 @@ export default function SearchView() {
   }
 
   const handleClickNFT = (id: string) => {
-    router.push('/nft/' + id)
+    router.push('/analytics/nft/' + id)
   }
 
   return (

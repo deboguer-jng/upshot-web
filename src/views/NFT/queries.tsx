@@ -2,13 +2,8 @@ import { gql } from '@apollo/client'
 
 /**
  * Get Asset
- * @see NFT
  */
 
-/**
- * Collection Avg. Price
- * @see CollectionAvgPricePanel
- */
 export type GetAssetVars = {
   id: string
 }

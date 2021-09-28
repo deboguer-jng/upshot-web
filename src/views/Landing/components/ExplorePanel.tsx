@@ -142,7 +142,7 @@ function ExplorePanelSkeleton({ searchTerm }: { searchTerm: string }) {
   )
 }
 
-export default function ExplorePanel() {
+export default function ExplorePanel({ id }: { id?: number }) {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
 
@@ -154,7 +154,7 @@ export default function ExplorePanel() {
     GetExploreNFTsVars
   >(GET_EXPLORE_NFTS, {
     errorPolicy: 'all',
-    variables: { limit: PAGE_SIZE, offset: page * PAGE_SIZE, searchTerm },
+    variables: { limit: PAGE_SIZE, offset: page * PAGE_SIZE, searchTerm, id },
   })
 
   const handlePageChange = ({ selected }: { selected: number }) => {
@@ -181,7 +181,7 @@ export default function ExplorePanel() {
     )
 
   const handleShowNFT = (id: string) => {
-    router.push('/nft/' + id)
+    router.push('/analytics/nft/' + id)
   }
 
   return (
