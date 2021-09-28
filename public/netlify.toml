@@ -17,8 +17,3 @@
   from = "/analytics/search"
   to = "/analytics/search.html"
   status = 200
-
-[[redirects]]
-  from = "/"
-  to = "https://beta.upshot.io"
-  status = 301
