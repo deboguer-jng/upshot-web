@@ -11,7 +11,7 @@ import TopCollectionsChart from './components/TopCollectionsChart'
 import TopSellingNFTs from './components/TopSellingNFTs'
 
 export default function LandingView() {
-  const [chartMetric, setChartMetric] = useState<METRIC>('AVERAGE')
+  const [chartMetric, setChartMetric] = useState<METRIC>('VOLUME')
   const [selectedCollections, setSelectedCollections] = useState<number[]>([])
 
   const handleChange = (updatedChartMetric: METRIC) => {
