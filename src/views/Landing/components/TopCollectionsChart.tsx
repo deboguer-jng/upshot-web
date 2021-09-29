@@ -49,23 +49,46 @@ export default function TopCollectionsCharts({
   )
   if (!assetSets?.length) return <Chart noData />
 
+  const minDate = Math.max(
+    ...assetSets.map(({ timeSeries }) => timeSeries?.[0].timestamp ?? 0)
+  )
+
+  const maxDate = Math.max(
+    ...assetSets.map(
+      ({ timeSeries }) => timeSeries?.slice(-1)[0].timestamp ?? 0
+    )
+  )
+
   /**
    * Reduce the time series to (timestamp, value) tuples.
    * Wei pricing is converted to rounded floats.
    */
-  const chartData = assetSets.map(({ timeSeries, name }) => ({
-    name,
-    data: (timeSeries as TimeSeries[]).reduce(
-      (a: (Date | number)[][], c) => [
-        ...a,
-        [
-          c.timestamp * 1000,
-          parseFloat(ethers.utils.formatEther(c[timeSeriesKeys[metric]])),
-        ],
-      ],
-      []
-    ),
-  }))
+  const chartData = assetSets
+    .map(({ timeSeries, name }) => ({
+      name,
+      data: (timeSeries as TimeSeries[])
+        .filter(({ timestamp }) => timestamp >= minDate)
+        .reduce(
+          (a: (Date | number)[][], c, i) => [
+            ...a,
+            [
+              c.timestamp * 1000,
+              parseFloat(ethers.utils.formatEther(c[timeSeriesKeys[metric]])),
+            ],
+          ],
+          []
+        ),
+    }))
+    .map(({ name, data }) => ({
+      name,
+      data: data.map((val, i) =>
+        i === 0
+          ? [minDate * 1000, val[1]]
+          : i === data.length - 1
+          ? [maxDate * 1000, val[1]]
+          : val
+      ),
+    }))
 
   return <Chart data={chartData} />
 }
