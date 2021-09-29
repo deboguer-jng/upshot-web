@@ -2,6 +2,7 @@ import { Container } from '@upshot-tech/upshot-ui'
 import { Flex, Footer, Text } from '@upshot-tech/upshot-ui'
 import { Nav } from 'components/Nav'
 import { useState } from 'react'
+import Head from 'next/head'
 
 import ButtonTabs, { METRIC } from './components/ButtonTabs'
 import CollectionAvgPricePanel from './components/CollectionAvgPricePanel'
@@ -28,31 +29,36 @@ export default function LandingView() {
   }
 
   return (
-    <Container
-      p={4}
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        minHeight: '100vh',
-        gap: 4,
-      }}
-    >
-      <Nav />
-      <Flex sx={{ flex: '1 1 auto', flexDirection: 'column', gap: 5 }}>
-        <Text variant="h1Secondary">Top Collections</Text>
-        <ButtonTabs onChange={handleChange} />
-        <TopCollectionsChart
-          metric={chartMetric}
-          {...{ selectedCollections }}
-        />
-        <CollectionAvgPricePanel
-          {...{ selectedCollections }}
-          onCollectionSelected={handleCollectionSelected}
-        />
-        <TopSellingNFTs />
-        <ExplorePanel />
-      </Flex>
-      <Footer />
-    </Container>
+    <>
+      <Head>
+        <title>Upshot Analytics</title>
+      </Head>
+      <Container
+        p={4}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: '100vh',
+          gap: 4,
+        }}
+      >
+        <Nav />
+        <Flex sx={{ flex: '1 1 auto', flexDirection: 'column', gap: 5 }}>
+          <Text variant="h1Secondary">Top Collections</Text>
+          <ButtonTabs onChange={handleChange} />
+          <TopCollectionsChart
+            metric={chartMetric}
+            {...{ selectedCollections }}
+          />
+          <CollectionAvgPricePanel
+            {...{ selectedCollections }}
+            onCollectionSelected={handleCollectionSelected}
+          />
+          <TopSellingNFTs />
+          <ExplorePanel />
+        </Flex>
+        <Footer />
+      </Container>
+    </>
   )
 }

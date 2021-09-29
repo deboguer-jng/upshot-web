@@ -32,14 +32,9 @@ const getPriceChangeLabel = (val: number | null) => {
   if (val === null) return '-'
 
   const percentChange = val.toFixed(2) + '%'
-  switch (true) {
-    case val > 0:
-      return '+' + percentChange
-    case val < 0:
-      return '-' + percentChange
-    default:
-      return percentChange
-  }
+  return val > 0
+    ? '+' + percentChange
+    : percentChange
 }
 
 function CollectionTableHead() {

@@ -44,6 +44,7 @@ export type GetAssetData = {
       displayType: string
       traitType: string
       value: string
+      rarity: number
     }[]
     appraisalHistory: {
       timestamp
@@ -97,6 +98,7 @@ export const GET_ASSET = gql`
         displayType
         traitType
         value
+        rarity
       }
       appraisalHistory {
         timestamp

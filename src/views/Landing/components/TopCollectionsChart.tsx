@@ -90,7 +90,5 @@ export default function TopCollectionsCharts({
       ),
     }))
 
-  console.log({ chartData })
-
   return <Chart data={chartData} />
 }
