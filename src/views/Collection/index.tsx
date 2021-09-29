@@ -37,7 +37,7 @@ function CollectionStat({
         color,
       }}
     >
-      <Text sx={{ fontWeight: 700 }}>{value}</Text>
+      <Text sx={{ fontWeight: 700, fontSize: ['0.85rem', '0.85rem', '1rem', '1rem'] }}>{value}</Text>
       <Text variant="small">{label}</Text>
     </Flex>
   )
