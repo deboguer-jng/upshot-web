@@ -2,8 +2,8 @@ import { Button, Flex } from '@upshot-tech/upshot-ui'
 import { useState } from 'react'
 
 export const METRICS = {
-  AVERAGE: 'Average Price',
   VOLUME: 'Total Volume',
+  AVERAGE: 'Average Price',
   FLOOR: 'Floor Price',
 }
 

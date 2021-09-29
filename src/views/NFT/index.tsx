@@ -176,7 +176,7 @@ export default function NFTView() {
               sx={{
                 borderRadius: '10px',
                 width: '100%',
-                backgroundColor: 'grey-800',
+                backgroundColor: 'grey-600',
                 imageRendering: PIXELATED_CONTRACTS.includes(contractAddress)
                   ? 'pixelated'
                   : 'auto',
@@ -379,12 +379,14 @@ export default function NFTView() {
                     </Box>
 
                     <Text variant="h3Secondary">Attributes</Text>
-                    <Grid columns={2}>
+                    <Grid columns={isMobile ? 1 : 2}>
                       {traits.map(({ value, rarity }, idx) => (
                         <LabelAttribute
                           key={idx}
                           variant="percentage"
-                          percentage={(rarity * 100).toFixed(2).toString()}
+                          percentage={(100 - rarity * 100)
+                            .toFixed(2)
+                            .toString()}
                         >
                           {value}
                         </LabelAttribute>

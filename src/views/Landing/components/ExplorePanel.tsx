@@ -44,9 +44,8 @@ function CollectionTableHead() {
   return (
     <TableHead>
       <TableRow>
-        <TableCell colSpan={2} color="grey-500">
-          Name
-        </TableCell>
+        <TableCell color="grey-500">Name</TableCell>
+        <TableCell></TableCell>
         {isMobile ? (
           // Mobile only shows the first and last columns
           <TableCell sx={{ minWidth: 100 }} color="grey-500">
