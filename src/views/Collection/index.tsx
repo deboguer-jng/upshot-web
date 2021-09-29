@@ -37,7 +37,7 @@ function CollectionStat({
         color,
       }}
     >
-      <Text sx={{ fontWeight: 700 }}>{value}</Text>
+      <Text sx={{ fontWeight: 700, fontSize: ['0.85rem', '0.85rem', '1rem', '1rem'] }}>{value}</Text>
       <Text variant="small">{label}</Text>
     </Flex>
   )
@@ -149,11 +149,11 @@ export default function CollectionView() {
           <Flex sx={{ gap: 6, height: 100 }}>
             <Avatar size="lg" src={imageUrl} />
             <Flex sx={{ flexDirection: 'column' }}>
-              <Text variant="h1Secondary">{name}</Text>
+              <Text variant="h1Secondary" sx={{ lineHeight: '2rem' }}>{name}</Text>
               <Text
                 color="pink"
                 variant="h4Primary"
-                sx={{ fontWeight: 700, textTransform: 'uppercase' }}
+                sx={{ fontWeight: 700, textTransform: 'uppercase', marginTop: '2px' }}
               >
                 Collection
               </Text>
