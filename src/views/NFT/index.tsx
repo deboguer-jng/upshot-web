@@ -367,7 +367,7 @@ export default function NFTView() {
                     </Box>
 
                     <Text variant="h3Secondary">Attributes</Text>
-                    <Grid columns={2}>
+                    <Grid columns={isMobile ? 1 : 2}>
                       {traits.map(({ value, rarity }, idx) => (
                         <LabelAttribute
                           key={idx}
