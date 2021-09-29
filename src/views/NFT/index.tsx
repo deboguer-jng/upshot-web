@@ -183,7 +183,9 @@ export default function NFTView() {
             <Flex sx={{ flexDirection: 'column', gap: 4 }}>
               <Text variant="h2Primary">{assetName}</Text>
               {!!rarity && (
-                <Label size="md">{(rarity * 100).toFixed(2) + '% Rarity'}</Label>
+                <Label size="md">
+                  {(rarity * 100).toFixed(2) + '% Rarity'}
+                </Label>
               )}
             </Flex>
 
@@ -354,7 +356,9 @@ export default function NFTView() {
                             </TableCell>
                             <TableCell>
                               <Text sx={{ fontWeight: 'bold', fontSize: 5 }}>
-                                {avgResalePrice ? weiToEth(avgResalePrice) : '-'}
+                                {avgResalePrice
+                                  ? weiToEth(avgResalePrice)
+                                  : '-'}
                               </Text>
                             </TableCell>
                           </TableRow>
@@ -363,9 +367,15 @@ export default function NFTView() {
                     </Box>
 
                     <Text variant="h3Secondary">Attributes</Text>
-                    <Grid columns={2}>
+                    <Grid columns={isMobile ? 1 : 2}>
                       {traits.map(({ value, rarity }, idx) => (
-                        <LabelAttribute key={idx} variant='percentage' percentage={(rarity * 100).toFixed(2).toString()}>{value}</LabelAttribute>
+                        <LabelAttribute
+                          key={idx}
+                          variant="percentage"
+                          percentage={(rarity * 100).toFixed(2).toString()}
+                        >
+                          {value}
+                        </LabelAttribute>
                       ))}
                     </Grid>
                   </Flex>
@@ -440,7 +450,11 @@ export default function NFTView() {
                               size="md"
                             >
                               {latestAppraisal?.ethSalePrice
-                                ? weiToEth(latestAppraisal.ethSalePrice, 3, false)
+                                ? weiToEth(
+                                    latestAppraisal.ethSalePrice,
+                                    3,
+                                    false
+                                  )
                                 : '-'}
                             </Label>
                             <Text
