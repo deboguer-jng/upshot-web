@@ -11,6 +11,7 @@ import { Nav } from 'components/Nav'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { PAGE_SIZE } from 'constants/'
 import { ethers } from 'ethers'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { shortenAddress } from 'utils/address'
@@ -118,217 +119,222 @@ export default function SearchView() {
   }
 
   return (
-    <Flex sx={{ minHeight: '100vh', flexDirection: 'column' }}>
-      <Container
-        p={4}
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 4,
-          width: '100%',
-        }}
-      >
-        <Nav />
-      </Container>
-
-      <Grid
-        columns={[1, 1, 1, 3]}
-        sx={{
-          gridTemplateColumns: ['1fr', '1fr', '1fr 3fr', '1fr 3fr 1fr'],
-          flexGrow: 1,
-        }}
-      >
-        <Flex
-          paddingX={8}
+    <>
+      <Head>
+        <title>Upshot Analytics</title>
+      </Head>
+      <Flex sx={{ minHeight: '100vh', flexDirection: 'column' }}>
+        <Container
+          p={4}
           sx={{
-            position: ['static', 'static', 'static', 'sticky'],
-            top: 0,
-            alignSelf: 'flex-start',
+            display: 'flex',
             flexDirection: 'column',
-            gap: 8,
+            gap: 4,
+            width: '100%',
           }}
         >
-          <Box>
-            <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-              <Flex sx={{ flexDirection: 'column', gap: 1 }}>
+          <Nav />
+        </Container>
+
+        <Grid
+          columns={[1, 1, 1, 3]}
+          sx={{
+            gridTemplateColumns: ['1fr', '1fr', '1fr 3fr', '1fr 3fr 1fr'],
+            flexGrow: 1,
+          }}
+        >
+          <Flex
+            paddingX={8}
+            sx={{
+              position: ['static', 'static', 'static', 'sticky'],
+              top: 0,
+              alignSelf: 'flex-start',
+              flexDirection: 'column',
+              gap: 8,
+            }}
+          >
+            <Box>
+              <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+                <Flex sx={{ flexDirection: 'column', gap: 1 }}>
+                  <Text variant="h3Secondary" color="grey-500">
+                    Search Filters
+                  </Text>
+                </Flex>
+              </Flex>
+            </Box>
+
+            <Box>
+              <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+                <Text color="grey-500">Price Range</Text>
+                <Flex sx={{ gap: 4 }}>
+                  <InputRounded
+                    placeholder="Ξ Min"
+                    sx={{ maxWidth: 128 }}
+                    value={minPriceEth}
+                    onBlur={handleBlurMinPrice}
+                    onChange={(e) => setMinPriceEth(e.currentTarget.value)}
+                  />
+                  <InputRounded
+                    placeholder="Ξ Max"
+                    sx={{ maxWidth: 128 }}
+                    value={maxPriceEth}
+                    onBlur={handleBlurMaxPrice}
+                    onChange={(e) => setMaxPriceEth(e.currentTarget.value)}
+                  />
+                </Flex>
+              </Flex>
+            </Box>
+
+            <Box>
+              <Flex sx={{ flexDirection: 'column', gap: 2 }}>
                 <Text variant="h3Secondary" color="grey-500">
-                  Search Filters
+                  Keywords
                 </Text>
-              </Flex>
-            </Flex>
-          </Box>
-
-          <Box>
-            <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-              <Text color="grey-500">Price Range</Text>
-              <Flex sx={{ gap: 4 }}>
                 <InputRounded
-                  placeholder="Ξ Min"
-                  sx={{ maxWidth: 128 }}
-                  value={minPriceEth}
-                  onBlur={handleBlurMinPrice}
-                  onChange={(e) => setMinPriceEth(e.currentTarget.value)}
-                />
-                <InputRounded
-                  placeholder="Ξ Max"
-                  sx={{ maxWidth: 128 }}
-                  value={maxPriceEth}
-                  onBlur={handleBlurMaxPrice}
-                  onChange={(e) => setMaxPriceEth(e.currentTarget.value)}
+                  placeholder="Keywords"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.currentTarget.value)}
                 />
               </Flex>
-            </Flex>
-          </Box>
+            </Box>
 
-          <Box>
-            <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-              <Text variant="h3Secondary" color="grey-500">
-                Keywords
-              </Text>
-              <InputRounded
-                placeholder="Keywords"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.currentTarget.value)}
-              />
-            </Flex>
-          </Box>
+            <Box>
+              <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+                <Text variant="h3Secondary" color="grey-500">
+                  Collection
+                </Text>
+                <InputRounded
+                  placeholder="Collection"
+                  value={collectionName}
+                  onChange={(e) => setCollectionName(e.currentTarget.value)}
+                />
+              </Flex>
+            </Box>
 
-          <Box>
-            <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-              <Text variant="h3Secondary" color="grey-500">
-                Collection
-              </Text>
-              <InputRounded
-                placeholder="Collection"
-                value={collectionName}
-                onChange={(e) => setCollectionName(e.currentTarget.value)}
-              />
-            </Flex>
-          </Box>
+            <Box>
+              <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+                <Text variant="h3Secondary" color="grey-500">
+                  Token ID
+                </Text>
+                <InputRounded
+                  placeholder="Token ID"
+                  value={tokenId}
+                  onChange={(e) => setTokenId(e.currentTarget.value)}
+                />
+              </Flex>
+            </Box>
 
-          <Box>
-            <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-              <Text variant="h3Secondary" color="grey-500">
-                Token ID
-              </Text>
-              <InputRounded
-                placeholder="Token ID"
-                value={tokenId}
-                onChange={(e) => setTokenId(e.currentTarget.value)}
-              />
-            </Flex>
-          </Box>
+            <Box>
+              <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+                <Text variant="h3Secondary" color="grey-500">
+                  Attributes
+                </Text>
+                <InputRounded
+                  placeholder="Attributes"
+                  value={attributes}
+                  onChange={(e) => setAttributes(e.currentTarget.value)}
+                />
+              </Flex>
+            </Box>
 
-          <Box>
-            <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-              <Text variant="h3Secondary" color="grey-500">
-                Attributes
-              </Text>
-              <InputRounded
-                placeholder="Attributes"
-                value={attributes}
-                onChange={(e) => setAttributes(e.currentTarget.value)}
-              />
-            </Flex>
-          </Box>
-
-          <Box>
-            <Button onClick={handleApplyFilters}>Apply Filters</Button>
-          </Box>
-        </Flex>
-        <Flex sx={{ flex: '1 1 auto', flexDirection: 'column', gap: 4 }}>
-          <Flex sx={{ flexDirection: 'column' }}>
-            <Text>Search Results</Text>
-            <Text variant="h1Primary">{collectionNameApplied}</Text>
-            <Text variant="h2Primary">{searchTermApplied}</Text>
+            <Box>
+              <Button onClick={handleApplyFilters}>Apply Filters</Button>
+            </Box>
           </Flex>
-
-          {error ? (
-            <div>There was an error completing your request</div>
-          ) : data?.assetGlobalSearch?.assets.length === 0 ? (
-            <div>No results available.</div>
-          ) : (
-            <Flex
-              sx={{
-                flexWrap: 'wrap',
-                gap: 5,
-                marginRight: 100,
-              }}
-            >
-              {loading
-                ? [...new Array(PAGE_SIZE)].map((_, idx) => (
-                    <BlurrySquareTemplate key={idx} />
-                  ))
-                : data?.assetGlobalSearch?.assets.map(
-                    (
-                      {
-                        id,
-                        contractAddress,
-                        previewImageUrl,
-                        mediaUrl,
-                        name,
-                        collection,
-                        tokenId,
-                        lastSale,
-                        rarity,
-                        creatorUsername,
-                        creatorAddress,
-                      },
-                      key
-                    ) => (
-                      <a
-                        key={key}
-                        onClick={() => handleClickNFT(id)}
-                        style={{ cursor: 'pointer' }}
-                      >
-                        <MiniNftCard
-                          price={
-                            lastSale?.ethSalePrice
-                              ? weiToEth(lastSale.ethSalePrice)
-                              : undefined
-                          }
-                          rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
-                          image={previewImageUrl ?? mediaUrl}
-                          creator={
-                            creatorUsername ||
-                            shortenAddress(creatorAddress, 2, 4)
-                          }
-                          pixelated={PIXELATED_CONTRACTS.includes(
-                            contractAddress
-                          )}
-                          type="search"
-                          name={getAssetName(name, collection?.name, tokenId)}
-                        />
-                      </a>
-                    )
-                  )}
+          <Flex sx={{ flex: '1 1 auto', flexDirection: 'column', gap: 4 }}>
+            <Flex sx={{ flexDirection: 'column' }}>
+              <Text>Search Results</Text>
+              <Text variant="h1Primary">{collectionNameApplied}</Text>
+              <Text variant="h2Primary">{searchTermApplied}</Text>
             </Flex>
-          )}
 
-          <Flex sx={{ justifyContent: 'center' }}>
-            {!!data?.assetGlobalSearch?.count && (
-              <Pagination
-                forcePage={page}
-                pageCount={Math.ceil(data.assetGlobalSearch.count / PAGE_SIZE)}
-                pageRangeDisplayed={isMobile ? 3 : 5}
-                marginPagesDisplayed={isMobile ? 1 : 5}
-                onPageChange={handlePageChange}
-              />
+            {error ? (
+              <div>There was an error completing your request</div>
+            ) : data?.assetGlobalSearch?.assets.length === 0 ? (
+              <div>No results available.</div>
+            ) : (
+              <Flex
+                sx={{
+                  flexWrap: 'wrap',
+                  gap: 5,
+                  marginRight: 100,
+                }}
+              >
+                {loading
+                  ? [...new Array(PAGE_SIZE)].map((_, idx) => (
+                      <BlurrySquareTemplate key={idx} />
+                    ))
+                  : data?.assetGlobalSearch?.assets.map(
+                      (
+                        {
+                          id,
+                          contractAddress,
+                          previewImageUrl,
+                          mediaUrl,
+                          name,
+                          collection,
+                          tokenId,
+                          lastSale,
+                          rarity,
+                          creatorUsername,
+                          creatorAddress,
+                        },
+                        key
+                      ) => (
+                        <a
+                          key={key}
+                          onClick={() => handleClickNFT(id)}
+                          style={{ cursor: 'pointer' }}
+                        >
+                          <MiniNftCard
+                            price={
+                              lastSale?.ethSalePrice
+                                ? weiToEth(lastSale.ethSalePrice)
+                                : undefined
+                            }
+                            rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
+                            image={previewImageUrl ?? mediaUrl}
+                            creator={
+                              creatorUsername ||
+                              shortenAddress(creatorAddress, 2, 4)
+                            }
+                            pixelated={PIXELATED_CONTRACTS.includes(
+                              contractAddress
+                            )}
+                            type="search"
+                            name={getAssetName(name, collection?.name, tokenId)}
+                          />
+                        </a>
+                      )
+                    )}
+              </Flex>
             )}
-          </Flex>
-        </Flex>
-      </Grid>
 
-      <Container
-        p={4}
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 4,
-        }}
-      >
-        <Footer />
-      </Container>
-    </Flex>
+            <Flex sx={{ justifyContent: 'center' }}>
+              {!!data?.assetGlobalSearch?.count && (
+                <Pagination
+                  forcePage={page}
+                  pageCount={Math.ceil(data.assetGlobalSearch.count / PAGE_SIZE)}
+                  pageRangeDisplayed={isMobile ? 3 : 5}
+                  marginPagesDisplayed={isMobile ? 1 : 5}
+                  onPageChange={handlePageChange}
+                />
+              )}
+            </Flex>
+          </Flex>
+        </Grid>
+
+        <Container
+          p={4}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 4,
+          }}
+        >
+          <Footer />
+        </Container>
+      </Flex>
+    </>
   )
 }

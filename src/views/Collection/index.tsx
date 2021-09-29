@@ -4,6 +4,7 @@ import { Container, Flex, Grid } from '@upshot-tech/upshot-ui'
 import { Avatar, Chart, Footer, Text } from '@upshot-tech/upshot-ui'
 import { Nav } from 'components/Nav'
 import { ethers } from 'ethers'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { weiToEth } from 'utils/number'
@@ -44,20 +45,25 @@ function CollectionStat({
 
 function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <Container
-      p={4}
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        width: '100%',
-        minHeight: '100vh',
-        gap: 4,
-      }}
-    >
-      <Nav />
-      {children}
-      <Footer />
-    </Container>
+    <>
+      <Head>
+        <title>Upshot Analytics</title>
+      </Head>
+      <Container
+        p={4}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          width: '100%',
+          minHeight: '100vh',
+          gap: 4,
+        }}
+      >
+        <Nav />
+        {children}
+        <Footer />
+      </Container>
+    </>
   )
 }
 
