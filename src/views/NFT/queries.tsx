@@ -21,6 +21,7 @@ export type GetAssetData = {
     creatorUsername: string
     creatorAvatar: string
     collection?: {
+      id: string
       name: string
       imageUrl: string
     }
@@ -75,6 +76,7 @@ export const GET_ASSET = gql`
       creatorUsername
       creatorAvatar
       collection {
+        id
         name
         imageUrl
       }
