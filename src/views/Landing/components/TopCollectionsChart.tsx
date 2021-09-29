@@ -63,32 +63,19 @@ export default function TopCollectionsCharts({
    * Reduce the time series to (timestamp, value) tuples.
    * Wei pricing is converted to rounded floats.
    */
-  const chartData = assetSets
-    .map(({ timeSeries, name }) => ({
-      name,
-      data: (timeSeries as TimeSeries[])
-        .filter(({ timestamp }) => timestamp >= minDate)
-        .reduce(
-          (a: (Date | number)[][], c, i) => [
-            ...a,
-            [
-              c.timestamp * 1000,
-              parseFloat(ethers.utils.formatEther(c[timeSeriesKeys[metric]])),
-            ],
-          ],
-          []
-        ),
-    }))
-    .map(({ name, data }) => ({
-      name,
-      data: data.map((val, i) =>
-        i === 0
-          ? [minDate * 1000, val[1]]
-          : i === data.length - 1
-          ? [maxDate * 1000, val[1]]
-          : val
-      ),
-    }))
+  const chartData = assetSets.map(({ timeSeries, name }) => ({
+    name,
+    data: (timeSeries as TimeSeries[]).reduce(
+      (a: (Date | number)[][], c, i) => [
+        ...a,
+        [
+          c.timestamp * 1000,
+          parseFloat(ethers.utils.formatEther(c[timeSeriesKeys[metric]])),
+        ],
+      ],
+      []
+    ),
+  }))
 
   return <Chart data={chartData} />
 }
