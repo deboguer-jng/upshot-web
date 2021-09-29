@@ -127,8 +127,8 @@ export default function NFTView() {
 
   const salesSeries = txHistory
     .filter(({ ethSalePrice }) => ethSalePrice)
-    .map(({ assetEvent: { txAt }, ethSalePrice }) => [
-      txAt,
+    .map(({ assetEvent, ethSalePrice }) => [
+      assetEvent?.txAt,
       parseFloat(ethers.utils.formatEther(ethSalePrice)),
     ])
 
