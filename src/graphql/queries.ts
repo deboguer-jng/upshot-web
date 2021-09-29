@@ -16,7 +16,7 @@ export type GetNavBarCollectionsData = {
 }
 
 export const GET_NAV_BAR_COLLECTIONS = gql`
-  query GetNavBarCollections($limit: OneToHundredInt!) {
+  query GetNavBarCollections($limit: Int!) {
     collections(limit: $limit) {
       assetSets {
         id
