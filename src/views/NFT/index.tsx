@@ -359,8 +359,8 @@ export default function NFTView() {
 
                   <Text variant="h3Secondary">Attributes</Text>
                   <Grid columns={2}>
-                    {traits.map(({ value }, idx) => (
-                      <LabelAttribute key={idx}>{value}</LabelAttribute>
+                    {traits.map(({ value, rarity }, idx) => (
+                      <LabelAttribute key={idx} variant='percentage' percentage={(rarity * 100).toFixed(2).toString()}>{value}</LabelAttribute>
                     ))}
                   </Grid>
                 </Flex>
@@ -390,7 +390,6 @@ export default function NFTView() {
                             currencySymbol={lastSale ? 'Ξ' : undefined}
                             variant="currency"
                             size="md"
-                            style={{fontSize: '2.8rem'}}
                           >
                             {lastSale?.ethSalePrice
                               ? weiToEth(lastSale.ethSalePrice, 3, false)
