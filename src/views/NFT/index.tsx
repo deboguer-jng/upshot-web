@@ -369,13 +369,7 @@ export default function NFTView() {
                     <Text variant="h3Secondary">Attributes</Text>
                     <Grid columns={isMobile ? 1 : 2}>
                       {traits.map(({ value, rarity }, idx) => (
-                        <LabelAttribute
-                          key={idx}
-                          variant="percentage"
-                          percentage={(rarity * 100).toFixed(2).toString()}
-                        >
-                          {value}
-                        </LabelAttribute>
+                        <LabelAttribute key={idx} variant='percentage' percentage={(100 - (rarity * 100)).toFixed(2).toString()}>{value}</LabelAttribute>
                       ))}
                     </Grid>
                   </Flex>
