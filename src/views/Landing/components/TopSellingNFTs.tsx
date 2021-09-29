@@ -27,25 +27,22 @@ export type WINDOW = keyof typeof WINDOWS
 function TopSellingNFTsHeader() {
   return (
     <Flex variant="text.h1Secondary" sx={{ gap: 2 }}>
-      Top Selling NFTs in
-      <Flex
-        color="primary"
-        sx={{ justifyContent: 'center', alignItems: 'center', gap: 2 }}
-      >
-        1 Day
-        <Icon icon="arrowDropUserBubble" color="primary" size={12} />
-      </Flex>
+      Top Selling NFTs
     </Flex>
   )
 }
 
-export default function TopSellingNFTs({ id }: { id?: number }) {
+export default function TopSellingNFTs({
+  collectionId,
+}: {
+  collectionId?: number
+}) {
   const router = useRouter()
   const { loading, error, data } = useQuery<GetTopSalesData, GetTopSalesVars>(
     GET_TOP_SALES,
     {
       errorPolicy: 'all',
-      variables: { limit: 10, windowSize: 'WEEK', id },
+      variables: { limit: 10, windowSize: 'WEEK', collectionId },
     }
   ) // Using `all` to include data with errors.
 
@@ -83,6 +80,7 @@ export default function TopSellingNFTs({ id }: { id?: number }) {
 
   return (
     <>
+      <TopSellingNFTsHeader />
       <MiniNFTContainer>
         {data.topSales.map(
           (

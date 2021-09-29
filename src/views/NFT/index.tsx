@@ -164,6 +164,7 @@ export default function NFTView() {
             sx={{
               borderRadius: '10px',
               width: '100%',
+              backgroundColor: 'grey-800',
               imageRendering: PIXELATED_CONTRACTS.includes(contractAddress)
                 ? 'pixelated'
                 : 'auto',

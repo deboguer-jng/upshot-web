@@ -142,7 +142,11 @@ function ExplorePanelSkeleton({ searchTerm }: { searchTerm: string }) {
   )
 }
 
-export default function ExplorePanel({ id }: { id?: number }) {
+export default function ExplorePanel({
+  collectionId,
+}: {
+  collectionId?: number
+}) {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
 
@@ -154,7 +158,12 @@ export default function ExplorePanel({ id }: { id?: number }) {
     GetExploreNFTsVars
   >(GET_EXPLORE_NFTS, {
     errorPolicy: 'all',
-    variables: { limit: PAGE_SIZE, offset: page * PAGE_SIZE, searchTerm, id },
+    variables: {
+      limit: PAGE_SIZE,
+      offset: page * PAGE_SIZE,
+      searchTerm,
+      collectionId,
+    },
   })
 
   const handlePageChange = ({ selected }: { selected: number }) => {
