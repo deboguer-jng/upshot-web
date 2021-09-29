@@ -13,7 +13,7 @@ import { PAGE_SIZE } from 'constants/'
 import { ethers } from 'ethers'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
 import { parseEthString, weiToEth } from 'utils/number'
@@ -27,26 +27,21 @@ import {
 export default function SearchView() {
   const router = useRouter()
   const [page, setPage] = useState(0)
+  const collectionParam = (router.query.collection as string) ?? ''
+  const queryParam = (router.query.query as string) ?? ''
 
   // @todo Replace these states refs
-  const [searchTerm, setSearchTerm] = useState(
-    (router.query.query as string) ?? ''
-  )
-  const [searchTermApplied, setSearchTermApplied] = useState(
-    (router.query.query as string) ?? ''
-  )
+  const [searchTerm, setSearchTerm] = useState(queryParam)
+  const [searchTermApplied, setSearchTermApplied] = useState(queryParam)
 
   const [tokenId, setTokenId] = useState('')
   const [tokenIdApplied, setTokenIdApplied] = useState('')
   const [attributes, setAttributes] = useState('')
   const [attributesApplied, setAttributesApplied] = useState('')
 
-  const [collectionName, setCollectionName] = useState(
-    (router.query.collection as string) ?? ''
-  )
-  const [collectionNameApplied, setCollectionNameApplied] = useState(
-    (router.query.collection as string) ?? ''
-  )
+  const [collectionName, setCollectionName] = useState(collectionParam)
+  const [collectionNameApplied, setCollectionNameApplied] =
+    useState(collectionParam)
 
   const [minPriceEth, setMinPriceEth] = useState('')
   const [minPriceWei, setMinPriceWei] = useState<string>()
@@ -70,6 +65,13 @@ export default function SearchView() {
       maxPrice: maxPriceWei,
     },
   })
+
+  useEffect(() => {
+    setCollectionName(collectionParam)
+    setCollectionNameApplied(collectionParam)
+    setSearchTermApplied(queryParam)
+    setSearchTerm(queryParam)
+  }, [collectionParam, queryParam])
 
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
@@ -314,7 +316,9 @@ export default function SearchView() {
               {!!data?.assetGlobalSearch?.count && (
                 <Pagination
                   forcePage={page}
-                  pageCount={Math.ceil(data.assetGlobalSearch.count / PAGE_SIZE)}
+                  pageCount={Math.ceil(
+                    data.assetGlobalSearch.count / PAGE_SIZE
+                  )}
                   pageRangeDisplayed={isMobile ? 3 : 5}
                   marginPagesDisplayed={isMobile ? 1 : 5}
                   onPageChange={handlePageChange}
