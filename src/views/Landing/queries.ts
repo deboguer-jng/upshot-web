@@ -87,7 +87,7 @@ export type GetExploreNFTsVars = {
   limit: number
   offset: number
   searchTerm: string
-  id?: number
+  collectionId?: number
 }
 
 export type GetExploreNFTsData = {
@@ -112,8 +112,14 @@ export const GET_EXPLORE_NFTS = gql`
     $limit: OneToHundredInt!
     $offset: Int!
     $searchTerm: String
+    $collectionId: Int
   ) {
-    assetGlobalSearch(limit: $limit, offset: $offset, searchTerm: $searchTerm) {
+    assetGlobalSearch(
+      limit: $limit
+      offset: $offset
+      searchTerm: $searchTerm
+      collectionId: $collectionId
+    ) {
       count
       assets {
         id
@@ -137,7 +143,7 @@ export const GET_EXPLORE_NFTS = gql`
 export type GetTopSalesVars = {
   windowSize: string
   limit: number
-  id?: number
+  collectionId?: number
 }
 
 export type GetTopSalesData = {
@@ -157,8 +163,16 @@ export type GetTopSalesData = {
 }
 
 export const GET_TOP_SALES = gql`
-  query TopSales($windowSize: ETimeWindow!, $limit: OneToHundredInt) {
-    topSales(windowSize: $windowSize, limit: $limit) {
+  query TopSales(
+    $windowSize: ETimeWindow!
+    $limit: OneToHundredInt
+    $collectionId: Int
+  ) {
+    topSales(
+      windowSize: $windowSize
+      limit: $limit
+      collectionId: $collectionId
+    ) {
       txFromAddress
       txToAddress
       txAt

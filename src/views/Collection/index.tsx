@@ -187,11 +187,10 @@ export default function CollectionView() {
       {getChart()}
 
       <Flex sx={{ flexDirection: 'column', flexGrow: 1, gap: 5 }}>
-        <Text variant="h1Secondary">Top Selling NFTs</Text>
-        <TopSellingNFTs />
+        <TopSellingNFTs collectionId={id} />
       </Flex>
 
-      <ExplorePanel />
+      <ExplorePanel collectionId={id} />
     </Layout>
   )
 }
