@@ -389,7 +389,8 @@ export default function NFTView() {
                             color="pink"
                             currencySymbol={lastSale ? 'Ξ' : undefined}
                             variant="currency"
-                            size="lg"
+                            size="md"
+                            style={{fontSize: '2.8rem'}}
                           >
                             {lastSale?.ethSalePrice
                               ? weiToEth(lastSale.ethSalePrice, 3, false)
@@ -420,7 +421,7 @@ export default function NFTView() {
                               Last Appraisal
                             </Text>
 
-                            <Label color="blue">
+                            <Label color="primary">
                               {latestAppraisal.confidence
                                 ? (latestAppraisal.confidence * 100).toFixed(
                                     2
@@ -432,14 +433,14 @@ export default function NFTView() {
                             color="primary"
                             currencySymbol={lastSale ? 'Ξ' : undefined}
                             variant="currency"
-                            size="lg"
+                            size="md"
                           >
                             {latestAppraisal?.ethSalePrice
                               ? weiToEth(latestAppraisal.ethSalePrice, 3, false)
                               : '-'}
                           </Label>
                           <Text
-                            color="blue"
+                            color="primary"
                             sx={{ fontSize: 2, textTransform: 'uppercase' }}
                           >
                             {latestAppraisal?.timestamp
