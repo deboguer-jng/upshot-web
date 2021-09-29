@@ -143,6 +143,7 @@ export default function SearchView() {
           sx={{
             gridTemplateColumns: ['1fr', '1fr', '1fr 3fr', '1fr 3fr 1fr'],
             flexGrow: 1,
+            gap: 8,
           }}
         >
           <Flex
@@ -243,7 +244,10 @@ export default function SearchView() {
               <Button onClick={handleApplyFilters}>Apply Filters</Button>
             </Box>
           </Flex>
-          <Flex sx={{ flex: '1 1 auto', flexDirection: 'column', gap: 4 }}>
+          <Flex
+            paddingX={[8, 8, 0]}
+            sx={{ flex: '1 1 auto', flexDirection: 'column', gap: 4 }}
+          >
             <Flex sx={{ flexDirection: 'column' }}>
               <Text>Search Results</Text>
               <Text variant="h1Primary">{collectionNameApplied}</Text>
@@ -259,7 +263,6 @@ export default function SearchView() {
                 sx={{
                   flexWrap: 'wrap',
                   gap: 5,
-                  marginRight: 100,
                 }}
               >
                 {loading
