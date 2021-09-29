@@ -132,6 +132,11 @@ export default function NFTView() {
       parseFloat(ethers.utils.formatEther(ethSalePrice)),
     ])
 
+  // Temporarily reversed here, but should be done
+  // on the backend and removed here ASAP to support
+  // pagination.
+  const reversedTxHistory = [...txHistory].reverse()
+
   const appraisalSeries = appraisalHistory.map(
     ({ timestamp, estimatedPrice }) => [
       timestamp,
@@ -487,7 +492,7 @@ export default function NFTView() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {txHistory
+                    {reversedTxHistory
                       .filter(({ assetEvent }) => !!assetEvent?.txAt)
                       .map(({ assetEvent, ethSalePrice }, idx) => (
                         <TableRow key={idx}>
