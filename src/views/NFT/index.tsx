@@ -147,8 +147,8 @@ export default function NFTView() {
   )
 
   const chartData = [
-    { name: 'Sales', data: salesSeries },
     { name: 'Appraisals', data: appraisalSeries },
+    { name: 'Sales', data: salesSeries },
   ]
 
   const assetName = getAssetName(name, collection?.name, tokenId)
