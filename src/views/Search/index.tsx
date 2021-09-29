@@ -248,10 +248,11 @@ export default function SearchView() {
           ) : data?.assetGlobalSearch?.assets.length === 0 ? (
             <div>No results available.</div>
           ) : (
-            <Grid
-              gap={5}
+            <Flex
               sx={{
-                gridTemplateColumns: 'repeat(auto-fill, 156px)',
+                flexWrap: 'wrap',
+                gap: 5,
+                marginRight: 100,
               }}
             >
               {loading
@@ -301,7 +302,7 @@ export default function SearchView() {
                       </a>
                     )
                   )}
-            </Grid>
+            </Flex>
           )}
 
           <Flex sx={{ justifyContent: 'center' }}>
