@@ -56,7 +56,7 @@ export default function CollectionAvgPricePanel({
     },
   })
 
-  const title = 'Collection Avg. Price'
+  const title = 'Collections by Average Price'
   const subtitle = '(Select Collections to change graph)'
 
   /* Transposes a horizontally-labeled index to vertical-labeled index */

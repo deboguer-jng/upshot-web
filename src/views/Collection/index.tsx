@@ -165,7 +165,7 @@ export default function CollectionView() {
             <CollectionStat
               color="pink"
               value={ceil ? weiToEth(ceil) : '-'}
-              label="Most Valuable NFT"
+              label="Highest Listing"
             />
             <CollectionStat
               value={totalVolume ? weiToEth(totalVolume) : '-'}

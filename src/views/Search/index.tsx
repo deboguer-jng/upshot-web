@@ -160,7 +160,7 @@ export default function SearchView() {
 
           <Box>
             <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-              <Text color="grey-500">Pricing Range (min - max)</Text>
+              <Text color="grey-500">Price Range</Text>
               <Flex sx={{ gap: 4 }}>
                 <InputRounded
                   placeholder="Ξ Min"
@@ -225,7 +225,7 @@ export default function SearchView() {
                 Attributes
               </Text>
               <InputRounded
-                placeholder="Search attributes"
+                placeholder="Attributes"
                 value={attributes}
                 onChange={(e) => setAttributes(e.currentTarget.value)}
               />
