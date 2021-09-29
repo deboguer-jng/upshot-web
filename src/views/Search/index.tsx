@@ -143,6 +143,7 @@ export default function SearchView() {
           sx={{
             gridTemplateColumns: ['1fr', '1fr', '1fr 3fr', '1fr 3fr 1fr'],
             flexGrow: 1,
+            gap: 8,
           }}
         >
           <Flex
