@@ -32,9 +32,7 @@ const getPriceChangeLabel = (val: number | null) => {
   if (val === null) return '-'
 
   const percentChange = val.toFixed(2) + '%'
-  return val > 0
-    ? '+' + percentChange
-    : percentChange
+  return val > 0 ? '+' + percentChange : percentChange
 }
 
 function CollectionTableHead() {
@@ -44,17 +42,15 @@ function CollectionTableHead() {
   return (
     <TableHead>
       <TableRow>
-        <TableCell color="grey-500">Name</TableCell>
         <TableCell></TableCell>
+        <TableCell color="grey-500">Name</TableCell>
         {isMobile ? (
           // Mobile only shows the first and last columns
-          <TableCell sx={{ minWidth: 100 }} color="grey-500">
-            Details
-          </TableCell>
+          <TableCell color="grey-500">Details</TableCell>
         ) : (
           <>
             {columns.map((col, key) => (
-              <TableCell key={key} sx={{ minWidth: 100 }} color="grey-500">
+              <TableCell key={key} color="grey-500">
                 {col}
               </TableCell>
             ))}
