@@ -22,7 +22,7 @@ export default function ButtonTabs({ onChange }: ButtonTabsProps) {
   }
 
   return (
-    <Flex sx={{ gap: 2, flexWrap: 'wrap' }}>
+    <Flex sx={{ gap: 4, flexWrap: 'wrap' }}>
       {Object.values(METRICS).map((children, idx) => (
         <Button
           key={idx}
