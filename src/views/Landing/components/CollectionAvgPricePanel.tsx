@@ -135,6 +135,9 @@ export default function CollectionAvgPricePanel({
                   width="100%"
                   sx={{ borderRadius: 'circle' }}
                   src={imageUrl}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                  }}
                 />
               </Link>
             }
