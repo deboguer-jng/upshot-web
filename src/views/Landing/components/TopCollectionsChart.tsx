@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/client'
 import { Chart } from '@upshot-tech/upshot-ui'
 import { ethers } from 'ethers'
+import { weiToEth } from 'utils/number'
 
 import {
   GET_TOP_COLLECTIONS,
@@ -14,6 +15,18 @@ const timeSeriesKeys = {
   AVERAGE: 'average',
   VOLUME: 'marketCap',
   FLOOR: 'floor',
+}
+
+const athKeys = {
+  AVERAGE: 'athAverage',
+  VOLUME: 'athVolume',
+  FLOOR: 'athFloor',
+}
+
+const atlKeys = {
+  AVERAGE: 'atlAverage',
+  VOLUME: 'atlVolume',
+  FLOOR: 'atlFloor',
 }
 
 export default function TopCollectionsCharts({
@@ -64,12 +77,11 @@ export default function TopCollectionsCharts({
    * Wei pricing is converted to rounded floats.
    */
   const chartData = assetSets
-    .map(({ timeSeries, name }) => ({
-      name,
+    .map(({ timeSeries, ...rest }) => ({
       data: (timeSeries as TimeSeries[])
         .filter(({ timestamp }) => timestamp >= minDate)
         .reduce(
-          (a: (Date | number)[][], c, i) => [
+          (a: number[][], c) => [
             ...a,
             [
               c.timestamp * 1000,
@@ -78,17 +90,25 @@ export default function TopCollectionsCharts({
           ],
           []
         ),
+      ...rest,
     }))
-    .map(({ name, data }) => ({
-      name,
-      data: data.map((val, i) =>
-        i === 0
-          ? [minDate * 1000, val[1]]
-          : i === data.length - 1
-          ? [maxDate * 1000, val[1]]
-          : val
-      ),
-    }))
+    .map(({ data, name, ...rest }) => {
+      const ath = rest[athKeys[metric]].value
+      const atl = rest[atlKeys[metric]].value
+
+      return {
+        name,
+        ath: ath ? weiToEth(ath, 2) : null,
+        atl: atl ? weiToEth(atl, 2) : null,
+        data: data.map((val, i) =>
+          i === 0
+            ? [minDate * 1000, val[1]] // Align window start
+            : i === data.length - 1
+            ? [maxDate * 1000, val[1]] // Align window end
+            : val
+        ),
+      }
+    })
 
   return <Chart data={chartData} />
 }
