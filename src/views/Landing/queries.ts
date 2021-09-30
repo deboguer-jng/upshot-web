@@ -16,6 +16,24 @@ export type TimeSeries = {
 export type GetTopCollectionsData = {
   orderedCollectionsByMetricSearch: {
     name: string
+    athAverage: {
+      value: string
+    }
+    atlAverage: {
+      value: string
+    }
+    athFloor: {
+      value: string
+    }
+    atlFloor: {
+      value: string
+    }
+    athVolume: {
+      value: string
+    }
+    atlVolume: {
+      value: string
+    }
     timeSeries?: TimeSeries[]
   }[]
 }
@@ -31,6 +49,24 @@ export const GET_TOP_COLLECTIONS = gql`
       limit: 3
     ) {
       name
+      athAverage {
+        value
+      }
+      atlAverage {
+        value
+      }
+      athFloor {
+        value
+      }
+      atlFloor {
+        value
+      }
+      athVolume {
+        value
+      }
+      atlVolume {
+        value
+      }
       timeSeries {
         timestamp
         average
