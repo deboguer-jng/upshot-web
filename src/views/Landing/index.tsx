@@ -1,8 +1,8 @@
 import { Container } from '@upshot-tech/upshot-ui'
 import { Flex, Footer, Text } from '@upshot-tech/upshot-ui'
 import { Nav } from 'components/Nav'
-import { useState } from 'react'
 import Head from 'next/head'
+import { useState } from 'react'
 
 import ButtonTabs, { METRIC } from './components/ButtonTabs'
 import CollectionAvgPricePanel from './components/CollectionAvgPricePanel'

@@ -19,7 +19,7 @@ export const Nav = () => {
   const handleNavKeyUp = () => {
     if (navCollectionsData?.collections?.assetSets?.length) return
 
-    getNavCollections({ variables: { limit: 100 } })
+    getNavCollections({ variables: { limit: 1000 } })
   }
 
   const handleSearchSuggestionChange = (item) => {

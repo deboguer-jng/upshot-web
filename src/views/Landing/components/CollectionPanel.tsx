@@ -45,10 +45,10 @@ export default forwardRef(function CollectionPanel(
           }}
         >
           <Flex sx={{ flexDirection: 'column' }}>
-            <Flex variant="text.h1Secondary" sx={{ gap: 2 }}>
+            <Flex variant="text.h1Secondary" sx={{ gap: 2, lineHeight: '2rem' }}>
               {title}
             </Flex>
-            <Text color="grey-500" sx={{ fontSize: 2 }}>
+            <Text color="grey-500" sx={{ fontSize: 2, marginTop: '2px', marginBottom: '4px' }}>
               {subtitle}
             </Text>
           </Flex>
