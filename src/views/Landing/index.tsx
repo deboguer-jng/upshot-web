@@ -52,6 +52,7 @@ export default function LandingView() {
           />
           <CollectionAvgPricePanel
             {...{ selectedCollections }}
+            metric={chartMetric}
             onCollectionSelected={handleCollectionSelected}
           />
           <TopSellingNFTs />

@@ -15,16 +15,19 @@ import {
   GetCollectionAvgPriceData,
   GetCollectionAvgPriceVars,
 } from '../queries'
+import { METRIC } from './ButtonTabs'
 import CollectionPanel from './CollectionPanel'
 
 interface CollectionAvgPricePanelProps {
   selectedCollections: number[]
   onCollectionSelected: (id: number) => void
+  metric: METRIC
 }
 
 export default function CollectionAvgPricePanel({
   onCollectionSelected,
   selectedCollections,
+  metric,
 }: CollectionAvgPricePanelProps) {
   const { theme } = useTheme()
   const searchTermRef = useRef<HTMLInputElement | null>(null)
@@ -51,12 +54,14 @@ export default function CollectionAvgPricePanel({
     errorPolicy: 'all',
     variables: {
       limit: 12,
-      metric: 'AVERAGE',
+      metric,
       name: searchTermApplied,
     },
   })
 
-  const title = 'Collections by Average Price'
+  const title = `Collections by ${
+    metric.charAt(0) + metric.slice(1).toLowerCase()
+  } Price`
   const subtitle = '(Select Collections to change graph)'
 
   /* Transposes a horizontally-labeled index to vertical-labeled index */
