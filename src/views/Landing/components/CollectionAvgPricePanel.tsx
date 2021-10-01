@@ -1,3 +1,4 @@
+/** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
 import { useBreakpointIndex } from '@theme-ui/match-media'
 import { Flex, Image, Text } from '@upshot-tech/upshot-ui'
@@ -5,6 +6,8 @@ import {
   CollectionButton,
   CollectionButtonTemplate,
   useTheme,
+  Box,
+  Icon,
 } from '@upshot-tech/upshot-ui'
 import Link from 'next/link'
 import { useRef, useState } from 'react'
@@ -129,16 +132,34 @@ export default function CollectionAvgPricePanel({
           <CollectionButton
             icon={
               <Link passHref href={`/analytics/collection/${id}`}>
-                <Image
-                  alt={`${name} Cover Artwork`}
-                  height="100%"
-                  width="100%"
-                  sx={{ borderRadius: 'circle' }}
-                  src={imageUrl}
-                  onClick={(e) => {
-                    e.stopPropagation()
+                <Box sx={{
+                  width: '100%',
+                  height: '100%',
+                  position: 'relative',
+                    '&:hover img': {
+                      display: 'none',
+                    },
+                    '&:hover svg': {
+                      display: 'block',
+                    },
                   }}
-                />
+                >
+                  <Image
+                    alt={`${name} Cover Artwork`}
+                    height="100%"
+                    width="100%"
+                    sx={{ borderRadius: 'circle' }}
+                    src={imageUrl}
+                  />
+                  <Icon icon='arrowStylizedRight' sx={{
+                      display: 'none',
+                      position: 'absolute',
+                      top: '0',
+                      width: '40% !important',
+                      height: '40% !important',
+                      margin: '30%',
+                    }} size='40%'></Icon>
+                </Box>
               </Link>
             }
             onClick={() => onCollectionSelected(id)}
