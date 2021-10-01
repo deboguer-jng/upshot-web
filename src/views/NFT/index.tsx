@@ -1,3 +1,4 @@
+/** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
 import { useBreakpointIndex } from '@theme-ui/match-media'
 import { Container } from '@upshot-tech/upshot-ui'
@@ -21,6 +22,7 @@ import { PIXELATED_CONTRACTS } from 'constants/'
 import { format } from 'date-fns'
 import { ethers } from 'ethers'
 import Head from 'next/head'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { shortenAddress } from 'utils/address'
@@ -189,25 +191,40 @@ export default function NFTView() {
               )}
             </Flex>
 
-            <Flex sx={{ gap: 4, alignItems: 'center' }}>
-              <Image
-                src={collection?.imageUrl ?? '/img/defaultAvatar.png'}
-                alt={`Collection cover: ${collection?.name}`}
-                width={32}
-                sx={{ borderRadius: 'circle', height: 32, width: 32 }}
-              />
-              <Flex sx={{ flexDirection: 'column', justifyContent: 'center' }}>
-                <Text color="grey-500" sx={{ lineHeight: 1.25, fontSize: 2 }}>
-                  Collection
-                </Text>
-                <Text
-                  color="grey-300"
-                  sx={{ fontWeight: 'bold', lineHeight: 1.25, fontSize: 4 }}
-                >
-                  {collection?.name ?? 'Unknown'}
-                </Text>
-              </Flex>
-            </Flex>
+            <Link href={`/analytics/collection/${collection?.id}`}>
+              <a
+                sx={{
+                  color: 'white',
+                  textDecoration: 'none',
+                  cursor: 'pointer',
+                }}
+              >
+                <Flex sx={{ gap: 4, alignItems: 'center' }}>
+                  <Image
+                    src={collection?.imageUrl ?? '/img/defaultAvatar.png'}
+                    alt={`Collection cover: ${collection?.name}`}
+                    width={32}
+                    sx={{ borderRadius: 'circle', height: 32, width: 32 }}
+                  />
+                  <Flex
+                    sx={{ flexDirection: 'column', justifyContent: 'center' }}
+                  >
+                    <Text
+                      color="grey-500"
+                      sx={{ lineHeight: 1.25, fontSize: 2 }}
+                    >
+                      Collection
+                    </Text>
+                    <Text
+                      color="grey-300"
+                      sx={{ fontWeight: 'bold', lineHeight: 1.25, fontSize: 4 }}
+                    >
+                      {collection?.name ?? 'Unknown'}
+                    </Text>
+                  </Flex>
+                </Flex>
+              </a>
+            </Link>
           </Flex>
 
           <Flex sx={{ flexDirection: 'column', gap: 4 }}>
@@ -369,7 +386,15 @@ export default function NFTView() {
                     <Text variant="h3Secondary">Attributes</Text>
                     <Grid columns={isMobile ? 1 : 2}>
                       {traits.map(({ value, rarity }, idx) => (
-                        <LabelAttribute key={idx} variant='percentage' percentage={(100 - (rarity * 100)).toFixed(2).toString()}>{value}</LabelAttribute>
+                        <LabelAttribute
+                          key={idx}
+                          variant="percentage"
+                          percentage={(100 - rarity * 100)
+                            .toFixed(2)
+                            .toString()}
+                        >
+                          {value}
+                        </LabelAttribute>
                       ))}
                     </Grid>
                   </Flex>
