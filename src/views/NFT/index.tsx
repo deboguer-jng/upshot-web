@@ -240,39 +240,49 @@ export default function NFTView() {
                     <Text variant="h3Secondary">General Info</Text>
 
                     <Flex sx={{ gap: 4 }}>
-                      <Flex sx={{ gap: 4, alignItems: 'center' }}>
-                        <Image
-                          src={collection?.imageUrl ?? '/img/defaultAvatar.png'}
-                          alt={`Collection cover: ${
-                            collection?.name ?? 'Unknown'
-                          }}`}
-                          width={32}
-                          sx={{ borderRadius: 'circle', height: 32, width: 32 }}
-                        />
-                        <Flex
+                      <Link href={`/analytics/collection/${collection?.id}`}>
+                        <a
                           sx={{
-                            flexDirection: 'column',
-                            justifyContent: 'center',
+                            color: 'white',
+                            textDecoration: 'none',
+                            cursor: 'pointer',
                           }}
                         >
-                          <Text
-                            color="grey-500"
-                            sx={{ lineHeight: 1.25, fontSize: 2 }}
-                          >
-                            Collection
-                          </Text>
-                          <Text
-                            color="grey-300"
-                            sx={{
-                              fontWeight: 'bold',
-                              lineHeight: 1.25,
-                              fontSize: 4,
-                            }}
-                          >
-                            {collection?.name}
-                          </Text>
-                        </Flex>
-                      </Flex>
+                          <Flex sx={{ gap: 4, alignItems: 'center' }}>
+                            <Image
+                              src={collection?.imageUrl ?? '/img/defaultAvatar.png'}
+                              alt={`Collection cover: ${
+                                collection?.name ?? 'Unknown'
+                              }}`}
+                              width={32}
+                              sx={{ borderRadius: 'circle', height: 32, width: 32 }}
+                            />
+                            <Flex
+                              sx={{
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              <Text
+                                color="grey-500"
+                                sx={{ lineHeight: 1.25, fontSize: 2 }}
+                              >
+                                Collection
+                              </Text>
+                              <Text
+                                color="grey-300"
+                                sx={{
+                                  fontWeight: 'bold',
+                                  lineHeight: 1.25,
+                                  fontSize: 4,
+                                }}
+                              >
+                                {collection?.name}
+                              </Text>
+                            </Flex>
+                          </Flex>
+                        </a>
+                      </Link>
 
                       <Flex sx={{ gap: 4, alignItems: 'center' }}>
                         <Image
