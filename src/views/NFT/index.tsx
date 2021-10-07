@@ -386,15 +386,26 @@ export default function NFTView() {
                     <Text variant="h3Secondary">Attributes</Text>
                     <Grid columns={isMobile ? 1 : 2}>
                       {traits.map(({ value, rarity }, idx) => (
-                        <LabelAttribute
+                        <Link
+                          href={`/analytics/search?attributes=${value}`}
                           key={idx}
-                          variant="percentage"
-                          percentage={(100 - rarity * 100)
-                            .toFixed(2)
-                            .toString()}
                         >
-                          {value}
-                        </LabelAttribute>
+                          <a
+                            sx={{
+                              textDecoration: 'none',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            <LabelAttribute
+                              variant="percentage"
+                              percentage={(100 - rarity * 100)
+                                .toFixed(2)
+                                .toString()}
+                            >
+                              {value}
+                            </LabelAttribute>
+                          </a>
+                        </Link>
                       ))}
                     </Grid>
                   </Flex>

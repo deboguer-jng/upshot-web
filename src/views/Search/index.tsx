@@ -29,6 +29,7 @@ export default function SearchView() {
   const [page, setPage] = useState(0)
   const collectionParam = (router.query.collection as string) ?? ''
   const queryParam = (router.query.query as string) ?? ''
+  const attributesParam = (router.query.attributes as string) ?? ''
 
   // @todo Replace these states refs
   const [searchTerm, setSearchTerm] = useState(queryParam)
@@ -36,7 +37,7 @@ export default function SearchView() {
 
   const [tokenId, setTokenId] = useState('')
   const [tokenIdApplied, setTokenIdApplied] = useState('')
-  const [attributes, setAttributes] = useState('')
+  const [attributes, setAttributes] = useState(attributesParam)
   const [attributesApplied, setAttributesApplied] = useState('')
 
   const [collectionName, setCollectionName] = useState(collectionParam)
@@ -71,7 +72,11 @@ export default function SearchView() {
     setCollectionNameApplied(collectionParam)
     setSearchTermApplied(queryParam)
     setSearchTerm(queryParam)
-  }, [collectionParam, queryParam])
+    setAttributes(attributesParam)
+    setAttributesApplied(
+      attributesParam ? JSON.stringify(attributesParam.split(',')) : ''
+    )
+  }, [collectionParam, queryParam, attributesParam])
 
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
@@ -97,7 +102,7 @@ export default function SearchView() {
     setCollectionNameApplied(collectionName)
     setTokenIdApplied(tokenId)
     setAttributesApplied(
-      attributes ? JSON.stringify(attributes.split(/\s+/)) : ''
+      attributes ? JSON.stringify(attributes.split(',')) : ''
     )
 
     let minPriceWei
