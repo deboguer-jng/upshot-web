@@ -102,8 +102,8 @@ export default function SearchView() {
     setCollectionNameApplied(collectionName)
     setTokenIdApplied(tokenId)
     setAttributesApplied(
-      attributes ? JSON.stringify(attributes.split(',')) : ''
-
+      attributes ? JSON.stringify(attributes.split(/[ ,]+/)) : ''
+    )
     let minPriceWei
     try {
       if (minPriceEth)
