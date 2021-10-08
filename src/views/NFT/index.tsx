@@ -240,49 +240,61 @@ export default function NFTView() {
                     <Text variant="h3Secondary">General Info</Text>
 
                     <Flex sx={{ gap: 4 }}>
-                      <Link href={`/analytics/collection/${collection?.id}`}>
-                        <a
+                      <Flex sx={{ gap: 4, alignItems: 'center' }}>
+                        <Link
+                          href={`/analytics/collection/${collection?.id}`}
+                          passHref
+                        >
+                          <Image
+                            src={
+                              collection?.imageUrl ?? '/img/defaultAvatar.png'
+                            }
+                            alt={`Collection cover: ${
+                              collection?.name ?? 'Unknown'
+                            }}`}
+                            width={32}
+                            sx={{
+                              borderRadius: 'circle',
+                              height: 32,
+                              width: 32,
+                              cursor: 'pointer',
+                            }}
+                          />
+                        </Link>
+                        <Flex
                           sx={{
-                            color: 'white',
-                            textDecoration: 'none',
-                            cursor: 'pointer',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
                           }}
                         >
-                          <Flex sx={{ gap: 4, alignItems: 'center' }}>
-                            <Image
-                              src={collection?.imageUrl ?? '/img/defaultAvatar.png'}
-                              alt={`Collection cover: ${
-                                collection?.name ?? 'Unknown'
-                              }}`}
-                              width={32}
-                              sx={{ borderRadius: 'circle', height: 32, width: 32 }}
-                            />
-                            <Flex
+                          <Text
+                            color="grey-500"
+                            sx={{ lineHeight: 1.25, fontSize: 2 }}
+                          >
+                            Collection
+                          </Text>
+                          <Link
+                            href={`/analytics/collection/${collection?.id}`}
+                            passHref
+                          >
+                            <Text
+                              as="a"
+                              color="grey-300"
                               sx={{
-                                flexDirection: 'column',
-                                justifyContent: 'center',
+                                fontWeight: 'bold',
+                                lineHeight: 1.25,
+                                fontSize: 4,
+                                textDecoration: 'none',
+                                '&:hover': {
+                                  textDecoration: 'underline',
+                                },
                               }}
                             >
-                              <Text
-                                color="grey-500"
-                                sx={{ lineHeight: 1.25, fontSize: 2 }}
-                              >
-                                Collection
-                              </Text>
-                              <Text
-                                color="grey-300"
-                                sx={{
-                                  fontWeight: 'bold',
-                                  lineHeight: 1.25,
-                                  fontSize: 4,
-                                }}
-                              >
-                                {collection?.name}
-                              </Text>
-                            </Flex>
-                          </Flex>
-                        </a>
-                      </Link>
+                              {collection?.name}
+                            </Text>
+                          </Link>
+                        </Flex>
+                      </Flex>
 
                       <Flex sx={{ gap: 4, alignItems: 'center' }}>
                         <Image
