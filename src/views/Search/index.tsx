@@ -103,7 +103,6 @@ export default function SearchView() {
     setTokenIdApplied(tokenId)
     setAttributesApplied(
       attributes ? JSON.stringify(attributes.split(',')) : ''
-    )
 
     let minPriceWei
     try {

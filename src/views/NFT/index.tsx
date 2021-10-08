@@ -241,14 +241,26 @@ export default function NFTView() {
 
                     <Flex sx={{ gap: 4 }}>
                       <Flex sx={{ gap: 4, alignItems: 'center' }}>
-                        <Image
-                          src={collection?.imageUrl ?? '/img/defaultAvatar.png'}
-                          alt={`Collection cover: ${
-                            collection?.name ?? 'Unknown'
-                          }}`}
-                          width={32}
-                          sx={{ borderRadius: 'circle', height: 32, width: 32 }}
-                        />
+                        <Link
+                          href={`/analytics/collection/${collection?.id}`}
+                          passHref
+                        >
+                          <Image
+                            src={
+                              collection?.imageUrl ?? '/img/defaultAvatar.png'
+                            }
+                            alt={`Collection cover: ${
+                              collection?.name ?? 'Unknown'
+                            }}`}
+                            width={32}
+                            sx={{
+                              borderRadius: 'circle',
+                              height: 32,
+                              width: 32,
+                              cursor: 'pointer',
+                            }}
+                          />
+                        </Link>
                         <Flex
                           sx={{
                             flexDirection: 'column',
@@ -261,16 +273,26 @@ export default function NFTView() {
                           >
                             Collection
                           </Text>
-                          <Text
-                            color="grey-300"
-                            sx={{
-                              fontWeight: 'bold',
-                              lineHeight: 1.25,
-                              fontSize: 4,
-                            }}
+                          <Link
+                            href={`/analytics/collection/${collection?.id}`}
+                            passHref
                           >
-                            {collection?.name}
-                          </Text>
+                            <Text
+                              as="a"
+                              color="grey-300"
+                              sx={{
+                                fontWeight: 'bold',
+                                lineHeight: 1.25,
+                                fontSize: 4,
+                                textDecoration: 'none',
+                                '&:hover': {
+                                  textDecoration: 'underline',
+                                },
+                              }}
+                            >
+                              {collection?.name}
+                            </Text>
+                          </Link>
                         </Flex>
                       </Flex>
 
