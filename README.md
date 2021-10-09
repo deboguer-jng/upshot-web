@@ -9,24 +9,28 @@ In development, you will want to link this repo with the one containing the Upsh
 Note: To reset your yarn linking configuration, first remove the `link` directory at `~/.config/yarn`.
 
 ```bash
-# Link React & React-DOM peer dependencies
+# Configure Upshot-Web
 git clone https://github.com/upshot-tech/upshot-web.git
-cd upshot-web
-yarn
-cd node_modules/react
-yarn link
-cd ../react-dom
-yarn link
-
-# Link Upshot-UI
+cd upshot-web && yarn
+cd node_modules/react && yarn link
+cd ../react-dom && yarn link
 cd ../../..
+
+# Configure Upshot-UI
 git clone https://github.com/upshot-tech/upshot-ui.git
-cd upshot-ui
-yarn link
-yarn
+cd upshot-ui && yarn
 yarn link react
 yarn link react-dom
+cd node_modules/@emotion/react && yarn link
+cd ../styled && yarn link
+cd ../../.. && yarn link
 yarn build # Re-run to see latest upshot-ui version in upshot-web
+
+# Link Upshot-UI <> Upshot-Web
+cd ../upshot-web
+yarn link @upshot-tech/upshot-ui
+yarn link @emotion/react
+yarn link @emotion/styled
 ```
 
 ### Install dependencies
