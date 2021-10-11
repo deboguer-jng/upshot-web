@@ -1,3 +1,3 @@
-import SearchView from 'views/Search'
+import SearchView from 'views/Analytics/Search'
 
 export default SearchView

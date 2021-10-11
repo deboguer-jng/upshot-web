@@ -1,3 +1,3 @@
-import NFTView from 'views/NFT'
+import NFTView from 'views/Analytics/NFT'
 
 export default NFTView
