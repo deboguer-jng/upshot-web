@@ -1,3 +1,3 @@
-import CollectionView from 'views/Collection'
+import CollectionView from 'views/Analytics/Collection'
 
 export default CollectionView
