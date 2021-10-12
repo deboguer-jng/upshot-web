@@ -62,9 +62,11 @@ export default function CollectionAvgPricePanel({
     },
   })
 
-  const title = `Collections by ${
-    metric.charAt(0) + metric.slice(1).toLowerCase()
-  } Price`
+  const title = metric === 'VOLUME'
+    ? 'Collections by Weekly Volume'
+    : `Collections by ${
+        metric.charAt(0) + metric.slice(1).toLowerCase()
+      } Price` 
   const subtitle = '(Select Collections to change graph)'
 
   /* Transposes a horizontally-labeled index to vertical-labeled index */
