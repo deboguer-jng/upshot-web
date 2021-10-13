@@ -409,7 +409,7 @@ export default function NFTView() {
                     <Grid columns={isMobile ? 1 : 2}>
                       {traits.map(({ value, rarity }, idx) => (
                         <Link
-                          href={`/analytics/search?attributes=${value}`}
+                          href={`/analytics/search?attributes=${value}&collection=${collection?.name}`}
                           key={idx}
                         >
                           <a
