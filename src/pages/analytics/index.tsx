@@ -1,3 +1,3 @@
-import LandingView from 'views/Landing'
+import AnalyticsView from 'views/Analytics'
 
-export default LandingView
+export default AnalyticsView
