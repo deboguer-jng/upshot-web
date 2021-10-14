@@ -408,26 +408,28 @@ export default function NFTView() {
                     <Text variant="h3Secondary">Attributes</Text>
                     <Grid columns={isMobile ? 1 : 2}>
                       {traits.map(({ value, rarity }, idx) => (
-                        <Link
-                          href={`/analytics/search?attributes=${value}&collection=${collection?.name}`}
-                          key={idx}
-                        >
-                          <a
-                            sx={{
-                              textDecoration: 'none',
-                              cursor: 'pointer',
-                            }}
+                        <Box>
+                          <Link
+                            href={`/analytics/search?attributes=${value}&collection=${collection?.name}`}
+                            key={idx}
                           >
-                            <LabelAttribute
-                              variant="percentage"
-                              percentage={(100 - rarity * 100)
-                                .toFixed(2)
-                                .toString()}
+                            <a
+                              sx={{
+                                textDecoration: 'none',
+                                cursor: 'pointer',
+                              }}
                             >
-                              {value}
-                            </LabelAttribute>
-                          </a>
-                        </Link>
+                              <LabelAttribute
+                                variant="percentage"
+                                percentage={(100 - rarity * 100)
+                                  .toFixed(2)
+                                  .toString()}
+                              >
+                                {value}
+                              </LabelAttribute>
+                            </a>
+                          </Link>
+                        </Box>
                       ))}
                     </Grid>
                   </Flex>
