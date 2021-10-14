@@ -223,3 +223,31 @@ export const GET_TOP_SALES = gql`
     }
   }
 `
+
+/**
+ * 7-day Market Cap Change
+ * @see TreeMapMarketCap
+ */
+export type GetSevenDayMCChangeVars = {
+  limit: number
+}
+
+export type GetSevenDayMCChangeData = {
+  collections: {
+    assetSets: {
+      name: string
+      sevenDayMCChange: number
+    }[]
+  }
+}
+
+export const GET_SEVEN_DAY_MC_CHANGE = gql`
+  query SevenDayMCChange($limit: OneToHundredInt!) {
+    collections(limit: $limit) {
+      assetSets {
+        name
+        sevenDayMCChange
+      }
+    }
+  }
+`
