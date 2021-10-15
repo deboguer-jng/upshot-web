@@ -249,7 +249,7 @@ export default function SearchView() {
           sx={{
             gridTemplateColumns: ['1fr', '1fr', '1fr 3fr', '1fr 3fr 1fr'],
             flexGrow: 1,
-            gap: 8,
+            gap: [8, 5, 0],
           }}
         >
           <Flex
@@ -289,7 +289,11 @@ export default function SearchView() {
           </Flex>
           <Flex
             paddingX={[8, 8, 0]}
-            sx={{ flex: '1 1 auto', flexDirection: 'column', gap: 4 }}
+            sx={{
+              flex: '1 auto auto',
+              flexDirection: 'column',
+              gap: 4
+            }}
           >
             <Flex sx={{ flexDirection: 'column' }}>
               <Text>Search Results</Text>
@@ -305,7 +309,8 @@ export default function SearchView() {
               <Flex
                 sx={{
                   flexWrap: 'wrap',
-                  gap: 5,
+                  gap: [2, 8, 5],
+                  justifyContent: ['center', 'center', 'initial']
                 }}
               >
                 {loading
