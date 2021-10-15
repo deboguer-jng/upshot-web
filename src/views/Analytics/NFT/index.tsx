@@ -548,81 +548,86 @@ export default function NFTView() {
                   >
                     <Text variant="h3Secondary">Transaction History</Text>
                   </Flex>
-                  <Table sx={{ borderSpacing: '0 10px' }}>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell color="grey-500">Date</TableCell>
-                        {!isMobile && (
-                          <>
-                            <TableCell color="grey-500">Sender</TableCell>
-                            <TableCell color="grey-500">Recipient</TableCell>
-                          </>
-                        )}
+                  { reversedTxHistory.length > 0 && (
+                    <Table sx={{ borderSpacing: '0 10px' }}>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell color="grey-500">Date</TableCell>
+                          {!isMobile && (
+                            <>
+                              <TableCell color="grey-500">Sender</TableCell>
+                              <TableCell color="grey-500">Recipient</TableCell>
+                            </>
+                          )}
 
-                        <TableCell color="grey-500">Sale Price</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {reversedTxHistory
-                        .filter(({ assetEvent }) => !!assetEvent?.txAt)
-                        .map(({ assetEvent, ethSalePrice }, idx) => (
-                          <TableRow key={idx}>
-                            <TableCell sx={{ width: '100%' }}>
-                              {format(assetEvent.txAt * 1000, 'M/d/yyyy')}
-                            </TableCell>
-                            {!isMobile && (
-                              <>
-                                <TableCell sx={{ minWidth: 140 }}>
-                                  <Flex sx={{ alignItems: 'center', gap: 2 }}>
-                                    <Box
-                                      sx={{
-                                        borderRadius: 'circle',
-                                        bg: 'yellow',
-                                        width: 3,
-                                        height: 3,
-                                      }}
-                                    />
-                                    <Text>
-                                      {assetEvent?.txFromAddress
-                                        ? shortenAddress(
-                                            assetEvent.txFromAddress,
-                                            2,
-                                            4
-                                          )
-                                        : '-'}
-                                    </Text>
-                                  </Flex>
-                                </TableCell>
-                                <TableCell sx={{ minWidth: 140 }}>
-                                  <Flex sx={{ alignItems: 'center', gap: 2 }}>
-                                    <Box
-                                      sx={{
-                                        borderRadius: 'circle',
-                                        bg: 'purple',
-                                        width: 3,
-                                        height: 3,
-                                      }}
-                                    />
-                                    <Text>
-                                      {assetEvent?.txToAddress
-                                        ? shortenAddress(
-                                            assetEvent.txToAddress,
-                                            2,
-                                            4
-                                          )
-                                        : '-'}
-                                    </Text>
-                                  </Flex>
-                                </TableCell>
-                              </>
-                            )}
-                            <TableCell sx={{ minWidth: 100, color: 'pink' }}>
-                              {ethSalePrice ? weiToEth(ethSalePrice) : '-'}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                    </TableBody>
-                  </Table>
+                          <TableCell color="grey-500">Sale Price</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {reversedTxHistory
+                          .filter(({ assetEvent }) => !!assetEvent?.txAt)
+                          .map(({ assetEvent, ethSalePrice }, idx) => (
+                            <TableRow key={idx}>
+                              <TableCell sx={{ width: '100%' }}>
+                                {format(assetEvent.txAt * 1000, 'M/d/yyyy')}
+                              </TableCell>
+                              {!isMobile && (
+                                <>
+                                  <TableCell sx={{ minWidth: 140 }}>
+                                    <Flex sx={{ alignItems: 'center', gap: 2 }}>
+                                      <Box
+                                        sx={{
+                                          borderRadius: 'circle',
+                                          bg: 'yellow',
+                                          width: 3,
+                                          height: 3,
+                                        }}
+                                      />
+                                      <Text>
+                                        {assetEvent?.txFromAddress
+                                          ? shortenAddress(
+                                              assetEvent.txFromAddress,
+                                              2,
+                                              4
+                                            )
+                                          : '-'}
+                                      </Text>
+                                    </Flex>
+                                  </TableCell>
+                                  <TableCell sx={{ minWidth: 140 }}>
+                                    <Flex sx={{ alignItems: 'center', gap: 2 }}>
+                                      <Box
+                                        sx={{
+                                          borderRadius: 'circle',
+                                          bg: 'purple',
+                                          width: 3,
+                                          height: 3,
+                                        }}
+                                      />
+                                      <Text>
+                                        {assetEvent?.txToAddress
+                                          ? shortenAddress(
+                                              assetEvent.txToAddress,
+                                              2,
+                                              4
+                                            )
+                                          : '-'}
+                                      </Text>
+                                    </Flex>
+                                  </TableCell>
+                                </>
+                              )}
+                              <TableCell sx={{ minWidth: 100, color: 'pink' }}>
+                                {ethSalePrice ? weiToEth(ethSalePrice) : '-'}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                      </TableBody>
+                    </Table>
+                  )}
+                  { reversedTxHistory.length == 0 && (
+                    <Text>This asset hasn’t been sold or transferred yet.</Text>
+                  )}
                 </Flex>
               </Flex>
             </Panel>
