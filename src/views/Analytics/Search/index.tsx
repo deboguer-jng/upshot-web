@@ -259,9 +259,11 @@ export default function SearchView() {
           {
             isMobile
               ? (
-                <Accordion title='Search Filters'>
-                  { searchFilters() }
-                </Accordion>
+                <div style={{paddingLeft: '20px', paddingRight: '20px'}}>
+                  <Accordion title='Search Filters'>
+                    { searchFilters() }
+                  </Accordion>
+                </div>
               )
               : searchFilters()
           }
