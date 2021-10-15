@@ -626,7 +626,7 @@ export default function NFTView() {
                     </Table>
                   )}
                   { reversedTxHistory.length == 0 && (
-                    <Text>This asset hasn’t been sold or transferred yet.</Text>
+                    <Text sx={{ color: 'grey-500'}} >This asset hasn’t been sold or transferred yet.</Text>
                   )}
                 </Flex>
               </Flex>
