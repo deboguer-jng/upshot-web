@@ -242,7 +242,7 @@ export type GetSevenDayMCChangeData = {
 }
 
 export const GET_SEVEN_DAY_MC_CHANGE = gql`
-  query SevenDayMCChange($limit: OneToHundredInt!) {
+  query SevenDayMCChange($limit: Int) {
     collections(limit: $limit) {
       assetSets {
         name
