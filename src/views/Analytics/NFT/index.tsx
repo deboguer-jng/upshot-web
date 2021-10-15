@@ -240,7 +240,7 @@ export default function NFTView() {
                     <Text variant="h3Secondary">General Info</Text>
 
                     <Flex sx={{ gap: 4 }}>
-                      <Flex sx={{ gap: 4, alignItems: 'center' }}>
+                      <Flex sx={{ gap: [1, 1, 4], alignItems: 'center' }}>
                         <Link
                           href={`/analytics/collection/${collection?.id}`}
                           passHref
@@ -258,6 +258,7 @@ export default function NFTView() {
                               height: 32,
                               width: 32,
                               cursor: 'pointer',
+                              minWidth: 'auto',
                             }}
                           />
                         </Link>
@@ -283,7 +284,7 @@ export default function NFTView() {
                               sx={{
                                 fontWeight: 'bold',
                                 lineHeight: 1.25,
-                                fontSize: 4,
+                                fontSize: [3, 3, 4],
                                 textDecoration: 'none',
                                 '&:hover': {
                                   textDecoration: 'underline',
@@ -296,12 +297,16 @@ export default function NFTView() {
                         </Flex>
                       </Flex>
 
-                      <Flex sx={{ gap: 4, alignItems: 'center' }}>
+                      <Flex sx={{ gap: [1, 1, 4], alignItems: 'center' }}>
                         <Image
                           src={creatorAvatar ?? '/img/defaultAvatar.png'}
                           alt="Creator avatar"
-                          width={32}
-                          sx={{ borderRadius: 'circle', height: 32, width: 32 }}
+                          sx={{ 
+                            borderRadius: 'circle',
+                            height: 32,
+                            width: 32,
+                            minWidth: 'auto',
+                          }}
                         />
                         <Flex
                           sx={{
@@ -320,7 +325,7 @@ export default function NFTView() {
                             sx={{
                               fontWeight: 'bold',
                               lineHeight: 1.25,
-                              fontSize: 4,
+                              fontSize: [3, 3, 4],
                             }}
                           >
                             {creatorUsername ??
