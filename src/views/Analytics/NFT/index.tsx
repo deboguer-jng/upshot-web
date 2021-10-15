@@ -29,6 +29,7 @@ import { shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
 import { getPriceChangeColor } from 'utils/color'
 import { weiToEth } from 'utils/number'
+import Collectors from 'views/Analytics/components/Collectors'
 
 import { GET_ASSET, GetAssetData, GetAssetVars } from './queries'
 

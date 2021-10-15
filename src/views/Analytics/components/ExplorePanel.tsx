@@ -2,7 +2,13 @@ import { useQuery } from '@apollo/client'
 import { useBreakpointIndex } from '@theme-ui/match-media'
 import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { InputRoundedSearch, Pagination } from '@upshot-tech/upshot-ui'
-import { Box, Flex, Icon, Panel, Skeleton } from '@upshot-tech/upshot-ui'
+import {
+  Box,
+  Flex,
+  Panel,
+  Skeleton,
+  SwitchDropdown,
+} from '@upshot-tech/upshot-ui'
 import {
   TableBody,
   TableCell,
@@ -20,6 +26,8 @@ import {
   GetExploreNFTsData,
   GetExploreNFTsVars,
 } from '../queries'
+import Collectors from './Collectors'
+import TopCollectors from './TopCollectors'
 
 const columns = ['Last Sale', 'Total Sales', '% Change']
 
@@ -63,10 +71,17 @@ function CollectionTableHead() {
 
 interface ExplorePanelHeadProps {
   searchTerm: string
+  tab?: string
+  onChangeTab?: (tab: string) => void
   onSearch?: (searchTerm: string) => void
 }
 
-function ExplorePanelHead({ onSearch, searchTerm }: ExplorePanelHeadProps) {
+function ExplorePanelHead({
+  onSearch,
+  onChangeTab,
+  tab,
+  searchTerm,
+}: ExplorePanelHeadProps) {
   const searchTermRef = useRef<HTMLInputElement>(null)
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -83,39 +98,49 @@ function ExplorePanelHead({ onSearch, searchTerm }: ExplorePanelHeadProps) {
       }}
     >
       <Flex sx={{ flexDirection: 'column' }}>
-        <Flex variant="text.h1Secondary" sx={{ gap: 2 }}>
+        <Flex
+          variant="text.h1Secondary"
+          sx={{ gap: 2, alignItems: 'flex-start' }}
+        >
           Explore
-          <Flex
-            color="primary"
-            sx={{ justifyContent: 'center', alignItems: 'center', gap: 2 }}
-          >
-            NFTs
-          </Flex>
+          <SwitchDropdown
+            onChange={(val) => onChangeTab?.(val)}
+            value={tab ?? ''}
+            options={['NFTs', 'Collectors']}
+          />
         </Flex>
       </Flex>
-      <Flex sx={{ justifyContent: 'flex-end', alignItems: 'stretch' }}>
-        <form onSubmit={handleSearch}>
-          <InputRoundedSearch
-            dark
-            fullWidth
-            hasButton
-            defaultValue={searchTerm}
-            ref={searchTermRef}
-            buttonProps={{
-              type: 'button',
-              onClick: handleSearch,
-            }}
-          />
-        </form>
-      </Flex>
+      {tab === 'NFTs' ? (
+        <Flex sx={{ justifyContent: 'flex-end', alignItems: 'stretch' }}>
+          <form onSubmit={handleSearch}>
+            <InputRoundedSearch
+              dark
+              fullWidth
+              hasButton
+              defaultValue={searchTerm}
+              ref={searchTermRef}
+              buttonProps={{
+                type: 'button',
+                onClick: handleSearch,
+              }}
+            />
+          </form>
+        </Flex>
+      ) : null}
     </Flex>
   )
 }
 
-function ExplorePanelSkeleton({ searchTerm }: { searchTerm: string }) {
+function ExplorePanelSkeleton({
+  tab,
+  searchTerm,
+}: {
+  tab: string
+  searchTerm: string
+}) {
   return (
     <Panel>
-      <ExplorePanelHead {...{ searchTerm }} />
+      <ExplorePanelHead {...{ tab, searchTerm }} />
       <CollectionTable>
         <CollectionTableHead />
         <TableBody>
@@ -142,6 +167,7 @@ export default function ExplorePanel({
 
   const [page, setPage] = useState(0)
   const [searchTerm, setSearchTerm] = useState('')
+  const [tab, setTab] = useState('Collectors')
 
   const { loading, error, data } = useQuery<
     GetExploreNFTsData,
@@ -163,7 +189,7 @@ export default function ExplorePanel({
   const handleSearch = (searchTerm) => setSearchTerm(searchTerm)
 
   /* Loading state. */
-  if (loading) return <ExplorePanelSkeleton {...{ searchTerm }} />
+  if (loading) return <ExplorePanelSkeleton {...{ tab, searchTerm }} />
 
   /* Error state. */
   if (error) return <Panel>There was an error completing your request.</Panel>
@@ -183,93 +209,106 @@ export default function ExplorePanel({
     router.push('/analytics/nft/' + id)
   }
 
-  return (
-    <Panel>
-      <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-        <ExplorePanelHead onSearch={handleSearch} {...{ searchTerm }} />
-        <CollectionTable>
-          <CollectionTableHead />
-          <TableBody>
-            {data.assetGlobalSearch.assets.map(
-              (
-                {
-                  id,
-                  name,
-                  previewImageUrl,
-                  mediaUrl,
-                  totalSaleCount,
-                  priceChangeFromFirstSale,
-                  lastSale,
-                },
-                idx
-              ) => (
-                <CollectionRow
-                  dark
-                  title={name}
-                  imageSrc={previewImageUrl ?? mediaUrl}
-                  key={idx}
-                  onClick={() => handleShowNFT(id)}
-                >
-                  {isMobile ? (
-                    <TableCell sx={{ maxWidth: 100 }}>
-                      <Flex
-                        sx={{
-                          flexDirection: 'column',
-                          alignItems: 'flex-end',
-                        }}
-                      >
-                        <Flex>
-                          {lastSale?.ethSalePrice
-                            ? weiToEth(lastSale.ethSalePrice)
-                            : '-'}
-                        </Flex>
-                        <Flex
-                          sx={{
-                            maxWidth: 100,
-                            color: getPriceChangeColor(
-                              priceChangeFromFirstSale
-                            ),
-                          }}
-                        >
-                          {getPriceChangeLabel(priceChangeFromFirstSale)}
-                        </Flex>
-                      </Flex>
-                    </TableCell>
-                  ) : (
-                    <>
-                      <TableCell sx={{ maxWidth: 100 }}>
+  const collectionTable = (
+    <>
+      <CollectionTable>
+        <CollectionTableHead />
+        <TableBody>
+          {data.assetGlobalSearch.assets.map(
+            (
+              {
+                id,
+                name,
+                previewImageUrl,
+                mediaUrl,
+                totalSaleCount,
+                priceChangeFromFirstSale,
+                lastSale,
+              },
+              idx
+            ) => (
+              <CollectionRow
+                dark
+                title={name}
+                imageSrc={previewImageUrl ?? mediaUrl}
+                key={idx}
+                onClick={() => handleShowNFT(id)}
+              >
+                {isMobile ? (
+                  <TableCell sx={{ maxWidth: 100 }}>
+                    <Flex
+                      sx={{
+                        flexDirection: 'column',
+                        alignItems: 'flex-end',
+                      }}
+                    >
+                      <Flex>
                         {lastSale?.ethSalePrice
                           ? weiToEth(lastSale.ethSalePrice)
                           : '-'}
-                      </TableCell>
-                      <TableCell sx={{ maxWidth: 100 }}>
-                        {totalSaleCount}
-                      </TableCell>
-                      <TableCell
+                      </Flex>
+                      <Flex
                         sx={{
                           maxWidth: 100,
                           color: getPriceChangeColor(priceChangeFromFirstSale),
                         }}
                       >
                         {getPriceChangeLabel(priceChangeFromFirstSale)}
-                      </TableCell>
-                    </>
-                  )}
-                </CollectionRow>
-              )
-            )}
-          </TableBody>
-        </CollectionTable>
+                      </Flex>
+                    </Flex>
+                  </TableCell>
+                ) : (
+                  <>
+                    <TableCell sx={{ maxWidth: 100 }}>
+                      {lastSale?.ethSalePrice
+                        ? weiToEth(lastSale.ethSalePrice)
+                        : '-'}
+                    </TableCell>
+                    <TableCell sx={{ maxWidth: 100 }}>
+                      {totalSaleCount}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        maxWidth: 100,
+                        color: getPriceChangeColor(priceChangeFromFirstSale),
+                      }}
+                    >
+                      {getPriceChangeLabel(priceChangeFromFirstSale)}
+                    </TableCell>
+                  </>
+                )}
+              </CollectionRow>
+            )
+          )}
+        </TableBody>
+      </CollectionTable>
+      <Flex sx={{ justifyContent: 'center', marginTop: -1 }}>
+        <Pagination
+          forcePage={page}
+          pageCount={Math.ceil(data.assetGlobalSearch.count / PAGE_SIZE)}
+          pageRangeDisplayed={isMobile ? 3 : 5}
+          marginPagesDisplayed={isMobile ? 1 : 5}
+          onPageChange={handlePageChange}
+        />
+      </Flex>
+    </>
+  )
 
-        <Flex sx={{ justifyContent: 'center', marginTop: -1 }}>
-          <Pagination
-            forcePage={page}
-            pageCount={Math.ceil(data.assetGlobalSearch.count / PAGE_SIZE)}
-            pageRangeDisplayed={isMobile ? 3 : 5}
-            marginPagesDisplayed={isMobile ? 1 : 5}
-            onPageChange={handlePageChange}
-          />
-        </Flex>
+  return (
+    <Panel>
+      <Flex sx={{ flexDirection: 'column', gap: 4 }}>
+        <ExplorePanelHead
+          onChangeTab={(tab) => setTab(tab)}
+          onSearch={handleSearch}
+          {...{ searchTerm, tab }}
+        />
+        {tab === 'NFTs' ? (
+          collectionTable
+        ) : collectionId ? (
+          <Collectors id={collectionId} />
+        ) : (
+          <TopCollectors />
+        )}
       </Flex>
     </Panel>
   )
