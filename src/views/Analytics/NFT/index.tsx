@@ -334,7 +334,7 @@ export default function NFTView() {
                 </Panel>
                 <Panel sx={{ flexGrow: 1 }}>
                   <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-                    <Text variant="h3Secondary">Statistics</Text>
+                    {/* <Text variant="h3Secondary">Statistics</Text>
                     <Box>
                       <Table
                         sx={{
@@ -403,7 +403,7 @@ export default function NFTView() {
                           </TableRow>
                         </TableBody>
                       </Table>
-                    </Box>
+                    </Box> */}
 
                     <Text variant="h3Secondary">Attributes</Text>
                     <Grid columns={isMobile ? 1 : 2}>
