@@ -240,7 +240,7 @@ export default function NFTView() {
                     <Text variant="h3Secondary">General Info</Text>
 
                     <Flex sx={{ gap: 4 }}>
-                      <Flex sx={{ gap: 4, alignItems: 'center' }}>
+                      <Flex sx={{ gap: [1, 1, 4], alignItems: 'center' }}>
                         <Link
                           href={`/analytics/collection/${collection?.id}`}
                           passHref
@@ -258,6 +258,7 @@ export default function NFTView() {
                               height: 32,
                               width: 32,
                               cursor: 'pointer',
+                              minWidth: 'auto',
                             }}
                           />
                         </Link>
@@ -283,7 +284,7 @@ export default function NFTView() {
                               sx={{
                                 fontWeight: 'bold',
                                 lineHeight: 1.25,
-                                fontSize: 4,
+                                fontSize: [3, 3, 4],
                                 textDecoration: 'none',
                                 '&:hover': {
                                   textDecoration: 'underline',
@@ -296,12 +297,16 @@ export default function NFTView() {
                         </Flex>
                       </Flex>
 
-                      <Flex sx={{ gap: 4, alignItems: 'center' }}>
+                      <Flex sx={{ gap: [1, 1, 4], alignItems: 'center' }}>
                         <Image
                           src={creatorAvatar ?? '/img/defaultAvatar.png'}
                           alt="Creator avatar"
-                          width={32}
-                          sx={{ borderRadius: 'circle', height: 32, width: 32 }}
+                          sx={{ 
+                            borderRadius: 'circle',
+                            height: 32,
+                            width: 32,
+                            minWidth: 'auto',
+                          }}
                         />
                         <Flex
                           sx={{
@@ -320,7 +325,7 @@ export default function NFTView() {
                             sx={{
                               fontWeight: 'bold',
                               lineHeight: 1.25,
-                              fontSize: 4,
+                              fontSize: [3, 3, 4],
                             }}
                           >
                             {creatorUsername ??
@@ -334,7 +339,7 @@ export default function NFTView() {
                 </Panel>
                 <Panel sx={{ flexGrow: 1 }}>
                   <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-                    <Text variant="h3Secondary">Statistics</Text>
+                    {/* <Text variant="h3Secondary">Statistics</Text>
                     <Box>
                       <Table
                         sx={{
@@ -403,31 +408,33 @@ export default function NFTView() {
                           </TableRow>
                         </TableBody>
                       </Table>
-                    </Box>
+                    </Box> */}
 
                     <Text variant="h3Secondary">Attributes</Text>
                     <Grid columns={isMobile ? 1 : 2}>
                       {traits.map(({ value, rarity }, idx) => (
-                        <Link
-                          href={`/analytics/search?attributes=${value}&collection=${collection?.name}`}
-                          key={idx}
-                        >
-                          <a
-                            sx={{
-                              textDecoration: 'none',
-                              cursor: 'pointer',
-                            }}
+                        <Box>
+                          <Link
+                            href={`/analytics/search?attributes=${value}&collection=${collection?.name}`}
+                            key={idx}
                           >
-                            <LabelAttribute
-                              variant="percentage"
-                              percentage={(100 - rarity * 100)
-                                .toFixed(2)
-                                .toString()}
+                            <a
+                              sx={{
+                                textDecoration: 'none',
+                                cursor: 'pointer',
+                              }}
                             >
-                              {value}
-                            </LabelAttribute>
-                          </a>
-                        </Link>
+                              <LabelAttribute
+                                variant="percentage"
+                                percentage={(100 - rarity * 100)
+                                  .toFixed(2)
+                                  .toString()}
+                              >
+                                {value}
+                              </LabelAttribute>
+                            </a>
+                          </Link>
+                        </Box>
                       ))}
                     </Grid>
                   </Flex>
@@ -487,13 +494,15 @@ export default function NFTView() {
                                 Last Appraisal
                               </Text>
 
-                              <Label color="primary">
-                                {latestAppraisal.confidence
-                                  ? (latestAppraisal.confidence * 100).toFixed(
-                                      2
-                                    ) + '%'
-                                  : '-'}
-                              </Label>
+                              {/* Confidence score
+                                <Label color="primary">
+                                  {latestAppraisal.confidence
+                                    ? (latestAppraisal.confidence * 100).toFixed(
+                                        2
+                                      ) + '%'
+                                    : '-'}
+                                </Label>
+                              */}
                             </Flex>
                             <Label
                               color="primary"
@@ -548,81 +557,86 @@ export default function NFTView() {
                   >
                     <Text variant="h3Secondary">Transaction History</Text>
                   </Flex>
-                  <Table sx={{ borderSpacing: '0 10px' }}>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell color="grey-500">Date</TableCell>
-                        {!isMobile && (
-                          <>
-                            <TableCell color="grey-500">Sender</TableCell>
-                            <TableCell color="grey-500">Recipient</TableCell>
-                          </>
-                        )}
+                  { reversedTxHistory.length > 0 && (
+                    <Table sx={{ borderSpacing: '0 10px' }}>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell color="grey-500">Date</TableCell>
+                          {!isMobile && (
+                            <>
+                              <TableCell color="grey-500">Sender</TableCell>
+                              <TableCell color="grey-500">Recipient</TableCell>
+                            </>
+                          )}
 
-                        <TableCell color="grey-500">Sale Price</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {reversedTxHistory
-                        .filter(({ assetEvent }) => !!assetEvent?.txAt)
-                        .map(({ assetEvent, ethSalePrice }, idx) => (
-                          <TableRow key={idx}>
-                            <TableCell sx={{ width: '100%' }}>
-                              {format(assetEvent.txAt * 1000, 'M/d/yyyy')}
-                            </TableCell>
-                            {!isMobile && (
-                              <>
-                                <TableCell sx={{ minWidth: 140 }}>
-                                  <Flex sx={{ alignItems: 'center', gap: 2 }}>
-                                    <Box
-                                      sx={{
-                                        borderRadius: 'circle',
-                                        bg: 'yellow',
-                                        width: 3,
-                                        height: 3,
-                                      }}
-                                    />
-                                    <Text>
-                                      {assetEvent?.txFromAddress
-                                        ? shortenAddress(
-                                            assetEvent.txFromAddress,
-                                            2,
-                                            4
-                                          )
-                                        : '-'}
-                                    </Text>
-                                  </Flex>
-                                </TableCell>
-                                <TableCell sx={{ minWidth: 140 }}>
-                                  <Flex sx={{ alignItems: 'center', gap: 2 }}>
-                                    <Box
-                                      sx={{
-                                        borderRadius: 'circle',
-                                        bg: 'purple',
-                                        width: 3,
-                                        height: 3,
-                                      }}
-                                    />
-                                    <Text>
-                                      {assetEvent?.txToAddress
-                                        ? shortenAddress(
-                                            assetEvent.txToAddress,
-                                            2,
-                                            4
-                                          )
-                                        : '-'}
-                                    </Text>
-                                  </Flex>
-                                </TableCell>
-                              </>
-                            )}
-                            <TableCell sx={{ minWidth: 100, color: 'pink' }}>
-                              {ethSalePrice ? weiToEth(ethSalePrice) : '-'}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                    </TableBody>
-                  </Table>
+                          <TableCell color="grey-500">Sale Price</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {reversedTxHistory
+                          .filter(({ assetEvent }) => !!assetEvent?.txAt)
+                          .map(({ assetEvent, ethSalePrice }, idx) => (
+                            <TableRow key={idx}>
+                              <TableCell sx={{ width: '100%' }}>
+                                {format(assetEvent.txAt * 1000, 'M/d/yyyy')}
+                              </TableCell>
+                              {!isMobile && (
+                                <>
+                                  <TableCell sx={{ minWidth: 140 }}>
+                                    <Flex sx={{ alignItems: 'center', gap: 2 }}>
+                                      <Box
+                                        sx={{
+                                          borderRadius: 'circle',
+                                          bg: 'yellow',
+                                          width: 3,
+                                          height: 3,
+                                        }}
+                                      />
+                                      <Text>
+                                        {assetEvent?.txFromAddress
+                                          ? shortenAddress(
+                                              assetEvent.txFromAddress,
+                                              2,
+                                              4
+                                            )
+                                          : '-'}
+                                      </Text>
+                                    </Flex>
+                                  </TableCell>
+                                  <TableCell sx={{ minWidth: 140 }}>
+                                    <Flex sx={{ alignItems: 'center', gap: 2 }}>
+                                      <Box
+                                        sx={{
+                                          borderRadius: 'circle',
+                                          bg: 'purple',
+                                          width: 3,
+                                          height: 3,
+                                        }}
+                                      />
+                                      <Text>
+                                        {assetEvent?.txToAddress
+                                          ? shortenAddress(
+                                              assetEvent.txToAddress,
+                                              2,
+                                              4
+                                            )
+                                          : '-'}
+                                      </Text>
+                                    </Flex>
+                                  </TableCell>
+                                </>
+                              )}
+                              <TableCell sx={{ minWidth: 100, color: 'pink' }}>
+                                {ethSalePrice ? weiToEth(ethSalePrice) : '-'}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                      </TableBody>
+                    </Table>
+                  )}
+                  { reversedTxHistory.length == 0 && (
+                    <Text sx={{ color: 'grey-500'}} >This asset hasn’t been sold or transferred yet.</Text>
+                  )}
                 </Flex>
               </Flex>
             </Panel>
