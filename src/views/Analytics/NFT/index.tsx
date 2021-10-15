@@ -332,6 +332,12 @@ export default function NFTView() {
                     </Flex>
                   </Flex>
                 </Panel>
+                { (contractAddress == '0x059EDD72Cd353dF5106D2B9cC5ab83a52287aC3a' || contractAddress == '0xa7d8d9ef8D8Ce8992Df33D8b8CF4Aebabd5bD270') && (
+                  <Panel sx={{ flexGrow: 1, backgroundColor: 'transparent', color: 'gray-500' }}>
+                    Please note that this collection is currently under active development.
+                    Appraisals are experimental and not yet guaranteed to be correct.
+                  </Panel>
+                )}
                 <Panel sx={{ flexGrow: 1 }}>
                   <Flex sx={{ flexDirection: 'column', gap: 4 }}>
                     <Text variant="h3Secondary">Statistics</Text>
