@@ -6,6 +6,7 @@ import {
   BlurrySquareTemplate,
   InputRounded,
   Pagination,
+  Accordion,
 } from '@upshot-tech/upshot-ui'
 import { Nav } from 'components/Nav'
 import { PIXELATED_CONTRACTS } from 'constants/'
@@ -124,6 +125,111 @@ export default function SearchView() {
     router.push('/analytics/nft/' + id)
   }
 
+  const searchFilters = () => {
+    return (
+      <>
+        <Flex
+          paddingX={8}
+          sx={{
+            position: ['static', 'static', 'static', 'sticky'],
+            top: 0,
+            alignSelf: 'flex-start',
+            flexDirection: 'column',
+            gap: 8,
+          }}
+        >
+          <Box>
+            <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+              <Flex sx={{ flexDirection: 'column', gap: 1 }}>
+                <Text variant="h3Secondary" color="grey-500">
+                  Search Filters
+                </Text>
+              </Flex>
+            </Flex>
+          </Box>
+
+          <Box>
+            <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+              <Text color="grey-500">Price Range</Text>
+              <Flex sx={{ gap: 4 }}>
+                <InputRounded
+                  placeholder="Ξ Min"
+                  sx={{ maxWidth: 128 }}
+                  value={minPriceEth}
+                  onBlur={handleBlurMinPrice}
+                  onChange={(e) => setMinPriceEth(e.currentTarget.value)}
+                />
+                <InputRounded
+                  placeholder="Ξ Max"
+                  sx={{ maxWidth: 128 }}
+                  value={maxPriceEth}
+                  onBlur={handleBlurMaxPrice}
+                  onChange={(e) => setMaxPriceEth(e.currentTarget.value)}
+                />
+              </Flex>
+            </Flex>
+          </Box>
+
+          <Box>
+            <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+              <Text variant="h3Secondary" color="grey-500">
+                Keywords
+              </Text>
+              <InputRounded
+                placeholder="Keywords"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.currentTarget.value)}
+              />
+            </Flex>
+          </Box>
+
+          <Box>
+            <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+              <Text variant="h3Secondary" color="grey-500">
+                Collection
+              </Text>
+              <InputRounded
+                placeholder="Collection"
+                value={collectionName}
+                onChange={(e) => setCollectionName(e.currentTarget.value)}
+              />
+            </Flex>
+          </Box>
+
+          <Box>
+            <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+              <Text variant="h3Secondary" color="grey-500">
+                Token ID
+              </Text>
+              <InputRounded
+                placeholder="Token ID"
+                value={tokenId}
+                onChange={(e) => setTokenId(e.currentTarget.value)}
+              />
+            </Flex>
+          </Box>
+
+          <Box>
+            <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+              <Text variant="h3Secondary" color="grey-500">
+                Attributes
+              </Text>
+              <InputRounded
+                placeholder="Attributes"
+                value={attributes}
+                onChange={(e) => setAttributes(e.currentTarget.value)}
+              />
+            </Flex>
+          </Box>
+
+          <Box>
+            <Button onClick={handleApplyFilters}>Apply Filters</Button>
+          </Box>
+        </Flex>
+      </>
+    )
+  }
+
   return (
     <>
       <Head>
@@ -150,104 +256,15 @@ export default function SearchView() {
             gap: 8,
           }}
         >
-          <Flex
-            paddingX={8}
-            sx={{
-              position: ['static', 'static', 'static', 'sticky'],
-              top: 0,
-              alignSelf: 'flex-start',
-              flexDirection: 'column',
-              gap: 8,
-            }}
-          >
-            <Box>
-              <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-                <Flex sx={{ flexDirection: 'column', gap: 1 }}>
-                  <Text variant="h3Secondary" color="grey-500">
-                    Search Filters
-                  </Text>
-                </Flex>
-              </Flex>
-            </Box>
-
-            <Box>
-              <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-                <Text color="grey-500">Price Range</Text>
-                <Flex sx={{ gap: 4 }}>
-                  <InputRounded
-                    placeholder="Ξ Min"
-                    sx={{ maxWidth: 128 }}
-                    value={minPriceEth}
-                    onBlur={handleBlurMinPrice}
-                    onChange={(e) => setMinPriceEth(e.currentTarget.value)}
-                  />
-                  <InputRounded
-                    placeholder="Ξ Max"
-                    sx={{ maxWidth: 128 }}
-                    value={maxPriceEth}
-                    onBlur={handleBlurMaxPrice}
-                    onChange={(e) => setMaxPriceEth(e.currentTarget.value)}
-                  />
-                </Flex>
-              </Flex>
-            </Box>
-
-            <Box>
-              <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-                <Text variant="h3Secondary" color="grey-500">
-                  Keywords
-                </Text>
-                <InputRounded
-                  placeholder="Keywords"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.currentTarget.value)}
-                />
-              </Flex>
-            </Box>
-
-            <Box>
-              <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-                <Text variant="h3Secondary" color="grey-500">
-                  Collection
-                </Text>
-                <InputRounded
-                  placeholder="Collection"
-                  value={collectionName}
-                  onChange={(e) => setCollectionName(e.currentTarget.value)}
-                />
-              </Flex>
-            </Box>
-
-            <Box>
-              <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-                <Text variant="h3Secondary" color="grey-500">
-                  Token ID
-                </Text>
-                <InputRounded
-                  placeholder="Token ID"
-                  value={tokenId}
-                  onChange={(e) => setTokenId(e.currentTarget.value)}
-                />
-              </Flex>
-            </Box>
-
-            <Box>
-              <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-                <Text variant="h3Secondary" color="grey-500">
-                  Attributes
-                </Text>
-                <InputRounded
-                  placeholder="Attributes"
-                  value={attributes}
-                  onChange={(e) => setAttributes(e.currentTarget.value)}
-                />
-              </Flex>
-            </Box>
-
-            <Box>
-              <Button onClick={handleApplyFilters}>Apply Filters</Button>
-            </Box>
-          </Flex>
+          {
+            isMobile
+              ? (
+                <Accordion title='Search Filters'>
+                  { searchFilters() }
+                </Accordion>
+              )
+              : searchFilters()
+          }
           <Flex
             paddingX={[8, 8, 0]}
             sx={{ flex: '1 1 auto', flexDirection: 'column', gap: 4 }}
