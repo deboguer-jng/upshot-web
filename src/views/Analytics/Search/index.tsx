@@ -309,7 +309,7 @@ export default function SearchView() {
               <Flex
                 sx={{
                   flexWrap: 'wrap',
-                  gap: [2, 8, 5],
+                  gap: [2, 2, 5],
                   justifyContent: ['center', 'center', 'initial']
                 }}
               >
