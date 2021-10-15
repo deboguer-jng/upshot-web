@@ -6,6 +6,7 @@ import {
   BlurrySquareTemplate,
   InputRounded,
   Pagination,
+  Accordion,
 } from '@upshot-tech/upshot-ui'
 import { Nav } from 'components/Nav'
 import { PIXELATED_CONTRACTS } from 'constants/'
@@ -124,6 +125,107 @@ export default function SearchView() {
     router.push('/analytics/nft/' + id)
   }
 
+  const searchFilters = () => {
+    return (
+      <>
+        <Box>
+          <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+            <Text
+              sx={{ paddingTop: [4, 4, 0]}}
+              color="grey-500"
+            >
+              Price Range
+            </Text>
+            <Flex sx={{ gap: 4 }}>
+              <InputRounded
+                placeholder="Ξ Min"
+                sx={{ maxWidth: 128 }}
+                value={minPriceEth}
+                onBlur={handleBlurMinPrice}
+                onChange={(e) => setMinPriceEth(e.currentTarget.value)}
+              />
+              <InputRounded
+                placeholder="Ξ Max"
+                sx={{ maxWidth: 128 }}
+                value={maxPriceEth}
+                onBlur={handleBlurMaxPrice}
+                onChange={(e) => setMaxPriceEth(e.currentTarget.value)}
+              />
+            </Flex>
+          </Flex>
+        </Box>
+
+        <Box>
+          <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+            <Text
+              sx={{ paddingTop: [4, 4, 0]}}
+              color="grey-500"
+            >
+              Keywords
+            </Text>
+            <InputRounded
+              placeholder="Keywords"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.currentTarget.value)}
+            />
+          </Flex>
+        </Box>
+
+        <Box>
+          <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+            <Text
+              sx={{ paddingTop: [4, 4, 0]}}
+              color="grey-500"
+            >
+              Collection
+            </Text>
+            <InputRounded
+              placeholder="Collection"
+              value={collectionName}
+              onChange={(e) => setCollectionName(e.currentTarget.value)}
+            />
+          </Flex>
+        </Box>
+
+        <Box>
+          <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+            <Text
+              sx={{ paddingTop: [4, 4, 0]}}
+              color="grey-500"
+            >
+              Token ID
+            </Text>
+            <InputRounded
+              placeholder="Token ID"
+              value={tokenId}
+              onChange={(e) => setTokenId(e.currentTarget.value)}
+            />
+          </Flex>
+        </Box>
+
+        <Box>
+          <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+            <Text
+              sx={{ paddingTop: [4, 4, 0]}}
+              color="grey-500"
+            >
+              Attributes
+            </Text>
+            <InputRounded
+              placeholder="Attributes"
+              value={attributes}
+              onChange={(e) => setAttributes(e.currentTarget.value)}
+            />
+          </Flex>
+        </Box>
+
+        <Box sx={{ paddingTop: [5, 5, 0]}}>
+          <Button onClick={handleApplyFilters}>Apply Filters</Button>
+        </Box>
+      </>
+    )
+  }
+
   return (
     <>
       <Head>
@@ -147,7 +249,7 @@ export default function SearchView() {
           sx={{
             gridTemplateColumns: ['1fr', '1fr', '1fr 3fr', '1fr 3fr 1fr'],
             flexGrow: 1,
-            gap: 8,
+            gap: [8, 5, 0],
           }}
         >
           <Flex
@@ -160,97 +262,38 @@ export default function SearchView() {
               gap: 8,
             }}
           >
-            <Box>
-              <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-                <Flex sx={{ flexDirection: 'column', gap: 1 }}>
-                  <Text variant="h3Secondary" color="grey-500">
-                    Search Filters
-                  </Text>
-                </Flex>
-              </Flex>
-            </Box>
-
-            <Box>
-              <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-                <Text color="grey-500">Price Range</Text>
-                <Flex sx={{ gap: 4 }}>
-                  <InputRounded
-                    placeholder="Ξ Min"
-                    sx={{ maxWidth: 128 }}
-                    value={minPriceEth}
-                    onBlur={handleBlurMinPrice}
-                    onChange={(e) => setMinPriceEth(e.currentTarget.value)}
-                  />
-                  <InputRounded
-                    placeholder="Ξ Max"
-                    sx={{ maxWidth: 128 }}
-                    value={maxPriceEth}
-                    onBlur={handleBlurMaxPrice}
-                    onChange={(e) => setMaxPriceEth(e.currentTarget.value)}
-                  />
-                </Flex>
-              </Flex>
-            </Box>
-
-            <Box>
-              <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-                <Text variant="h3Secondary" color="grey-500">
-                  Keywords
-                </Text>
-                <InputRounded
-                  placeholder="Keywords"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.currentTarget.value)}
-                />
-              </Flex>
-            </Box>
-
-            <Box>
-              <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-                <Text variant="h3Secondary" color="grey-500">
-                  Collection
-                </Text>
-                <InputRounded
-                  placeholder="Collection"
-                  value={collectionName}
-                  onChange={(e) => setCollectionName(e.currentTarget.value)}
-                />
-              </Flex>
-            </Box>
-
-            <Box>
-              <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-                <Text variant="h3Secondary" color="grey-500">
-                  Token ID
-                </Text>
-                <InputRounded
-                  placeholder="Token ID"
-                  value={tokenId}
-                  onChange={(e) => setTokenId(e.currentTarget.value)}
-                />
-              </Flex>
-            </Box>
-
-            <Box>
-              <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-                <Text variant="h3Secondary" color="grey-500">
-                  Attributes
-                </Text>
-                <InputRounded
-                  placeholder="Attributes"
-                  value={attributes}
-                  onChange={(e) => setAttributes(e.currentTarget.value)}
-                />
-              </Flex>
-            </Box>
-
-            <Box>
-              <Button onClick={handleApplyFilters}>Apply Filters</Button>
-            </Box>
+            {
+              isMobile
+                ? (
+                  <>
+                    <Accordion title='Search Filters'>
+                      { searchFilters() }
+                    </Accordion>
+                  </>
+                )
+                : (
+                  <>
+                    <Box>
+                      <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+                        <Flex sx={{ flexDirection: 'column', gap: 1 }}>
+                          <Text variant="h3Secondary" color="grey-500">
+                            Search Filters
+                          </Text>
+                        </Flex>
+                      </Flex>
+                    </Box>
+                    { searchFilters() }
+                  </>
+                )
+            }
           </Flex>
           <Flex
             paddingX={[8, 8, 0]}
-            sx={{ flex: '1 1 auto', flexDirection: 'column', gap: 4 }}
+            sx={{
+              flex: '1 auto auto',
+              flexDirection: 'column',
+              gap: 4
+            }}
           >
             <Flex sx={{ flexDirection: 'column' }}>
               <Text>Search Results</Text>
@@ -266,7 +309,8 @@ export default function SearchView() {
               <Flex
                 sx={{
                   flexWrap: 'wrap',
-                  gap: 5,
+                  gap: [2, 2, 5],
+                  justifyContent: ['center', 'center', 'initial']
                 }}
               >
                 {loading
