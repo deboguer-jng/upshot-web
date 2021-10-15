@@ -492,13 +492,15 @@ export default function NFTView() {
                                 Last Appraisal
                               </Text>
 
-                              <Label color="primary">
-                                {latestAppraisal.confidence
-                                  ? (latestAppraisal.confidence * 100).toFixed(
-                                      2
-                                    ) + '%'
-                                  : '-'}
-                              </Label>
+                              {/* Confidence score
+                                <Label color="primary">
+                                  {latestAppraisal.confidence
+                                    ? (latestAppraisal.confidence * 100).toFixed(
+                                        2
+                                      ) + '%'
+                                    : '-'}
+                                </Label>
+                              */}
                             </Flex>
                             <Label
                               color="primary"
