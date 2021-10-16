@@ -445,7 +445,7 @@ export default function NFTView() {
               </Flex>
               <Flex sx={{ flexDirection: 'column', gap: 4, flexGrow: 1 }}>
                 <Panel
-                  sx={{ flexGrow: 1, display: 'flex', padding: '0!important' }}
+                  sx={{ flexGrow: 1, display: 'flex', padding: '0!important', overflow: 'hidden' }}
                 >
                   <Flex sx={{ flexDirection: 'column', flexGrow: 1 }}>
                     <Flex sx={{ padding: '20px', paddingBottom: 0 }}>
