@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/client'
 import { TreeMap } from '@upshot-tech/upshot-ui'
+import { ethers } from 'ethers'
 
 import {
   GET_SEVEN_DAY_MC_CHANGE,
@@ -26,9 +27,10 @@ export default function TreeMapMarketCap() {
 
   const chartData = data?.collections?.assetSets
     ?.filter(({ sevenDayMCChange }) => sevenDayMCChange)
-    .map(({ name, sevenDayMCChange: value }) => ({
+    .map(({ name, sevenDayMCChange: delta, totalVolume }) => ({
       name,
-      value,
+      delta,
+      marketCap: parseFloat(ethers.utils.formatEther(totalVolume)),
     }))
 
   return <TreeMap data={chartData} />

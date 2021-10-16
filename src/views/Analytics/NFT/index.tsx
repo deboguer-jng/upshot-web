@@ -31,6 +31,7 @@ import { getAssetName } from 'utils/asset'
 import { getPriceChangeColor } from 'utils/color'
 import { weiToEth } from 'utils/number'
 
+import Collectors from '../components/Collectors'
 import { GET_ASSET, GetAssetData, GetAssetVars } from './queries'
 
 function Layout({ children }: { children: React.ReactNode }) {
@@ -659,6 +660,12 @@ export default function NFTView() {
                     <Text sx={{ color: 'grey-500'}} >This asset hasn’t been sold or transferred yet.</Text>
                   )}
                 </Flex>
+              </Flex>
+            </Panel>
+            <Panel>
+              <Flex sx={{ flexDirection: 'column', gap: 16 }}>
+                <Text variant="h3Secondary">Top Collectors</Text>
+                <Collectors id={collection?.id} name={collection?.name} />
               </Flex>
             </Panel>
           </Flex>

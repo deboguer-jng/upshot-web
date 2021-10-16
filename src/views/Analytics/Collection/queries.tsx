@@ -17,10 +17,6 @@ export type GetCollectionData = {
     size: string
     average: string
     totalVolume: string
-    timeSeries?: {
-      average: string
-      timestamp: number
-    }[]
   }
 }
 
@@ -34,9 +30,33 @@ export const GET_COLLECTION = gql`
       size
       average
       totalVolume
-      timeSeries {
-        average
+    }
+  }
+`
+
+/**
+ * Get All Collection Sales
+ */
+
+export type GetAllCollectionSalesVars = {
+  id: number
+}
+
+export type GetAllCollectionSalesData = {
+  collectionById: {
+    allSaleEvents?: {
+      ethSalePrice: string
+      timestamp: number
+    }[]
+  }
+}
+
+export const GET_ALL_COLLECTION_SALES = gql`
+  query GetAllCollectionSales($id: Int!) {
+    collectionById(id: $id) {
+      allSaleEvents {
         timestamp
+        ethSalePrice
       }
     }
   }

@@ -1,13 +1,13 @@
 import { useQuery } from '@apollo/client'
 import { useBreakpointIndex } from '@theme-ui/match-media'
 import { Container, Flex, Grid } from '@upshot-tech/upshot-ui'
-import { Avatar, Chart, Footer, Text } from '@upshot-tech/upshot-ui'
+import { Avatar, Footer, Text } from '@upshot-tech/upshot-ui'
 import { Nav } from 'components/Nav'
-import { ethers } from 'ethers'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { weiToEth } from 'utils/number'
+import CollectionScatterChart from 'views/Analytics/components/CollectionScatterChart'
 import ExplorePanel from 'views/Analytics/components/ExplorePanel'
 import TopSellingNFTs from 'views/Analytics/components/TopSellingNFTs'
 
@@ -87,14 +87,14 @@ export default function CollectionView() {
     setId(Number(id))
   }, [router.query])
 
-  const { loading, error, data } = useQuery<
-    GetCollectionData,
-    GetCollectionVars
-  >(GET_COLLECTION, {
-    errorPolicy: 'all',
-    variables: { id: Number(id) },
-    skip: !id,
-  })
+  const { loading, data } = useQuery<GetCollectionData, GetCollectionVars>(
+    GET_COLLECTION,
+    {
+      errorPolicy: 'all',
+      variables: { id: Number(id) },
+      skip: !id,
+    }
+  )
   /* Load state. */
   if (loading)
     return (
@@ -125,29 +125,8 @@ export default function CollectionView() {
       </Layout>
     )
 
-  const {
-    name,
-    description,
-    imageUrl,
-    ceil,
-    size,
-    average,
-    totalVolume,
-    timeSeries,
-  } = data.collectionById
-
-  const priceSeries =
-    timeSeries?.map(({ timestamp, average }) => [
-      timestamp,
-      parseFloat(ethers.utils.formatEther(average ?? 0)),
-    ]) ?? []
-
-  const chartData = [{ name: 'Average', data: priceSeries }]
-
-  const getChart = () => {
-    if (!priceSeries.length) return <Chart noData />
-    return <Chart embedded data={chartData} />
-  }
+  const { name, description, imageUrl, ceil, size, average, totalVolume } =
+    data.collectionById
 
   return (
     <Layout>
@@ -203,13 +182,13 @@ export default function CollectionView() {
         </Flex>
       </Grid>
 
-      {getChart()}
+      <CollectionScatterChart {...{ id, name }} />
 
       <Flex sx={{ flexDirection: 'column', flexGrow: 1, gap: 5 }}>
         <TopSellingNFTs collectionId={id} />
       </Flex>
 
-      <ExplorePanel collectionId={id} />
+      <ExplorePanel collectionId={id} collectionName={name} />
     </Layout>
   )
 }
