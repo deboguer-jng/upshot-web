@@ -2,6 +2,9 @@ import { useQuery } from '@apollo/client'
 import {
   CollectorAccordion,
   CollectorAccordionRow,
+  Skeleton,
+  TableCell,
+  Box,
 } from '@upshot-tech/upshot-ui'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { format, formatDistance } from 'date-fns'
@@ -13,6 +16,7 @@ import {
   GetCollectorsData,
   GetCollectorsVars,
 } from '../queries'
+import { PAGE_SIZE } from 'constants/'
 
 export default function Collectors({
   id,
@@ -30,8 +34,26 @@ export default function Collectors({
     skip: !id,
   })
 
+  const ExplorePanelSkeleton = () => {
+    return (
+      <CollectorAccordion>
+        {
+          [...new Array(PAGE_SIZE)].map((_, idx) => (
+            <CollectorAccordionRow>
+              <Skeleton sx={{ height: 56 }} as="tr" key={idx}>
+                <TableCell colSpan={5}>
+                  <Box sx={{ height: 40, width: '100%' }} />
+                </TableCell>
+              </Skeleton>
+            </CollectorAccordionRow>
+          ))
+        }
+      </CollectorAccordion>
+    )
+  }
+
   /* Load state. */
-  if (loading) return null
+  if (loading) return <ExplorePanelSkeleton />
 
   /* Error state. */
   if (error) return null
