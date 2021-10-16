@@ -9,6 +9,7 @@ import {
   Label,
   LabelAttribute,
   Panel,
+  useTheme,
 } from '@upshot-tech/upshot-ui'
 import {
   Table,
@@ -56,6 +57,7 @@ export default function NFTView() {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
   const router = useRouter()
+  const { theme } = useTheme()
 
   useEffect(() => {
     /* Parse assetId from router */
@@ -448,6 +450,25 @@ export default function NFTView() {
                     <Flex sx={{ padding: '20px', paddingBottom: 0 }}>
                       <Text variant="h3Secondary">Pricing History</Text>
                     </Flex>
+                    {
+                      (
+                        contractAddress == '0x059EDD72Cd353dF5106D2B9cC5ab83a52287aC3a' ||
+                          contractAddress == '0xa7d8d9ef8D8Ce8992Df33D8b8CF4Aebabd5bD270'
+                        ) && (
+                          <div sx={{ paddingTop: '20px' }}>
+                            <Panel
+                              sx={{
+                                  backgroundColor: theme.colors.blue,
+                                  color: theme.colors.black,
+                                  width: 0,
+                                  minWidth: '100%',
+                                  borderRadius: 'sm'
+                              }}>
+                                This collection is currently under active development.
+                                Appraisals are experimental and may be less accurate than most.
+                            </Panel>
+                          </div>
+                    )}
                     {(!!lastSale || !!latestAppraisal) && (
                       <Flex sx={{ gap: '40px', flexGrow: 1, padding: '20px' }}>
                         {!!lastSale && (
