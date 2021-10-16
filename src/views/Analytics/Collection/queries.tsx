@@ -41,3 +41,31 @@ export const GET_COLLECTION = gql`
     }
   }
 `
+
+/**
+ * Get All Collection Sales
+ */
+
+export type GetAllCollectionSalesVars = {
+  id: number
+}
+
+export type GetAllCollectionSalesData = {
+  collectionById: {
+    allSaleEvents?: {
+      ethSalePrice: string
+      timestamp: number
+    }[]
+  }
+}
+
+export const GET_ALL_COLLECTION_SALES = gql`
+  query GetAllCollectionSales($id: Int!) {
+    collectionById(id: $id) {
+      allSaleEvents {
+        timestamp
+        ethSalePrice
+      }
+    }
+  }
+`

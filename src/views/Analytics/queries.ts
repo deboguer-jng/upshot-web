@@ -173,7 +173,7 @@ export const GET_EXPLORE_NFTS = gql`
 `
 
 /**
- * Top Selling NFTs
+ * Get Top Selling NFTs
  * @see TopSellingNFTs
  */
 export type GetTopSalesVars = {
@@ -219,6 +219,158 @@ export const GET_TOP_SALES = gql`
         previewImageUrl
         mediaUrl
         rarity
+      }
+    }
+  }
+`
+
+/**
+ * Get 7-day Market Cap Change
+ * @see TreeMapMarketCap
+ */
+export type GetSevenDayMCChangeVars = {
+  limit: number
+}
+
+export type GetSevenDayMCChangeData = {
+  collections: {
+    assetSets: {
+      name: string
+      sevenDayMCChange: number
+      totalVolume: string
+    }[]
+  }
+}
+
+export const GET_SEVEN_DAY_MC_CHANGE = gql`
+  query SevenDayMCChange($limit: Int) {
+    collections(limit: $limit) {
+      assetSets {
+        name
+        sevenDayMCChange
+        totalVolume
+      }
+    }
+  }
+`
+
+/**
+ * Get Top Collectors
+ * @see TopCollectors
+ */
+export type GetTopCollectorsVars = {
+  limit: number
+}
+
+export type GetTopCollectorsData = {
+  getOwnersByWhaleness: {
+    count: number
+    owners: {
+      username: string
+      addresses: string[]
+      totalAssetAppraisedValue: string
+      extraCollections: {
+        collectionAssetCounts: {
+          count: number
+          collection: {
+            id: number
+            name: string
+            imageUrl: string
+          }
+        }[]
+      }
+    }[]
+  }
+}
+
+export const GET_TOP_COLLECTORS = gql`
+  query GetTopCollectors($limit: OneToHundredInt!) {
+    getOwnersByWhaleness(limit: $limit, offset: 0) {
+      count
+      owners {
+        username
+        addresses
+        totalAssetAppraisedValue
+        extraCollections(limit: 10) {
+          collectionAssetCounts {
+            collection {
+              id
+              name
+              imageUrl
+            }
+          }
+        }
+      }
+    }
+  }
+`
+
+/**
+ * Get Collectors
+ * @see Collectors
+ */
+export type GetCollectorsVars = {
+  id: number
+  limit: number
+}
+
+export type GetCollectorsData = {
+  getOwnersByWhaleness: {
+    count: number
+    owners: {
+      username: string
+      addresses: string[]
+      firstAssetPurchaseTime: number
+      avgHoldTime: number
+      totalAssetAppraisedValue: string
+      ownedAssets: {
+        count: number
+        assets: {
+          id: string
+          previewImageUrl: string
+        }[]
+      }
+      extraCollections: {
+        collectionAssetCounts: {
+          count: number
+          collection: {
+            id: number
+            name: string
+            imageUrl: string
+          }
+        }[]
+      }
+    }[]
+  }
+}
+
+export const GET_COLLECTORS = gql`
+  query GetCollectors($id: Int, $limit: OneToHundredInt!) {
+    getOwnersByWhaleness(collectionId: $id, limit: $limit, offset: 0) {
+      count
+      owners {
+        username
+        addresses
+        firstAssetPurchaseTime
+        avgHoldTime
+        totalAssetAppraisedValue(collectionId: $id)
+        ownedAssets(collectionId: $id, notable: true, limit: 10) {
+          count
+          assets {
+            id
+            previewImageUrl
+          }
+        }
+        extraCollections(limit: 10) {
+          collectionAssetCounts {
+            count
+            collection {
+              id
+              name
+              imageUrl
+            }
+          }
+        }
       }
     }
   }
