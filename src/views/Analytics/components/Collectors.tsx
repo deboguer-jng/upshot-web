@@ -51,7 +51,6 @@ export default function Collectors({
       </CollectorAccordion>
     )
   }
-  if (loading) console.log('what in the actual fuck')
 
   /* Load state. */
   if (loading) return <ExplorePanelSkeleton />

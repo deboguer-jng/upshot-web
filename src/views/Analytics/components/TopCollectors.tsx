@@ -2,6 +2,9 @@ import { useQuery } from '@apollo/client'
 import {
   CollectorAccordion,
   CollectorAccordionRow,
+  Skeleton,
+  TableCell,
+  Box,
 } from '@upshot-tech/upshot-ui'
 import { formatUsername } from 'utils/address'
 import { weiToEth } from 'utils/number'
@@ -11,6 +14,7 @@ import {
   GetTopCollectorsData,
   GetTopCollectorsVars,
 } from '../queries'
+import { PAGE_SIZE } from 'constants/'
 
 export default function TopCollectors() {
   const { loading, error, data } = useQuery<
@@ -21,9 +25,26 @@ export default function TopCollectors() {
     variables: { limit: 10 },
   })
 
-  console.log(data?.getOwnersByWhaleness?.owners)
+  const ExplorePanelSkeleton = () => {
+    return (
+      <CollectorAccordion>
+        {
+          [...new Array(PAGE_SIZE)].map((_, idx) => (
+            <CollectorAccordionRow>
+              <Skeleton sx={{ height: 56 }} as="tr" key={idx}>
+                <TableCell colSpan={5}>
+                  <Box sx={{ height: 40, width: '100%' }} />
+                </TableCell>
+              </Skeleton>
+            </CollectorAccordionRow>
+          ))
+        }
+      </CollectorAccordion>
+    )
+  }
+
   /* Load state. */
-  if (loading) return null
+  if (loading) return <ExplorePanelSkeleton />
 
   /* Error state. */
   if (error) return null
