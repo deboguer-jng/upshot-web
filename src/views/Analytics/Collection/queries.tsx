@@ -17,6 +17,10 @@ export type GetCollectionData = {
     size: string
     average: string
     totalVolume: string
+    timeSeries?: {
+      average: string
+      timestamp: number
+    }[]
   }
 }
 
@@ -30,6 +34,10 @@ export const GET_COLLECTION = gql`
       size
       average
       totalVolume
+      timeSeries {
+        average
+        timestamp
+      }
     }
   }
 `
