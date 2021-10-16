@@ -9,6 +9,7 @@ import CollectionAvgPricePanel from './components/CollectionAvgPricePanel'
 import ExplorePanel from './components/ExplorePanel'
 import TopCollectionsChart from './components/TopCollectionsChart'
 import TopSellingNFTs from './components/TopSellingNFTs'
+import TreeMapMarketCap from './components/TreeMapMarketCap'
 
 export default function AnalyticsView() {
   const [chartMetric, setChartMetric] = useState<METRIC>('VOLUME')
@@ -56,6 +57,8 @@ export default function AnalyticsView() {
             onCollectionSelected={handleCollectionSelected}
           />
           <TopSellingNFTs />
+          <Text variant="text.h1Secondary">Market Cap</Text>
+          <TreeMapMarketCap />
           <ExplorePanel />
         </Flex>
         <Footer />
