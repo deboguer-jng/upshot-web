@@ -3,6 +3,8 @@ import {
   CollectorAccordion,
   CollectorAccordionRow,
 } from '@upshot-tech/upshot-ui'
+import { PIXELATED_CONTRACTS } from 'constants/'
+import { format, formatDistance } from 'date-fns'
 import { formatUsername } from 'utils/address'
 import { weiToEth } from 'utils/number'
 
@@ -28,8 +30,6 @@ export default function Collectors({
     skip: !id,
   })
 
-  console.log(data?.getOwnersByWhaleness?.owners)
-
   /* Load state. */
   if (loading) return null
 
@@ -47,25 +47,42 @@ export default function Collectors({
             username,
             addresses,
             totalAssetAppraisedValue,
+            avgHoldTime,
+            firstAssetPurchaseTime,
+            ownedAssets: { count, assets },
             extraCollections: { collectionAssetCounts },
           },
           idx
         ) => (
           <CollectorAccordionRow
+            count={count}
             name={formatUsername(username ?? addresses?.[0] ?? 'Unknown')}
-            portfolioValue={
+            firstAcquisition={format(
+              firstAssetPurchaseTime * 1000,
+              'MM/dd/yyyy'
+            )}
+            collectionName={name}
+            avgHoldTime={formatDistance(0, avgHoldTime * 1000)}
+            totalNftValue={
               totalAssetAppraisedValue
                 ? weiToEth(totalAssetAppraisedValue, 2, false)
                 : null
             }
-            // nftCollection={collectionAssetCounts.map(
-            //   ({ collection: { imageUrl, name, id } }) => ({
-            //     id,
-            //     imageUrl,
-            //     name,
-            //     url: `/analytics/collection/${id}`,
-            //   })
-            // )}
+            extraCollections={collectionAssetCounts.map(
+              ({ count, collection: { imageUrl, name, id } }) => ({
+                id,
+                imageUrl,
+                name,
+                count,
+                url: `/analytics/collection/${id}`,
+              })
+            )}
+            nftCollection={assets.map(({ previewImageUrl, id }) => ({
+              id,
+              imageUrl: previewImageUrl,
+              url: `/analytics/nft/${id}`,
+              pixelated: PIXELATED_CONTRACTS.includes(id.split('/')[0]),
+            }))}
             key={idx}
           />
         )

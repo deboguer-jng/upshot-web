@@ -271,6 +271,7 @@ export type GetTopCollectorsData = {
       totalAssetAppraisedValue: string
       extraCollections: {
         collectionAssetCounts: {
+          count: number
           collection: {
             id: number
             name: string
@@ -319,7 +320,7 @@ export type GetCollectorsData = {
     owners: {
       username: string
       addresses: string[]
-      firstAssetPurchaseTime: string
+      firstAssetPurchaseTime: number
       avgHoldTime: number
       totalAssetAppraisedValue: string
       ownedAssets: {
@@ -331,12 +332,13 @@ export type GetCollectorsData = {
       }
       extraCollections: {
         collectionAssetCounts: {
+          count: number
           collection: {
             id: number
             name: string
             imageUrl: string
-          }[]
-        }
+          }
+        }[]
       }
     }[]
   }
@@ -361,6 +363,7 @@ export const GET_COLLECTORS = gql`
         }
         extraCollections(limit: 10) {
           collectionAssetCounts {
+            count
             collection {
               id
               name

@@ -21,7 +21,7 @@ export type GetAssetData = {
     creatorUsername: string
     creatorAvatar: string
     collection?: {
-      id: string
+      id: number
       name: string
       imageUrl: string
     }

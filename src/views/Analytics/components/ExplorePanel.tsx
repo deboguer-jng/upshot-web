@@ -159,15 +159,17 @@ function ExplorePanelSkeleton({
 
 export default function ExplorePanel({
   collectionId,
+  collectionName,
 }: {
   collectionId?: number
+  collectionName?: string
 }) {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
 
   const [page, setPage] = useState(0)
   const [searchTerm, setSearchTerm] = useState('')
-  const [tab, setTab] = useState('Collectors')
+  const [tab, setTab] = useState('NFTs')
 
   const { loading, error, data } = useQuery<
     GetExploreNFTsData,
@@ -305,7 +307,7 @@ export default function ExplorePanel({
         {tab === 'NFTs' ? (
           collectionTable
         ) : collectionId ? (
-          <Collectors id={collectionId} />
+          <Collectors id={collectionId} name={collectionName} />
         ) : (
           <TopCollectors />
         )}

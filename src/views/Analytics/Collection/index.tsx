@@ -182,13 +182,13 @@ export default function CollectionView() {
         </Flex>
       </Grid>
 
-      {/* <CollectionScatterChart {...{ id, name }} /> */}
+      <CollectionScatterChart {...{ id, name }} />
 
       <Flex sx={{ flexDirection: 'column', flexGrow: 1, gap: 5 }}>
         <TopSellingNFTs collectionId={id} />
       </Flex>
 
-      <ExplorePanel collectionId={id} />
+      <ExplorePanel collectionId={id} collectionName={name} />
     </Layout>
   )
 }
