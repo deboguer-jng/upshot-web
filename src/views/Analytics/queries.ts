@@ -275,6 +275,7 @@ export type GetTopCollectorsData = {
       username: string
       addresses: string[]
       totalAssetAppraisedValue: string
+      ownedAssets
       extraCollections: {
         collectionAssetCounts: {
           count: number
@@ -291,18 +292,20 @@ export type GetTopCollectorsData = {
 
 export const GET_TOP_COLLECTORS = gql`
   query GetTopCollectors($limit: OneToHundredInt!) {
-    getOwnersByWhaleness(limit: $limit, offset: 0) {
-      count
+    getOwnersByWhaleness(limit: $limit, offset: $offset) {
       owners {
-        username
-        addresses
-        totalAssetAppraisedValue
-        extraCollections(limit: 10) {
-          collectionAssetCounts {
+        ownedAssets(notable: true, limit:10, offset: 0) {
+          assets {
+            creatorAddress
+            rarity
+            latestAppraisal {
+              estimatedPrice
+            }
+            previewImageUrl
+            mediaUrl
+            contractAddress
             collection {
               id
-              name
-              imageUrl
             }
           }
         }

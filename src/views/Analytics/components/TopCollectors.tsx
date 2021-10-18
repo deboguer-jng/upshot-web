@@ -52,6 +52,7 @@ export default function TopCollectors() {
   /* No results state. */
   if (!data?.getOwnersByWhaleness?.owners?.length) return null
 
+  console.log(data.getOwnersByWhaleness.owners[0].ownedAssets)
   return (
     <CollectorAccordion>
       {data.getOwnersByWhaleness.owners.map(
@@ -61,6 +62,7 @@ export default function TopCollectors() {
             addresses,
             totalAssetAppraisedValue,
             extraCollections: { collectionAssetCounts },
+            ownedAssets
           },
           idx
         ) => (
