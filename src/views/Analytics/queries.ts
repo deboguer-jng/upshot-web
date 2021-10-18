@@ -275,35 +275,56 @@ export type GetTopCollectorsData = {
       username: string
       addresses: string[]
       totalAssetAppraisedValue: string
-      extraCollections: {
-        collectionAssetCounts: {
-          count: number
+      ownedAssets: {
+        assets: {
+          id: string
+          name: string
+          creatorAddress: string
+          creatorUsername: string
+          rarity
+          latestAppraisal: {
+            estimatedPrice: number
+          }
+          previewImageUrl: string | undefined
+          mediaUrl: string
+          tokenId
+          contractAddress: string
           collection: {
             id: number
             name: string
-            imageUrl: string
           }
-        }[]
+        }
       }
+      }[]
     }[]
   }
-}
 
 export const GET_TOP_COLLECTORS = gql`
   query GetTopCollectors($limit: OneToHundredInt!) {
-    getOwnersByWhaleness(limit: $limit, offset: 0) {
+    getOwnersByWhaleness(limit: $limit) {
       count
       owners {
+        totalAssetAppraisedValue
         username
         addresses
-        totalAssetAppraisedValue
-        extraCollections(limit: 10) {
-          collectionAssetCounts {
+        ownedAssets(notable: true, limit:10, offset: 0) {
+          assets {
+            id
+            name
+            creatorAddress
+            creatorUsername
+            rarity
+            latestAppraisal {
+              estimatedPrice
+            }
+            mediaUrl
+            tokenId
+            contractAddress
             collection {
               id
               name
-              imageUrl
             }
+            previewImageUrl
           }
         }
       }
