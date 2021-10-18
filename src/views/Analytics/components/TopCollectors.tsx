@@ -1,4 +1,5 @@
 import { useQuery } from '@apollo/client'
+import { useBreakpointIndex } from '@theme-ui/match-media'
 import {
   CollectorAccordion,
   CollectorAccordionRow,
@@ -25,6 +26,8 @@ import { shortenAddress } from 'utils/address'
 
 export default function TopCollectors() {
   const router = useRouter()
+  const breakpointIndex = useBreakpointIndex()
+  const isMobile = breakpointIndex <= 1
   const { loading, error, data } = useQuery<
     GetTopCollectorsData,
     GetTopCollectorsVars
@@ -92,9 +95,12 @@ export default function TopCollectors() {
                 <Text sx={{ fontSize: 4, fontWeight: 'heading' }}>
                   Most Notable NFTs
                 </Text>
-                <Text sx={{ fontWeight: 'heading', color: theme.colors.blue, paddingBottom: '12px', fontSize: 2 }}>
-                  { addresses[0] }
-                </Text>
+                {
+                  !isMobile &&
+                    <Text sx={{ fontWeight: 'heading', color: theme.colors.blue, paddingBottom: '12px', fontSize: 2 }}>
+                      { addresses[0] }
+                    </Text>
+                }
               </div>
               <MiniNFTContainer>
                 {
