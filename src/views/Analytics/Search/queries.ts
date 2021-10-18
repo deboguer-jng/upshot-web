@@ -28,8 +28,10 @@ export type GetAssetsSearchData = {
         ethSalePrice: string
       }
       collection?: {
-        name
+        name: string
+        id: number
       }
+      collectionId: number
       contractAddress: string
       creatorUsername: string
       creatorAddress: string
@@ -66,6 +68,7 @@ export const GET_ASSETS_SEARCH = gql`
         tokenId
         collection {
           name
+          id
         }
         previewImageUrl
         mediaUrl
