@@ -15,24 +15,39 @@ import {
   GET_COLLECTORS,
   GetCollectorsData,
   GetCollectorsVars,
+  GET_PREVIOUS_OWNERS,
+  GetPreviousOwnersData,
+  GetPreviousOwnersVars,
 } from '../queries'
 import { PAGE_SIZE } from 'constants/'
 
 export default function Collectors({
   id,
   name,
+  assetId
 }: {
   id?: number
   name?: string
+  assetId?: string
 }) {
-  const { loading, error, data } = useQuery<
-    GetCollectorsData,
-    GetCollectorsVars
-  >(GET_COLLECTORS, {
-    errorPolicy: 'all',
-    variables: { id: Number(id), limit: 10 },
-    skip: !id,
-  })
+  const { loading, error, data } = 
+    assetId
+      ? useQuery<
+        GetPreviousOwnersData,
+        GetPreviousOwnersVars
+      >(GET_PREVIOUS_OWNERS, {
+        errorPolicy: 'all',
+        variables: { id: id, limit: 10, assetId },
+        skip: !id,
+      })
+      : useQuery<
+        GetCollectorsData,
+        GetCollectorsVars
+      >(GET_COLLECTORS, {
+        errorPolicy: 'all',
+        variables: { id: id, limit: 10 },
+        skip: !id,
+      })
 
   const ExplorePanelSkeleton = () => {
     return (

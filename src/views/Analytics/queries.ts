@@ -194,6 +194,9 @@ export type GetTopSalesData = {
       previewImageUrl?: string
       mediaUrl: string
       rarity: number
+      collection: {
+        id: number
+      }
     }
   }[]
 }
@@ -219,6 +222,9 @@ export const GET_TOP_SALES = gql`
         previewImageUrl
         mediaUrl
         rarity
+        collection {
+          id
+        }
       }
     }
   }
@@ -269,35 +275,56 @@ export type GetTopCollectorsData = {
       username: string
       addresses: string[]
       totalAssetAppraisedValue: string
-      extraCollections: {
-        collectionAssetCounts: {
-          count: number
+      ownedAssets: {
+        assets: {
+          id: string
+          name: string
+          creatorAddress: string
+          creatorUsername: string
+          rarity
+          latestAppraisal: {
+            estimatedPrice: number
+          }
+          previewImageUrl: string | undefined
+          mediaUrl: string
+          tokenId
+          contractAddress: string
           collection: {
             id: number
             name: string
-            imageUrl: string
           }
-        }[]
+        }
       }
+      }[]
     }[]
   }
-}
 
 export const GET_TOP_COLLECTORS = gql`
   query GetTopCollectors($limit: OneToHundredInt!) {
-    getOwnersByWhaleness(limit: $limit, offset: 0) {
+    getOwnersByWhaleness(limit: $limit) {
       count
       owners {
+        totalAssetAppraisedValue
         username
         addresses
-        totalAssetAppraisedValue
-        extraCollections(limit: 10) {
-          collectionAssetCounts {
+        ownedAssets(notable: true, limit:10, offset: 0) {
+          assets {
+            id
+            name
+            creatorAddress
+            creatorUsername
+            rarity
+            latestAppraisal {
+              estimatedPrice
+            }
+            mediaUrl
+            tokenId
+            contractAddress
             collection {
               id
               name
-              imageUrl
             }
+            previewImageUrl
           }
         }
       }
@@ -310,7 +337,7 @@ export const GET_TOP_COLLECTORS = gql`
  * @see Collectors
  */
 export type GetCollectorsVars = {
-  id: number
+  id?: number
   limit: number
 }
 
@@ -347,6 +374,74 @@ export type GetCollectorsData = {
 export const GET_COLLECTORS = gql`
   query GetCollectors($id: Int, $limit: OneToHundredInt!) {
     getOwnersByWhaleness(collectionId: $id, limit: $limit, offset: 0) {
+      count
+      owners {
+        username
+        addresses
+        firstAssetPurchaseTime
+        avgHoldTime
+        totalAssetAppraisedValue(collectionId: $id)
+        ownedAssets(collectionId: $id, notable: true, limit: 10) {
+          count
+          assets {
+            id
+            previewImageUrl
+          }
+        }
+        extraCollections(limit: 10) {
+          collectionAssetCounts {
+            count
+            collection {
+              id
+              name
+              imageUrl
+            }
+          }
+        }
+      }
+    }
+  }
+`
+
+export type GetPreviousOwnersVars = {
+  id?: number
+  limit: number
+  assetId?: string
+}
+
+export type GetPreviousOwnersData = {
+  getOwnersByWhaleness: {
+    count: number
+    owners: {
+      username: string
+      addresses: string[]
+      firstAssetPurchaseTime: number
+      avgHoldTime: number
+      totalAssetAppraisedValue: string
+      ownedAssets: {
+        count: number
+        assets: {
+          id: string
+          previewImageUrl: string
+        }[]
+      }
+      extraCollections: {
+        collectionAssetCounts: {
+          count: number
+          collection: {
+            id: number
+            name: string
+            imageUrl: string
+          }
+        }[]
+      }
+    }[]
+  }
+}
+
+export const GET_PREVIOUS_OWNERS = gql`
+  query GetPreviousOwners($id: Int, $limit: OneToHundredInt!, $assetId: String) {
+    getOwnersByWhaleness(limit: $limit, offset: 0, assetId: $assetId) {
       count
       owners {
         username
