@@ -54,6 +54,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 export default function NFTView() {
   const [id, setId] = useState('')
   const breakpointIndex = useBreakpointIndex()
+  const [hoverAttribute, setHoverAttribute] = useState<string | null>(null)
   const isMobile = breakpointIndex <= 1
   const router = useRouter()
 
@@ -301,7 +302,7 @@ export default function NFTView() {
                         <Image
                           src={creatorAvatar ?? '/img/defaultAvatar.png'}
                           alt="Creator avatar"
-                          sx={{ 
+                          sx={{
                             borderRadius: 'circle',
                             height: 32,
                             width: 32,
@@ -413,7 +414,13 @@ export default function NFTView() {
                     <Text variant="h3Secondary">Attributes</Text>
                     <Grid columns={isMobile ? 1 : 2}>
                       {traits.map(({ value, rarity }, idx) => (
-                        <Box>
+                        <Box
+                          onMouseOver={() => {
+                            setHoverAttribute(`attribute-${idx}`)
+                          }}
+                          key={idx}
+                          onMouseOut={() => setHoverAttribute(null)}
+                        >
                           <Link
                             href={`/analytics/search?attributes=${value}&collection=${collection?.name}`}
                             key={idx}
@@ -426,6 +433,16 @@ export default function NFTView() {
                             >
                               <LabelAttribute
                                 variant="percentage"
+                                transparent={
+                                  hoverAttribute === `attribute-${idx}`
+                                    ? false
+                                    : true
+                                }
+                                onMouseOver={(e) => {
+                                  console.log({ e })
+                                  setHoverAttribute(`attribute-${idx}`)
+                                }}
+                                onMouseOut={() => setHoverAttribute(null)}
                                 percentage={(100 - rarity * 100)
                                   .toFixed(2)
                                   .toString()}
@@ -557,7 +574,7 @@ export default function NFTView() {
                   >
                     <Text variant="h3Secondary">Transaction History</Text>
                   </Flex>
-                  { reversedTxHistory.length > 0 && (
+                  {reversedTxHistory.length > 0 && (
                     <Table sx={{ borderSpacing: '0 10px' }}>
                       <TableHead>
                         <TableRow>
@@ -634,8 +651,10 @@ export default function NFTView() {
                       </TableBody>
                     </Table>
                   )}
-                  { reversedTxHistory.length == 0 && (
-                    <Text sx={{ color: 'grey-500'}} >This asset hasn’t been sold or transferred yet.</Text>
+                  {reversedTxHistory.length == 0 && (
+                    <Text sx={{ color: 'grey-500' }}>
+                      This asset hasn’t been sold or transferred yet.
+                    </Text>
                   )}
                 </Flex>
               </Flex>
