@@ -194,6 +194,9 @@ export type GetTopSalesData = {
       previewImageUrl?: string
       mediaUrl: string
       rarity: number
+      collection: {
+        id: number
+      }
     }
   }[]
 }
@@ -219,6 +222,9 @@ export const GET_TOP_SALES = gql`
         previewImageUrl
         mediaUrl
         rarity
+        collection {
+          id
+        }
       }
     }
   }

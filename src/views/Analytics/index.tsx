@@ -57,7 +57,7 @@ export default function AnalyticsView() {
             onCollectionSelected={handleCollectionSelected}
           />
           <TopSellingNFTs />
-          <Text variant="text.h1Secondary">Market Cap</Text>
+          <Text variant="text.h1Secondary">Market Cap (Change Over 7 Days)</Text>
           <TreeMapMarketCap />
           <ExplorePanel />
         </Flex>

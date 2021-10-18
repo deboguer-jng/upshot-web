@@ -332,6 +332,7 @@ export default function SearchView() {
                         )}
                         type="search"
                         name={getAssetName(name, collection?.name, tokenId)}
+                        link={`https://app.upshot.io/analytics/collections/${collection.id}`}
                       />
                     </a>
                   )
