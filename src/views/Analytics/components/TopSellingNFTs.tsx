@@ -89,7 +89,7 @@ export default function TopSellingNFTs({
               txFromAddress,
               txToAddress,
               price,
-              asset: { id, contractAddress, previewImageUrl, mediaUrl, rarity },
+              asset: { id, contractAddress, previewImageUrl, mediaUrl, rarity, collection },
             },
             key
           ) => (
@@ -106,6 +106,7 @@ export default function TopSellingNFTs({
                 image={previewImageUrl ?? mediaUrl}
                 date={formatDistance(txAt * 1000, new Date())}
                 pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
+                link={`https://app.upshot.io/analytics/collections/${collection.id}`}
               />
             </a>
           )
