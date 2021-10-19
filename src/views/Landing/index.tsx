@@ -34,25 +34,30 @@ export default function AnalyticsView() {
             <Icon color="primary" icon="upshot" size={216} />
             <Box>
               <Box>
+                <Box>
                 <Text variant="h0Primary" sx={{ fontSize: '70px' }}>
-                  Welcome to Upshot
-                </Text>
-              </Box>
-              <Box sx={{ marginTop: '30px' }}>
-                <Text variant="h3Primary">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat.
-                </Text>
+                    Where NFTs meet DeFi
+                  </Text>
+                </Box>
+                <Box sx={{ marginTop: '30px' }}>
+                  <Text variant="h3Primary">
+                  NFTs offer us a vehicle for tokenizing anything, while the explosive
+                  growth of DeFi has demonstrated the power of permissionless financial
+                  primitives. However, due to the nascency and inherent illiquidity of
+                  NFTs, DeFi and NFTs have yet to fully collaborate. Upshot is building
+                  scalable NFT pricing infrastructure at the intersection of DeFi x NFTs.
+                  Through a combination of crowdsourced appraisals and proprietary
+                  machine learning algorithms, Upshot provides deep insight into NFT
+                  markets and unlocks a wave of exotic new DeFi primitives.
+                  </Text>
+                </Box>
               </Box>
             </Box>
           </Flex>
         </Box>
         <Text variant="h2Primary">Get started</Text>
         <Text variant="xLarge" color="grey-500">
-          Start using our suite of tools for exploring the metaverse.
+          Gain insight into NFT markets with our suite of tools.
         </Text>
         <Grid gap={5} columns={[1, 1, 2, 3]}>
           <Box
@@ -120,10 +125,10 @@ export default function AnalyticsView() {
             />
           </Grid>
         </Grid>
-
+        
         <Text variant="h2Primary">Discover</Text>
         <Text variant="xLarge" color="grey-500">
-          Explore the metaverse using these top-notch projects.
+          Explore innovative products at the intersection of DeFi x NFTs.
         </Text>
 
         <Grid gap={2} columns={[1, 1, 1, 2]}>

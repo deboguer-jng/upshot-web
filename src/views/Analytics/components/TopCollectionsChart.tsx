@@ -29,6 +29,12 @@ const atlKeys = {
   FLOOR: 'atlFloor',
 }
 
+const floorCheck = (val) => {
+  return val
+    ? parseFloat(ethers.utils.formatEther(val))
+    : 0
+}
+
 export default function TopCollectionsCharts({
   metric,
   selectedCollections,
@@ -85,7 +91,7 @@ export default function TopCollectionsCharts({
             ...a,
             [
               c.timestamp * 1000,
-              parseFloat(ethers.utils.formatEther(c[timeSeriesKeys[metric]])),
+              floorCheck(c[timeSeriesKeys[metric]]),
             ],
           ],
           []
@@ -93,8 +99,8 @@ export default function TopCollectionsCharts({
       ...rest,
     }))
     .map(({ data, name, ...rest }) => {
-      const ath = rest[athKeys[metric]].value
-      const atl = rest[atlKeys[metric]].value
+      const ath = rest[athKeys[metric]]?.value
+      const atl = rest[atlKeys[metric]]?.value
 
       return {
         name,
