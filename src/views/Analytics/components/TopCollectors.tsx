@@ -1,28 +1,28 @@
 import { useQuery } from '@apollo/client'
 import { useBreakpointIndex } from '@theme-ui/match-media'
 import {
+  Box,
   CollectorAccordion,
   CollectorAccordionRow,
+  MiniNftCard,
   Skeleton,
   TableCell,
-  Box,
-  MiniNftCard,
   Text,
   theme,
 } from '@upshot-tech/upshot-ui'
-import { formatUsername } from 'utils/address'
-import { weiToEth } from 'utils/number'
+import { PAGE_SIZE, PIXELATED_CONTRACTS } from 'constants/'
 import { useRouter } from 'next/router'
+import { formatUsername } from 'utils/address'
+import { shortenAddress } from 'utils/address'
+import { getAssetName } from 'utils/asset'
+import { weiToEth } from 'utils/number'
 
 import {
   GET_TOP_COLLECTORS,
   GetTopCollectorsData,
   GetTopCollectorsVars,
 } from '../queries'
-import { PAGE_SIZE, PIXELATED_CONTRACTS } from 'constants/'
 import { MiniNFTContainer } from './Styled'
-import { getAssetName } from 'utils/asset'
-import { shortenAddress } from 'utils/address'
 
 export default function TopCollectors() {
   const router = useRouter()
@@ -43,17 +43,15 @@ export default function TopCollectors() {
   const ExplorePanelSkeleton = () => {
     return (
       <CollectorAccordion>
-        {
-          [...new Array(PAGE_SIZE)].map((_, idx) => (
-            <CollectorAccordionRow>
-              <Skeleton sx={{ height: 56 }} as="tr" key={idx}>
-                <TableCell colSpan={5}>
-                  <Box sx={{ height: 40, width: '100%' }} />
-                </TableCell>
-              </Skeleton>
-            </CollectorAccordionRow>
-          ))
-        }
+        {[...new Array(PAGE_SIZE)].map((_, idx) => (
+          <CollectorAccordionRow>
+            <Skeleton sx={{ height: 56 }} as="tr" key={idx}>
+              <TableCell colSpan={5}>
+                <Box sx={{ height: 40, width: '100%' }} />
+              </TableCell>
+            </Skeleton>
+          </CollectorAccordionRow>
+        ))}
       </CollectorAccordion>
     )
   }
@@ -74,12 +72,7 @@ export default function TopCollectors() {
         // @ts-ignore
         data.getOwnersByWhaleness?.owners.map(
           (
-            {
-              username,
-              addresses,
-              totalAssetAppraisedValue,
-              ownedAssets,
-            },
+            { username, addresses, totalAssetAppraisedValue, ownedAssets },
             idx
           ) => (
             <CollectorAccordionRow
@@ -91,64 +84,68 @@ export default function TopCollectors() {
               }
               key={idx}
             >
-              <div style={{display: 'grid'}}>
+              <div style={{ display: 'grid' }}>
                 <Text sx={{ fontSize: 4, fontWeight: 'heading' }}>
                   Most Notable NFTs
                 </Text>
-                {
-                  !isMobile &&
-                    <Text sx={{ fontWeight: 'heading', color: theme.colors.blue, paddingBottom: '12px', fontSize: 2 }}>
-                      { addresses[0] }
-                    </Text>
-                }
+                {!isMobile && (
+                  <Text
+                    sx={{
+                      fontWeight: 'heading',
+                      color: theme.colors.blue,
+                      paddingBottom: '12px',
+                      fontSize: 2,
+                    }}
+                  >
+                    {addresses[0]}
+                  </Text>
+                )}
               </div>
               <MiniNFTContainer>
-                {
-                  ownedAssets?.assets?.map(
-                    (
-                      {
-                        id,
-                        name,
-                        creatorAddress,
-                        creatorUsername,
-                        rarity,
-                        latestAppraisal,
-                        mediaUrl,
-                        tokenId,
-                        contractAddress,
-                        collection,
-                        previewImageUrl
-                      },
-                      key
-                    ) => (
-                      <a
-                        key={key}
-                        onClick={() => handleClickNFT(id)}
-                        style={{ cursor: 'pointer' }}
-                      >
-                        <MiniNftCard
-                          price={
-                            latestAppraisal?.estimatedPrice
-                              ? weiToEth(latestAppraisal?.estimatedPrice)
-                              : undefined
-                          }
-                          rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
-                          image={previewImageUrl ?? mediaUrl}
-                          creator={
-                            creatorUsername ||
-                            shortenAddress(creatorAddress, 2, 4)
-                          }
-                          pixelated={PIXELATED_CONTRACTS.includes(
-                            contractAddress
-                          )}
-                          type="search"
-                          name={getAssetName(name, collection?.name, tokenId)}
-                          link={`https://app.upshot.io/analytics/collections/${collection?.id}`}
-                        />
-                      </a>
-                    )
+                {ownedAssets?.assets?.map(
+                  (
+                    {
+                      id,
+                      name,
+                      creatorAddress,
+                      creatorUsername,
+                      rarity,
+                      latestAppraisal,
+                      mediaUrl,
+                      tokenId,
+                      contractAddress,
+                      collection,
+                      previewImageUrl,
+                    },
+                    key
+                  ) => (
+                    <a
+                      key={key}
+                      onClick={() => handleClickNFT(id)}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <MiniNftCard
+                        price={
+                          latestAppraisal?.estimatedPrice
+                            ? weiToEth(latestAppraisal?.estimatedPrice)
+                            : undefined
+                        }
+                        rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
+                        image={previewImageUrl ?? mediaUrl}
+                        creator={
+                          creatorUsername ||
+                          shortenAddress(creatorAddress, 2, 4)
+                        }
+                        pixelated={PIXELATED_CONTRACTS.includes(
+                          contractAddress
+                        )}
+                        type="search"
+                        name={getAssetName(name, collection?.name, tokenId)}
+                        link={`https://app.upshot.io/analytics/collection/${collection?.id}`}
+                      />
+                    </a>
                   )
-                }
+                )}
               </MiniNFTContainer>
             </CollectorAccordionRow>
           )
