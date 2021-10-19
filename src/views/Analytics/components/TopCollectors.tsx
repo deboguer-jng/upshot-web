@@ -64,7 +64,7 @@ export default function TopCollectors() {
   if (error) return null
 
   /* No results state. */
-  if (!data?.getOwnersByWhaleness?.['owners'].length) return null
+  if (!data?.getOwnersByWhaleness?.['owners']?.length) return null
 
   return (
     <>
