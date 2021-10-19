@@ -82,11 +82,28 @@ function ExplorePanelHead({
   tab,
   searchTerm,
 }: ExplorePanelHeadProps) {
+  const [autoFilter, setAutoFilter] = useState<any>()
   const searchTermRef = useRef<HTMLInputElement>(null)
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
 
     onSearch?.(searchTermRef?.current?.value ?? '')
+  }
+
+  /**
+   * Auto apply search filter with 500ms timeout.
+   */
+  const handleChange = (e: React.ChangeEvent) => {
+    if (autoFilter) {
+      clearTimeout(autoFilter)
+      setAutoFilter(undefined)
+    }
+
+    setAutoFilter(
+      setTimeout(() => {
+        onSearch?.(searchTermRef?.current?.value ?? '')
+      }, 500)
+    )
   }
 
   return (
@@ -119,6 +136,7 @@ function ExplorePanelHead({
               hasButton
               defaultValue={searchTerm}
               ref={searchTermRef}
+              onChange={handleChange}
               buttonProps={{
                 type: 'button',
                 onClick: handleSearch,
