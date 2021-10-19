@@ -56,7 +56,6 @@ function Layout({ children }: { children: React.ReactNode }) {
 export default function NFTView() {
   const [id, setId] = useState('')
   const breakpointIndex = useBreakpointIndex()
-  const [hoverAttribute, setHoverAttribute] = useState<string | null>(null)
   const isMobile = breakpointIndex <= 1
   const router = useRouter()
   const { theme } = useTheme()
@@ -417,13 +416,7 @@ export default function NFTView() {
                     <Text variant="h3Secondary">Attributes</Text>
                     <Grid columns={isMobile ? 1 : 2}>
                       {traits.map(({ value, rarity }, idx) => (
-                        <Box
-                          onMouseOver={() => {
-                            setHoverAttribute(`attribute-${idx}`)
-                          }}
-                          key={idx}
-                          onMouseOut={() => setHoverAttribute(null)}
-                        >
+                        <Box key={idx}>
                           <Link
                             href={`/analytics/search?attributes=${value}&collection=${collection?.name}`}
                             key={idx}
@@ -436,14 +429,10 @@ export default function NFTView() {
                             >
                               <LabelAttribute
                                 variant="percentage"
-                                transparent={
-                                  hoverAttribute === `attribute-${idx}`
-                                    ? false
-                                    : true
-                                }
                                 percentage={(100 - rarity * 100)
                                   .toFixed(2)
                                   .toString()}
+                                hasHover
                               >
                                 {value}
                               </LabelAttribute>
