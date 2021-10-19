@@ -34,7 +34,7 @@ export default function Collectors({
     GetCollectorsVars
   >(GET_COLLECTORS, {
     errorPolicy: 'all',
-    variables: { id, limit: 10, assetId },
+    variables: { id: assetId ? undefined : id, limit: 10, assetId },
     skip: !id,
   })
 
