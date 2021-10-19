@@ -1,28 +1,29 @@
 import { useQuery } from '@apollo/client'
 import { useBreakpointIndex } from '@theme-ui/match-media'
 import {
+  Box,
   CollectorAccordion,
+  CollectorAccordionHead,
   CollectorAccordionRow,
+  MiniNftCard,
   Skeleton,
   TableCell,
-  Box,
-  MiniNftCard,
   Text,
   theme,
 } from '@upshot-tech/upshot-ui'
-import { formatUsername } from 'utils/address'
-import { weiToEth } from 'utils/number'
+import { PAGE_SIZE, PIXELATED_CONTRACTS } from 'constants/'
 import { useRouter } from 'next/router'
+import { formatUsername } from 'utils/address'
+import { shortenAddress } from 'utils/address'
+import { getAssetName } from 'utils/asset'
+import { weiToEth } from 'utils/number'
 
 import {
   GET_TOP_COLLECTORS,
   GetTopCollectorsData,
   GetTopCollectorsVars,
 } from '../queries'
-import { PAGE_SIZE, PIXELATED_CONTRACTS } from 'constants/'
 import { MiniNFTContainer } from './Styled'
-import { getAssetName } from 'utils/asset'
-import { shortenAddress } from 'utils/address'
 
 export default function TopCollectors() {
   const router = useRouter()
@@ -43,17 +44,15 @@ export default function TopCollectors() {
   const ExplorePanelSkeleton = () => {
     return (
       <CollectorAccordion>
-        {
-          [...new Array(PAGE_SIZE)].map((_, idx) => (
-            <CollectorAccordionRow>
-              <Skeleton sx={{ height: 56 }} as="tr" key={idx}>
-                <TableCell colSpan={5}>
-                  <Box sx={{ height: 40, width: '100%' }} />
-                </TableCell>
-              </Skeleton>
-            </CollectorAccordionRow>
-          ))
-        }
+        {[...new Array(PAGE_SIZE)].map((_, idx) => (
+          <CollectorAccordionRow key={idx}>
+            <Skeleton sx={{ height: 56 }} as="tr" key={idx}>
+              <TableCell colSpan={5}>
+                <Box sx={{ height: 40, width: '100%' }} />
+              </TableCell>
+            </Skeleton>
+          </CollectorAccordionRow>
+        ))}
       </CollectorAccordion>
     )
   }
@@ -69,42 +68,47 @@ export default function TopCollectors() {
   if (!data?.getOwnersByWhaleness?.owners?.length) return null
 
   return (
-    <CollectorAccordion>
-      {
-        // @ts-ignore
-        data.getOwnersByWhaleness?.owners.map(
-          (
-            {
-              username,
-              addresses,
-              totalAssetAppraisedValue,
-              ownedAssets,
-            },
-            idx
-          ) => (
-            <CollectorAccordionRow
-              name={formatUsername(username ?? addresses?.[0] ?? 'Unknown')}
-              portfolioValue={
-                totalAssetAppraisedValue
-                  ? weiToEth(totalAssetAppraisedValue, 2, false)
-                  : null
-              }
-              key={idx}
-            >
-              <div style={{display: 'grid'}}>
-                <Text sx={{ fontSize: 4, fontWeight: 'heading' }}>
-                  Most Notable NFTs
-                </Text>
-                {
-                  !isMobile &&
-                    <Text sx={{ fontWeight: 'heading', color: theme.colors.blue, paddingBottom: '12px', fontSize: 2 }}>
-                      { addresses[0] }
-                    </Text>
+    <>
+      <CollectorAccordionHead>
+        <Text>Collector</Text>
+        <Text sx={{ whiteSpace: 'nowrap' }}>Total Appraisal Value</Text>
+      </CollectorAccordionHead>
+      <CollectorAccordion>
+        {
+          // @ts-ignore
+          data.getOwnersByWhaleness?.owners.map(
+            (
+              { username, addresses, totalAssetAppraisedValue, ownedAssets },
+              idx
+            ) => (
+              <CollectorAccordionRow
+                name={formatUsername(username ?? addresses?.[0] ?? 'Unknown')}
+                portfolioValue={
+                  totalAssetAppraisedValue
+                    ? weiToEth(totalAssetAppraisedValue, 2, false)
+                    : null
                 }
-              </div>
-              <MiniNFTContainer>
-                {
-                  ownedAssets?.assets?.map(
+                key={idx}
+              >
+                <div style={{ display: 'grid' }}>
+                  <Text sx={{ fontSize: 4, fontWeight: 'heading' }}>
+                    Most Notable NFTs
+                  </Text>
+                  {!isMobile && (
+                    <Text
+                      sx={{
+                        fontWeight: 'heading',
+                        color: theme.colors.blue,
+                        paddingBottom: '12px',
+                        fontSize: 2,
+                      }}
+                    >
+                      {addresses[0]}
+                    </Text>
+                  )}
+                </div>
+                <MiniNFTContainer>
+                  {ownedAssets?.assets?.map(
                     (
                       {
                         id,
@@ -117,7 +121,7 @@ export default function TopCollectors() {
                         tokenId,
                         contractAddress,
                         collection,
-                        previewImageUrl
+                        previewImageUrl,
                       },
                       key
                     ) => (
@@ -147,13 +151,13 @@ export default function TopCollectors() {
                         />
                       </a>
                     )
-                  )
-                }
-              </MiniNFTContainer>
-            </CollectorAccordionRow>
+                  )}
+                </MiniNFTContainer>
+              </CollectorAccordionRow>
+            )
           )
-        )
-      }
-    </CollectorAccordion>
+        }
+      </CollectorAccordion>
+    </>
   )
 }
