@@ -1,6 +1,6 @@
 import { InputRoundedSearch } from '@upshot-tech/upshot-ui'
 import { Flex, Grid, Panel, Text } from '@upshot-tech/upshot-ui'
-import React, { forwardRef } from 'react'
+import React, { forwardRef, useState } from 'react'
 
 interface CollectionPanelProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
@@ -34,6 +34,24 @@ export default forwardRef(function CollectionPanel(
   }: CollectionPanelProps,
   ref: React.ForwardedRef<HTMLDivElement>
 ) {
+  /**
+   * Auto apply search filter with 500ms timeout.
+   */
+  const [autoFilter, setAutoFilter] = useState<any>()
+
+  const handleChange = (e: React.ChangeEvent) => {
+    if (autoFilter) {
+      clearTimeout(autoFilter)
+      setAutoFilter(undefined)
+    }
+
+    setAutoFilter(
+      setTimeout(() => {
+        onSearch?.(e)
+      }, 500)
+    )
+  }
+
   return (
     <Panel {...{ ref, ...props }}>
       <Flex sx={{ flexDirection: 'column', gap: 4 }}>
@@ -45,10 +63,16 @@ export default forwardRef(function CollectionPanel(
           }}
         >
           <Flex sx={{ flexDirection: 'column' }}>
-            <Flex variant="text.h1Secondary" sx={{ gap: 2, lineHeight: '2rem' }}>
+            <Flex
+              variant="text.h1Secondary"
+              sx={{ gap: 2, lineHeight: '2rem' }}
+            >
               {title}
             </Flex>
-            <Text color="grey-500" sx={{ fontSize: 2, marginTop: '2px', marginBottom: '4px' }}>
+            <Text
+              color="grey-500"
+              sx={{ fontSize: 2, marginTop: '2px', marginBottom: '4px' }}
+            >
               {subtitle}
             </Text>
           </Flex>
@@ -58,6 +82,7 @@ export default forwardRef(function CollectionPanel(
                 dark
                 fullWidth
                 hasButton
+                onChange={handleChange}
                 buttonProps={{
                   type: 'button',
                   onClick: onSearch,
