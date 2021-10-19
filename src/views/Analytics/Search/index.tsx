@@ -226,6 +226,137 @@ export default function SearchView() {
     )
   }
 
+  const searchResults = () => (
+    <>
+      <Flex
+      paddingX={8}
+      sx={{
+        position: ['static', 'static', 'static', 'sticky'],
+        top: 0,
+        alignSelf: 'flex-start',
+        flexDirection: 'column',
+        gap: 8,
+      }}
+      >
+        {
+          isMobile
+            ? (
+              <>
+                <Accordion title='Search Filters'>
+                  { searchFilters() }
+                </Accordion>
+              </>
+            )
+            : (
+              <>
+                <Box>
+                  <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+                    <Flex sx={{ flexDirection: 'column', gap: 1 }}>
+                      <Text variant="h3Secondary" color="grey-500">
+                        Search Filters
+                      </Text>
+                    </Flex>
+                  </Flex>
+                </Box>
+                { searchFilters() }
+              </>
+            )
+        }
+      </Flex>
+      <Flex
+        paddingX={[8, 8, 0]}
+        sx={{
+          flex: '1 auto auto',
+          flexDirection: 'column',
+          gap: 4
+        }}
+      >
+        <Flex sx={{ flexDirection: 'column' }}>
+          <Text>Search Results</Text>
+          <Text variant="h1Primary">{collectionNameApplied}</Text>
+          <Text variant="h2Primary">{searchTermApplied}</Text>
+        </Flex>
+
+        {error ? (
+          <div>There was an error completing your request</div>
+        ) : data?.assetGlobalSearch?.assets.length === 0 ? (
+          <div>No results available.</div>
+        ) : (
+          <Flex
+            sx={{
+              flexWrap: 'wrap',
+              gap: [2, 2, 5],
+              justifyContent: ['center', 'center', 'initial']
+            }}
+          >
+            {loading
+              ? [...new Array(PAGE_SIZE)].map((_, idx) => (
+                  <BlurrySquareTemplate key={idx} />
+                ))
+              : data?.assetGlobalSearch?.assets.map(
+                  (
+                    {
+                      id,
+                      contractAddress,
+                      previewImageUrl,
+                      mediaUrl,
+                      name,
+                      collection,
+                      tokenId,
+                      lastSale,
+                      rarity,
+                      creatorUsername,
+                      creatorAddress,
+                    },
+                    key
+                  ) => (
+                    <a
+                      key={key}
+                      onClick={() => handleClickNFT(id)}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <MiniNftCard
+                        price={
+                          lastSale?.ethSalePrice
+                            ? weiToEth(lastSale.ethSalePrice)
+                            : undefined
+                        }
+                        rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
+                        image={previewImageUrl ?? mediaUrl}
+                        creator={
+                          creatorUsername ||
+                          shortenAddress(creatorAddress, 2, 4)
+                        }
+                        pixelated={PIXELATED_CONTRACTS.includes(
+                          contractAddress
+                        )}
+                        type="search"
+                        name={getAssetName(name, collection?.name, tokenId)}
+                        link={`https://app.upshot.io/analytics/collections/${collection?.id}`}
+                      />
+                    </a>
+                  )
+                )}
+          </Flex>
+        )}
+
+        <Flex sx={{ justifyContent: 'center' }}>
+          {!!data?.assetGlobalSearch?.count && (
+            <Pagination
+              forcePage={page}
+              pageCount={Math.ceil(
+                data.assetGlobalSearch.count / PAGE_SIZE
+              )}
+              pageRangeDisplayed={isMobile ? 3 : 5}
+              marginPagesDisplayed={isMobile ? 1 : 5}
+              onPageChange={handlePageChange}
+            />
+          )}
+        </Flex>
+      </Flex>
+    </>
+  )
+
   return (
     <>
       <Head>
@@ -243,142 +374,23 @@ export default function SearchView() {
         >
           <Nav />
         </Container>
-
-        <Grid
-          columns={[1, 1, 1, 3]}
-          sx={{
-            gridTemplateColumns: ['1fr', '1fr', '1fr 3fr', '1fr 3fr 1fr'],
-            flexGrow: 1,
-            gap: [8, 5, 0],
-          }}
-        >
-          <Flex
-            paddingX={8}
-            sx={{
-              position: ['static', 'static', 'static', 'sticky'],
-              top: 0,
-              alignSelf: 'flex-start',
-              flexDirection: 'column',
-              gap: 8,
-            }}
-          >
-            {
-              isMobile
-                ? (
-                  <>
-                    <Accordion title='Search Filters'>
-                      { searchFilters() }
-                    </Accordion>
-                  </>
-                )
-                : (
-                  <>
-                    <Box>
-                      <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-                        <Flex sx={{ flexDirection: 'column', gap: 1 }}>
-                          <Text variant="h3Secondary" color="grey-500">
-                            Search Filters
-                          </Text>
-                        </Flex>
-                      </Flex>
-                    </Box>
-                    { searchFilters() }
-                  </>
-                )
-            }
-          </Flex>
-          <Flex
-            paddingX={[8, 8, 0]}
-            sx={{
-              flex: '1 auto auto',
-              flexDirection: 'column',
-              gap: 4
-            }}
-          >
-            <Flex sx={{ flexDirection: 'column' }}>
-              <Text>Search Results</Text>
-              <Text variant="h1Primary">{collectionNameApplied}</Text>
-              <Text variant="h2Primary">{searchTermApplied}</Text>
-            </Flex>
-
-            {error ? (
-              <div>There was an error completing your request</div>
-            ) : data?.assetGlobalSearch?.assets.length === 0 ? (
-              <div>No results available.</div>
-            ) : (
-              <Flex
+        {
+          !isMobile
+            ? (
+              <Grid
+                columns={[1, 1, 1, 3]}
                 sx={{
-                  flexWrap: 'wrap',
-                  gap: [2, 2, 5],
-                  justifyContent: ['center', 'center', 'initial']
+                  gridTemplateColumns: ['1fr', '1fr', '1fr 3fr', '1fr 3fr 1fr'],
+                  flexGrow: 1,
+                  gap: [8, 5, 0],
                 }}
               >
-                {loading
-                  ? [...new Array(PAGE_SIZE)].map((_, idx) => (
-                      <BlurrySquareTemplate key={idx} />
-                    ))
-                  : data?.assetGlobalSearch?.assets.map(
-                      (
-                        {
-                          id,
-                          contractAddress,
-                          previewImageUrl,
-                          mediaUrl,
-                          name,
-                          collection,
-                          tokenId,
-                          lastSale,
-                          rarity,
-                          creatorUsername,
-                          creatorAddress,
-                        },
-                        key
-                      ) => (
-                        <a
-                          key={key}
-                          onClick={() => handleClickNFT(id)}
-                          style={{ cursor: 'pointer' }}
-                        >
-                          <MiniNftCard
-                            price={
-                              lastSale?.ethSalePrice
-                                ? weiToEth(lastSale.ethSalePrice)
-                                : undefined
-                            }
-                            rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
-                            image={previewImageUrl ?? mediaUrl}
-                            creator={
-                              creatorUsername ||
-                              shortenAddress(creatorAddress, 2, 4)
-                            }
-                            pixelated={PIXELATED_CONTRACTS.includes(
-                              contractAddress
-                            )}
-                            type="search"
-                            name={getAssetName(name, collection?.name, tokenId)}
-                          />
-                        </a>
-                      )
-                    )}
-              </Flex>
-            )}
-
-            <Flex sx={{ justifyContent: 'center' }}>
-              {!!data?.assetGlobalSearch?.count && (
-                <Pagination
-                  forcePage={page}
-                  pageCount={Math.ceil(
-                    data.assetGlobalSearch.count / PAGE_SIZE
-                  )}
-                  pageRangeDisplayed={isMobile ? 3 : 5}
-                  marginPagesDisplayed={isMobile ? 1 : 5}
-                  onPageChange={handlePageChange}
-                />
-              )}
-            </Flex>
-          </Flex>
-        </Grid>
-
+                { searchResults() }
+              </Grid>
+            ) : (
+              searchResults()
+            )
+        }
         <Container
           p={4}
           sx={{
