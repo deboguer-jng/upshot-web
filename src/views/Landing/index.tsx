@@ -11,6 +11,29 @@ import {
 import { Nav } from 'components/Nav'
 import Head from 'next/head'
 
+import { projects } from './content'
+
+type PanelData = {
+  projectType: string,
+  title: string,
+  description: string,
+  image: any,
+  url?: string,
+}
+
+function renderLandingPanel(data: PanelData) {
+  return (
+    <LandingPanel
+      projectType={data.projectType}
+      title={data.title}
+      description={data.description}
+      image={data.image.src}
+      url={data.url}
+      targetBlank={true}
+    />
+  )
+}
+
 export default function AnalyticsView() {
   return (
     <>
@@ -134,93 +157,33 @@ export default function AnalyticsView() {
         <Grid gap={2} columns={[1, 1, 1, 2]}>
           <Grid gap={2} sx={{ flexDirection: 'column' }}>
             <Grid gap={2} columns={[1, 1, '10fr 6fr']}>
-              <LandingPanel
-                projectType="Protocolll"
-                title="Project Name"
-                description="Short intro to product"
-                image="https://cdn.coinranking.com/nft/0x60F80121C31A0d46B5279700f9DF786054aa5eE5/58567.png?size=autox430"
-              />
+              { renderLandingPanel(projects[0]) }
               <Grid gap={2} sx={{ flexDirection: 'column' }}>
-                <LandingPanel
-                  projectType="Protocolll"
-                  title="Project Name"
-                  description="Short intro to product"
-                  image="https://cdn.coinranking.com/nft/0x60F80121C31A0d46B5279700f9DF786054aa5eE5/58567.png?size=autox430"
-                />
-                <LandingPanel
-                  projectType="Protocolll"
-                  title="Project Name"
-                  description="Short intro to product"
-                  image="https://cdn.coinranking.com/nft/0x60F80121C31A0d46B5279700f9DF786054aa5eE5/58567.png?size=autox430"
-                />
+                { renderLandingPanel(projects[1]) }
+                { renderLandingPanel(projects[2]) }
               </Grid>
             </Grid>
             <Grid gap={2} columns={[1, 1, '6fr 10fr']}>
               <Grid gap={2} sx={{ flexDirection: 'column' }}>
-                <LandingPanel
-                  projectType="Protocolll"
-                  title="Project Name"
-                  description="Short intro to product"
-                  image="https://cdn.coinranking.com/nft/0x60F80121C31A0d46B5279700f9DF786054aa5eE5/58567.png?size=autox430"
-                />
-                <LandingPanel
-                  projectType="Protocolll"
-                  title="Project Name"
-                  description="Short intro to product"
-                  image="https://cdn.coinranking.com/nft/0x60F80121C31A0d46B5279700f9DF786054aa5eE5/58567.png?size=autox430"
-                />
+                { renderLandingPanel(projects[3]) }
+                { renderLandingPanel(projects[4]) }
               </Grid>
-              <LandingPanel
-                projectType="Protocolll"
-                title="Project Name"
-                description="Short intro to product"
-                image="https://cdn.coinranking.com/nft/0x60F80121C31A0d46B5279700f9DF786054aa5eE5/58567.png?size=autox430"
-              />
+              { renderLandingPanel(projects[5]) }
             </Grid>
           </Grid>
           <Grid gap={2} sx={{ flexDirection: 'column' }}>
             <Grid gap={2} columns={[1, 1, '6fr 10fr']}>
               <Grid gap={2} sx={{ flexDirection: 'column' }}>
-                <LandingPanel
-                  projectType="Protocolll"
-                  title="Project Name"
-                  description="Short intro to product"
-                  image="https://cdn.coinranking.com/nft/0x60F80121C31A0d46B5279700f9DF786054aa5eE5/58567.png?size=autox430"
-                />
-                <LandingPanel
-                  projectType="Protocolll"
-                  title="Project Name"
-                  description="Short intro to product"
-                  image="https://cdn.coinranking.com/nft/0x60F80121C31A0d46B5279700f9DF786054aa5eE5/58567.png?size=autox430"
-                />
+                { renderLandingPanel(projects[6]) }
+                { renderLandingPanel(projects[7]) }
               </Grid>
-              <LandingPanel
-                projectType="Protocolll"
-                title="Project Name"
-                description="Short intro to product"
-                image="https://cdn.coinranking.com/nft/0x60F80121C31A0d46B5279700f9DF786054aa5eE5/58567.png?size=autox430"
-              />
+              { renderLandingPanel(projects[8]) }
             </Grid>
             <Grid gap={2} columns={[1, 1, '10fr 6fr']}>
-              <LandingPanel
-                projectType="Protocolll"
-                title="Project Name"
-                description="Short intro to product"
-                image="https://cdn.coinranking.com/nft/0x60F80121C31A0d46B5279700f9DF786054aa5eE5/58567.png?size=autox430"
-              />
+              { renderLandingPanel(projects[9]) }
               <Grid gap={2} sx={{ flexDirection: 'column' }}>
-                <LandingPanel
-                  projectType="Protocolll"
-                  title="Project Name"
-                  description="Short intro to product"
-                  image="https://cdn.coinranking.com/nft/0x60F80121C31A0d46B5279700f9DF786054aa5eE5/58567.png?size=autox430"
-                />
-                <LandingPanel
-                  projectType="Protocolll"
-                  title="Project Name"
-                  description="Short intro to product"
-                  image="https://cdn.coinranking.com/nft/0x60F80121C31A0d46B5279700f9DF786054aa5eE5/58567.png?size=autox430"
-                />
+                { renderLandingPanel(projects[10]) }
+                { renderLandingPanel(projects[11]) }
               </Grid>
             </Grid>
           </Grid>
