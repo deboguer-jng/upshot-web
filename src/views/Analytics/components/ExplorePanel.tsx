@@ -149,13 +149,7 @@ function ExplorePanelHead({
   )
 }
 
-function ExplorePanelSkeleton({
-  tab,
-  searchTerm,
-}: {
-  tab: string
-  searchTerm: string
-}) {
+function ExplorePanelSkeleton() {
   return (
     <CollectionTable>
       <CollectionTableHead />
@@ -207,7 +201,7 @@ export default function ExplorePanel({
 
   const content = useMemo(() => {
     /* Loading state. */
-    if (loading) return <ExplorePanelSkeleton {...{ tab, searchTerm }} />
+    if (loading) return <ExplorePanelSkeleton />
 
     /* Error state. */
     if (error) return <div>There was an error completing your request.</div>
