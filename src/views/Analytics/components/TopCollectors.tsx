@@ -74,89 +74,86 @@ export default function TopCollectors() {
         <Text sx={{ whiteSpace: 'nowrap' }}>Total Appraisal Value</Text>
       </CollectorAccordionHead>
       <CollectorAccordion>
-        {
-          // @ts-ignore
-          data.getOwnersByWhaleness?.owners.map(
-            (
-              { username, addresses, totalAssetAppraisedValue, ownedAssets },
-              idx
-            ) => (
-              <CollectorAccordionRow
-                name={formatUsername(username ?? addresses?.[0] ?? 'Unknown')}
-                portfolioValue={
-                  totalAssetAppraisedValue
-                    ? weiToEth(totalAssetAppraisedValue, 2, false)
-                    : null
-                }
-                key={idx}
-              >
-                <div style={{ display: 'grid' }}>
-                  <Text sx={{ fontSize: 4, fontWeight: 'heading' }}>
-                    Most Notable NFTs
+        {data.getOwnersByWhaleness['owners'].map(
+          (
+            { username, addresses, totalAssetAppraisedValue, ownedAssets },
+            idx
+          ) => (
+            <CollectorAccordionRow
+              name={formatUsername(username ?? addresses?.[0] ?? 'Unknown')}
+              portfolioValue={
+                totalAssetAppraisedValue
+                  ? weiToEth(totalAssetAppraisedValue, 2, false)
+                  : null
+              }
+              key={idx}
+            >
+              <div style={{ display: 'grid' }}>
+                <Text sx={{ fontSize: 4, fontWeight: 'heading' }}>
+                  Most Notable NFTs
+                </Text>
+                {!isMobile && (
+                  <Text
+                    sx={{
+                      fontWeight: 'heading',
+                      color: theme.colors.blue,
+                      paddingBottom: '12px',
+                      fontSize: 2,
+                    }}
+                  >
+                    {addresses[0]}
                   </Text>
-                  {!isMobile && (
-                    <Text
-                      sx={{
-                        fontWeight: 'heading',
-                        color: theme.colors.blue,
-                        paddingBottom: '12px',
-                        fontSize: 2,
-                      }}
+                )}
+              </div>
+              <MiniNFTContainer>
+                {ownedAssets?.assets?.map(
+                  (
+                    {
+                      id,
+                      name,
+                      creatorAddress,
+                      creatorUsername,
+                      rarity,
+                      latestAppraisal,
+                      mediaUrl,
+                      tokenId,
+                      contractAddress,
+                      collection,
+                      previewImageUrl,
+                    },
+                    key
+                  ) => (
+                    <a
+                      key={key}
+                      onClick={() => handleClickNFT(id)}
+                      style={{ cursor: 'pointer' }}
                     >
-                      {addresses[0]}
-                    </Text>
-                  )}
-                </div>
-                <MiniNFTContainer>
-                  {ownedAssets?.assets?.map(
-                    (
-                      {
-                        id,
-                        name,
-                        creatorAddress,
-                        creatorUsername,
-                        rarity,
-                        latestAppraisal,
-                        mediaUrl,
-                        tokenId,
-                        contractAddress,
-                        collection,
-                        previewImageUrl,
-                      },
-                      key
-                    ) => (
-                      <a
-                        key={key}
-                        onClick={() => handleClickNFT(id)}
-                        style={{ cursor: 'pointer' }}
-                      >
-                        <MiniNftCard
-                          price={
-                            latestAppraisal?.estimatedPrice
-                              ? weiToEth(latestAppraisal?.estimatedPrice)
-                              : undefined
-                          }
-                          rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
-                          image={previewImageUrl ?? mediaUrl}
-                          creator={
-                            creatorUsername ||
-                            shortenAddress(creatorAddress, 2, 4)
-                          }
-                          pixelated={PIXELATED_CONTRACTS.includes(
-                            contractAddress
-                          )}
-                          type="search"
-                          name={getAssetName(name, collection?.name, tokenId)}
-                          link={`https://app.upshot.io/analytics/collections/${collection?.id}`}
-                        />
-                      </a>
-                    )
-                  )}
-                </MiniNFTContainer>
-              </CollectorAccordionRow>
-            )
+                      <MiniNftCard
+                        price={
+                          latestAppraisal?.estimatedPrice
+                            ? weiToEth(latestAppraisal?.estimatedPrice)
+                            : undefined
+                        }
+                        rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
+                        image={previewImageUrl ?? mediaUrl}
+                        creator={
+                          creatorUsername ||
+                          shortenAddress(creatorAddress, 2, 4)
+                        }
+                        pixelated={PIXELATED_CONTRACTS.includes(
+                          contractAddress
+                        )}
+                        type="search"
+                        name={getAssetName(name, collection?.name, tokenId)}
+                        link={`https://app.upshot.io/analytics/collections/${collection?.id}`}
+                      />
+                    </a>
+                  )
+                )}
+              </MiniNFTContainer>
+            </CollectorAccordionRow>
           )
-        }
+        )}
       </CollectorAccordion>
     </>
   )
