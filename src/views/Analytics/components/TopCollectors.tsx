@@ -3,6 +3,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media'
 import {
   Box,
   CollectorAccordion,
+  CollectorAccordionHead,
   CollectorAccordionRow,
   MiniNftCard,
   Skeleton,
@@ -44,7 +45,7 @@ export default function TopCollectors() {
     return (
       <CollectorAccordion>
         {[...new Array(PAGE_SIZE)].map((_, idx) => (
-          <CollectorAccordionRow>
+          <CollectorAccordionRow key={idx}>
             <Skeleton sx={{ height: 56 }} as="tr" key={idx}>
               <TableCell colSpan={5}>
                 <Box sx={{ height: 40, width: '100%' }} />
@@ -63,14 +64,16 @@ export default function TopCollectors() {
   if (error) return null
 
   /* No results state. */
-  // @ts-ignore
-  if (!data?.getOwnersByWhaleness?.owners?.length) return null
+  if (!data?.getOwnersByWhaleness?.['owners']?.length) return null
 
   return (
-    <CollectorAccordion>
-      {
-        // @ts-ignore
-        data.getOwnersByWhaleness?.owners.map(
+    <>
+      <CollectorAccordionHead>
+        <Text>Collector</Text>
+        <Text sx={{ whiteSpace: 'nowrap' }}>Total Appraisal Value</Text>
+      </CollectorAccordionHead>
+      <CollectorAccordion>
+        {data.getOwnersByWhaleness['owners'].map(
           (
             { username, addresses, totalAssetAppraisedValue, ownedAssets },
             idx
@@ -149,8 +152,8 @@ export default function TopCollectors() {
               </MiniNFTContainer>
             </CollectorAccordionRow>
           )
-        )
-      }
-    </CollectorAccordion>
+        )}
+      </CollectorAccordion>
+    </>
   )
 }
