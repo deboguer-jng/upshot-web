@@ -29,7 +29,7 @@ function renderLandingPanel(data: PanelData) {
       description={data.description}
       image={data.image.src}
       url={data.url}
-      targetBlank={true}
+      target='_blank'
     />
   )
 }
