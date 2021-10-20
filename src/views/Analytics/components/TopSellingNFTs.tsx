@@ -27,7 +27,7 @@ export type WINDOW = keyof typeof WINDOWS
 function TopSellingNFTsHeader() {
   return (
     <Flex variant="text.h1Secondary" sx={{ gap: 2 }}>
-      Top Selling NFTs This Week
+      Top NFT Sales This Week
     </Flex>
   )
 }
@@ -82,37 +82,42 @@ export default function TopSellingNFTs({
     <>
       <TopSellingNFTsHeader />
       <MiniNFTContainer>
-        {
-          data.topSales.map(
-            (
-              {
-                txAt,
-                txFromAddress,
-                txToAddress,
-                price,
-                asset: { id, contractAddress, previewImageUrl, mediaUrl, rarity, collection },
+        {data.topSales.map(
+          (
+            {
+              txAt,
+              txFromAddress,
+              txToAddress,
+              price,
+              asset: {
+                id,
+                contractAddress,
+                previewImageUrl,
+                mediaUrl,
+                rarity,
+                collection,
               },
-              key
-            ) => (
-              <a
-                key={key}
-                onClick={() => handleClickNFT(id)}
-                style={{ cursor: 'pointer' }}
-              >
-                <MiniNftCard
-                  price={price ? weiToEth(price) : undefined}
-                  to={shortenAddress(txToAddress, 2, 4)}
-                  from={shortenAddress(txFromAddress, 2, 4)}
-                  rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
-                  image={previewImageUrl ?? mediaUrl}
-                  date={formatDistance(txAt * 1000, new Date())}
-                  pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
-                  link={`https://app.upshot.io/analytics/collections/${collection?.id}`}
-                />
-              </a>
-            )
+            },
+            key
+          ) => (
+            <a
+              key={key}
+              onClick={() => handleClickNFT(id)}
+              style={{ cursor: 'pointer' }}
+            >
+              <MiniNftCard
+                price={price ? weiToEth(price) : undefined}
+                to={shortenAddress(txToAddress, 2, 4)}
+                from={shortenAddress(txFromAddress, 2, 4)}
+                rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
+                image={previewImageUrl ?? mediaUrl}
+                date={formatDistance(txAt * 1000, new Date())}
+                pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
+                link={`https://app.upshot.io/analytics/collection/${collection?.id}`}
+              />
+            </a>
           )
-        }
+        )}
       </MiniNFTContainer>
     </>
   )
