@@ -236,7 +236,9 @@ export default function SearchView() {
       >
         {isMobile ? (
           <>
-            <Accordion title="Search Filters">{searchFilters()}</Accordion>
+            <Accordion isDropdown title="Search Filters">
+              {searchFilters()}
+            </Accordion>
           </>
         ) : (
           <>
