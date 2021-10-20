@@ -87,7 +87,7 @@ export default function AnalyticsView() {
           Gain insight into NFT markets with our suite of tools.
         </Text>
         <Grid gap={5} columns={[1, 1, 2, 3]}>
-          <Link href='https://app.upshot.io/analytics' sx={{
+          <Link href='/analytics' sx={{
             color: 'text',
             textDecoration: 'none',
             display: 'grid',
