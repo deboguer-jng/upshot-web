@@ -304,7 +304,7 @@ export default function NFTView() {
                         <Image
                           src={creatorAvatar ?? '/img/defaultAvatar.png'}
                           alt="Creator avatar"
-                          sx={{ 
+                          sx={{
                             borderRadius: 'circle',
                             height: 32,
                             width: 32,
@@ -416,7 +416,7 @@ export default function NFTView() {
                     <Text variant="h3Secondary">Attributes</Text>
                     <Grid columns={isMobile ? 1 : 2}>
                       {traits.map(({ value, rarity }, idx) => (
-                        <Box>
+                        <Box key={idx}>
                           <Link
                             href={`/analytics/search?attributes=${value}&collection=${collection?.name}`}
                             key={idx}
@@ -432,6 +432,7 @@ export default function NFTView() {
                                 percentage={(100 - rarity * 100)
                                   .toFixed(2)
                                   .toString()}
+                                hasHover
                               >
                                 {value}
                               </LabelAttribute>
@@ -445,30 +446,36 @@ export default function NFTView() {
               </Flex>
               <Flex sx={{ flexDirection: 'column', gap: 4, flexGrow: 1 }}>
                 <Panel
-                  sx={{ flexGrow: 1, display: 'flex', padding: '0!important', overflow: 'hidden' }}
+                  sx={{
+                    flexGrow: 1,
+                    display: 'flex',
+                    padding: '0!important',
+                    overflow: 'hidden',
+                  }}
                 >
                   <Flex sx={{ flexDirection: 'column', flexGrow: 1 }}>
                     <Flex sx={{ padding: '20px', paddingBottom: 0 }}>
                       <Text variant="h3Secondary">Pricing History</Text>
                     </Flex>
-                    {
-                      (
-                        contractAddress == '0x059EDD72Cd353dF5106D2B9cC5ab83a52287aC3a' ||
-                          contractAddress == '0xa7d8d9ef8D8Ce8992Df33D8b8CF4Aebabd5bD270'
-                        ) && (
-                          <div sx={{ paddingTop: '20px' }}>
-                            <Panel
-                              sx={{
-                                  backgroundColor: theme.colors.blue,
-                                  color: theme.colors.black,
-                                  width: 0,
-                                  minWidth: '100%',
-                                  borderRadius: 'sm'
-                              }}>
-                                This collection is currently under active development.
-                                Appraisals are experimental and may be less accurate than most.
-                            </Panel>
-                          </div>
+                    {(contractAddress ==
+                      '0x059EDD72Cd353dF5106D2B9cC5ab83a52287aC3a' ||
+                      contractAddress ==
+                        '0xa7d8d9ef8D8Ce8992Df33D8b8CF4Aebabd5bD270') && (
+                      <div sx={{ paddingTop: '20px' }}>
+                        <Panel
+                          sx={{
+                            backgroundColor: theme.colors.blue,
+                            color: theme.colors.black,
+                            width: 0,
+                            minWidth: '100%',
+                            borderRadius: 'sm',
+                          }}
+                        >
+                          This collection is currently under active development.
+                          Appraisals are experimental and may be less accurate
+                          than most.
+                        </Panel>
+                      </div>
                     )}
                     {(!!lastSale || !!latestAppraisal) && (
                       <Flex sx={{ gap: '40px', flexGrow: 1, padding: '20px' }}>
@@ -579,7 +586,7 @@ export default function NFTView() {
                   >
                     <Text variant="h3Secondary">Transaction History</Text>
                   </Flex>
-                  { reversedTxHistory.length > 0 && (
+                  {reversedTxHistory.length > 0 && (
                     <Table sx={{ borderSpacing: '0 10px' }}>
                       <TableHead>
                         <TableRow>
@@ -656,16 +663,22 @@ export default function NFTView() {
                       </TableBody>
                     </Table>
                   )}
-                  { reversedTxHistory.length == 0 && (
-                    <Text sx={{ color: 'grey-500'}} >This asset hasn’t been sold or transferred yet.</Text>
+                  {reversedTxHistory.length == 0 && (
+                    <Text sx={{ color: 'grey-500' }}>
+                      This asset hasn’t been sold or transferred yet.
+                    </Text>
                   )}
                 </Flex>
               </Flex>
             </Panel>
             <Panel>
               <Flex sx={{ flexDirection: 'column', gap: 16 }}>
-                <Text variant="h3Secondary">Owners</Text>
-                <Collectors assetId={id} name={collection?.name} id={collection?.id} />
+                <Text variant="h3Secondary">Owner History</Text>
+                <Collectors
+                  assetId={id}
+                  name={collection?.name}
+                  id={collection?.id}
+                />
               </Flex>
             </Panel>
           </Flex>
