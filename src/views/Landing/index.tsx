@@ -5,13 +5,17 @@ import {
   Footer,
   Grid,
   Icon,
+  Panel,
   LandingPanel,
   Text,
 } from '@upshot-tech/upshot-ui'
 import { Nav } from 'components/Nav'
 import Head from 'next/head'
+import { Link } from 'theme-ui'
 
 import { projects } from './content'
+import UpshotOneSVG from './panelBackgrounds/UpshotOne.svg'
+import AnalyticsSVG from './panelBackgrounds/Analytics.svg'
 
 type PanelData = {
   projectType: string,
@@ -53,7 +57,7 @@ export default function AnalyticsView() {
         <Box sx={{ display: ['none', 'none', 'none', 'flex'] }}>
           {' '}
           {/* Display only on Desktop */}
-          <Flex sx={{ gap: 15, marginTop: '10%', marginBottom: '10%' }}>
+          <Flex sx={{ gap: 15, marginTop: '5%', marginBottom: '5%' }}>
             <Icon color="primary" icon="upshot" size={216} />
             <Box>
               <Box>
@@ -83,22 +87,53 @@ export default function AnalyticsView() {
           Gain insight into NFT markets with our suite of tools.
         </Text>
         <Grid gap={5} columns={[1, 1, 2, 3]}>
-          <Box
-            sx={{
-              borderRadius: '20px',
-              background:
-                'linear-gradient(229.88deg, rgba(236, 91, 148, 0.18) 14.66%, rgba(236, 91, 148, 0.18) 14.66%, rgba(236, 91, 148, 0) 100.35%), #231F20',
-              minHeight: '240px',
-            }}
-          />
-          <Box
-            sx={{
-              borderRadius: '20px',
-              background:
-                'linear-gradient(229.88deg, rgba(0, 145, 255, 0.3) 14.66%, rgba(0, 145, 255, 0) 100.35%), #231F20',
-              minHeight: '240px',
-            }}
-          />
+          <Link href='https://app.upshot.io/analytics' sx={{
+            color: 'text',
+            textDecoration: 'none',
+            display: 'grid',
+            '&:hover': {
+              textDecoration: 'none'
+            }}}>
+            <Panel
+              sx={{
+                padding: '32px !important',
+                paddingRight: '88px !important',
+                background: '#231F20',
+                backgroundSize: 'cover',
+                backgroundImage: 'url('+AnalyticsSVG.src+'), linear-gradient(229.88deg, rgba(236, 91, 148, 0.18) 14.66%, rgba(236, 91, 148, 0.18) 14.66%, rgba(236, 91, 148, 0) 100.35%)',
+              }} >
+              <Text variant='h1Secondary'>
+                Analytics
+              </Text>
+              <Text variant='large' sx={{ paddingTop: '60px', display: 'block' }}>
+                Discover the world of NFTs using powerful data.
+              </Text>
+            </Panel>
+          </Link>
+          <Link href='https://beta.upshot.io/' sx={{
+            color: 'text',
+            textDecoration: 'none',
+            display: 'grid',
+            '&:hover': {
+              textDecoration: 'none'
+            }}}>
+            <Panel
+              sx={{
+                padding: '32px !important',
+                paddingRight: '88px !important',
+                background: '#231F20',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'top right',
+                backgroundImage: 'url('+UpshotOneSVG.src+'), linear-gradient(229.88deg, rgba(0, 145, 255, 0.3) 14.66%, rgba(0, 145, 255, 0) 100.35%)',
+              }}>
+              <Text variant='h1Secondary'>
+                UpshotOne
+              </Text>
+              <Text variant='large' sx={{ paddingTop: '60px', display: 'block' }}>
+                Appraise and stake in our open beta verion of Upshot!
+              </Text>
+            </Panel>
+          </Link>
           <Grid
             gap={2}
             columns={[1, 1, 2]}
