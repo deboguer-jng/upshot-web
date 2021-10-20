@@ -17,7 +17,7 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE } from 'constants/'
 import router from 'next/router'
-import React, { useRef, useState } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
 import { weiToEth } from 'utils/number'
 
@@ -149,29 +149,20 @@ function ExplorePanelHead({
   )
 }
 
-function ExplorePanelSkeleton({
-  tab,
-  searchTerm,
-}: {
-  tab: string
-  searchTerm: string
-}) {
+function ExplorePanelSkeleton() {
   return (
-    <Panel>
-      <ExplorePanelHead {...{ tab, searchTerm }} />
-      <CollectionTable>
-        <CollectionTableHead />
-        <TableBody>
-          {[...new Array(PAGE_SIZE)].map((_, idx) => (
-            <Skeleton sx={{ height: 56 }} as="tr" key={idx}>
-              <TableCell colSpan={5}>
-                <Box sx={{ height: 40, width: '100%' }} />
-              </TableCell>
-            </Skeleton>
-          ))}
-        </TableBody>
-      </CollectionTable>
-    </Panel>
+    <CollectionTable>
+      <CollectionTableHead />
+      <TableBody>
+        {[...new Array(PAGE_SIZE)].map((_, idx) => (
+          <Skeleton sx={{ height: 56 }} as="tr" key={idx}>
+            <TableCell colSpan={5}>
+              <Box sx={{ height: 40, width: '100%' }} />
+            </TableCell>
+          </Skeleton>
+        ))}
+      </TableBody>
+    </CollectionTable>
   )
 }
 
@@ -208,111 +199,126 @@ export default function ExplorePanel({
 
   const handleSearch = (searchTerm) => setSearchTerm(searchTerm)
 
-  /* Loading state. */
-  if (loading) return <ExplorePanelSkeleton {...{ tab, searchTerm }} />
+  const content = useMemo(() => {
+    /* Loading state. */
+    if (loading) return <ExplorePanelSkeleton />
 
-  /* Error state. */
-  if (error) return <Panel>There was an error completing your request.</Panel>
+    /* Error state. */
+    if (error) return <div>There was an error completing your request.</div>
 
-  /* No results state. */
-  if (!data?.assetGlobalSearch.assets.length)
-    return (
-      <Panel>
-        <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-          <ExplorePanelHead onSearch={handleSearch} {...{ searchTerm }} />
-          <div>No results available.</div>
-        </Flex>
-      </Panel>
+    if (!data?.assetGlobalSearch.assets.length)
+      return <div>No results available.</div>
+
+    if (tab === 'NFTs')
+      return (
+        <>
+          <CollectionTable>
+            <CollectionTableHead />
+            <TableBody>
+              {data.assetGlobalSearch.assets.map(
+                (
+                  {
+                    id,
+                    name,
+                    previewImageUrl,
+                    mediaUrl,
+                    totalSaleCount,
+                    priceChangeFromFirstSale,
+                    lastSale,
+                  },
+                  idx
+                ) => (
+                  <CollectionRow
+                    dark
+                    title={name}
+                    imageSrc={previewImageUrl ?? mediaUrl}
+                    key={idx}
+                    onClick={() => handleShowNFT(id)}
+                  >
+                    {isMobile ? (
+                      <TableCell sx={{ maxWidth: 100 }}>
+                        <Flex
+                          sx={{
+                            flexDirection: 'column',
+                            alignItems: 'flex-end',
+                          }}
+                        >
+                          <Flex>
+                            {lastSale?.ethSalePrice
+                              ? weiToEth(lastSale.ethSalePrice)
+                              : '-'}
+                          </Flex>
+                          <Flex
+                            sx={{
+                              maxWidth: 100,
+                              color: getPriceChangeColor(
+                                priceChangeFromFirstSale
+                              ),
+                            }}
+                          >
+                            {getPriceChangeLabel(priceChangeFromFirstSale)}
+                          </Flex>
+                        </Flex>
+                      </TableCell>
+                    ) : (
+                      <>
+                        <TableCell sx={{ maxWidth: 100 }}>
+                          {lastSale?.ethSalePrice
+                            ? weiToEth(lastSale.ethSalePrice)
+                            : '-'}
+                        </TableCell>
+                        <TableCell sx={{ maxWidth: 100 }}>
+                          {totalSaleCount}
+                        </TableCell>
+                        <TableCell
+                          sx={{
+                            maxWidth: 100,
+                            color: getPriceChangeColor(
+                              priceChangeFromFirstSale
+                            ),
+                          }}
+                        >
+                          {getPriceChangeLabel(priceChangeFromFirstSale)}
+                        </TableCell>
+                      </>
+                    )}
+                  </CollectionRow>
+                )
+              )}
+            </TableBody>
+          </CollectionTable>
+          <Flex sx={{ justifyContent: 'center', marginTop: -1 }}>
+            <Pagination
+              forcePage={page}
+              pageCount={Math.ceil(data.assetGlobalSearch.count / PAGE_SIZE)}
+              pageRangeDisplayed={isMobile ? 3 : 5}
+              marginPagesDisplayed={isMobile ? 1 : 5}
+              onPageChange={handlePageChange}
+            />
+          </Flex>
+        </>
+      )
+
+    return collectionId ? (
+      <Collectors id={collectionId} name={collectionName} />
+    ) : (
+      <TopCollectors />
     )
+  }, [
+    tab,
+    loading,
+    error,
+    data,
+    collectionId,
+    collectionName,
+    isMobile,
+    page,
+    searchTerm,
+  ])
 
   const handleShowNFT = (id: string) => {
     router.push('/analytics/nft/' + id)
   }
-
-  const collectionTable = (
-    <>
-      <CollectionTable>
-        <CollectionTableHead />
-        <TableBody>
-          {data.assetGlobalSearch.assets.map(
-            (
-              {
-                id,
-                name,
-                previewImageUrl,
-                mediaUrl,
-                totalSaleCount,
-                priceChangeFromFirstSale,
-                lastSale,
-              },
-              idx
-            ) => (
-              <CollectionRow
-                dark
-                title={name}
-                imageSrc={previewImageUrl ?? mediaUrl}
-                key={idx}
-                onClick={() => handleShowNFT(id)}
-              >
-                {isMobile ? (
-                  <TableCell sx={{ maxWidth: 100 }}>
-                    <Flex
-                      sx={{
-                        flexDirection: 'column',
-                        alignItems: 'flex-end',
-                      }}
-                    >
-                      <Flex>
-                        {lastSale?.ethSalePrice
-                          ? weiToEth(lastSale.ethSalePrice)
-                          : '-'}
-                      </Flex>
-                      <Flex
-                        sx={{
-                          maxWidth: 100,
-                          color: getPriceChangeColor(priceChangeFromFirstSale),
-                        }}
-                      >
-                        {getPriceChangeLabel(priceChangeFromFirstSale)}
-                      </Flex>
-                    </Flex>
-                  </TableCell>
-                ) : (
-                  <>
-                    <TableCell sx={{ maxWidth: 100 }}>
-                      {lastSale?.ethSalePrice
-                        ? weiToEth(lastSale.ethSalePrice)
-                        : '-'}
-                    </TableCell>
-                    <TableCell sx={{ maxWidth: 100 }}>
-                      {totalSaleCount}
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        maxWidth: 100,
-                        color: getPriceChangeColor(priceChangeFromFirstSale),
-                      }}
-                    >
-                      {getPriceChangeLabel(priceChangeFromFirstSale)}
-                    </TableCell>
-                  </>
-                )}
-              </CollectionRow>
-            )
-          )}
-        </TableBody>
-      </CollectionTable>
-      <Flex sx={{ justifyContent: 'center', marginTop: -1 }}>
-        <Pagination
-          forcePage={page}
-          pageCount={Math.ceil(data.assetGlobalSearch.count / PAGE_SIZE)}
-          pageRangeDisplayed={isMobile ? 3 : 5}
-          marginPagesDisplayed={isMobile ? 1 : 5}
-          onPageChange={handlePageChange}
-        />
-      </Flex>
-    </>
-  )
 
   return (
     <Panel>
@@ -322,13 +328,7 @@ export default function ExplorePanel({
           onSearch={handleSearch}
           {...{ searchTerm, tab }}
         />
-        {tab === 'NFTs' ? (
-          collectionTable
-        ) : collectionId ? (
-          <Collectors id={collectionId} name={collectionName} />
-        ) : (
-          <TopCollectors />
-        )}
+        {content}
       </Flex>
     </Panel>
   )

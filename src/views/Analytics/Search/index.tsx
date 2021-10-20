@@ -342,7 +342,7 @@ export default function SearchView() {
                                   collection?.name,
                                   tokenId
                                 )}
-                                link={`https://app.upshot.io/analytics/collections/${collection?.id}`}
+                                link={`https://app.upshot.io/analytics/collection/${collection?.id}`}
                               />
                             </a>
                           )
