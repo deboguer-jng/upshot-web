@@ -673,7 +673,7 @@ export default function NFTView() {
             </Panel>
             <Panel>
               <Flex sx={{ flexDirection: 'column', gap: 16 }}>
-                <Text variant="h3Secondary">Owners</Text>
+                <Text variant="h3Secondary">Owner History</Text>
                 <Collectors
                   assetId={id}
                   name={collection?.name}
