@@ -27,7 +27,7 @@ type PanelData = {
 
 function renderLandingPanel(data: PanelData) {
   return (
-    <Link href={data.url} sx={{
+    <Link href={data.url} target='_blank' sx={{
       color: 'initial',
       textDecoration: 'none',
       display: 'grid',
@@ -147,12 +147,6 @@ export default function AnalyticsView() {
             gap={2}
             columns={[1, 1, 2]}
             sx={{
-              /* Temporarily */
-              cursor: 'not-allowed',
-              '& a': {
-                pointerEvents: 'none',
-              },
-              /* --- End Temporarily --- */
               padding: '18px',
               border: '1px solid #545454',
               borderRadius: '24px',
@@ -175,24 +169,28 @@ export default function AnalyticsView() {
               description="Short intro to product"
               showLinkIcon={false}
               hoverUnderglow='grey-600'
+              disabled={true}
             />
             <LandingPanel
               title="Swap"
               description="Short intro to product"
               showLinkIcon={false}
               hoverUnderglow='grey-600'
+              disabled={true}
             />
             <LandingPanel
               title="Answer"
               description="Short intro to product"
               showLinkIcon={false}
               hoverUnderglow='grey-600'
+              disabled={true}
             />
             <LandingPanel
               title="Syntetics"
               description="Short intro to product"
               showLinkIcon={false}
               hoverUnderglow='grey-600'
+              disabled={true}
             />
           </Grid>
         </Grid>
