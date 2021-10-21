@@ -11,7 +11,7 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { Nav } from 'components/Nav'
 import Head from 'next/head'
-import { Link } from 'theme-ui'
+import { Link, Image } from 'theme-ui'
 
 import { projects } from './content'
 import UpshotOneSVG from './panelBackgrounds/UpshotOne.svg'
@@ -104,18 +104,31 @@ export default function AnalyticsView() {
             <Panel
               hoverUnderglow='pink'
               sx={{
+                position: 'relative',
                 padding: '32px !important',
                 paddingRight: '88px !important',
-                background: '#231F20',
-                backgroundSize: 'cover',
-                backgroundImage: 'url('+AnalyticsSVG.src+'), linear-gradient(229.88deg, rgba(236, 91, 148, 0.18) 14.66%, rgba(236, 91, 148, 0.18) 14.66%, rgba(236, 91, 148, 0) 100.35%)',
+                background: 'linear-gradient(229.88deg, rgba(236, 91, 148, 0.18) 14.66%, rgba(236, 91, 148, 0.18) 14.66%, rgba(236, 91, 148, 0) 100.35%), #231F20',
+                '&:hover img': {
+                  opacity: '1',
+                }
               }} >
-              <Text variant='h1Secondary'>
-                Analytics
-              </Text>
-              <Text variant='large' sx={{ paddingTop: '60px', display: 'block' }}>
-                Discover the world of NFTs using powerful data.
-              </Text>
+              <Image src={AnalyticsSVG.src} sx={{
+                opacity: '0.3',
+                position: 'absolute',
+                left: '0',
+                top: '0',
+                width: '100%',
+                height: 'auto',
+                objectFit: 'cover',
+              }}></Image>
+              <div style={{ position: 'relative' }}>
+                <Text variant='h1Secondary'>
+                  Analytics
+                </Text>
+                <Text variant='large' sx={{ paddingTop: '60px', display: 'block' }}>
+                  Discover the world of NFTs using powerful data.
+                </Text>
+              </div>
             </Panel>
           </Link>
           <Link href='https://beta.upshot.io/' sx={{
@@ -128,25 +141,38 @@ export default function AnalyticsView() {
             <Panel
               hoverUnderglow='blue'
               sx={{
+                position: 'relative',
                 padding: '32px !important',
                 paddingRight: '88px !important',
-                background: '#231F20',
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'top right',
-                backgroundImage: 'url('+UpshotOneSVG.src+'), linear-gradient(229.88deg, rgba(0, 145, 255, 0.3) 14.66%, rgba(0, 145, 255, 0) 100.35%)',
+                background: 'linear-gradient(229.88deg, rgba(0, 145, 255, 0.3) 14.66%, rgba(0, 145, 255, 0) 100.35%), #231F20',
+                '&:hover img': {
+                  opacity: '1',
+                }
               }}>
-              <Text variant='h1Secondary'>
-                UpshotOne
-              </Text>
-              <Text variant='large' sx={{ paddingTop: '60px', display: 'block' }}>
-                Appraise and stake in our open beta verion of Upshot!
-              </Text>
+              <Image src={UpshotOneSVG.src} sx={{
+                opacity: '0.3',
+                position: 'absolute',
+                right: '0',
+                top: '0',
+                width: 'auto',
+                height: '50%',
+                objectFit: 'cover',
+              }}></Image>
+              <div style={{ position: 'relative' }}>
+                <Text variant='h1Secondary'>
+                  UpshotOne
+                </Text>
+                <Text variant='large' sx={{ paddingTop: '60px', display: 'block' }}>
+                  Appraise and stake in our open beta verion of Upshot!
+                </Text>
+              </div>
             </Panel>
           </Link>
           <Grid
             gap={2}
             columns={[1, 1, 2]}
             sx={{
+              cursor: 'not-allowed',
               padding: '18px',
               border: '1px solid #545454',
               borderRadius: '24px',
@@ -156,7 +182,7 @@ export default function AnalyticsView() {
               color="grey-600"
               sx={{
                 position: 'absolute',
-                transform: 'translate(0%, -150%);',
+                transform: 'translate(0%, -150%)',
                 bg: 'black',
                 paddingLeft: '10px',
                 paddingRight: '10px',
