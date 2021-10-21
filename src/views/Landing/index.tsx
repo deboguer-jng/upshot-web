@@ -22,19 +22,26 @@ type PanelData = {
   title: string,
   description: string,
   image: any,
-  url?: string,
+  url: string,
 }
 
 function renderLandingPanel(data: PanelData) {
   return (
-    <LandingPanel
-      projectType={data.projectType}
-      title={data.title}
-      description={data.description}
-      image={data.image.src}
-      url={data.url}
-      target='_blank'
-    />
+    <Link href={data.url} sx={{
+      color: 'initial',
+      textDecoration: 'none',
+      display: 'grid',
+      '&:hover': {
+        textDecoration: 'none',
+      }
+    }}>
+      <LandingPanel
+        projectType={data.projectType}
+        title={data.title}
+        description={data.description}
+        image={data.image.src}
+      />
+    </Link>
   )
 }
 
@@ -95,6 +102,7 @@ export default function AnalyticsView() {
               textDecoration: 'none'
             }}}>
             <Panel
+              hoverUnderglow='pink'
               sx={{
                 padding: '32px !important',
                 paddingRight: '88px !important',
@@ -118,6 +126,7 @@ export default function AnalyticsView() {
               textDecoration: 'none'
             }}}>
             <Panel
+              hoverUnderglow='blue'
               sx={{
                 padding: '32px !important',
                 paddingRight: '88px !important',
@@ -165,21 +174,25 @@ export default function AnalyticsView() {
               title="Ask"
               description="Short intro to product"
               showLinkIcon={false}
+              hoverUnderglow='grey-600'
             />
             <LandingPanel
-              title="Stake"
+              title="Swap"
               description="Short intro to product"
               showLinkIcon={false}
+              hoverUnderglow='grey-600'
             />
             <LandingPanel
               title="Answer"
               description="Short intro to product"
               showLinkIcon={false}
+              hoverUnderglow='grey-600'
             />
             <LandingPanel
-              title="Boards"
+              title="Syntetics"
               description="Short intro to product"
               showLinkIcon={false}
+              hoverUnderglow='grey-600'
             />
           </Grid>
         </Grid>
