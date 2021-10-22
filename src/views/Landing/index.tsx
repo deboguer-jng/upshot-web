@@ -94,7 +94,7 @@ export default function AnalyticsView() {
           Gain insight into NFT markets with our suite of tools.
         </Text>
         <Grid gap={5} columns={[1, 1, 2, 3]}>
-          <Link href='/analytics' sx={{
+          <Link href='/analytics' target="_blank" rel="noopener noreferrer" sx={{
             color: 'text',
             textDecoration: 'none',
             display: 'grid',
@@ -131,7 +131,7 @@ export default function AnalyticsView() {
               </div>
             </Panel>
           </Link>
-          <Link href='https://beta.upshot.io/' sx={{
+          <Link href='https://upshot.gitbook.io/upshot-api/' target="_blank" rel="noopener noreferrer" sx={{
             color: 'text',
             textDecoration: 'none',
             display: 'grid',
@@ -160,10 +160,10 @@ export default function AnalyticsView() {
               }}></Image>
               <div style={{ position: 'relative' }}>
                 <Text variant='h1Secondary'>
-                  UpshotOne
+                  Upshot API
                 </Text>
                 <Text variant='large' sx={{ paddingTop: '60px', display: 'block' }}>
-                  Appraise and stake in our open beta verion of Upshot!
+                  Integrate Upshot data into your project.
                 </Text>
               </div>
             </Panel>
