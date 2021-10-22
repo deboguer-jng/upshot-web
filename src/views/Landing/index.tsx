@@ -65,16 +65,16 @@ export default function AnalyticsView() {
           {' '}
           {/* Display only on Desktop */}
           <Flex sx={{ gap: 15, marginTop: '5%', marginBottom: '5%' }}>
-            <Icon color="primary" icon="upshot" size={216} />
+            <Icon color="primary" icon="upshot" size={175} />
             <Box>
               <Box>
                 <Box>
-                <Text variant="h0Primary" sx={{ fontSize: '70px' }}>
-                    Where NFTs meet DeFi
+                <Text variant="h0Primary" sx={{ fontSize: '60px' }}>
+                    Upshot: Where NFTs meet DeFi
                   </Text>
                 </Box>
                 <Box sx={{ marginTop: '30px' }}>
-                  <Text variant="h3Primary">
+                  <Text variant="h3Primary" sx={{ fontWeight: 'normal', lineHeight: '1.3em' }}>
                   NFTs offer us a vehicle for tokenizing anything, while the explosive
                   growth of DeFi has demonstrated the power of permissionless financial
                   primitives. However, due to the nascency and inherent illiquidity of
