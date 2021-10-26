@@ -5,17 +5,17 @@ import {
   Footer,
   Grid,
   Icon,
-  Panel,
   LandingPanel,
+  Panel,
   Text,
 } from '@upshot-tech/upshot-ui'
 import { Nav } from 'components/Nav'
 import Head from 'next/head'
-import { Link, Image } from 'theme-ui'
+import { Image,Link } from 'theme-ui'
 
 import { projects } from './content'
-import UpshotOneSVG from './panelBackgrounds/UpshotOne.svg'
 import AnalyticsSVG from './panelBackgrounds/Analytics.svg'
+import UpshotOneSVG from './panelBackgrounds/UpshotOne.svg'
 
 type PanelData = {
   projectType: string,
@@ -65,16 +65,16 @@ export default function AnalyticsView() {
           {' '}
           {/* Display only on Desktop */}
           <Flex sx={{ gap: 15, marginTop: '5%', marginBottom: '5%' }}>
-            <Icon color="primary" icon="upshot" size={216} />
+            <Icon color="primary" icon="upshot" size={175} />
             <Box>
               <Box>
                 <Box>
-                <Text variant="h0Primary" sx={{ fontSize: '70px' }}>
-                    Where NFTs meet DeFi
+                <Text variant="h0Primary" sx={{ fontSize: '60px' }}>
+                    Upshot: Where NFTs meet DeFi
                   </Text>
                 </Box>
                 <Box sx={{ marginTop: '30px' }}>
-                  <Text variant="h3Primary">
+                  <Text variant="h3Primary" sx={{ fontWeight: 'normal', lineHeight: '1.3em' }}>
                   NFTs offer us a vehicle for tokenizing anything, while the explosive
                   growth of DeFi has demonstrated the power of permissionless financial
                   primitives. However, due to the nascency and inherent illiquidity of
@@ -94,7 +94,7 @@ export default function AnalyticsView() {
           Gain insight into NFT markets with our suite of tools.
         </Text>
         <Grid gap={5} columns={[1, 1, 2, 3]}>
-          <Link href='/analytics' sx={{
+          <Link href='/analytics' target="_blank" rel="noopener noreferrer" sx={{
             color: 'text',
             textDecoration: 'none',
             display: 'grid',
@@ -131,7 +131,7 @@ export default function AnalyticsView() {
               </div>
             </Panel>
           </Link>
-          <Link href='https://beta.upshot.io/' sx={{
+          <Link href='https://upshot.gitbook.io/upshot-api/' target="_blank" rel="noopener noreferrer" sx={{
             color: 'text',
             textDecoration: 'none',
             display: 'grid',
@@ -160,10 +160,10 @@ export default function AnalyticsView() {
               }}></Image>
               <div style={{ position: 'relative' }}>
                 <Text variant='h1Secondary'>
-                  UpshotOne
+                  Upshot API
                 </Text>
                 <Text variant='large' sx={{ paddingTop: '60px', display: 'block' }}>
-                  Appraise and stake in our open beta verion of Upshot!
+                  Integrate Upshot data into your project.
                 </Text>
               </div>
             </Panel>
@@ -172,7 +172,6 @@ export default function AnalyticsView() {
             gap={2}
             columns={[1, 1, 2]}
             sx={{
-              cursor: 'not-allowed',
               padding: '18px',
               border: '1px solid #545454',
               borderRadius: '24px',
@@ -188,36 +187,72 @@ export default function AnalyticsView() {
                 paddingRight: '10px',
               }}
             >
-              Coming soon
+              Additional Resources
             </Text>
+            <Link href={'https://blog.upshot.io'} target='_blank' sx={{
+              color: 'initial',
+              textDecoration: 'none',
+              display: 'grid',
+              '&:hover': {
+                textDecoration: 'none',
+              }
+            }}>
             <LandingPanel
-              title="Ask"
-              description="Short intro to product"
-              showLinkIcon={false}
+              title="Blog"
+              description="Check out our blog"
+              showLinkIcon={true}
               hoverUnderglow='grey-600'
-              disabled={true}
+              disabled={false}
             />
+            </Link>
+            <Link href={'https://jobs.lever.co/upshot.io'} target='_blank' sx={{
+              color: 'initial',
+              textDecoration: 'none',
+              display: 'grid',
+              '&:hover': {
+                textDecoration: 'none',
+              }
+            }}>
             <LandingPanel
-              title="Swap"
-              description="Short intro to product"
-              showLinkIcon={false}
+              title="Careers"
+              description="Join our team"
+              showLinkIcon={true}
               hoverUnderglow='grey-600'
-              disabled={true}
+              disabled={false}
             />
+            </Link>
+            <Link href={'https://discord.gg/upshot'} target='_blank' sx={{
+              color: 'initial',
+              textDecoration: 'none',
+              display: 'grid',
+              '&:hover': {
+                textDecoration: 'none',
+              }
+            }}>
             <LandingPanel
-              title="Answer"
-              description="Short intro to product"
-              showLinkIcon={false}
+              title="Discord"
+              description="Become a part of the community"
+              showLinkIcon={true}
               hoverUnderglow='grey-600'
-              disabled={true}
+              disabled={false}
             />
+            </Link>
+            <Link href={'https://twitter.com/UpshotHQ'} target='_blank' sx={{
+              color: 'initial',
+              textDecoration: 'none',
+              display: 'grid',
+              '&:hover': {
+                textDecoration: 'none',
+              }
+            }}>
             <LandingPanel
-              title="Syntetics"
-              description="Short intro to product"
-              showLinkIcon={false}
+              title="Twitter"
+              description="Follow us on Twitter"
+              showLinkIcon={true}
               hoverUnderglow='grey-600'
-              disabled={true}
+              disabled={false}
             />
+            </Link>
           </Grid>
         </Grid>
         

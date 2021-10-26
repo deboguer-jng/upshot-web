@@ -9,6 +9,9 @@ import UniclyPNG from './projectLogos/unicly.png'
 import NftxPNG from './projectLogos/nftx.png'
 import ChargedPNG from './projectLogos/charged.png'
 import PolymarketPNG from './projectLogos/polymarket.png'
+import SolvPNG from './projectLogos/solv.png'
+import AavegotchiPNG from './projectLogos/aavegotchi.png'
+import BlackPoolPNG from './projectLogos/blackpool.jpeg'
 
 /* This array contains the content of the landing page panels under the "Discover" section */
 
@@ -68,23 +71,23 @@ let projects = [
         image: PolymarketPNG,
         projectType: 'Protocol',
     }, {
-        title: 'Coming soon...',
-        description: '',
-        url: '#',
-        image: PlaceholderPNG,
+        title: 'Solv',
+        description: 'Platform for creating, managing and trading Financial NFTs',
+        url: 'https://solv.finance/home',
+        image: SolvPNG,
         projectType: 'Protocol',
     }, {
-        title: 'Coming soon...',
-        description: '',
-        url: '#',
-        image: PlaceholderPNG,
-        projectType: 'Protocol',
+        title: 'Aavegotchi',
+        description: 'DeFi-Staked Crypto Collectibles',
+        url: 'https://aavegotchi.com/',
+        image: AavegotchiPNG,
+        projectType: 'Token',
     }, {
-        title: 'Coming soon...',
-        description: '',
-        url: '#',
-        image: PlaceholderPNG,
-        projectType: 'Protocol',
+        title: 'BlackPool',
+        description: 'A new fund operating within the NFT industry',
+        url: 'https://blackpool.finance/',
+        image: BlackPoolPNG,
+        projectType: 'DAO',
     },
 ]
 
