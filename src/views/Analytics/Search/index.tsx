@@ -230,6 +230,7 @@ export default function SearchView() {
           alignSelf: 'flex-start',
           flexDirection: 'column',
           gap: 8,
+          width: '100%'
         }}
       >
         {isMobile ? (
