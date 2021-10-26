@@ -5,17 +5,17 @@ import {
   Footer,
   Grid,
   Icon,
-  Panel,
   LandingPanel,
+  Panel,
   Text,
 } from '@upshot-tech/upshot-ui'
 import { Nav } from 'components/Nav'
 import Head from 'next/head'
-import { Link, Image } from 'theme-ui'
+import { Image,Link } from 'theme-ui'
 
 import { projects } from './content'
-import UpshotOneSVG from './panelBackgrounds/UpshotOne.svg'
 import AnalyticsSVG from './panelBackgrounds/Analytics.svg'
+import UpshotOneSVG from './panelBackgrounds/UpshotOne.svg'
 
 type PanelData = {
   projectType: string,
@@ -172,7 +172,6 @@ export default function AnalyticsView() {
             gap={2}
             columns={[1, 1, 2]}
             sx={{
-              cursor: 'not-allowed',
               padding: '18px',
               border: '1px solid #545454',
               borderRadius: '24px',
@@ -188,36 +187,72 @@ export default function AnalyticsView() {
                 paddingRight: '10px',
               }}
             >
-              Coming soon
+              Additional Resources
             </Text>
+            <Link href={'https://blog.upshot.io'} target='_blank' sx={{
+              color: 'initial',
+              textDecoration: 'none',
+              display: 'grid',
+              '&:hover': {
+                textDecoration: 'none',
+              }
+            }}>
             <LandingPanel
-              title="Ask"
-              description="Short intro to product"
-              showLinkIcon={false}
+              title="Blog"
+              description="Check out our blog"
+              showLinkIcon={true}
               hoverUnderglow='grey-600'
-              disabled={true}
+              disabled={false}
             />
+            </Link>
+            <Link href={'https://jobs.lever.co/upshot.io'} target='_blank' sx={{
+              color: 'initial',
+              textDecoration: 'none',
+              display: 'grid',
+              '&:hover': {
+                textDecoration: 'none',
+              }
+            }}>
             <LandingPanel
-              title="Swap"
-              description="Short intro to product"
-              showLinkIcon={false}
+              title="Careers"
+              description="Join our team"
+              showLinkIcon={true}
               hoverUnderglow='grey-600'
-              disabled={true}
+              disabled={false}
             />
+            </Link>
+            <Link href={'https://discord.gg/upshot'} target='_blank' sx={{
+              color: 'initial',
+              textDecoration: 'none',
+              display: 'grid',
+              '&:hover': {
+                textDecoration: 'none',
+              }
+            }}>
             <LandingPanel
-              title="Answer"
-              description="Short intro to product"
-              showLinkIcon={false}
+              title="Discord"
+              description="Become a part of the community"
+              showLinkIcon={true}
               hoverUnderglow='grey-600'
-              disabled={true}
+              disabled={false}
             />
+            </Link>
+            <Link href={'https://twitter.com/UpshotHQ'} target='_blank' sx={{
+              color: 'initial',
+              textDecoration: 'none',
+              display: 'grid',
+              '&:hover': {
+                textDecoration: 'none',
+              }
+            }}>
             <LandingPanel
-              title="Syntetics"
-              description="Short intro to product"
-              showLinkIcon={false}
+              title="Twitter"
+              description="Follow us on Twitter"
+              showLinkIcon={true}
               hoverUnderglow='grey-600'
-              disabled={true}
+              disabled={false}
             />
+            </Link>
           </Grid>
         </Grid>
         
