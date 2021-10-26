@@ -91,7 +91,7 @@ export default function AnalyticsView() {
           Gain insight into NFT markets with our suite of tools.
         </Text>
         <Grid gap={5} columns={[1, 1, 2, 3]}>
-          <Link href='/analytics' target="_blank" rel="noopener noreferrer" sx={{
+          <Link href='/analytics' rel="noopener noreferrer" sx={{
             color: 'text',
             textDecoration: 'none',
             display: 'grid',
@@ -128,7 +128,7 @@ export default function AnalyticsView() {
               </div>
             </Panel>
           </Link>
-          <Link href='https://upshot.gitbook.io/upshot-api/' target="_blank" rel="noopener noreferrer" sx={{
+          <Link href='https://upshot.gitbook.io/upshot-api/' rel="noopener noreferrer" sx={{
             color: 'text',
             textDecoration: 'none',
             display: 'grid',
