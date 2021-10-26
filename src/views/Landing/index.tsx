@@ -25,6 +25,7 @@ type PanelData = {
   url: string,
 }
 
+// Render function for Discover panels
 function renderLandingPanel(data: PanelData) {
   return (
     <Link href={data.url} target='_blank' sx={{
@@ -45,7 +46,7 @@ function renderLandingPanel(data: PanelData) {
   )
 }
 
-export default function AnalyticsView() {
+export default function LandingView() {
   return (
     <>
       <Head>
@@ -194,13 +195,13 @@ export default function AnalyticsView() {
                 textDecoration: 'none',
               }
             }}>
-            <LandingPanel
-              title="Blog"
-              description="Check out our blog"
-              showLinkIcon={true}
-              hoverUnderglow='grey-600'
-              disabled={false}
-            />
+              <LandingPanel
+                title="Blog"
+                description="Check out our blog"
+                showLinkIcon={true}
+                hoverUnderglow='grey-600'
+                disabled={false}
+              />
             </Link>
             <Link href={'https://jobs.lever.co/upshot.io'} target='_blank' sx={{
               color: 'initial',
@@ -210,13 +211,13 @@ export default function AnalyticsView() {
                 textDecoration: 'none',
               }
             }}>
-            <LandingPanel
-              title="Careers"
-              description="Join our team"
-              showLinkIcon={true}
-              hoverUnderglow='grey-600'
-              disabled={false}
-            />
+              <LandingPanel
+                title="Careers"
+                description="Join our team"
+                showLinkIcon={true}
+                hoverUnderglow='grey-600'
+                disabled={false}
+              />
             </Link>
             <Link href={'https://discord.gg/upshot'} target='_blank' sx={{
               color: 'initial',
@@ -226,13 +227,13 @@ export default function AnalyticsView() {
                 textDecoration: 'none',
               }
             }}>
-            <LandingPanel
-              title="Discord"
-              description="Become a part of the community"
-              showLinkIcon={true}
-              hoverUnderglow='grey-600'
-              disabled={false}
-            />
+              <LandingPanel
+                title="Discord"
+                description="Become a part of the community"
+                showLinkIcon={true}
+                hoverUnderglow='grey-600'
+                disabled={false}
+              />
             </Link>
             <Link href={'https://twitter.com/UpshotHQ'} target='_blank' sx={{
               color: 'initial',
@@ -242,13 +243,13 @@ export default function AnalyticsView() {
                 textDecoration: 'none',
               }
             }}>
-            <LandingPanel
-              title="Twitter"
-              description="Follow us on Twitter"
-              showLinkIcon={true}
-              hoverUnderglow='grey-600'
-              disabled={false}
-            />
+              <LandingPanel
+                title="Twitter"
+                description="Follow us on Twitter"
+                showLinkIcon={true}
+                hoverUnderglow='grey-600'
+                disabled={false}
+              />
             </Link>
           </Grid>
         </Grid>
@@ -258,6 +259,7 @@ export default function AnalyticsView() {
           Explore innovative products at the intersection of DeFi x NFTs.
         </Text>
 
+        {/*  The content of the Discover section can be found in /src/views/Landing/content.tsx  */}
         <Grid gap={2} columns={[1, 1, 1, 2]}>
           <Grid gap={2} sx={{ flexDirection: 'column' }}>
             <Grid gap={2} columns={[1, 1, '10fr 6fr']}>
