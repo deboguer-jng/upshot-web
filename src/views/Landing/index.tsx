@@ -75,14 +75,11 @@ export default function AnalyticsView() {
                 </Box>
                 <Box sx={{ marginTop: '30px' }}>
                   <Text variant="h3Primary" sx={{ fontWeight: 'normal', lineHeight: '1.3em' }}>
-                  NFTs offer us a vehicle for tokenizing anything, while the explosive
-                  growth of DeFi has demonstrated the power of permissionless financial
-                  primitives. However, due to the nascency and inherent illiquidity of
-                  NFTs, DeFi and NFTs have yet to fully collaborate. Upshot is building
-                  scalable NFT pricing infrastructure at the intersection of DeFi x NFTs.
-                  Through a combination of crowdsourced appraisals and proprietary
-                  machine learning algorithms, Upshot provides deep insight into NFT
-                  markets and unlocks a wave of exotic new DeFi primitives.
+                    NFTs offer us a vehicle for tokenizing anything, while the explosive growth of DeFi has demonstrated 
+                    the power of permissionless financial primitives. Upshot is building scalable NFT pricing infrastructure 
+                    at the intersection of DeFi x NFTs. Through a combination of crowdsourced appraisals and proprietary machine 
+                    learning algorithms, Upshot provides deep insight into NFT markets and unlocks a wave of exotic 
+                    new DeFi possibilities.
                   </Text>
                 </Box>
               </Box>
