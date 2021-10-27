@@ -1,4 +1,5 @@
 import { useQuery } from '@apollo/client'
+import { useBreakpointIndex } from '@theme-ui/match-media'
 import { TreeMap } from '@upshot-tech/upshot-ui'
 import { ethers } from 'ethers'
 
@@ -9,6 +10,7 @@ import {
 } from '../queries'
 
 export default function TreeMapMarketCap() {
+  const isMobile = useBreakpointIndex() <= 1
   const { loading, error, data } = useQuery<
     GetSevenDayMCChangeData,
     GetSevenDayMCChangeVars
@@ -33,5 +35,5 @@ export default function TreeMapMarketCap() {
       marketCap: parseFloat(ethers.utils.formatEther(totalVolume)),
     }))
 
-  return <TreeMap data={chartData} />
+  return <TreeMap data={!isMobile ? chartData : chartData.slice(0, 15)} />
 }
