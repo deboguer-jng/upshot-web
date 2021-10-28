@@ -200,7 +200,6 @@ export default function LandingView() {
                 description="Check out our blog"
                 showLinkIcon={true}
                 hoverUnderglow='blue'
-                disabled={false}
               />
             </Link>
             <Link href={'https://jobs.lever.co/upshot.io'} target='_blank' sx={{
@@ -216,7 +215,6 @@ export default function LandingView() {
                 description="Join our team"
                 showLinkIcon={true}
                 hoverUnderglow='blue'
-                disabled={false}
               />
             </Link>
             <Link href={'https://discord.gg/upshot'} target='_blank' sx={{
@@ -232,7 +230,6 @@ export default function LandingView() {
                 description="Become a part of the community"
                 showLinkIcon={true}
                 hoverUnderglow='blue'
-                disabled={false}
               />
             </Link>
             <Link href={'https://twitter.com/UpshotHQ'} target='_blank' sx={{
