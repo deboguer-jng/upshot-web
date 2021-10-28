@@ -199,7 +199,7 @@ export default function LandingView() {
                 title="Blog"
                 description="Check out our blog"
                 showLinkIcon={true}
-                hoverUnderglow='grey-600'
+                hoverUnderglow='blue'
                 disabled={false}
               />
             </Link>
@@ -215,7 +215,7 @@ export default function LandingView() {
                 title="Careers"
                 description="Join our team"
                 showLinkIcon={true}
-                hoverUnderglow='grey-600'
+                hoverUnderglow='blue'
                 disabled={false}
               />
             </Link>
@@ -231,7 +231,7 @@ export default function LandingView() {
                 title="Discord"
                 description="Become a part of the community"
                 showLinkIcon={true}
-                hoverUnderglow='grey-600'
+                hoverUnderglow='blue'
                 disabled={false}
               />
             </Link>
@@ -247,8 +247,7 @@ export default function LandingView() {
                 title="Twitter"
                 description="Follow us on Twitter"
                 showLinkIcon={true}
-                hoverUnderglow='grey-600'
-                disabled={false}
+                hoverUnderglow='blue'
               />
             </Link>
           </Grid>
