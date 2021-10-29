@@ -3448,15 +3448,16 @@
     "@typescript-eslint/types" "4.29.3"
     eslint-visitor-keys "^2.0.0"
 
-"@upshot-tech/upshot-ui@^0.3.1":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@upshot-tech/upshot-ui/-/upshot-ui-0.3.1.tgz#65b59f4b400c5287848d8fa97ff1337a0ac3f0f7"
-  integrity sha512-/HfCHam3ziza2ozpLmkdO77cVFU10TI7lif7LQjI321Jw+M6ogy896zwLlhZzWw2HGAnGKo3syWcKpLxcxvH9A==
+"@upshot-tech/upshot-ui@^0.3.10":
+  version "0.3.10"
+  resolved "https://registry.yarnpkg.com/@upshot-tech/upshot-ui/-/upshot-ui-0.3.10.tgz#663390f8ff05a826d210c7bb53816150e5236f57"
+  integrity sha512-gKcAjHpVNHoPcTDpAb+ISjFN3mUnkWsFLxMwGdsiaFi1Ocv6FHId/vk1Bhrjaqm1ITM3oY0kI4Q+5tq5HSh+4Q==
   dependencies:
     "@emotion/react" "^11.4.1"
     "@emotion/styled" "^11.3.0"
     "@theme-ui/match-media" "^0.11.2"
     apexcharts "^3.28.3"
+    date-fns "^2.25.0"
     polished "^4.1.3"
     react "^17.0.2"
     react-apexcharts "^1.3.9"
@@ -5427,6 +5428,11 @@ date-fns@^2.23.0:
   version "2.23.0"
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.23.0.tgz#4e886c941659af0cf7b30fafdd1eaa37e88788a9"
   integrity sha512-5ycpauovVyAk0kXNZz6ZoB9AYMZB4DObse7P3BPWmyEjXNORTI8EJ6X0uaSAq4sCHzM1uajzrkr6HnsLQpxGXA==
+
+date-fns@^2.25.0:
+  version "2.25.0"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.25.0.tgz#8c5c8f1d958be3809a9a03f4b742eba894fc5680"
+  integrity sha512-ovYRFnTrbGPD4nqaEqescPEv1mNwvt+UTqI3Ay9SzNtey9NZnYu6E2qCcBBgJ6/2VF1zGGygpyTDITqpQQ5e+w==
 
 debug@2, debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@^2.6.0, debug@^2.6.9:
   version "2.6.9"
