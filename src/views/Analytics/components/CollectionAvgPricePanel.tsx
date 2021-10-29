@@ -148,9 +148,13 @@ export default function CollectionAvgPricePanel({
                 >
                   <Image
                     alt={`${name} Cover Artwork`}
-                    height="100%"
-                    width="100%"
-                    sx={{ borderRadius: 'circle' }}
+                    sx={{
+                      borderRadius: 'circle',
+                      height: "100%",
+                      width: "100%",
+                      objectFit: "cover",
+                      objectPosition: "center",
+                    }}
                     src={imageUrl}
                   />
                   <Icon icon='arrowStylizedRight' sx={{
