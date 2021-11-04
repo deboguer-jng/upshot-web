@@ -98,12 +98,13 @@ export default function TopCollectionsCharts({
         ),
       ...rest,
     }))
-    .map(({ data, name, ...rest }) => {
+    .map(({ data, name, id, ...rest }) => {
       const ath = rest[athKeys[metric]]?.value
       const atl = rest[atlKeys[metric]]?.value
-
+      
       return {
         name,
+        url: `/analytics/collection/${id}`,
         ath: ath ? weiToEth(ath, 2) : null,
         atl: atl ? weiToEth(atl, 2) : null,
         data: data.map((val, i) =>
