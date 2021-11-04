@@ -63,6 +63,9 @@ export default function TopCollectionsCharts({
   /* No results state. */
   if (!data?.orderedCollectionsByMetricSearch?.length) return <Chart noData />
 
+  /* No selected state. */
+  if (!selectedCollections.length) return <Chart noSelected />
+
   const assetSets = data.orderedCollectionsByMetricSearch.filter(
     ({ timeSeries }) => timeSeries?.length
   )

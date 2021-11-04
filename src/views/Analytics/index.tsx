@@ -55,6 +55,7 @@ export default function AnalyticsView() {
             {...{ selectedCollections }}
             metric={chartMetric}
             onCollectionSelected={handleCollectionSelected}
+            setSelectedCollections={setSelectedCollections}
           />
           <TopSellingNFTs />
           <Text variant="text.h1Secondary">Market Cap (Change Over 7 Days)</Text>

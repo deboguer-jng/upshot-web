@@ -10,7 +10,7 @@ import {
   Icon,
 } from '@upshot-tech/upshot-ui'
 import Link from 'next/link'
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { weiToEth } from 'utils/number'
 
 import {
@@ -25,12 +25,14 @@ interface CollectionAvgPricePanelProps {
   selectedCollections: number[]
   onCollectionSelected: (id: number) => void
   metric: METRIC
+  setSelectedCollections: (collections: number[]) => void
 }
 
 export default function CollectionAvgPricePanel({
   onCollectionSelected,
   selectedCollections,
   metric,
+  setSelectedCollections,
 }: CollectionAvgPricePanelProps) {
   const { theme } = useTheme()
   const searchTermRef = useRef<HTMLInputElement | null>(null)
@@ -61,6 +63,13 @@ export default function CollectionAvgPricePanel({
       name: searchTermApplied,
     },
   })
+
+  useEffect(() => {
+    if (data) {
+      const defaultSelected = data.orderedCollectionsByMetricSearch.slice(0, 3).map((val) => val.id)
+      setSelectedCollections(defaultSelected)
+    }
+  }, [data])
 
   const title = metric === 'VOLUME'
     ? 'Collections by Weekly Volume'
