@@ -461,7 +461,7 @@ export default function NFTView() {
                       '0x059EDD72Cd353dF5106D2B9cC5ab83a52287aC3a' ||
                       contractAddress ==
                         '0xa7d8d9ef8D8Ce8992Df33D8b8CF4Aebabd5bD270') && (
-                      <div sx={{ paddingTop: '20px' }}>
+                      <div sx={{ padding: '20px' }}>
                         <Panel
                           sx={{
                             backgroundColor: theme.colors.blue,
