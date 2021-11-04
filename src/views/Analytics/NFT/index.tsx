@@ -194,40 +194,6 @@ export default function NFTView() {
               )}
             </Flex>
 
-            <Link href={`/analytics/collection/${collection?.id}`}>
-              <a
-                sx={{
-                  color: 'white',
-                  textDecoration: 'none',
-                  cursor: 'pointer',
-                }}
-              >
-                <Flex sx={{ gap: 4, alignItems: 'center' }}>
-                  <Image
-                    src={collection?.imageUrl ?? '/img/defaultAvatar.png'}
-                    alt={`Collection cover: ${collection?.name}`}
-                    width={32}
-                    sx={{ borderRadius: 'circle', height: 32, width: 32 }}
-                  />
-                  <Flex
-                    sx={{ flexDirection: 'column', justifyContent: 'center' }}
-                  >
-                    <Text
-                      color="grey-500"
-                      sx={{ lineHeight: 1.25, fontSize: 2 }}
-                    >
-                      Collection
-                    </Text>
-                    <Text
-                      color="grey-300"
-                      sx={{ fontWeight: 'bold', lineHeight: 1.25, fontSize: 4 }}
-                    >
-                      {collection?.name ?? 'Unknown'}
-                    </Text>
-                  </Flex>
-                </Flex>
-              </a>
-            </Link>
           </Flex>
 
           <Flex sx={{ flexDirection: 'column', gap: 4 }}>
