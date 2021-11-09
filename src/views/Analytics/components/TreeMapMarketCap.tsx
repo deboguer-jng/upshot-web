@@ -1,4 +1,5 @@
 import { useQuery } from '@apollo/client'
+import { useBreakpointIndex } from '@theme-ui/match-media'
 import { TreeMap } from '@upshot-tech/upshot-ui'
 import { ethers } from 'ethers'
 import { useRouter } from 'next/router'
@@ -10,6 +11,7 @@ import {
 } from '../queries'
 
 export default function TreeMapMarketCap() {
+  const isMobile = useBreakpointIndex() <= 1
   const router = useRouter()
   const { loading, error, data } = useQuery<
     GetSevenDayMCChangeData,
@@ -39,7 +41,7 @@ export default function TreeMapMarketCap() {
 
   return (
     <TreeMap
-      data={chartData}
+      data={!isMobile ? chartData : chartData.slice(0, 15)}
       onCollectionSelected={(collectionId: number) => {
         router.push(`/analytics/collection/${collectionId}`)
       }}

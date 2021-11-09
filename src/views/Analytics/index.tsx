@@ -45,7 +45,7 @@ export default function AnalyticsView() {
       >
         <Nav />
         <Flex sx={{ flex: '1 1 auto', flexDirection: 'column', gap: 5 }}>
-          <Text variant="h1Secondary">Top Collections</Text>
+          <Text variant="h1Secondary" sx={{lineHeight: '2.25rem'}}>Top Collections</Text>
           <ButtonTabs onChange={handleChange} />
           <TopCollectionsChart
             metric={chartMetric}
@@ -57,7 +57,7 @@ export default function AnalyticsView() {
             onCollectionSelected={handleCollectionSelected}
           />
           <TopSellingNFTs />
-          <Text variant="text.h1Secondary">Market Cap (Change Over 7 Days)</Text>
+          <Text variant="text.h1Secondary" sx={{lineHeight: '2.25rem'}}>Market Cap (Change Over 7 Days)</Text>
           <TreeMapMarketCap />
           <ExplorePanel />
         </Flex>
