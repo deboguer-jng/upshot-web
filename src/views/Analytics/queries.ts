@@ -16,6 +16,7 @@ export type TimeSeries = {
 export type GetTopCollectionsData = {
   orderedCollectionsByMetricSearch: {
     name: string
+    id: number
     athAverage: {
       value: string
     }
@@ -49,6 +50,7 @@ export const GET_TOP_COLLECTIONS = gql`
       limit: 3
     ) {
       name
+      id
       athAverage {
         value
       }
