@@ -139,7 +139,7 @@ export default function CollectionView() {
 
   const priceSeries =
     timeSeries?.map(({ timestamp, average }) => [
-      timestamp,
+      timestamp*1000,
       parseFloat(ethers.utils.formatEther(average ?? 0)),
     ]) ?? []
 
