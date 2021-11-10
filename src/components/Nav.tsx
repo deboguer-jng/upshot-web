@@ -45,7 +45,7 @@ export const Nav = () => {
       searchValue={navSearchTerm}
       onSearchValueChange={(e) => setNavSearchTerm(e.currentTarget.value)}
       onSearch={handleNavSearch}
-      onLogoClick={() => router.push('/analytics')}
+      onLogoClick={() => router.push('/')}
       onSearchSuggestionChange={handleSearchSuggestionChange}
       onSearchKeyUp={handleNavKeyUp}
       searchSuggestions={suggestions}
