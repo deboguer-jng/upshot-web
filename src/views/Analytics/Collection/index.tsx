@@ -77,6 +77,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 
 export default function CollectionView() {
   const [id, setId] = useState<number>()
+  const [descriptionOpen, setDescriptionOpen] = useState(false)
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
   const router = useRouter()
@@ -198,7 +199,21 @@ export default function CollectionView() {
           <Text variant="large" sx={{ textTransform: 'uppercase' }}>
             About
           </Text>
-          <Text color="grey-300" sx={{ lineHeight: 1.4 }}>
+          <Text
+            color="grey-300"
+            onClick={() => {
+              setDescriptionOpen(!descriptionOpen)
+            }}
+            sx={{
+              lineHeight: 1.4,
+              cursor: 'pointer',
+              textOverflow: 'ellipsis',
+              overflow: 'hidden',
+              WebkitLineClamp: descriptionOpen ? 20 : 6,
+              display: '-webkit-box',
+              WebkitBoxOrient: 'vertical',
+            }}
+          >
             {description ?? 'No information.'}
           </Text>
         </Flex>
