@@ -2,10 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'redux/store'
 
 interface UserIdentity {
-  addresses: string[]
   id?: string
-  username?: string
-  avatar?: string
 }
 
 export interface UserState {
@@ -22,9 +19,6 @@ const initialState: UserState = {
    */
   identity: {
     id: undefined,
-    addresses: [],
-    username: undefined,
-    avatar: undefined,
   },
 }
 
