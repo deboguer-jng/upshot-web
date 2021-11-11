@@ -24,6 +24,20 @@ interface CollectionPanelProps extends React.HTMLAttributes<HTMLDivElement> {
   onSearch?: (e: React.FormEvent | React.MouseEvent) => void
 }
 
+const splitArray = (arr) => {
+  let i
+  let j
+  let temporary = []
+  const array = new Array<Array<HTMLElement>>()
+  let chunk = 4
+  for (i = 0, j = arr.length; i < j; i += chunk) {
+    temporary = arr.slice(i, i + chunk)
+    array.push(temporary)
+    // do whatever
+  }
+  return array
+}
+
 export default forwardRef(function CollectionPanel(
   {
     title,
@@ -60,6 +74,8 @@ export default forwardRef(function CollectionPanel(
     all[ch] = [].concat(all[ch] || [], one as any)
     return all
   }, [])
+
+  console.log({ arrayGroups })
 
   return (
     <Panel {...{ ref, ...props }}>
@@ -111,18 +127,20 @@ export default forwardRef(function CollectionPanel(
           }}
           css={theme.scroll.thin}
         >
-          {(arrayGroups as Array<HTMLElement>).map((subArray, index) => (
-            <Grid
-              key={index}
-              sx={{
-                columnGap: '32px',
-                rowGap: '16px',
-                gridTemplateRows: 'repeat(4, 1fr)',
-              }}
-            >
-              {subArray}
-            </Grid>
-          ))}
+          {(splitArray(childrenArray) as Array<Array<HTMLElement>>).map(
+            (subArray, index) => (
+              <Grid
+                key={index}
+                sx={{
+                  columnGap: '32px',
+                  rowGap: '16px',
+                  gridTemplateRows: 'repeat(4, 1fr)',
+                }}
+              >
+                {subArray}
+              </Grid>
+            )
+          )}
         </Grid>
       </Flex>
     </Panel>
