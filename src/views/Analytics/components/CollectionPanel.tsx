@@ -1,3 +1,4 @@
+import { useTheme } from '@emotion/react'
 import { InputRoundedSearch } from '@upshot-tech/upshot-ui'
 import { Flex, Grid, Panel, Text } from '@upshot-tech/upshot-ui'
 import React, { forwardRef, useState } from 'react'
@@ -38,6 +39,7 @@ export default forwardRef(function CollectionPanel(
    * Auto apply search filter with 500ms timeout.
    */
   const [autoFilter, setAutoFilter] = useState<any>()
+  const theme = useTheme()
 
   const handleChange = (e: React.ChangeEvent) => {
     if (autoFilter) {
@@ -51,6 +53,13 @@ export default forwardRef(function CollectionPanel(
       }, 500)
     )
   }
+
+  const childrenArray = React.Children.toArray(children)
+  const arrayGroups = childrenArray.reduce((all, one, i) => {
+    const ch = Math.floor(i / 4)
+    all[ch] = [].concat(all[ch] || [], one as any)
+    return all
+  }, [])
 
   return (
     <Panel {...{ ref, ...props }}>
@@ -93,10 +102,28 @@ export default forwardRef(function CollectionPanel(
           </Flex>
         </Flex>
         <Grid
-          columns={[1, 1, 2, 4]}
-          sx={{ columnGap: '32px', rowGap: '16px' }}
-          {...{ children }}
-        />
+          sx={{
+            gridAutoColumns: 293,
+            gridAutoFlow: 'column',
+            overflowX: 'auto',
+            gridTemplateRows: '1fr',
+            paddingBottom: '12px',
+          }}
+          css={theme.scroll.thin}
+        >
+          {(arrayGroups as Array<HTMLElement>).map((subArray, index) => (
+            <Grid
+              key={index}
+              sx={{
+                columnGap: '32px',
+                rowGap: '16px',
+                gridTemplateRows: 'repeat(4, 1fr)',
+              }}
+            >
+              {subArray}
+            </Grid>
+          ))}
+        </Grid>
       </Flex>
     </Panel>
   )
