@@ -55,7 +55,7 @@ export default function TopSellingNFTs({
   collectionId?: number
 }) {
   const router = useRouter()
-  const [period, setPeriod] = useState('')
+  const [period, setPeriod] = useState('1 day')
   const { loading, error, data } = useQuery<GetTopSalesData, GetTopSalesVars>(
     GET_TOP_SALES,
     {
