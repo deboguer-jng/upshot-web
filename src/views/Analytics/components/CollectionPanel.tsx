@@ -69,13 +69,6 @@ export default forwardRef(function CollectionPanel(
   }
 
   const childrenArray = React.Children.toArray(children)
-  const arrayGroups = childrenArray.reduce((all, one, i) => {
-    const ch = Math.floor(i / 4)
-    all[ch] = [].concat(all[ch] || [], one as any)
-    return all
-  }, [])
-
-  console.log({ arrayGroups })
 
   return (
     <Panel {...{ ref, ...props }}>
