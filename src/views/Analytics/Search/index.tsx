@@ -147,14 +147,12 @@ export default function SearchView() {
             <Flex sx={{ gap: 4 }}>
               <InputRounded
                 placeholder="Ξ Min"
-                sx={{ maxWidth: 128 }}
                 value={minPriceEth}
                 onBlur={handleBlurMinPrice}
                 onChange={(e) => setMinPriceEth(e.currentTarget.value)}
               />
               <InputRounded
                 placeholder="Ξ Max"
-                sx={{ maxWidth: 128 }}
                 value={maxPriceEth}
                 onBlur={handleBlurMaxPrice}
                 onChange={(e) => setMaxPriceEth(e.currentTarget.value)}
@@ -232,11 +230,16 @@ export default function SearchView() {
           alignSelf: 'flex-start',
           flexDirection: 'column',
           gap: 8,
+          width: '100%'
         }}
       >
         {isMobile ? (
           <>
-            <Accordion title="Search Filters">{searchFilters()}</Accordion>
+          <Box>
+            <Accordion isDropdown title="Search Filters">
+              {searchFilters()}
+            </Accordion>
+          </Box>
           </>
         ) : (
           <>

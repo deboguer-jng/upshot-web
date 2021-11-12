@@ -19,6 +19,7 @@
     "@upshot-tech/upshot-ui": "^0.3.15",
     "@web3-react/core": "^6.1.9",
     "date-fns": "^2.23.0",
+    "ethereum-blockies-base64": "^1.0.2",
     "ethers": "^5.4.6",
     "graphql": "^15.5.3",
     "next": "^11.1.2",

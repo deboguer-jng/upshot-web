@@ -16,6 +16,7 @@ export type TimeSeries = {
 export type GetTopCollectionsData = {
   orderedCollectionsByMetricSearch: {
     name: string
+    id: number
     athAverage: {
       value: string
     }
@@ -49,6 +50,7 @@ export const GET_TOP_COLLECTIONS = gql`
       limit: 3
     ) {
       name
+      id
       athAverage {
         value
       }
@@ -241,6 +243,7 @@ export type GetSevenDayMCChangeVars = {
 export type GetSevenDayMCChangeData = {
   collections: {
     assetSets: {
+      id: number
       name: string
       sevenDayMCChange: number
       totalVolume: string
@@ -252,6 +255,7 @@ export const GET_SEVEN_DAY_MC_CHANGE = gql`
   query SevenDayMCChange($limit: Int) {
     collections(limit: $limit) {
       assetSets {
+        id
         name
         sevenDayMCChange
         totalVolume

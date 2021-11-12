@@ -63,6 +63,9 @@ export default function TopCollectionsCharts({
   /* No results state. */
   if (!data?.orderedCollectionsByMetricSearch?.length) return <Chart noData />
 
+  /* No selected state. */
+  if (!selectedCollections.length) return <Chart noSelected />
+
   const assetSets = data.orderedCollectionsByMetricSearch.filter(
     ({ timeSeries }) => timeSeries?.length
   )
@@ -98,12 +101,13 @@ export default function TopCollectionsCharts({
         ),
       ...rest,
     }))
-    .map(({ data, name, ...rest }) => {
+    .map(({ data, name, id, ...rest }) => {
       const ath = rest[athKeys[metric]]?.value
       const atl = rest[atlKeys[metric]]?.value
-
+      
       return {
         name,
+        url: `/analytics/collection/${id}`,
         ath: ath ? weiToEth(ath, 2) : null,
         atl: atl ? weiToEth(atl, 2) : null,
         data: data.map((val, i) =>
