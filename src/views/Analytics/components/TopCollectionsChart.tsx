@@ -111,7 +111,6 @@ export default function TopCollectionsCharts({
         url: `/analytics/collection/${id}`,
         ath: ath ? weiToEth(ath, 2) : null,
         atl: atl ? weiToEth(atl, 2) : null,
-        priceUsd: 10,
         priceChange,
         data: data.map((val, i) =>
           i === 0
