@@ -134,7 +134,7 @@ export default function NFTView() {
   const salesSeries = txHistory
     .filter(({ ethSalePrice }) => ethSalePrice)
     .map(({ assetEvent, ethSalePrice }) => [
-      assetEvent?.txAt,
+      assetEvent?.txAt*1000,
       parseFloat(ethers.utils.formatEther(ethSalePrice)),
     ])
 
@@ -143,19 +143,19 @@ export default function NFTView() {
   // pagination.
   const reversedTxHistory = [...txHistory].reverse()
 
-  const appraisalSeries = appraisalHistory.map(
-    ({ timestamp, estimatedPrice }) => [
-      timestamp,
+  const appraisalSeries =
+    appraisalHistory?.map(({ timestamp, estimatedPrice }) => [
+      timestamp*1000,
       estimatedPrice
-        ? parseFloat(ethers.utils.formatEther(estimatedPrice))
-        : null,
-    ]
-  )
+          ? parseFloat(ethers.utils.formatEther(estimatedPrice))
+          : null,
+    ]) ?? []
 
   const chartData = [
     { name: 'Appraisals', data: appraisalSeries },
     { name: 'Sales', data: salesSeries },
   ]
+  console.log(chartData)
 
   const assetName = getAssetName(name, collection?.name, tokenId)
 
