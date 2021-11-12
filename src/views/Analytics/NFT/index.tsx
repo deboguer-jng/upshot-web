@@ -146,9 +146,7 @@ export default function NFTView() {
   const appraisalSeries = appraisalHistory.map(
     ({ timestamp, estimatedPrice }) => [
       timestamp*1000,
-      estimatedPrice
-        ? parseFloat(ethers.utils.formatEther(estimatedPrice))
-        : null,
+      parseFloat(ethers.utils.formatEther(estimatedPrice)),
     ]
   )
 
