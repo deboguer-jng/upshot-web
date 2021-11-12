@@ -34,7 +34,19 @@ function TopSellingNFTsHeader({
   setPeriod?: (val: string) => void
 }) {
   return (
-    <Flex variant="text.h1Secondary" sx={{ gap: 2, alignItems: 'flex-start' }}>
+    <Flex
+      variant="text.h1Secondary"
+      sx={{
+        gap: 2,
+        alignItems: 'flex-start',
+        paddingBottom: '1rem',
+        position: 'absolute',
+        width: '100%',
+        background:
+          'linear-gradient(180deg, #000000 60.42%, rgba(35, 31, 32, 0) 100%)',
+        zIndex: 2,
+      }}
+    >
       Top NFT Sales in
       {!!setPeriod ? (
         <SwitchDropdown
@@ -77,7 +89,7 @@ export default function TopSellingNFTs({
     return (
       <>
         <TopSellingNFTsHeader />
-        <MiniNFTContainer>
+        <MiniNFTContainer sx={{ paddingTop: '80px' }}>
           {[...new Array(10)].map((_, idx) => (
             <BlurrySquareTemplate key={idx} />
           ))}
@@ -107,7 +119,7 @@ export default function TopSellingNFTs({
         period={period}
         setPeriod={(val) => setPeriod(val)}
       />
-      <MiniNFTContainer>
+      <MiniNFTContainer sx={{ paddingTop: '80px' }}>
         {data.topSales.map(
           (
             {
