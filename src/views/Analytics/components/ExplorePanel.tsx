@@ -84,6 +84,7 @@ function ExplorePanelHead({
 }: ExplorePanelHeadProps) {
   const [autoFilter, setAutoFilter] = useState<any>()
   const searchTermRef = useRef<HTMLInputElement>(null)
+  const breakpointIndex = useBreakpointIndex()
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -107,28 +108,63 @@ function ExplorePanelHead({
   }
 
   return (
-    <Flex
-      sx={{
-        justifyContent: 'space-between',
-        flexDirection: ['column', 'column', 'row'],
-        gap: 2,
-      }}
-    >
-      <Flex sx={{ flexDirection: 'column' }}>
-        <Flex
-          variant="text.h1Secondary"
-          sx={{ gap: 2, alignItems: 'flex-start' }}
-        >
-          Explore
-          <SwitchDropdown
-            onChange={(val) => onChangeTab?.(val)}
-            value={tab ?? ''}
-            options={['NFTs', 'Collectors']}
-          />
+    <>
+      <Flex
+        sx={{
+          justifyContent: 'space-between',
+          flexDirection: ['column', 'column', 'row'],
+          paddingBottom: '1rem',
+          gap: 1,
+          position: 'absolute',
+          width: '100%',
+          zIndex: 2,
+          background:
+            'linear-gradient(180deg, #231F20 60.42%, rgba(35, 31, 32, 0) 100%)',
+        }}
+      >
+        <Flex sx={{ flexDirection: 'column' }}>
+          <Flex
+            variant="text.h1Secondary"
+            sx={{ gap: 2, alignItems: 'flex-start' }}
+          >
+            Explore
+            <SwitchDropdown
+              onChange={(val) => onChangeTab?.(val)}
+              value={tab ?? ''}
+              options={['NFTs', 'Collectors']}
+            />
+          </Flex>
         </Flex>
+        {tab === 'NFTs' && breakpointIndex > 1 ? (
+          <Flex sx={{ justifyContent: 'flex-end', alignItems: 'stretch' }}>
+            <form onSubmit={handleSearch}>
+              <InputRoundedSearch
+                dark
+                fullWidth
+                hasButton
+                defaultValue={searchTerm}
+                ref={searchTermRef}
+                onChange={handleChange}
+                buttonProps={{
+                  type: 'button',
+                  onClick: handleSearch,
+                }}
+              />
+            </form>
+          </Flex>
+        ) : null}
       </Flex>
-      {tab === 'NFTs' ? (
-        <Flex sx={{ justifyContent: 'flex-end', alignItems: 'stretch' }}>
+      {breakpointIndex <= 1 && tab === 'NFTs' && (
+        <Flex
+          sx={{
+            justifyContent: 'flex-end',
+            alignItems: 'stretch',
+            position: 'absolute',
+            zIndex: 0,
+            top: 60,
+            right: 0,
+          }}
+        >
           <form onSubmit={handleSearch}>
             <InputRoundedSearch
               dark
@@ -144,8 +180,8 @@ function ExplorePanelHead({
             />
           </form>
         </Flex>
-      ) : null}
-    </Flex>
+      )}
+    </>
   )
 }
 
@@ -322,13 +358,15 @@ export default function ExplorePanel({
 
   return (
     <Panel>
-      <Flex sx={{ flexDirection: 'column', gap: 4 }}>
+      <Flex sx={{ flexDirection: 'column', gap: 4, position: 'relative' }}>
         <ExplorePanelHead
           onChangeTab={(tab) => setTab(tab)}
           onSearch={handleSearch}
           {...{ searchTerm, tab }}
         />
-        {content}
+        <Box sx={{ paddingTop: isMobile && tab === 'NFTs' ? '110px' : '70px' }}>
+          {content}
+        </Box>
       </Flex>
     </Panel>
   )
