@@ -97,6 +97,8 @@ export type GetCollectionAvgPriceData = {
     name?: string
     imageUrl?: string
     average?: string
+    floor?: string
+    volume?: string
   }[]
 }
 
@@ -115,6 +117,8 @@ export const GET_COLLECTION_AVG_PRICE = gql`
       name
       imageUrl
       average
+      floor
+      volume
     }
   }
 `
