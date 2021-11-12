@@ -9,10 +9,12 @@ import { providers } from 'ethers'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import { useEffect } from 'react'
-import { persistor } from 'redux/store'
+import { Provider } from 'react-redux'
+import { persistor, store } from 'redux/store'
 import { PersistGate } from 'redux-persist/integration/react'
 import client from 'utils/apolloClient'
 import { initGA } from 'utils/googleAnalytics'
+import Layout from 'views/Layout'
 
 /**
  * Instantiate an Ethers web3 provider library.
@@ -52,9 +54,13 @@ export default function App({ Component, pageProps }: AppProps) {
       <UpshotThemeProvider>
         <ApolloProvider {...{ client }}>
           <Web3ReactProvider {...{ getLibrary }}>
-            <PersistGate {...{ persistor }}>
-              <Component {...pageProps} />
-            </PersistGate>
+            <Provider store={store}>
+              <PersistGate {...{ persistor }}>
+                <Layout>
+                  <Component {...pageProps} />
+                </Layout>
+              </PersistGate>
+            </Provider>
           </Web3ReactProvider>
         </ApolloProvider>
       </UpshotThemeProvider>

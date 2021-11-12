@@ -23,7 +23,7 @@ const persistConfig = {
  *
  * @see https://redux-toolkit.js.org/usage/usage-guide#use-with-redux-persist
  */
-const store = configureStore({
+export const store = configureStore({
   reducer: persistReducer(persistConfig, rootReducer),
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
