@@ -193,41 +193,6 @@ export default function NFTView() {
                 </Label>
               )}
             </Flex>
-
-            <Link href={`/analytics/collection/${collection?.id}`}>
-              <a
-                sx={{
-                  color: 'white',
-                  textDecoration: 'none',
-                  cursor: 'pointer',
-                }}
-              >
-                <Flex sx={{ gap: 4, alignItems: 'center' }}>
-                  <Image
-                    src={collection?.imageUrl ?? '/img/defaultAvatar.png'}
-                    alt={`Collection cover: ${collection?.name}`}
-                    width={32}
-                    sx={{ borderRadius: 'circle', height: 32, width: 32 }}
-                  />
-                  <Flex
-                    sx={{ flexDirection: 'column', justifyContent: 'center' }}
-                  >
-                    <Text
-                      color="grey-500"
-                      sx={{ lineHeight: 1.25, fontSize: 2 }}
-                    >
-                      Collection
-                    </Text>
-                    <Text
-                      color="grey-300"
-                      sx={{ fontWeight: 'bold', lineHeight: 1.25, fontSize: 4 }}
-                    >
-                      {collection?.name ?? 'Unknown'}
-                    </Text>
-                  </Flex>
-                </Flex>
-              </a>
-            </Link>
           </Flex>
 
           <Flex sx={{ flexDirection: 'column', gap: 4 }}>
@@ -444,7 +409,14 @@ export default function NFTView() {
                   </Flex>
                 </Panel>
               </Flex>
-              <Flex sx={{ flexDirection: 'column', gap: 4, flexGrow: 1 }}>
+              <Flex
+                sx={{
+                  flexDirection: 'column',
+                  gap: 4,
+                  flexGrow: 1,
+                  minWidth: '50%',
+                }}
+              >
                 <Panel
                   sx={{
                     flexGrow: 1,
@@ -461,7 +433,7 @@ export default function NFTView() {
                       '0x059EDD72Cd353dF5106D2B9cC5ab83a52287aC3a' ||
                       contractAddress ==
                         '0xa7d8d9ef8D8Ce8992Df33D8b8CF4Aebabd5bD270') && (
-                      <div sx={{ paddingTop: '20px' }}>
+                      <div sx={{ padding: '20px' }}>
                         <Panel
                           sx={{
                             backgroundColor: theme.colors.blue,
