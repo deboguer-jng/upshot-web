@@ -16,6 +16,7 @@ import {
   TableRow,
 } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE } from 'constants/'
+import { format } from 'date-fns'
 import router from 'next/router'
 import React, { useMemo, useRef, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
@@ -29,7 +30,7 @@ import {
 import Collectors from './Collectors'
 import TopCollectors from './TopCollectors'
 
-const columns = ['Last Sale', 'Total Sales', '% Change']
+const columns = ['Last Sale', 'Total Sales', 'Sale Price', '% Change']
 
 /**
  * Get price change label.
@@ -51,7 +52,7 @@ function CollectionTableHead() {
     <TableHead>
       <TableRow>
         <TableCell></TableCell>
-        <TableCell color="grey-500">Name</TableCell>
+        <TableCell color="grey-500">NFT Name</TableCell>
         {isMobile ? (
           // Mobile only shows the first and last columns
           <TableCell color="grey-500">Details</TableCell>
@@ -192,7 +193,7 @@ function ExplorePanelSkeleton() {
       <TableBody>
         {[...new Array(PAGE_SIZE)].map((_, idx) => (
           <Skeleton sx={{ height: 56 }} as="tr" key={idx}>
-            <TableCell colSpan={5}>
+            <TableCell colSpan={6}>
               <Box sx={{ height: 40, width: '100%' }} />
             </TableCell>
           </Skeleton>
@@ -299,12 +300,15 @@ export default function ExplorePanel({
                     ) : (
                       <>
                         <TableCell sx={{ maxWidth: 100 }}>
-                          {lastSale?.ethSalePrice
-                            ? weiToEth(lastSale.ethSalePrice)
-                            : '-'}
+                          {format(lastSale.timestamp * 1000, 'M/d/yyyy')}
                         </TableCell>
                         <TableCell sx={{ maxWidth: 100 }}>
                           {totalSaleCount}
+                        </TableCell>
+                        <TableCell sx={{ maxWidth: 100 }}>
+                          {lastSale?.ethSalePrice
+                            ? weiToEth(lastSale.ethSalePrice)
+                            : '-'}
                         </TableCell>
                         <TableCell
                           sx={{
@@ -340,17 +344,7 @@ export default function ExplorePanel({
     ) : (
       <TopCollectors />
     )
-  }, [
-    tab,
-    loading,
-    error,
-    data,
-    collectionId,
-    collectionName,
-    isMobile,
-    page,
-    searchTerm,
-  ])
+  }, [tab, loading, error, data, collectionId, collectionName, isMobile, page])
 
   const handleShowNFT = (id: string) => {
     router.push('/analytics/nft/' + id)
