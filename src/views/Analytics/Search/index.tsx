@@ -214,7 +214,7 @@ export default function SearchView() {
         </Box>
 
         <Box sx={{ paddingTop: [5, 5, 0] }}>
-          <Button onClick={handleApplyFilters}>Apply Filters</Button>
+          <Button capitalize onClick={handleApplyFilters}>Apply Filters</Button>
         </Box>
       </>
     )
@@ -361,8 +361,8 @@ export default function SearchView() {
             <Pagination
               forcePage={page}
               pageCount={Math.ceil(data.assetGlobalSearch.count / PAGE_SIZE)}
-              pageRangeDisplayed={isMobile ? 3 : 5}
-              marginPagesDisplayed={isMobile ? 1 : 5}
+              pageRangeDisplayed={0}
+              marginPagesDisplayed={0}
               onPageChange={handlePageChange}
             />
           )}

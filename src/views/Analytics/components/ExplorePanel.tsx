@@ -327,8 +327,8 @@ export default function ExplorePanel({
             <Pagination
               forcePage={page}
               pageCount={Math.ceil(data.assetGlobalSearch.count / PAGE_SIZE)}
-              pageRangeDisplayed={isMobile ? 3 : 5}
-              marginPagesDisplayed={isMobile ? 1 : 5}
+              pageRangeDisplayed={0}
+              marginPagesDisplayed={0}
               onPageChange={handlePageChange}
             />
           </Flex>

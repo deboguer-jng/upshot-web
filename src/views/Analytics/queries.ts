@@ -36,6 +36,7 @@ export type GetTopCollectionsData = {
       value: string
     }
     timeSeries?: TimeSeries[]
+    sevenDayMCChange: number
   }[]
 }
 
@@ -75,6 +76,7 @@ export const GET_TOP_COLLECTIONS = gql`
         marketCap
         floor
       }
+      sevenDayMCChange
     }
   }
 `
@@ -95,6 +97,8 @@ export type GetCollectionAvgPriceData = {
     name?: string
     imageUrl?: string
     average?: string
+    floor?: string
+    volume?: string
   }[]
 }
 
@@ -113,6 +117,8 @@ export const GET_COLLECTION_AVG_PRICE = gql`
       name
       imageUrl
       average
+      floor
+      volume
     }
   }
 `
