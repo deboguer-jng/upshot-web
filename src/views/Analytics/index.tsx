@@ -1,4 +1,4 @@
-import { Container } from '@upshot-tech/upshot-ui'
+import { Box, Container } from '@upshot-tech/upshot-ui'
 import { Flex, Footer, Text } from '@upshot-tech/upshot-ui'
 import { Nav } from 'components/Nav'
 import Head from 'next/head'
@@ -45,7 +45,9 @@ export default function AnalyticsView() {
       >
         <Nav />
         <Flex sx={{ flex: '1 1 auto', flexDirection: 'column', gap: 5 }}>
-          <Text variant="h1Secondary" sx={{lineHeight: '2.25rem'}}>Top Collections</Text>
+          <Text variant="h1Secondary" sx={{ lineHeight: '2.25rem' }}>
+            Top Collections
+          </Text>
           <ButtonTabs onChange={handleChange} />
           <TopCollectionsChart
             metric={chartMetric}
@@ -57,8 +59,12 @@ export default function AnalyticsView() {
             onCollectionSelected={handleCollectionSelected}
             setSelectedCollections={setSelectedCollections}
           />
-          <TopSellingNFTs />
-          <Text variant="text.h1Secondary" sx={{lineHeight: '2.25rem'}}>Market Cap (Change Over 7 Days)</Text>
+          <Box sx={{ position: 'relative' }}>
+            <TopSellingNFTs />
+          </Box>
+          <Text variant="text.h1Secondary" sx={{ lineHeight: '2.25rem' }}>
+            Market Cap (Change Over 7 Days)
+          </Text>
           <TreeMapMarketCap />
           <ExplorePanel />
         </Flex>

@@ -145,6 +145,7 @@ export type GetExploreNFTsData = {
       totalSaleCount: number
       priceChangeFromFirstSale: number
       lastSale: {
+        timestamp: number
         ethSalePrice: string
       }
     }[]
@@ -173,6 +174,7 @@ export const GET_EXPLORE_NFTS = gql`
         totalSaleCount
         priceChangeFromFirstSale
         lastSale {
+          timestamp
           ethSalePrice
         }
       }
