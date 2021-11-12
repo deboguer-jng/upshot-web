@@ -125,7 +125,7 @@ export default function CollectionAvgPricePanel({
       {...{ title, subtitle }}
     >
       {data.orderedCollectionsByMetricSearch.map(
-        ({ id, name, imageUrl, average }, index) => (
+        ({ id, name, imageUrl, average, floor, volume }, index) => (
           <Flex
             key={index}
             sx={{ alignItems: 'center', color: 'disabled', gap: 5 }}
@@ -182,7 +182,7 @@ export default function CollectionAvgPricePanel({
                   : undefined
               }
               text={name ?? 'Unknown'}
-              subText={average ? weiToEth(average) : '-'}
+              subText={printMetricData(metric, {average, floor, volume})}
             />
           </Flex>
         )
@@ -190,3 +190,18 @@ export default function CollectionAvgPricePanel({
     </CollectionPanel>
   )
 }
+
+// returns the metric related data in a human-readable format
+function printMetricData(
+  metric: METRIC,
+  data: { average?: string, floor?: string, volume?: string }
+) {
+  if (metric === 'VOLUME' && data['volume']) {
+    return weiToEth(data['volume']) ?? '-'
+  } else if (metric === 'AVERAGE' && data['average']) {
+    return weiToEth(data['average']) ?? '-'
+  } else if (metric === 'FLOOR' && data['floor']) {
+    return weiToEth(data['floor']) ?? '-'
+  }
+}
+
