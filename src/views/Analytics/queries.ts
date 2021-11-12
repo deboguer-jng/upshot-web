@@ -36,6 +36,7 @@ export type GetTopCollectionsData = {
       value: string
     }
     timeSeries?: TimeSeries[]
+    sevenDayMCChange: number
   }[]
 }
 
@@ -75,6 +76,7 @@ export const GET_TOP_COLLECTIONS = gql`
         marketCap
         floor
       }
+      sevenDayMCChange
     }
   }
 `
