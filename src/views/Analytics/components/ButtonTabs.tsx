@@ -43,8 +43,16 @@ export default function ButtonTabs({ onChange }: ButtonTabsProps) {
     <>
       {isMobile ? (
         <Scroll>
-          <Flex sx={{gap: 4, width: 'fit-content',
-            justifyContent: ['center', 'center', 'flex-start'], padding: '0.25rem'}}>{renderButtons()}</Flex>
+          <Flex
+            sx={{
+              gap: 4,
+              width: 'fit-content',
+              justifyContent: ['center', 'center', 'flex-start'],
+              padding: '0.25rem',
+            }}
+          >
+            {renderButtons()}
+          </Flex>
         </Scroll>
       ) : (
         <Flex
