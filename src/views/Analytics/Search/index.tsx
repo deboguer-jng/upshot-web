@@ -214,7 +214,7 @@ export default function SearchView() {
         </Box>
 
         <Box sx={{ paddingTop: [5, 5, 0] }}>
-          <Button onClick={handleApplyFilters}>Apply Filters</Button>
+          <Button capitalize onClick={handleApplyFilters}>Apply Filters</Button>
         </Box>
       </>
     )
