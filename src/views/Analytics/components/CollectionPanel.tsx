@@ -115,6 +115,7 @@ export default forwardRef(function CollectionPanel(
             gridAutoColumns: 293,
             gridAutoFlow: 'column',
             overflowX: 'auto',
+            overflowY: 'hidden',
             gridTemplateRows: '1fr',
             paddingBottom: '12px',
           }}
