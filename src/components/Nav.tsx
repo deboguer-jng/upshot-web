@@ -1,6 +1,5 @@
 import { useLazyQuery } from '@apollo/client'
 import { ConnectModal, Modal, Navbar } from '@upshot-tech/upshot-ui'
-import { InputSuggestion } from '@upshot-tech/upshot-ui/src/components/@UI/InputRoundedSearch'
 import { useWeb3React } from '@web3-react/core'
 import { ConnectorName, connectorsByName } from 'constants/connectors'
 import makeBlockie from 'ethereum-blockies-base64'
@@ -33,6 +32,11 @@ export const Nav = () => {
   const [open, setOpen] = useState(false)
   const modalRef = useRef<HTMLDivElement>(null)
   const toggleModal = () => setOpen(!open)
+
+  interface InputSuggestion {
+    id: number
+    name: string
+  }
 
   const handleConnect = (provider: ConnectorName) => {
     dispatch(setActivatingConnector(provider))
