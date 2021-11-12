@@ -4,10 +4,12 @@ import {
   Flex,
   Icon,
   MiniNftCard,
+  SwitchDropdown,
 } from '@upshot-tech/upshot-ui'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { formatDistance } from 'date-fns'
 import { useRouter } from 'next/router'
+import { useState } from 'react'
 import { shortenAddress } from 'utils/address'
 import { weiToEth } from 'utils/number'
 
@@ -24,10 +26,25 @@ export const WINDOWS = {
 
 export type WINDOW = keyof typeof WINDOWS
 
-function TopSellingNFTsHeader() {
+function TopSellingNFTsHeader({
+  period,
+  setPeriod,
+}: {
+  period?: string
+  setPeriod?: (val: string) => void
+}) {
   return (
-    <Flex variant="text.h1Secondary" sx={{ gap: 2, lineHeight: '2.25rem' }}>
-      Top NFT Sales This Week
+    <Flex variant="text.h1Secondary" sx={{ gap: 2, alignItems: 'flex-start' }}>
+      Top NFT Sales in
+      {!!setPeriod ? (
+        <SwitchDropdown
+          onChange={(val) => setPeriod?.(val)}
+          value={period ?? ''}
+          options={['1 day', '1 week', '1 month']}
+        />
+      ) : (
+        <></>
+      )}
     </Flex>
   )
 }
@@ -38,11 +55,17 @@ export default function TopSellingNFTs({
   collectionId?: number
 }) {
   const router = useRouter()
+  const [period, setPeriod] = useState('1 day')
   const { loading, error, data } = useQuery<GetTopSalesData, GetTopSalesVars>(
     GET_TOP_SALES,
     {
       errorPolicy: 'all',
-      variables: { limit: 10, windowSize: 'WEEK', collectionId },
+      variables: {
+        limit: 10,
+        windowSize:
+          period === '1 day' ? 'DAY' : period === '1 week' ? 'WEEK' : 'MONTH',
+        collectionId,
+      },
     }
   ) // Using `all` to include data with errors.
 
@@ -80,7 +103,10 @@ export default function TopSellingNFTs({
 
   return (
     <>
-      <TopSellingNFTsHeader />
+      <TopSellingNFTsHeader
+        period={period}
+        setPeriod={(val) => setPeriod(val)}
+      />
       <MiniNFTContainer>
         {data.topSales.map(
           (
