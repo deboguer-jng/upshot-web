@@ -143,8 +143,8 @@ export default function NFTView() {
   // pagination.
   const reversedTxHistory = [...txHistory].reverse()
 
-  const appraisalSeries =
-    appraisalHistory?.map(({ timestamp, estimatedPrice }) => [
+  const appraisalSeries = appraisalHistory?.map(
+    ({ timestamp, estimatedPrice }) => [
       timestamp*1000,
       estimatedPrice
         ? parseFloat(ethers.utils.formatEther(estimatedPrice))
