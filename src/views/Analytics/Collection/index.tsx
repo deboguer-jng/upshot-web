@@ -139,7 +139,7 @@ export default function CollectionView() {
 
   const priceSeries =
     timeSeries?.map(({ timestamp, average }) => [
-      timestamp,
+      timestamp*1000,
       parseFloat(ethers.utils.formatEther(average ?? 0)),
     ]) ?? []
 
@@ -154,18 +154,17 @@ export default function CollectionView() {
     <Layout>
       <Grid columns={isMobile ? '1fr' : '1fr 1fr'} sx={{ gap: '40px' }}>
         <Flex sx={{ flexDirection: 'column', gap: '16px' }}>
-          <Flex sx={{ gap: 6, height: 100 }}>
-            <Avatar size="lg" src={imageUrl} />
+          <Flex sx={{ gap: 6, height: 100, alignItems: 'center' }}>
+            <Avatar size="xl" src={imageUrl} />
             <Flex sx={{ flexDirection: 'column' }}>
               <Text variant="h1Secondary" sx={{ lineHeight: '2rem' }}>
                 {name}
               </Text>
               <Text
-                color="pink"
+                color="grey"
                 variant="h4Primary"
                 sx={{
                   fontWeight: 700,
-                  textTransform: 'uppercase',
                   marginTop: '2px',
                 }}
               >
