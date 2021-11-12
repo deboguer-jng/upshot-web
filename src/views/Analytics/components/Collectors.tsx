@@ -11,6 +11,7 @@ import {
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { PAGE_SIZE } from 'constants/'
 import { format, formatDistance } from 'date-fns'
+import makeBlockie from 'ethereum-blockies-base64'
 import { formatUsername } from 'utils/address'
 import { weiToEth } from 'utils/number'
 
@@ -84,6 +85,9 @@ export default function Collectors({
             idx
           ) => (
             <CollectorAccordionRow
+              avatarImageUrl={
+                addresses?.[0] ? makeBlockie(addresses[0]) : undefined
+              }
               count={count}
               name={formatUsername(username ?? addresses?.[0] ?? 'Unknown')}
               firstAcquisition={format(

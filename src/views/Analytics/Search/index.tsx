@@ -147,14 +147,12 @@ export default function SearchView() {
             <Flex sx={{ gap: 4 }}>
               <InputRounded
                 placeholder="Ξ Min"
-                sx={{ maxWidth: 128 }}
                 value={minPriceEth}
                 onBlur={handleBlurMinPrice}
                 onChange={(e) => setMinPriceEth(e.currentTarget.value)}
               />
               <InputRounded
                 placeholder="Ξ Max"
-                sx={{ maxWidth: 128 }}
                 value={maxPriceEth}
                 onBlur={handleBlurMaxPrice}
                 onChange={(e) => setMaxPriceEth(e.currentTarget.value)}
@@ -216,7 +214,7 @@ export default function SearchView() {
         </Box>
 
         <Box sx={{ paddingTop: [5, 5, 0] }}>
-          <Button onClick={handleApplyFilters}>Apply Filters</Button>
+          <Button capitalize onClick={handleApplyFilters}>Apply Filters</Button>
         </Box>
       </>
     )
@@ -232,11 +230,16 @@ export default function SearchView() {
           alignSelf: 'flex-start',
           flexDirection: 'column',
           gap: 8,
+          width: '100%'
         }}
       >
         {isMobile ? (
           <>
-            <Accordion title="Search Filters">{searchFilters()}</Accordion>
+          <Box>
+            <Accordion isDropdown title="Search Filters">
+              {searchFilters()}
+            </Accordion>
+          </Box>
           </>
         ) : (
           <>
@@ -358,8 +361,8 @@ export default function SearchView() {
             <Pagination
               forcePage={page}
               pageCount={Math.ceil(data.assetGlobalSearch.count / PAGE_SIZE)}
-              pageRangeDisplayed={isMobile ? 3 : 5}
-              marginPagesDisplayed={isMobile ? 1 : 5}
+              pageRangeDisplayed={0}
+              marginPagesDisplayed={0}
               onPageChange={handlePageChange}
             />
           )}

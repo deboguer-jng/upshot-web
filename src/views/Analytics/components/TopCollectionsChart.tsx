@@ -30,9 +30,7 @@ const atlKeys = {
 }
 
 const floorCheck = (val) => {
-  return val
-    ? parseFloat(ethers.utils.formatEther(val))
-    : 0
+  return val ? parseFloat(ethers.utils.formatEther(val)) : 0
 }
 
 export default function TopCollectionsCharts({
@@ -58,10 +56,13 @@ export default function TopCollectionsCharts({
   if (loading) return <Chart loading />
 
   /* Error state. */
-  if (error) return <Chart error />
+  // if (error) return <Chart error />
 
   /* No results state. */
   if (!data?.orderedCollectionsByMetricSearch?.length) return <Chart noData />
+
+  /* No selected state. */
+  if (!selectedCollections.length) return <Chart noSelected />
 
   const assetSets = data.orderedCollectionsByMetricSearch.filter(
     ({ timeSeries }) => timeSeries?.length
@@ -89,23 +90,29 @@ export default function TopCollectionsCharts({
         .reduce(
           (a: number[][], c) => [
             ...a,
-            [
-              c.timestamp * 1000,
-              floorCheck(c[timeSeriesKeys[metric]]),
-            ],
+            [c.timestamp * 1000, floorCheck(c[timeSeriesKeys[metric]])],
           ],
           []
         ),
       ...rest,
     }))
-    .map(({ data, name, ...rest }) => {
+    .map(({ data, name, id, sevenDayMCChange, ...rest }) => {
       const ath = rest[athKeys[metric]]?.value
       const atl = rest[atlKeys[metric]]?.value
+      const priceChange =
+        sevenDayMCChange === null
+          ? null
+          : sevenDayMCChange >= 0
+          ? '+' + sevenDayMCChange + '%'
+          : sevenDayMCChange + '%'
 
       return {
         name,
+        url: `/analytics/collection/${id}`,
         ath: ath ? weiToEth(ath, 2) : null,
         atl: atl ? weiToEth(atl, 2) : null,
+        priceUsd: 10,
+        priceChange,
         data: data.map((val, i) =>
           i === 0
             ? [minDate * 1000, val[1]] // Align window start

@@ -12,6 +12,7 @@ import {
   theme,
 } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE, PIXELATED_CONTRACTS } from 'constants/'
+import makeBlockie from 'ethereum-blockies-base64'
 import { useRouter } from 'next/router'
 import { formatUsername } from 'utils/address'
 import { shortenAddress } from 'utils/address'
@@ -79,6 +80,9 @@ export default function TopCollectors() {
             idx
           ) => (
             <CollectorAccordionRow
+              avatarImageUrl={
+                addresses?.[0] ? makeBlockie(addresses[0]) : undefined
+              }
               name={formatUsername(username ?? addresses?.[0] ?? 'Unknown')}
               portfolioValue={
                 totalAssetAppraisedValue

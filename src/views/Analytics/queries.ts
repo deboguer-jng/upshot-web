@@ -16,6 +16,7 @@ export type TimeSeries = {
 export type GetTopCollectionsData = {
   orderedCollectionsByMetricSearch: {
     name: string
+    id: number
     athAverage: {
       value: string
     }
@@ -35,6 +36,7 @@ export type GetTopCollectionsData = {
       value: string
     }
     timeSeries?: TimeSeries[]
+    sevenDayMCChange: number
   }[]
 }
 
@@ -49,6 +51,7 @@ export const GET_TOP_COLLECTIONS = gql`
       limit: 3
     ) {
       name
+      id
       athAverage {
         value
       }
@@ -73,6 +76,7 @@ export const GET_TOP_COLLECTIONS = gql`
         marketCap
         floor
       }
+      sevenDayMCChange
     }
   }
 `
@@ -93,6 +97,8 @@ export type GetCollectionAvgPriceData = {
     name?: string
     imageUrl?: string
     average?: string
+    floor?: string
+    volume?: string
   }[]
 }
 
@@ -111,6 +117,8 @@ export const GET_COLLECTION_AVG_PRICE = gql`
       name
       imageUrl
       average
+      floor
+      volume
     }
   }
 `
@@ -241,6 +249,7 @@ export type GetSevenDayMCChangeVars = {
 export type GetSevenDayMCChangeData = {
   collections: {
     assetSets: {
+      id: number
       name: string
       sevenDayMCChange: number
       totalVolume: string
@@ -252,6 +261,7 @@ export const GET_SEVEN_DAY_MC_CHANGE = gql`
   query SevenDayMCChange($limit: Int) {
     collections(limit: $limit) {
       assetSets {
+        id
         name
         sevenDayMCChange
         totalVolume
