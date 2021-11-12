@@ -193,7 +193,6 @@ export default function NFTView() {
                 </Label>
               )}
             </Flex>
-
           </Flex>
 
           <Flex sx={{ flexDirection: 'column', gap: 4 }}>
@@ -410,7 +409,14 @@ export default function NFTView() {
                   </Flex>
                 </Panel>
               </Flex>
-              <Flex sx={{ flexDirection: 'column', gap: 4, flexGrow: 1 }}>
+              <Flex
+                sx={{
+                  flexDirection: 'column',
+                  gap: 4,
+                  flexGrow: 1,
+                  minWidth: '50%',
+                }}
+              >
                 <Panel
                   sx={{
                     flexGrow: 1,
