@@ -1,3 +1,4 @@
+import { useTheme } from '@emotion/react'
 import { InputRoundedSearch } from '@upshot-tech/upshot-ui'
 import { Flex, Grid, Panel, Text } from '@upshot-tech/upshot-ui'
 import React, { forwardRef, useState } from 'react'
@@ -23,6 +24,20 @@ interface CollectionPanelProps extends React.HTMLAttributes<HTMLDivElement> {
   onSearch?: (e: React.FormEvent | React.MouseEvent) => void
 }
 
+const splitArray = (arr) => {
+  let i
+  let j
+  let temporary = []
+  const array = new Array<Array<HTMLElement>>()
+  let chunk = 4
+  for (i = 0, j = arr.length; i < j; i += chunk) {
+    temporary = arr.slice(i, i + chunk)
+    array.push(temporary)
+    // do whatever
+  }
+  return array
+}
+
 export default forwardRef(function CollectionPanel(
   {
     title,
@@ -38,6 +53,7 @@ export default forwardRef(function CollectionPanel(
    * Auto apply search filter with 500ms timeout.
    */
   const [autoFilter, setAutoFilter] = useState<any>()
+  const theme = useTheme()
 
   const handleChange = (e: React.ChangeEvent) => {
     if (autoFilter) {
@@ -51,6 +67,8 @@ export default forwardRef(function CollectionPanel(
       }, 500)
     )
   }
+
+  const childrenArray = React.Children.toArray(children)
 
   return (
     <Panel {...{ ref, ...props }}>
@@ -93,10 +111,30 @@ export default forwardRef(function CollectionPanel(
           </Flex>
         </Flex>
         <Grid
-          columns={[1, 1, 2, 4]}
-          sx={{ columnGap: '32px', rowGap: '16px' }}
-          {...{ children }}
-        />
+          sx={{
+            gridAutoColumns: 293,
+            gridAutoFlow: 'column',
+            overflowX: 'auto',
+            gridTemplateRows: '1fr',
+            paddingBottom: '12px',
+          }}
+          css={theme.scroll.thin}
+        >
+          {(splitArray(childrenArray) as Array<Array<HTMLElement>>).map(
+            (subArray, index) => (
+              <Grid
+                key={index}
+                sx={{
+                  columnGap: '32px',
+                  rowGap: '16px',
+                  gridTemplateRows: 'repeat(4, 1fr)',
+                }}
+              >
+                {subArray}
+              </Grid>
+            )
+          )}
+        </Grid>
       </Flex>
     </Panel>
   )

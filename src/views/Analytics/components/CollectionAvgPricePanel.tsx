@@ -3,14 +3,14 @@ import { useQuery } from '@apollo/client'
 import { useBreakpointIndex } from '@theme-ui/match-media'
 import { Flex, Image, Text } from '@upshot-tech/upshot-ui'
 import {
+  Box,
   CollectionButton,
   CollectionButtonTemplate,
-  useTheme,
-  Box,
   Icon,
+  useTheme,
 } from '@upshot-tech/upshot-ui'
 import Link from 'next/link'
-import { useRef, useState, useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { weiToEth } from 'utils/number'
 
 import {
@@ -58,7 +58,7 @@ export default function CollectionAvgPricePanel({
   >(GET_COLLECTION_AVG_PRICE, {
     errorPolicy: 'all',
     variables: {
-      limit: 12,
+      limit: 100,
       metric,
       name: searchTermApplied,
     },
@@ -66,16 +66,19 @@ export default function CollectionAvgPricePanel({
 
   useEffect(() => {
     if (data) {
-      const defaultSelected = data.orderedCollectionsByMetricSearch.slice(0, 3).map((val) => val.id)
+      const defaultSelected = data.orderedCollectionsByMetricSearch
+        .slice(0, 3)
+        .map((val) => val.id)
       setSelectedCollections(defaultSelected)
     }
   }, [data])
 
-  const title = metric === 'VOLUME'
-    ? 'Collections by Weekly Volume'
-    : `Collections by ${
-        metric.charAt(0) + metric.slice(1).toLowerCase()
-      } Price` 
+  const title =
+    metric === 'VOLUME'
+      ? 'Collections by Weekly Volume'
+      : `Collections by ${
+          metric.charAt(0) + metric.slice(1).toLowerCase()
+        } Price`
   const subtitle = '(Select Collections to change graph)'
 
   /* Transposes a horizontally-labeled index to vertical-labeled index */
@@ -89,19 +92,17 @@ export default function CollectionAvgPricePanel({
       </CollectionPanel>
     )
 
-  const skeletonCells = [...new Array(12)]
-    .map((_, idx) => idx)
-    .sort((a, b) => getCellNumber(12, a) - getCellNumber(12, b))
+  const skeletonCells = [...new Array(16)]
 
   if (loading)
     return (
       <CollectionPanel {...{ title, subtitle }}>
-        {skeletonCells.map((idx) => (
+        {skeletonCells.map((idx, index) => (
           <Flex
-            key={idx}
+            key={index}
             sx={{ alignItems: 'center', color: 'disabled', gap: 2 }}
           >
-            <Text>{idx + 1}</Text>
+            <Text>{index + 1}</Text>
             <CollectionButtonTemplate />
           </Flex>
         ))}
@@ -115,17 +116,6 @@ export default function CollectionAvgPricePanel({
       </CollectionPanel>
     )
 
-  const sorted = data.orderedCollectionsByMetricSearch
-    .map((val, idx) => ({
-      ...val,
-      idx,
-    }))
-    .sort(
-      (a, b) =>
-        getCellNumber(data.orderedCollectionsByMetricSearch.length, a.idx) -
-        getCellNumber(data.orderedCollectionsByMetricSearch.length, b.idx)
-    )
-
   return (
     <CollectionPanel
       inputProps={{
@@ -134,62 +124,69 @@ export default function CollectionAvgPricePanel({
       onSearch={handleSearch}
       {...{ title, subtitle }}
     >
-      {sorted.map(({ id, name, imageUrl, average, idx }) => (
-        <Flex
-          key={idx}
-          sx={{ alignItems: 'center', color: 'disabled', gap: 5 }}
-        >
-          <Text>{idx + 1}</Text>
-          <CollectionButton
-            icon={
-              <Link passHref href={`/analytics/collection/${id}`}>
-                <Box sx={{
-                  width: '100%',
-                  height: '100%',
-                  position: 'relative',
-                    '&:hover img': {
-                      display: 'none',
-                    },
-                    '&:hover svg': {
-                      display: 'block',
-                    },
-                  }}
-                >
-                  <Image
-                    alt={`${name} Cover Artwork`}
+      {data.orderedCollectionsByMetricSearch.map(
+        ({ id, name, imageUrl, average }, index) => (
+          <Flex
+            key={index}
+            sx={{ alignItems: 'center', color: 'disabled', gap: 5 }}
+          >
+            <Text>{index + 1}</Text>
+            <CollectionButton
+              icon={
+                <Link passHref href={`/analytics/collection/${id}`}>
+                  <Box
                     sx={{
-                      borderRadius: 'circle',
-                      height: "100%",
-                      width: "100%",
-                      objectFit: "cover",
-                      objectPosition: "center",
+                      width: '100%',
+                      height: '100%',
+                      position: 'relative',
+                      '&:hover img': {
+                        display: 'none',
+                      },
+                      '&:hover svg': {
+                        display: 'block',
+                      },
                     }}
-                    src={imageUrl}
-                  />
-                  <Icon icon='arrowStylizedRight' sx={{
-                      display: 'none',
-                      position: 'absolute',
-                      top: '0',
-                      width: '40% !important',
-                      height: '40% !important',
-                      margin: '30%',
-                    }} size='40%'></Icon>
-                </Box>
-              </Link>
-            }
-            onClick={() => onCollectionSelected(id)}
-            underglow={
-              selectedCollections.includes(id)
-                ? (selectedCollectionsColors[
-                    selectedCollections.indexOf(id)
-                  ] as keyof typeof theme.colors)
-                : undefined
-            }
-            text={name ?? 'Unknown'}
-            subText={average ? weiToEth(average) : '-'}
-          />
-        </Flex>
-      ))}
+                  >
+                    <Image
+                      alt={`${name} Cover Artwork`}
+                      sx={{
+                        borderRadius: 'circle',
+                        height: '100%',
+                        width: '100%',
+                        objectFit: 'cover',
+                        objectPosition: 'center',
+                      }}
+                      src={imageUrl}
+                    />
+                    <Icon
+                      icon="arrowStylizedRight"
+                      sx={{
+                        display: 'none',
+                        position: 'absolute',
+                        top: '0',
+                        width: '40% !important',
+                        height: '40% !important',
+                        margin: '30%',
+                      }}
+                      size="40%"
+                    ></Icon>
+                  </Box>
+                </Link>
+              }
+              onClick={() => onCollectionSelected(id)}
+              underglow={
+                selectedCollections.includes(id)
+                  ? (selectedCollectionsColors[
+                      selectedCollections.indexOf(id)
+                    ] as keyof typeof theme.colors)
+                  : undefined
+              }
+              text={name ?? 'Unknown'}
+              subText={average ? weiToEth(average) : '-'}
+            />
+          </Flex>
+        )
+      )}
     </CollectionPanel>
   )
 }
