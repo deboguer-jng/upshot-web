@@ -420,3 +420,79 @@ export const GET_COLLECTORS = gql`
     }
   }
 `
+
+/**
+ * Get Previous Owners
+ * @see Previous Owners
+ */
+export type GetPreviousOwnersVars = {
+  id?: number
+  limit: number
+  assetId?: String
+}
+
+export type GetPreviousOwnersData = {
+  getOwnersByWhaleness: {
+    count: number
+    owners: {
+      username: string
+      addresses: string[]
+      firstAssetPurchaseTime: number
+      avgHoldTime: number
+      totalAssetAppraisedValue: string
+      ownedAssets: {
+        count: number
+        assets: {
+          id: string
+          previewImageUrl: string
+        }[]
+      }
+      extraCollections: {
+        collectionAssetCounts: {
+          count: number
+          collection: {
+            id: number
+            name: string
+            imageUrl: string
+          }
+        }[]
+      }
+    }[]
+  }
+}
+
+export const GET_PREVIOUS_OWNERS = gql`
+  query GetPreviousOwners($id: Int, $limit: OneToHundredInt!, $assetId: String) {
+    getOwnersByWhaleness(
+      limit: $limit
+      offset: 0
+      assetId: $assetId
+    ) {
+      count
+      owners {
+        username
+        addresses
+        firstAssetPurchaseTime(collectionId: $id)
+        avgHoldTime(collectionId: $id)
+        totalAssetAppraisedValue(collectionId: $id)
+        ownedAssets(collectionId: $id, notable: true, limit: 10) {
+          count
+          assets {
+            id
+            previewImageUrl
+          }
+        }
+        extraCollections(limit: 10, collectionId: $id) {
+          collectionAssetCounts {
+            count
+            collection {
+              id
+              name
+              imageUrl
+            }
+          }
+        }
+      }
+    }
+  }
+`
