@@ -362,7 +362,6 @@ export type GetCollectorsData = {
       addresses: string[]
       firstAssetPurchaseTime: number
       avgHoldTime: number
-      totalAssetAppraisedValue: string
       ownedAssets: {
         count: number
         assets: {
@@ -398,7 +397,6 @@ export const GET_COLLECTORS = gql`
         addresses
         firstAssetPurchaseTime
         avgHoldTime
-        totalAssetAppraisedValue(collectionId: $id)
         ownedAssets(collectionId: $id, notable: true, limit: 10) {
           count
           assets {
@@ -439,7 +437,6 @@ export type GetPreviousOwnersData = {
       addresses: string[]
       firstAssetPurchaseTime: number
       avgHoldTime: number
-      totalAssetAppraisedValue: string
       ownedAssets: {
         count: number
         assets: {
@@ -474,7 +471,6 @@ export const GET_PREVIOUS_OWNERS = gql`
         addresses
         firstAssetPurchaseTime(collectionId: $id)
         avgHoldTime(collectionId: $id)
-        totalAssetAppraisedValue(collectionId: $id)
         ownedAssets(collectionId: $id, notable: true, limit: 10) {
           count
           assets {
