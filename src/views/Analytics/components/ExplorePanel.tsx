@@ -300,7 +300,9 @@ export default function ExplorePanel({
                     ) : (
                       <>
                         <TableCell sx={{ maxWidth: 100 }}>
-                          {format(lastSale.timestamp * 1000, 'M/d/yyyy')}
+                          {lastSale?.timestamp
+                            ? format(lastSale.timestamp * 1000, 'M/d/yyyy')
+                            : '-'}
                         </TableCell>
                         <TableCell sx={{ maxWidth: 100 }}>
                           {totalSaleCount}
