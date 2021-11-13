@@ -142,6 +142,7 @@ function ExplorePanelHead({
                 dark
                 fullWidth
                 hasButton
+                variant="search"
                 defaultValue={searchTerm}
                 ref={searchTermRef}
                 onChange={handleChange}
@@ -170,6 +171,7 @@ function ExplorePanelHead({
               dark
               fullWidth
               hasButton
+              variant="search"
               defaultValue={searchTerm}
               ref={searchTermRef}
               onChange={handleChange}
