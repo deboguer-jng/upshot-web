@@ -76,7 +76,7 @@ export default function TopCollectors() {
       <CollectorAccordion>
         {data.getOwnersByWhaleness['owners'].map(
           (
-            { username, addresses, totalAssetAppraisedValue, ownedAssets },
+            { username, addresses, ownedAssets },
             idx
           ) => (
             <CollectorAccordionRow

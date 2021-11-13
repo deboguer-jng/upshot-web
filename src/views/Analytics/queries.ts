@@ -274,7 +274,7 @@ export const GET_SEVEN_DAY_MC_CHANGE = gql`
 
 /**
  * Get Top Collectors
- * @see TopCollectors
+ * @see Top Collectors
  */
 export type GetTopCollectorsVars = {
   limit: number
@@ -286,7 +286,6 @@ export type GetTopCollectorsData = {
     owners: {
       username: string
       addresses: string[]
-      totalAssetAppraisedValue: string
       ownedAssets: {
         assets: {
           id: string
@@ -316,7 +315,6 @@ export const GET_TOP_COLLECTORS = gql`
     getOwnersByWhaleness(limit: $limit) {
       count
       owners {
-        totalAssetAppraisedValue
         username
         addresses
         ownedAssets(notable: true, limit: 10, offset: 0) {
