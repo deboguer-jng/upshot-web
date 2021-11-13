@@ -43,7 +43,7 @@ function TopSellingNFTsHeader({
         position: 'absolute',
         width: '100%',
         background:
-          'linear-gradient(180deg, #000000 78.42%, rgba(35, 31, 32, 0) 100%)',
+          'linear-gradient(180deg, #000000 85%, rgba(35, 31, 32, 0) 100%)',
         zIndex: 2,
       }}
     >
