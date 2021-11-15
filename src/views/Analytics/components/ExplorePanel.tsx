@@ -172,10 +172,10 @@ export default function ExplorePanel({
           { tab === 'NFTs' && (
             <ExploreNFTs searchTerm={searchTerm} collectionId={collectionId} />
           )}
-          { tab === 'Collectors' && (
+          { tab === 'Collectors' && !collectionId &&(
             <TopCollectors />
           )}
-          { !!collectionId && (
+          { tab === 'Collectors' && !!collectionId && (
              <Collectors id={collectionId} name={collectionName} />
           )}
         </Box>
