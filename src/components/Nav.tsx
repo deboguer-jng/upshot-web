@@ -19,7 +19,7 @@ import {
 import { shortenAddress } from 'utils/address'
 
 export const Nav = () => {
-  const { activate } = useWeb3React()
+  const { activate, deactivate } = useWeb3React()
   const router = useRouter()
   const dispatch = useAppDispatch()
   const address = useAppSelector(selectAddress)
@@ -68,6 +68,15 @@ export const Nav = () => {
     )
   }, [navCollectionsData, navSearchTerm])
 
+  const hideMetaMask =
+    typeof window['ethereum'] === 'undefined' &&
+    typeof window['web3'] === 'undefined'
+
+  const handleDisconnect = () => {
+    console.log('DE')
+    deactivate()
+  }
+
   return (
     <>
       <Navbar
@@ -85,10 +94,11 @@ export const Nav = () => {
         onSearchSuggestionChange={handleSearchSuggestionChange}
         onSearchKeyUp={handleNavKeyUp}
         onConnectClick={toggleModal}
+        onDisconnectClick={handleDisconnect}
         searchSuggestions={suggestions}
       />
       <Modal ref={modalRef} onClose={toggleModal} {...{ open }}>
-        <ConnectModal onConnect={handleConnect} />
+        <ConnectModal {...{ hideMetaMask }} onConnect={handleConnect} />
       </Modal>
     </>
   )
