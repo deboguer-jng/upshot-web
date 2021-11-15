@@ -15,6 +15,8 @@ import {
   selectAddress,
   selectEns,
   setActivatingConnector,
+  setAddress,
+  setEns,
 } from 'redux/reducers/web3'
 import { shortenAddress } from 'utils/address'
 
@@ -73,8 +75,9 @@ export const Nav = () => {
     typeof window['web3'] === 'undefined'
 
   const handleDisconnect = () => {
-    console.log('DE')
     deactivate()
+    dispatch(setAddress(undefined))
+    dispatch(setEns({ name: undefined, avatar: undefined }))
   }
 
   return (
