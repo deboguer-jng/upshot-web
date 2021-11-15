@@ -71,7 +71,7 @@ export default function TopCollectors() {
     <>
       <CollectorAccordionHead>
         <Text>Collector</Text>
-        <Text sx={{ whiteSpace: 'nowrap' }}>Total Appraised Value</Text>
+        {/* <Text sx={{ whiteSpace: 'nowrap' }}>Total Appraised Value</Text> */}
       </CollectorAccordionHead>
       <CollectorAccordion>
         {data.getOwnersByWhaleness['owners'].map(
@@ -84,7 +84,7 @@ export default function TopCollectors() {
                 addresses?.[0] ? makeBlockie(addresses[0]) : undefined
               }
               name={formatUsername(username ?? addresses?.[0] ?? 'Unknown')}
-              portfolioValue='soon'
+              // portfolioValue='soon'
               key={idx}
             >
               <div style={{ display: 'grid' }}>
