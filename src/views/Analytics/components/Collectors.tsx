@@ -81,7 +81,7 @@ export default function Collectors({
     <>
       <CollectorAccordionHead>
         <Text>Collector</Text>
-        <Text sx={{ whiteSpace: 'nowrap' }}>NFT Count</Text>
+        <Text sx={{ whiteSpace: 'nowrap' }}>{`${name} Count`}</Text>
       </CollectorAccordionHead>
       <CollectorAccordion>
         {data.getOwnersByWhaleness.owners.map(
