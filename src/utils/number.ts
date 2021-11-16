@@ -1,4 +1,5 @@
 import { ethers } from 'ethers'
+const BN = ethers.BigNumber
 
 /**
  * Wei to Eth
@@ -40,4 +41,19 @@ export const parseEthString = (ethUnsafe: string, decimals: number = 4) => {
   } catch (err) {}
 
   return eth
+}
+
+/**
+ * Format currency with decimals + symbol.
+ */
+export const formatCurrencyUnits = (
+  amount: string,
+  decimals: number = 18,
+  precision: number = 4
+) => {
+  const denom = BN.from(10).pow(decimals)
+  const pow = BN.from(10).pow(precision)
+  const val = BN.from(amount).mul(pow).div(denom).toNumber()
+
+  return (val / 10 ** precision).toFixed(precision)
 }
