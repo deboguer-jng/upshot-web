@@ -575,6 +575,7 @@ export default function NFTView() {
                         {reversedTxHistory.map(
                           (
                             {
+                              type,
                               txAt,
                               txFromAddress,
                               txToAddress,
@@ -626,7 +627,7 @@ export default function NFTView() {
                                 </>
                               )}
                               <TableCell sx={{ minWidth: 100, color: 'pink' }}>
-                                {price
+                                {price && type !== 'TRANSFER'
                                   ? `${formatCurrencyUnits(price, decimals)} ${
                                       symbol ?? 'ETH'
                                     }`

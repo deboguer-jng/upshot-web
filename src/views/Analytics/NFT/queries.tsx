@@ -52,6 +52,7 @@ export type GetAssetData = {
       estimatedPrice
     }[]
     txHistory: {
+      type: string
       price: string
       currency: {
         symbol: string
@@ -110,6 +111,7 @@ export const GET_ASSET = gql`
       }
       txHistory {
         price
+        type
         currency {
           symbol
           decimals
