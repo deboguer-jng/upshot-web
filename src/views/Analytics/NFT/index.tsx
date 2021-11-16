@@ -53,6 +53,13 @@ function Layout({ children }: { children: React.ReactNode }) {
   )
 }
 
+/** 
+* Uppercase first letter and lowercase everything else
+*/
+function firstUpperCase(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()
+}
+
 export default function NFTView() {
   const [id, setId] = useState('')
   const breakpointIndex = useBreakpointIndex()
@@ -640,7 +647,7 @@ export default function NFTView() {
                                   ? `${formatCurrencyUnits(price, decimals)} ${
                                       symbol ?? 'ETH'
                                     }`
-                                  : '-'}
+                                  : firstUpperCase(type)}
                               </TableCell>
                             </TableRow>
                           )
