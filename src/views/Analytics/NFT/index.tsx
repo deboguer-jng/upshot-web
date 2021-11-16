@@ -10,6 +10,8 @@ import {
   LabelAttribute,
   Panel,
   useTheme,
+  IconButton,
+  Icon,
 } from '@upshot-tech/upshot-ui'
 import {
   Table,
@@ -588,6 +590,7 @@ export default function NFTView() {
                               txAt,
                               txFromAddress,
                               txToAddress,
+                              txHash,
                               price,
                               currency: { symbol, decimals },
                             },
@@ -641,6 +644,11 @@ export default function NFTView() {
                                       symbol ?? 'ETH'
                                     }`
                                   : '-'}
+                                <a href={`https://etherscan.io/tx/${txHash}`} target="_blank" title="Open transaction on Etherscan">
+                                  <IconButton sx={{ marginLeft: '6px;', verticalAlign: 'middle' }}>
+                                    <Icon icon="disconnect" color="blue" />
+                                  </IconButton>
+                                </a>
                               </TableCell>
                             </TableRow>
                           )
