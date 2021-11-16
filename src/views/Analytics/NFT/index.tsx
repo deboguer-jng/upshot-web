@@ -152,7 +152,7 @@ export default function NFTView() {
 
   const chartData = [
     { name: 'Appraisals', data: appraisalSeries },
-    { name: 'Sales', data: salesSeries },
+    // { name: 'Sales', data: salesSeries },
   ]
 
   const assetName = getAssetName(name, collection?.name, tokenId)
@@ -185,6 +185,15 @@ export default function NFTView() {
             />
             <Flex sx={{ flexDirection: 'column', gap: 4 }}>
               <Text variant="h2Primary">{assetName}</Text>
+              {!!latestAppraisal && (
+                <Label size="md" color="blue">
+                  {'Last Appraisal: Ξ ' + weiToEth(
+                                  latestAppraisal.ethSalePrice,
+                                  3,
+                                  false
+                                )}
+                </Label>
+              )}
               {!!rarity && (
                 <Label size="md">
                   {(rarity * 100).toFixed(2) + '% Rarity'}
@@ -449,7 +458,7 @@ export default function NFTView() {
                     )}
                     {(!!lastSale || !!latestAppraisal) && (
                       <Flex sx={{ gap: '40px', flexGrow: 1, padding: '20px' }}>
-                        {!!lastSale && (
+                        {/* {!!lastSale && (
                           <Flex sx={{ flexDirection: 'column' }}>
                             <Text
                               color="pink"
@@ -481,7 +490,7 @@ export default function NFTView() {
                                 : '-'}
                             </Text>
                           </Flex>
-                        )}
+                        )} */}
                         {!!latestAppraisal && (
                           <Flex sx={{ flexDirection: 'column' }}>
                             <Flex sx={{ gap: 4 }}>
