@@ -38,13 +38,6 @@ export default function CollectionAvgPricePanel({
   const searchTermRef = useRef<HTMLInputElement | null>(null)
   const [searchTermApplied, setSearchTermApplied] = useState('')
   const selectedCollectionsColors = ['blue', 'pink', 'purple']
-  const breakpointIndex = useBreakpointIndex()
-
-  const getColumns = () => {
-    if (breakpointIndex < 2) return 1
-    if (breakpointIndex < 3) return 2
-    return 4
-  }
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -80,10 +73,6 @@ export default function CollectionAvgPricePanel({
           metric.charAt(0) + metric.slice(1).toLowerCase()
         } Price`
   const subtitle = '(Select Collections to change graph)'
-
-  /* Transposes a horizontally-labeled index to vertical-labeled index */
-  const getCellNumber = (length: number, idx: number) =>
-    idx === length - 1 ? idx : (idx * getColumns()) % (length - 1)
 
   if (error)
     return (
@@ -182,7 +171,7 @@ export default function CollectionAvgPricePanel({
                   : undefined
               }
               text={name ?? 'Unknown'}
-              subText={printMetricData(metric, {average, floor, volume})}
+              subText={printMetricData(metric, { average, floor, volume })}
             />
           </Flex>
         )
@@ -194,7 +183,7 @@ export default function CollectionAvgPricePanel({
 // returns the metric related data in a human-readable format
 function printMetricData(
   metric: METRIC,
-  data: { average?: string, floor?: string, volume?: string }
+  data: { average?: string; floor?: string; volume?: string }
 ) {
   if (metric === 'VOLUME' && data['volume']) {
     return weiToEth(data['volume']) ?? '-'
@@ -204,4 +193,3 @@ function printMetricData(
     return weiToEth(data['floor']) ?? '-'
   }
 }
-
