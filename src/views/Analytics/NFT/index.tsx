@@ -132,7 +132,7 @@ export default function NFTView() {
   } = data.assetById
 
   const salesSeries = txHistory
-    .filter(({ price }) => price)
+    .filter(({ price, type }) => type !== 'TRANSFER' && price)
     .map(({ price, txAt }) => [
       txAt * 1000,
       parseFloat(ethers.utils.formatEther(price)),
