@@ -6,12 +6,12 @@ import { Flex, Footer, Grid, Image, Text } from '@upshot-tech/upshot-ui'
 import {
   Box,
   Chart,
+  Icon,
+  IconButton,
   Label,
   LabelAttribute,
   Panel,
   useTheme,
-  IconButton,
-  Icon,
 } from '@upshot-tech/upshot-ui'
 import {
   Table,
@@ -189,11 +189,8 @@ export default function NFTView() {
               <Text variant="h2Primary">{assetName}</Text>
               {!!latestAppraisal && (
                 <Label size="md" color="blue">
-                  {'Last Appraisal: Ξ ' + weiToEth(
-                                  latestAppraisal.ethSalePrice,
-                                  3,
-                                  false
-                                )}
+                  {'Last Appraisal: Ξ ' +
+                    weiToEth(latestAppraisal.ethSalePrice, 3, false)}
                 </Label>
               )}
               {!!rarity && (
@@ -644,8 +641,18 @@ export default function NFTView() {
                                       symbol ?? 'ETH'
                                     }`
                                   : '-'}
-                                <a href={`https://etherscan.io/tx/${txHash}`} target="_blank" title="Open transaction on Etherscan">
-                                  <IconButton sx={{ marginLeft: '6px;', verticalAlign: 'middle' }}>
+                                <a
+                                  href={`https://etherscan.io/tx/${txHash}`}
+                                  target="_blank"
+                                  title="Open transaction on Etherscan"
+                                  rel="noopener noreferrer nofollow"
+                                >
+                                  <IconButton
+                                    sx={{
+                                      marginLeft: '6px;',
+                                      verticalAlign: 'middle',
+                                    }}
+                                  >
                                     <Icon icon="disconnect" color="blue" />
                                   </IconButton>
                                 </a>
