@@ -53,8 +53,8 @@ export type GetAllCollectionSalesVars = {
 export type GetAllCollectionSalesData = {
   collectionById: {
     allSaleEvents?: {
-      ethSalePrice: string
-      timestamp: number
+      millisecondsTimestamp: number
+      ethFloatPrice: number
     }[]
   }
 }
@@ -63,8 +63,8 @@ export const GET_ALL_COLLECTION_SALES = gql`
   query GetAllCollectionSales($id: Int!) {
     collectionById(id: $id) {
       allSaleEvents {
-        timestamp
-        ethSalePrice
+        millisecondsTimestamp
+        ethFloatPrice
       }
     }
   }

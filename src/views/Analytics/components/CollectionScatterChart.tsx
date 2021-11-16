@@ -34,9 +34,9 @@ export default function CollectionScatterChart({
     return <ScatterChart noData />
 
   const chartData = data.collectionById.allSaleEvents.map(
-    ({ ethSalePrice, timestamp }) => [
-      timestamp * 1000,
-      parseFloat(ethers.utils.formatEther(ethSalePrice)),
+    ({ ethFloatPrice, millisecondsTimestamp }) => [
+      millisecondsTimestamp,
+      ethFloatPrice,
     ]
   )
 
