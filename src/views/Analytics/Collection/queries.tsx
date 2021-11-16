@@ -62,7 +62,7 @@ export type GetAllCollectionSalesData = {
 export const GET_ALL_COLLECTION_SALES = gql`
   query GetAllCollectionSales($id: Int!) {
     collectionById(id: $id) {
-      allSaleEvents {
+      allSaleEvents(windowSize: MONTH) {
         millisecondsTimestamp
         ethFloatPrice
       }
