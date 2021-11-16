@@ -52,12 +52,15 @@ export type GetAssetData = {
       estimatedPrice
     }[]
     txHistory: {
-      ethSalePrice: string
-      assetEvent: {
-        txAt: number
-        txFromAddress: string
-        txToAddress: string
+      type: string
+      price: string
+      currency: {
+        symbol: string
+        decimals: number
       }
+      txAt: number
+      txFromAddress: string
+      txToAddress: string
     }[]
   }
 }
@@ -107,12 +110,15 @@ export const GET_ASSET = gql`
         estimatedPrice
       }
       txHistory {
-        ethSalePrice
-        assetEvent {
-          txAt
-          txFromAddress
-          txToAddress
+        price
+        type
+        currency {
+          symbol
+          decimals
         }
+        txAt
+        txFromAddress
+        txToAddress
       }
     }
   }
