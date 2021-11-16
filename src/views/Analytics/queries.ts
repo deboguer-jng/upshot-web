@@ -278,6 +278,7 @@ export const GET_SEVEN_DAY_MC_CHANGE = gql`
  */
 export type GetTopCollectorsVars = {
   limit: number
+  offset: number
 }
 
 export type GetTopCollectorsData = {
@@ -311,8 +312,8 @@ export type GetTopCollectorsData = {
 }
 
 export const GET_TOP_COLLECTORS = gql`
-  query GetTopCollectors($limit: OneToHundredInt!) {
-    getOwnersByWhaleness(limit: $limit) {
+  query GetTopCollectors($limit: OneToHundredInt!, $offset: Int) {
+    getOwnersByWhaleness(limit: $limit, offset: $offset) {
       count
       owners {
         username
@@ -457,12 +458,12 @@ export type GetPreviousOwnersData = {
 }
 
 export const GET_PREVIOUS_OWNERS = gql`
-  query GetPreviousOwners($id: Int, $limit: OneToHundredInt!, $assetId: String) {
-    getOwnersByWhaleness(
-      limit: $limit
-      offset: 0
-      assetId: $assetId
-    ) {
+  query GetPreviousOwners(
+    $id: Int
+    $limit: OneToHundredInt!
+    $assetId: String
+  ) {
+    getOwnersByWhaleness(limit: $limit, offset: 0, assetId: $assetId) {
       count
       owners {
         username
