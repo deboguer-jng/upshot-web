@@ -38,13 +38,6 @@ export default function CollectionAvgPricePanel({
   const searchTermRef = useRef<HTMLInputElement | null>(null)
   const [searchTermApplied, setSearchTermApplied] = useState('')
   const selectedCollectionsColors = ['blue', 'pink', 'purple']
-  const breakpointIndex = useBreakpointIndex()
-
-  const getColumns = () => {
-    if (breakpointIndex < 2) return 1
-    if (breakpointIndex < 3) return 2
-    return 4
-  }
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -80,10 +73,6 @@ export default function CollectionAvgPricePanel({
           metric.charAt(0) + metric.slice(1).toLowerCase()
         } Price`
   const subtitle = '(Select Collections to change graph)'
-
-  /* Transposes a horizontally-labeled index to vertical-labeled index */
-  const getCellNumber = (length: number, idx: number) =>
-    idx === length - 1 ? idx : (idx * getColumns()) % (length - 1)
 
   if (error)
     return (
