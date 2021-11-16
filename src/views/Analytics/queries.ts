@@ -145,6 +145,7 @@ export type GetExploreNFTsData = {
       totalSaleCount: number
       priceChangeFromFirstSale: number
       lastSale: {
+        timestamp: number
         ethSalePrice: string
       }
     }[]
@@ -173,6 +174,7 @@ export const GET_EXPLORE_NFTS = gql`
         totalSaleCount
         priceChangeFromFirstSale
         lastSale {
+          timestamp
           ethSalePrice
         }
       }
@@ -272,7 +274,7 @@ export const GET_SEVEN_DAY_MC_CHANGE = gql`
 
 /**
  * Get Top Collectors
- * @see TopCollectors
+ * @see Top Collectors
  */
 export type GetTopCollectorsVars = {
   limit: number
@@ -284,7 +286,6 @@ export type GetTopCollectorsData = {
     owners: {
       username: string
       addresses: string[]
-      totalAssetAppraisedValue: string
       ownedAssets: {
         assets: {
           id: string
@@ -314,7 +315,6 @@ export const GET_TOP_COLLECTORS = gql`
     getOwnersByWhaleness(limit: $limit) {
       count
       owners {
-        totalAssetAppraisedValue
         username
         addresses
         ownedAssets(notable: true, limit: 10, offset: 0) {
@@ -360,7 +360,6 @@ export type GetCollectorsData = {
       addresses: string[]
       firstAssetPurchaseTime: number
       avgHoldTime: number
-      totalAssetAppraisedValue: string
       ownedAssets: {
         count: number
         assets: {
@@ -396,7 +395,80 @@ export const GET_COLLECTORS = gql`
         addresses
         firstAssetPurchaseTime
         avgHoldTime
-        totalAssetAppraisedValue(collectionId: $id)
+        ownedAssets(collectionId: $id, notable: true, limit: 10) {
+          count
+          assets {
+            id
+            previewImageUrl
+          }
+        }
+        extraCollections(limit: 10, collectionId: $id) {
+          collectionAssetCounts {
+            count
+            collection {
+              id
+              name
+              imageUrl
+            }
+          }
+        }
+      }
+    }
+  }
+`
+
+/**
+ * Get Previous Owners
+ * @see Previous Owners
+ */
+export type GetPreviousOwnersVars = {
+  id?: number
+  limit: number
+  assetId?: String
+}
+
+export type GetPreviousOwnersData = {
+  getOwnersByWhaleness: {
+    count: number
+    owners: {
+      username: string
+      addresses: string[]
+      firstAssetPurchaseTime: number
+      avgHoldTime: number
+      ownedAssets: {
+        count: number
+        assets: {
+          id: string
+          previewImageUrl: string
+        }[]
+      }
+      extraCollections: {
+        collectionAssetCounts: {
+          count: number
+          collection: {
+            id: number
+            name: string
+            imageUrl: string
+          }
+        }[]
+      }
+    }[]
+  }
+}
+
+export const GET_PREVIOUS_OWNERS = gql`
+  query GetPreviousOwners($id: Int, $limit: OneToHundredInt!, $assetId: String) {
+    getOwnersByWhaleness(
+      limit: $limit
+      offset: 0
+      assetId: $assetId
+    ) {
+      count
+      owners {
+        username
+        addresses
+        firstAssetPurchaseTime(collectionId: $id)
+        avgHoldTime(collectionId: $id)
         ownedAssets(collectionId: $id, notable: true, limit: 10) {
           count
           assets {

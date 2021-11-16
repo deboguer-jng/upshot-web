@@ -23,13 +23,20 @@ import {
   GET_TOP_COLLECTORS,
   GetTopCollectorsData,
   GetTopCollectorsVars,
-} from '../queries'
-import { MiniNFTContainer } from './Styled'
+} from '../../queries'
+import { MiniNFTContainer } from '.././Styled'
+import { ExplorePanelSkeleton } from './NFTs'
+
 
 export default function TopCollectors() {
   const router = useRouter()
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
+ 
+  const handleClickNFT = (id: string) => {
+    router.push('/analytics/nft/' + id)
+  }
+
   const { loading, error, data } = useQuery<
     GetTopCollectorsData,
     GetTopCollectorsVars
@@ -38,45 +45,26 @@ export default function TopCollectors() {
     variables: { limit: 10 },
   })
 
-  const handleClickNFT = (id: string) => {
-    router.push('/analytics/nft/' + id)
-  }
-
-  const ExplorePanelSkeleton = () => {
-    return (
-      <CollectorAccordion>
-        {[...new Array(PAGE_SIZE)].map((_, idx) => (
-          <CollectorAccordionRow key={idx}>
-            <Skeleton sx={{ height: 56 }} as="tr" key={idx}>
-              <TableCell colSpan={5}>
-                <Box sx={{ height: 40, width: '100%' }} />
-              </TableCell>
-            </Skeleton>
-          </CollectorAccordionRow>
-        ))}
-      </CollectorAccordion>
-    )
-  }
-
   /* Load state. */
   if (loading) return <ExplorePanelSkeleton />
 
   /* Error state. */
-  if (error) return null
+  if (error) return <div>There was an error completing your request.</div>
 
   /* No results state. */
-  if (!data?.getOwnersByWhaleness?.['owners']?.length) return null
+  if (!data?.getOwnersByWhaleness?.['owners']?.length)
+    return <div>No results available.</div>
 
   return (
     <>
       <CollectorAccordionHead>
         <Text>Collector</Text>
-        <Text sx={{ whiteSpace: 'nowrap' }}>Total Appraisal Value</Text>
+        {/* <Text sx={{ whiteSpace: 'nowrap' }}>Total Appraised Value</Text> */}
       </CollectorAccordionHead>
       <CollectorAccordion>
         {data.getOwnersByWhaleness['owners'].map(
           (
-            { username, addresses, totalAssetAppraisedValue, ownedAssets },
+            { username, addresses, ownedAssets },
             idx
           ) => (
             <CollectorAccordionRow
@@ -84,11 +72,7 @@ export default function TopCollectors() {
                 addresses?.[0] ? makeBlockie(addresses[0]) : undefined
               }
               name={formatUsername(username ?? addresses?.[0] ?? 'Unknown')}
-              portfolioValue={
-                totalAssetAppraisedValue
-                  ? weiToEth(totalAssetAppraisedValue, 2, false)
-                  : null
-              }
+              // portfolioValue='soon'
               key={idx}
             >
               <div style={{ display: 'grid' }}>

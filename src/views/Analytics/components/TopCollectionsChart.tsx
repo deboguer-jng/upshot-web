@@ -106,11 +106,12 @@ export default function TopCollectionsCharts({
           ? '+' + sevenDayMCChange + '%'
           : sevenDayMCChange + '%'
 
+
       return {
         name,
         url: `/analytics/collection/${id}`,
-        ath: ath ? weiToEth(ath, 2) : null,
-        atl: atl ? weiToEth(atl, 2) : null,
+        ath: ath && metric !== 'FLOOR' ? weiToEth(ath, 2) : null,
+        atl: atl && metric !== 'FLOOR' ? weiToEth(atl, 2) : null,
         /* priceUsd: 10, */
         priceChange,
         data: data.map((val, i) =>
