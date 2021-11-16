@@ -185,6 +185,15 @@ export default function NFTView() {
             />
             <Flex sx={{ flexDirection: 'column', gap: 4 }}>
               <Text variant="h2Primary">{assetName}</Text>
+              {!!latestAppraisal && (
+                <Label size="md" color="blue">
+                  {'Last Appraisal: Ξ ' + weiToEth(
+                                  latestAppraisal.ethSalePrice,
+                                  3,
+                                  false
+                                )}
+                </Label>
+              )}
               {!!rarity && (
                 <Label size="md">
                   {(rarity * 100).toFixed(2) + '% Rarity'}
