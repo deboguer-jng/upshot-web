@@ -50,7 +50,7 @@ export default function LandingView() {
   return (
     <>
       <Head>
-        <title>Upshot Analytics</title>
+        <title>Upshot</title>
       </Head>
       <Container
         p={4}
@@ -66,11 +66,11 @@ export default function LandingView() {
           {' '}
           {/* Display only on Desktop */}
           <Flex sx={{ gap: 15, marginTop: '5%', marginBottom: '5%' }}>
-            <Icon color="primary" icon="upshot" size={175} />
+            <Icon color="primary" icon="bubblegum" size={240} />
             <Box>
               <Box>
                 <Box>
-                <Text variant="h0Primary" sx={{ fontSize: '60px' }}>
+                <Text variant="h0Primary" sx={{ fontSize: '50px' }}>
                     Upshot: Where NFTs meet DeFi
                   </Text>
                 </Box>
