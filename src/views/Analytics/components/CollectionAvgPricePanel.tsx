@@ -65,7 +65,7 @@ export default function CollectionAvgPricePanel({
   })
 
   useEffect(() => {
-    if (data) {
+    if (data && !selectedCollections.length) {
       const defaultSelected = data.orderedCollectionsByMetricSearch
         .slice(0, 3)
         .map((val) => val.id)
@@ -182,7 +182,7 @@ export default function CollectionAvgPricePanel({
                   : undefined
               }
               text={name ?? 'Unknown'}
-              subText={printMetricData(metric, {average, floor, volume})}
+              subText={printMetricData(metric, { average, floor, volume })}
             />
           </Flex>
         )
@@ -194,7 +194,7 @@ export default function CollectionAvgPricePanel({
 // returns the metric related data in a human-readable format
 function printMetricData(
   metric: METRIC,
-  data: { average?: string, floor?: string, volume?: string }
+  data: { average?: string; floor?: string; volume?: string }
 ) {
   if (metric === 'VOLUME' && data['volume']) {
     return weiToEth(data['volume']) ?? '-'
@@ -204,4 +204,3 @@ function printMetricData(
     return weiToEth(data['floor']) ?? '-'
   }
 }
-
