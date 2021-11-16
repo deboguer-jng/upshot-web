@@ -29,7 +29,7 @@ import { useEffect, useState } from 'react'
 import { shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
 import { getPriceChangeColor } from 'utils/color'
-import { weiToEth } from 'utils/number'
+import { formatCurrencyUnits, weiToEth } from 'utils/number'
 
 import Collectors from '../components/Collectors'
 import { GET_ASSET, GetAssetData, GetAssetVars } from './queries'
@@ -132,10 +132,10 @@ export default function NFTView() {
   } = data.assetById
 
   const salesSeries = txHistory
-    .filter(({ ethSalePrice }) => ethSalePrice)
-    .map(({ assetEvent, ethSalePrice }) => [
-      assetEvent?.txAt*1000,
-      parseFloat(ethers.utils.formatEther(ethSalePrice)),
+    .filter(({ price }) => price)
+    .map(({ price, txAt }) => [
+      txAt * 1000,
+      parseFloat(ethers.utils.formatEther(price)),
     ])
 
   // Temporarily reversed here, but should be done
@@ -145,7 +145,7 @@ export default function NFTView() {
 
   const appraisalSeries = appraisalHistory.map(
     ({ timestamp, estimatedPrice }) => [
-      timestamp*1000,
+      timestamp * 1000,
       parseFloat(ethers.utils.formatEther(estimatedPrice)),
     ]
   )
@@ -572,12 +572,20 @@ export default function NFTView() {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {reversedTxHistory
-                          .filter(({ assetEvent }) => !!assetEvent?.txAt)
-                          .map(({ assetEvent, ethSalePrice }, idx) => (
+                        {reversedTxHistory.map(
+                          (
+                            {
+                              txAt,
+                              txFromAddress,
+                              txToAddress,
+                              price,
+                              currency: { symbol, decimals },
+                            },
+                            idx
+                          ) => (
                             <TableRow key={idx}>
-                              <TableCell sx={{ width: '100%' }}>
-                                {format(assetEvent.txAt * 1000, 'M/d/yyyy')}
+                              <TableCell sx={{ minWidth: 140 }}>
+                                {format(txAt * 1000, 'M/d/yyyy')}
                               </TableCell>
                               {!isMobile && (
                                 <>
@@ -592,12 +600,8 @@ export default function NFTView() {
                                         }}
                                       />
                                       <Text>
-                                        {assetEvent?.txFromAddress
-                                          ? shortenAddress(
-                                              assetEvent.txFromAddress,
-                                              2,
-                                              4
-                                            )
+                                        {txFromAddress
+                                          ? shortenAddress(txFromAddress, 2, 4)
                                           : '-'}
                                       </Text>
                                     </Flex>
@@ -613,12 +617,8 @@ export default function NFTView() {
                                         }}
                                       />
                                       <Text>
-                                        {assetEvent?.txToAddress
-                                          ? shortenAddress(
-                                              assetEvent.txToAddress,
-                                              2,
-                                              4
-                                            )
+                                        {txToAddress
+                                          ? shortenAddress(txToAddress, 2, 4)
                                           : '-'}
                                       </Text>
                                     </Flex>
@@ -626,10 +626,15 @@ export default function NFTView() {
                                 </>
                               )}
                               <TableCell sx={{ minWidth: 100, color: 'pink' }}>
-                                {ethSalePrice ? weiToEth(ethSalePrice) : '-'}
+                                {price
+                                  ? `${formatCurrencyUnits(price, decimals)} ${
+                                      symbol ?? 'ETH'
+                                    }`
+                                  : '-'}
                               </TableCell>
                             </TableRow>
-                          ))}
+                          )
+                        )}
                       </TableBody>
                     </Table>
                   )}
