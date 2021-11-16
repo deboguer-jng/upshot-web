@@ -100,6 +100,7 @@ export default forwardRef(function CollectionPanel(
                 dark
                 fullWidth
                 hasButton
+                variant="search"
                 onChange={handleChange}
                 buttonProps={{
                   type: 'button',

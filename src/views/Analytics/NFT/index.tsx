@@ -636,11 +636,17 @@ export default function NFTView() {
                                 </>
                               )}
                               <TableCell sx={{ minWidth: 100, color: 'pink' }}>
-                                {price && ['SALE'].includes(type)
-                                  ? `${formatCurrencyUnits(price, decimals)} ${
-                                      symbol ?? 'ETH'
-                                    }`
-                                  : '-'}
+                                {'SALE'=== type && price &&
+                                  `${formatCurrencyUnits(price, decimals)} ${
+                                    symbol ?? 'ETH'
+                                  }`
+                                }
+                                {'TRANSFER'=== type && (
+                                  <Text color="blue">Transfer</Text>
+                                )}
+                                {'MINT'=== type &&
+                                  <Text color="green">Mint</Text>
+                                }
                                 <a
                                   href={`https://etherscan.io/tx/${txHash}`}
                                   target="_blank"
