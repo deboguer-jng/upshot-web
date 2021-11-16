@@ -132,7 +132,7 @@ export default function NFTView() {
   } = data.assetById
 
   const salesSeries = txHistory
-    .filter(({ price, type }) => type !== 'TRANSFER' && price)
+    .filter(({ price, type }) => type === 'SALE' && price)
     .map(({ price, txAt }) => [
       txAt * 1000,
       parseFloat(ethers.utils.formatEther(price)),
@@ -627,7 +627,7 @@ export default function NFTView() {
                                 </>
                               )}
                               <TableCell sx={{ minWidth: 100, color: 'pink' }}>
-                                {price && type !== 'TRANSFER'
+                                {price && ['SALE'].includes(type)
                                   ? `${formatCurrencyUnits(price, decimals)} ${
                                       symbol ?? 'ETH'
                                     }`
