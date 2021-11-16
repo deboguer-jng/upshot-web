@@ -6,6 +6,8 @@ import { Flex, Footer, Grid, Image, Text } from '@upshot-tech/upshot-ui'
 import {
   Box,
   Chart,
+  Icon,
+  IconButton,
   Label,
   LabelAttribute,
   Panel,
@@ -187,11 +189,8 @@ export default function NFTView() {
               <Text variant="h2Primary">{assetName}</Text>
               {!!latestAppraisal && (
                 <Label size="md" color="blue">
-                  {'Last Appraisal: Ξ ' + weiToEth(
-                                  latestAppraisal.ethSalePrice,
-                                  3,
-                                  false
-                                )}
+                  {'Last Appraisal: Ξ ' +
+                    weiToEth(latestAppraisal.ethSalePrice, 3, false)}
                 </Label>
               )}
               {!!rarity && (
@@ -588,6 +587,7 @@ export default function NFTView() {
                               txAt,
                               txFromAddress,
                               txToAddress,
+                              txHash,
                               price,
                               currency: { symbol, decimals },
                             },
@@ -647,6 +647,21 @@ export default function NFTView() {
                                 {'MINT'=== type &&
                                   <Text color="green">Mint</Text>
                                 }
+                                <a
+                                  href={`https://etherscan.io/tx/${txHash}`}
+                                  target="_blank"
+                                  title="Open transaction on Etherscan"
+                                  rel="noopener noreferrer nofollow"
+                                >
+                                  <IconButton
+                                    sx={{
+                                      marginLeft: '6px;',
+                                      verticalAlign: 'middle',
+                                    }}
+                                  >
+                                    <Icon icon="disconnect" color="blue" />
+                                  </IconButton>
+                                </a>
                               </TableCell>
                             </TableRow>
                           )
