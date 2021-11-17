@@ -34,10 +34,10 @@ export default function CollectionScatterChart({
     return <ScatterChart noData />
 
   const chartData = data.collectionById.allSaleEvents.map(
-    ({ ethFloatPrice, millisecondsTimestamp, id, assetEvent }) => [
+    ({ ethFloatPrice, millisecondsTimestamp, asset, assetEvent }) => [
       millisecondsTimestamp,
       ethFloatPrice,
-      id,
+      asset.tokenId,
       assetEvent?.txToAddress ? shortenAddress(assetEvent.txToAddress) : null,
     ]
   )
