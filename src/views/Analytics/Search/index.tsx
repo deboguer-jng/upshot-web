@@ -214,7 +214,9 @@ export default function SearchView() {
         </Box>
 
         <Box sx={{ paddingTop: [5, 5, 0] }}>
-          <Button capitalize onClick={handleApplyFilters}>Apply Filters</Button>
+          <Button capitalize onClick={handleApplyFilters}>
+            Apply Filters
+          </Button>
         </Box>
       </>
     )
@@ -230,16 +232,16 @@ export default function SearchView() {
           alignSelf: 'flex-start',
           flexDirection: 'column',
           gap: 8,
-          width: '100%'
+          width: '100%',
         }}
       >
         {isMobile ? (
           <>
-          <Box>
-            <Accordion isDropdown title="Search Filters">
-              {searchFilters()}
-            </Accordion>
-          </Box>
+            <Box>
+              <Accordion isDropdown title="Search Filters">
+                {searchFilters()}
+              </Accordion>
+            </Box>
           </>
         ) : (
           <>
@@ -375,6 +377,13 @@ export default function SearchView() {
     <>
       <Head>
         <title>Upshot Analytics</title>
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@UpshotHQ" />
+        <meta name="twitter:creator" content="@UpshotHQ" />
+        <meta property="og:url" content="https://upshot.io" />
+        <meta property="og:title" content="Upshot Analytics" />
+        <meta property="og:description" content="" />
+        <meta property="og:image" content="https://upshot.io/img/opengraph/" />
       </Head>
       <Flex sx={{ minHeight: '100vh', flexDirection: 'column' }}>
         <Container

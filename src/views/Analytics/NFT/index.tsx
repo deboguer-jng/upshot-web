@@ -161,6 +161,13 @@ export default function NFTView() {
     <>
       <Head>
         <title>Upshot Analytics</title>
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@UpshotHQ" />
+        <meta name="twitter:creator" content="@UpshotHQ" />
+        <meta property="og:url" content="https://upshot.io" />
+        <meta property="og:title" content="Upshot Analytics" />
+        <meta property="og:description" content="" />
+        <meta property="og:image" content="https://upshot.io/img/opengraph/" />
       </Head>
       <Layout>
         <Grid
@@ -187,11 +194,8 @@ export default function NFTView() {
               <Text variant="h2Primary">{assetName}</Text>
               {!!latestAppraisal && (
                 <Label size="md" color="blue">
-                  {'Last Appraisal: Ξ ' + weiToEth(
-                                  latestAppraisal.ethSalePrice,
-                                  3,
-                                  false
-                                )}
+                  {'Last Appraisal: Ξ ' +
+                    weiToEth(latestAppraisal.ethSalePrice, 3, false)}
                 </Label>
               )}
               {!!rarity && (

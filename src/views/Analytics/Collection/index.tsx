@@ -56,6 +56,13 @@ function Layout({ children }: { children: React.ReactNode }) {
     <>
       <Head>
         <title>Upshot Analytics</title>
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@UpshotHQ" />
+        <meta name="twitter:creator" content="@UpshotHQ" />
+        <meta property="og:url" content="https://upshot.io" />
+        <meta property="og:title" content="Upshot Analytics" />
+        <meta property="og:description" content="" />
+        <meta property="og:image" content="https://upshot.io/img/opengraph/" />
       </Head>
       <Container
         p={4}
