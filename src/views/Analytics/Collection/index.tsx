@@ -6,9 +6,9 @@ import { Nav } from 'components/Nav'
 import { ethers } from 'ethers'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { weiToEth } from 'utils/number'
-// import CollectionScatterChart from 'views/Analytics/components/CollectionScatterChart'
+import CollectionScatterChart from 'views/Analytics/components/CollectionScatterChart'
 import ExplorePanel from 'views/Analytics/components/ExplorePanel'
 import TopSellingNFTs from 'views/Analytics/components/TopSellingNFTs'
 
@@ -96,6 +96,15 @@ export default function CollectionView() {
       skip: !id,
     }
   )
+
+  /* Memoize scatter chart to avoid unnecessary updates. */
+  const scatterChart = useMemo(
+    () => (
+      <CollectionScatterChart {...{ id }} name={data?.collectionById?.name} />
+    ),
+    [id, data]
+  )
+
   /* Load state. */
   if (loading)
     return (
@@ -139,16 +148,16 @@ export default function CollectionView() {
 
   const priceSeries =
     timeSeries?.map(({ timestamp, average }) => [
-      timestamp*1000,
+      timestamp * 1000,
       parseFloat(ethers.utils.formatEther(average ?? 0)),
     ]) ?? []
 
-  const chartData = [{ name: 'Average', data: priceSeries }]
+  // const chartData = [{ name: 'Average', data: priceSeries }]
 
-  const getChart = () => {
-    if (!priceSeries.length) return <Chart noData />
-    return <Chart embedded data={chartData} />
-  }
+  // const getChart = () => {
+  //   if (!priceSeries.length) return <Chart noData />
+  //   return <Chart embedded data={chartData} />
+  // }
 
   return (
     <Layout>
@@ -202,8 +211,10 @@ export default function CollectionView() {
           </Text>
         </Flex>
       </Grid>
-
-      {getChart()}
+      <Text variant="large" sx={{ textTransform: 'uppercase' }}>
+        {name} sales this month
+      </Text>
+      {scatterChart}
 
       <Flex sx={{ flexDirection: 'column', flexGrow: 1, gap: 5 }}>
         <TopSellingNFTs collectionId={id} />
