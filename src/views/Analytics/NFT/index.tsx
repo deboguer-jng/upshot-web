@@ -133,8 +133,6 @@ export default function NFTView() {
     contractAddress,
   } = data.assetById
 
-  console.log({ data })
-
   const salesSeries = txHistory
     .filter(({ price, type }) => type === 'SALE' && price)
     .map(({ price, txAt }) => [
