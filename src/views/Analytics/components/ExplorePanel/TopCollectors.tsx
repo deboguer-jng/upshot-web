@@ -72,12 +72,9 @@ export default function TopCollectors() {
         {data.getOwnersByWhaleness['owners'].map(
           ({ username, addresses, ownedAssets }, idx) => (
             <CollectorAccordionRow
-              avatarImageUrl={
-                addresses?.[0] ? makeBlockie(addresses[0]) : undefined
-              }
-              name={formatUsername(username ?? addresses?.[0] ?? 'Unknown')}
-              // portfolioValue='soon'
+              address={addresses?.[0]}
               key={idx}
+              {...{ username }}
             >
               <div style={{ display: 'grid' }}>
                 <Text sx={{ fontSize: 4, fontWeight: 'heading' }}>

@@ -100,17 +100,9 @@ export default function Collectors({
               idx
             ) => (
               <CollectorAccordionRow
-                avatarImageUrl={
-                  addresses?.[0] ? makeBlockie(addresses[0]) : undefined
-                }
-                count={count}
-                name={formatUsername(username ?? addresses?.[0] ?? 'Unknown')}
-                firstAcquisition={format(
-                  firstAssetPurchaseTime * 1000,
-                  'MM/dd/yyyy'
-                )}
+                address={addresses?.[0]}
+                firstAcquisition={firstAssetPurchaseTime}
                 collectionName={name}
-                avgHoldTime={formatDistance(0, avgHoldTime * 1000)}
                 extraCollections={collectionAssetCounts.map(
                   ({ count, collection: { imageUrl, name, id } }) => ({
                     id,
@@ -127,6 +119,7 @@ export default function Collectors({
                   pixelated: PIXELATED_CONTRACTS.includes(id.split('/')[0]),
                 }))}
                 key={idx}
+                {...{ username, count, avgHoldTime }}
               />
             )
           )}
