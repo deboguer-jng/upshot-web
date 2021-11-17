@@ -689,7 +689,7 @@ export default function NFTView() {
                                       verticalAlign: 'middle',
                                     }}
                                   >
-                                    <Icon icon="disconnect" color="blue" />
+                                    <Icon icon="disconnect" color={'SALE' === type ? 'pink' : 'TRANSFER' === type ? 'blue' : 'green'} />
                                   </IconButton>
                                 </a>
                               </TableCell>
