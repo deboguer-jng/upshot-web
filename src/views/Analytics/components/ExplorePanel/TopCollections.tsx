@@ -152,13 +152,13 @@ export default function ExploreNFTs({
                   </TableCell>
                 ) : (
                   <>
-                    <TableCell sx={{ maxWidth: 100, color: 'red' }}>
+                    <TableCell sx={{ maxWidth: 100 }}>
                       {weiToEth(average, 2)}
                     </TableCell>
                     <TableCell sx={{ maxWidth: 100 }}>
                       {weiToEth(floor, 2)}
                     </TableCell>
-                    <TableCell sx={{ maxWidth: 100, color: 'red' }}>
+                    <TableCell sx={{ maxWidth: 100 }}>
                       {weiToEth(totalVolume, 0)}
                     </TableCell>
                   </>
