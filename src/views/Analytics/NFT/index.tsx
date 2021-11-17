@@ -212,23 +212,23 @@ export default function NFTView() {
                     sx={{ width: 20, height: 20 }}
                   />
                 </a>
-                {contractAddress ===
+                {(contractAddress ===
                   '0x059EDD72Cd353dF5106D2B9cC5ab83a52287aC3a' ||
-                  (contractAddress ===
-                    '0xa7d8d9ef8D8Ce8992Df33D8b8CF4Aebabd5bD270' && (
-                    <a
-                      href={`https://generator.artblocks.io/${id}`}
-                      target="_blank"
-                      sx={{ marginLeft: '13px' }}
-                      rel="noreferrer"
-                    >
-                      <Icon
-                        icon="openLink"
-                        color="primary"
-                        sx={{ width: 20, height: 20 }}
-                      />
-                    </a>
-                  ))}
+                  contractAddress ===
+                    '0xa7d8d9ef8D8Ce8992Df33D8b8CF4Aebabd5bD270') && (
+                  <a
+                    href={`https://generator.artblocks.io/${id}`}
+                    target="_blank"
+                    sx={{ marginLeft: '13px' }}
+                    rel="noreferrer"
+                  >
+                    <Icon
+                      icon="openLink"
+                      color="primary"
+                      sx={{ width: 20, height: 20 }}
+                    />
+                  </a>
+                )}
               </Flex>
             </Flex>
           </Flex>
