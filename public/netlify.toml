@@ -1,4 +1,9 @@
 [[redirects]]
+  from = "/"
+  to = "https://app.upshot.xyz"
+  status = 301
+
+[[redirects]]
   from = "/analytics/nft/:contractAddress/:tokenId"
   to = "/analytics/nft/[contractAddress]/[tokenId].html?assetId=:contractAddress/:tokenId"
   status = 200
