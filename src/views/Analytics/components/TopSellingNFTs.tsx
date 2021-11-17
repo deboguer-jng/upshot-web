@@ -107,10 +107,13 @@ export default function TopSellingNFTs({
 
   if (!data?.topSales.length)
     return (
-      <>
-        <TopSellingNFTsHeader />
+      <Flex sx={{
+        paddingBottom: '2rem',
+        zIndex: 5,
+      }}>
+        <TopSellingNFTsHeader period={period} setPeriod={(val) => setPeriod(val)} />
         No results available.
-      </>
+      </Flex>
     )
 
   return (
