@@ -159,6 +159,8 @@ export default function NFTView() {
 
   const assetName = getAssetName(name, collection?.name, tokenId)
 
+  console.log({ contractAddress })
+
   return (
     <>
       <Head>
@@ -227,6 +229,21 @@ export default function NFTView() {
                       />
                     </a>
                   ))}
+                {contractAddress ===
+                  '0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB' && (
+                  <a
+                    href={`https://www.larvalabs.com/cryptopunks/details/${tokenId}`}
+                    target="_blank"
+                    sx={{ marginLeft: '13px' }}
+                    rel="noreferrer"
+                  >
+                    <Icon
+                      icon="openLink"
+                      color="primary"
+                      sx={{ width: 20, height: 20 }}
+                    />
+                  </a>
+                )}
               </Flex>
             </Flex>
           </Flex>
@@ -689,7 +706,16 @@ export default function NFTView() {
                                       verticalAlign: 'middle',
                                     }}
                                   >
-                                    <Icon icon="disconnect" color={'SALE' === type ? 'pink' : 'TRANSFER' === type ? 'blue' : 'green'} />
+                                    <Icon
+                                      icon="disconnect"
+                                      color={
+                                        'SALE' === type
+                                          ? 'pink'
+                                          : 'TRANSFER' === type
+                                          ? 'blue'
+                                          : 'green'
+                                      }
+                                    />
                                   </IconButton>
                                 </a>
                               </TableCell>
