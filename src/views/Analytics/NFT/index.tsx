@@ -159,8 +159,6 @@ export default function NFTView() {
 
   const assetName = getAssetName(name, collection?.name, tokenId)
 
-  console.log({ contractAddress })
-
   return (
     <>
       <Head>
