@@ -6,6 +6,8 @@ import { Flex, Footer, Grid, Image, Text } from '@upshot-tech/upshot-ui'
 import {
   Box,
   Chart,
+  Icon,
+  IconButton,
   Label,
   LabelAttribute,
   Panel,
@@ -187,11 +189,8 @@ export default function NFTView() {
               <Text variant="h2Primary">{assetName}</Text>
               {!!latestAppraisal && (
                 <Label size="md" color="blue">
-                  {'Last Appraisal: Ξ ' + weiToEth(
-                                  latestAppraisal.ethSalePrice,
-                                  3,
-                                  false
-                                )}
+                  {'Last Appraisal: Ξ ' +
+                    weiToEth(latestAppraisal.ethSalePrice, 3, false)}
                 </Label>
               )}
               {!!rarity && (
@@ -199,6 +198,36 @@ export default function NFTView() {
                   {(rarity * 100).toFixed(2) + '% Rarity'}
                 </Label>
               )}
+              <Flex>
+                <a
+                  href={`https://opensea.io/assets/${id}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <Icon
+                    icon="openSeaBlock"
+                    color="primary"
+                    sx={{ width: 20, height: 20 }}
+                  />
+                </a>
+                {contractAddress ===
+                  '0x059EDD72Cd353dF5106D2B9cC5ab83a52287aC3a' ||
+                  (contractAddress ===
+                    '0xa7d8d9ef8D8Ce8992Df33D8b8CF4Aebabd5bD270' && (
+                    <a
+                      href={`https://generator.artblocks.io/${id}`}
+                      target="_blank"
+                      sx={{ marginLeft: '13px' }}
+                      rel="noreferrer"
+                    >
+                      <Icon
+                        icon="openLink"
+                        color="primary"
+                        sx={{ width: 20, height: 20 }}
+                      />
+                    </a>
+                  ))}
+              </Flex>
             </Flex>
           </Flex>
 
@@ -588,6 +617,7 @@ export default function NFTView() {
                               txAt,
                               txFromAddress,
                               txToAddress,
+                              txHash,
                               price,
                               currency: { symbol, decimals },
                             },
@@ -636,11 +666,32 @@ export default function NFTView() {
                                 </>
                               )}
                               <TableCell sx={{ minWidth: 100, color: 'pink' }}>
-                                {price && ['SALE'].includes(type)
-                                  ? `${formatCurrencyUnits(price, decimals)} ${
-                                      symbol ?? 'ETH'
-                                    }`
-                                  : '-'}
+                                {'SALE' === type &&
+                                  price &&
+                                  `${formatCurrencyUnits(price, decimals)} ${
+                                    symbol ?? 'ETH'
+                                  }`}
+                                {'TRANSFER' === type && (
+                                  <Text color="blue">Transfer</Text>
+                                )}
+                                {'MINT' === type && (
+                                  <Text color="green">Mint</Text>
+                                )}
+                                <a
+                                  href={`https://etherscan.io/tx/${txHash}`}
+                                  target="_blank"
+                                  title="Open transaction on Etherscan"
+                                  rel="noopener noreferrer nofollow"
+                                >
+                                  <IconButton
+                                    sx={{
+                                      marginLeft: '6px;',
+                                      verticalAlign: 'middle',
+                                    }}
+                                  >
+                                    <Icon icon="disconnect" color={'SALE' === type ? 'pink' : 'TRANSFER' === type ? 'blue' : 'green'} />
+                                  </IconButton>
+                                </a>
                               </TableCell>
                             </TableRow>
                           )

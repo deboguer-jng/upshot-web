@@ -96,6 +96,10 @@ export default function TopCollectionsCharts({
         ),
       ...rest,
     }))
+    .sort(
+      (a, b) =>
+        selectedCollections.indexOf(a.id) - selectedCollections.indexOf(b.id)
+    )
     .map(({ data, name, id, sevenDayMCChange, ...rest }) => {
       const ath = rest[athKeys[metric]]?.value
       const atl = rest[atlKeys[metric]]?.value
@@ -105,7 +109,6 @@ export default function TopCollectionsCharts({
           : sevenDayMCChange >= 0
           ? '+' + sevenDayMCChange + '%'
           : sevenDayMCChange + '%'
-
 
       return {
         name,

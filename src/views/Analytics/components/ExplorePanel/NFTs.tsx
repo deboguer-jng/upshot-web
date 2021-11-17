@@ -30,7 +30,6 @@ import {
 
 const columns = ['Last Sale', 'Total Sales', 'Sale Price', '% Change']
 
-
 function CollectionTableHead() {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
@@ -66,7 +65,7 @@ const handleShowNFT = (id: string) => {
  *
  * @returns + prefixed percent if positive, - prefixed percent if negative.
  */
- const getPriceChangeLabel = (val: number | null) => {
+const getPriceChangeLabel = (val: number | null) => {
   if (val === null) return '-'
 
   const percentChange = val.toFixed(2) + '%'
@@ -89,7 +88,6 @@ export function ExplorePanelSkeleton() {
     </CollectionTable>
   )
 }
-
 
 /**
  *Default render function
@@ -172,9 +170,7 @@ export default function ExploreNFTs({
                       <Flex
                         sx={{
                           maxWidth: 100,
-                          color: getPriceChangeColor(
-                            priceChangeFromFirstSale
-                          ),
+                          color: getPriceChangeColor(priceChangeFromFirstSale),
                         }}
                       >
                         {getPriceChangeLabel(priceChangeFromFirstSale)}
@@ -199,9 +195,7 @@ export default function ExploreNFTs({
                     <TableCell
                       sx={{
                         maxWidth: 100,
-                        color: getPriceChangeColor(
-                          priceChangeFromFirstSale
-                        ),
+                        color: getPriceChangeColor(priceChangeFromFirstSale),
                       }}
                     >
                       {getPriceChangeLabel(priceChangeFromFirstSale)}
@@ -213,7 +207,7 @@ export default function ExploreNFTs({
           )}
         </TableBody>
       </CollectionTable>
-      <Flex sx={{ justifyContent: 'center', marginTop: -1 }}>
+      <Flex sx={{ justifyContent: 'center', marginTop: '10px' }}>
         <Pagination
           forcePage={page}
           pageCount={Math.ceil(data.assetGlobalSearch.count / PAGE_SIZE)}
