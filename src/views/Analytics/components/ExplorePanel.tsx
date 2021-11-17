@@ -27,9 +27,10 @@ import {
   GetExploreNFTsData,
   GetExploreNFTsVars,
 } from '../queries'
-import Collectors from './Collectors'
+import Collectors from './ExplorePanel/Collectors'
 import TopCollectors from './ExplorePanel/TopCollectors'
 import ExploreNFTs from './ExplorePanel/NFTs'
+import TopCollections from './ExplorePanel/TopCollections'
 
 
 function searchForm(handleSearch, searchTerm, searchTermRef, handleChange) {
@@ -89,6 +90,10 @@ function ExplorePanelHead({
     )
   }
 
+  const dropdownOptions = ['NFTs', 'Collectors']
+  if (!router.pathname.includes('/collection')) // if page is not collection page
+    dropdownOptions.push('Collections')
+
   return (
     <>
       <Flex
@@ -113,7 +118,7 @@ function ExplorePanelHead({
             <SwitchDropdown
               onChange={(val) => onChangeTab?.(val)}
               value={tab ?? ''}
-              options={['NFTs', 'Collectors']}
+              options={dropdownOptions}
             />
           </Flex>
         </Flex>
@@ -178,6 +183,9 @@ export default function ExplorePanel({
           { tab === 'Collectors' && !!collectionId && (
              <Collectors id={collectionId} name={collectionName} />
           )}
+          { tab === 'Collections' && (
+             <TopCollections />
+          )}          
         </Box>
       </Flex>
     </Panel>

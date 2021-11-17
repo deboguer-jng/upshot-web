@@ -23,14 +23,15 @@ import { getPriceChangeColor } from 'utils/color'
 import { weiToEth } from 'utils/number'
 
 import {
-  GET_EXPLORE_NFTS,
-  GetExploreNFTsData,
-  GetExploreNFTsVars,
+  GET_EXPLORE_COLLECTIONS,
+  GetExploreCollectionsData,
+  GetExploreCollectionsVars,
 } from '../../queries'
+import { ExplorePanelSkeleton } from './NFTs'
 
-const columns = ['Last Sale', 'Total Sales', 'Sale Price', '% Change']
+const columns = ['Age of collection', 'Average NFT Price', 'Floor Price', 'Total Volume']
 
-function NFTTableHead() {
+function CollectionTableHead() {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
 
@@ -38,7 +39,7 @@ function NFTTableHead() {
     <TableHead>
       <TableRow>
         <TableCell></TableCell>
-        <TableCell color="grey-500">NFT Name</TableCell>
+        <TableCell color="grey-500">Collection title</TableCell>
         {isMobile ? (
           // Mobile only shows the first and last columns
           <TableCell color="grey-500">Details</TableCell>
@@ -56,8 +57,8 @@ function NFTTableHead() {
   )
 }
 
-const handleShowNFT = (id: string) => {
-  router.push('/analytics/nft/' + id)
+const handleShowCollection = (id: number) => {
+  router.push('/analytics/collection/' + id)
 }
 
 /**
@@ -72,32 +73,13 @@ const getPriceChangeLabel = (val: number | null) => {
   return val > 0 ? '+' + percentChange : percentChange
 }
 
-export function ExplorePanelSkeleton() {
-  return (
-    <CollectionTable>
-      <NFTTableHead />
-      <TableBody>
-        {[...new Array(PAGE_SIZE)].map((_, idx) => (
-          <Skeleton sx={{ height: 56 }} as="tr" key={idx}>
-            <TableCell colSpan={6}>
-              <Box sx={{ height: 40, width: '100%' }} />
-            </TableCell>
-          </Skeleton>
-        ))}
-      </TableBody>
-    </CollectionTable>
-  )
-}
-
 /**
  *Default render function
  */
 export default function ExploreNFTs({
   searchTerm = '',
-  collectionId,
 }: {
   searchTerm?: string
-  collectionId?: number
 }) {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
@@ -108,15 +90,14 @@ export default function ExploreNFTs({
   }
 
   const { loading, error, data } = useQuery<
-    GetExploreNFTsData,
-    GetExploreNFTsVars
-  >(GET_EXPLORE_NFTS, {
+    GetExploreCollectionsData,
+    GetExploreCollectionsVars
+  >(GET_EXPLORE_COLLECTIONS, {
     errorPolicy: 'all',
     variables: {
+      metric: 'VOLUME',
       limit: PAGE_SIZE,
-      offset: page * PAGE_SIZE,
-      searchTerm,
-      collectionId,
+      // offset: page * PAGE_SIZE,
     },
   })
 
@@ -126,33 +107,32 @@ export default function ExploreNFTs({
   /* Error state. */
   if (error) return <div>There was an error completing your request.</div>
 
-  if (!data?.assetGlobalSearch.assets.length)
+  if (!data?.orderedCollectionsByMetricSearch.length)
     return <div>No results available.</div>
 
   return (
     <>
       <CollectionTable>
-        <NFTTableHead />
+        <CollectionTableHead />
         <TableBody>
-          {data.assetGlobalSearch.assets.map(
+          {data.orderedCollectionsByMetricSearch.map(
             (
               {
                 id,
                 name,
-                previewImageUrl,
-                mediaUrl,
-                totalSaleCount,
-                priceChangeFromFirstSale,
-                lastSale,
+                imageUrl,
+                average,
+                floor,
+                totalVolume,
               },
               idx
             ) => (
               <CollectionRow
                 dark
                 title={name}
-                imageSrc={previewImageUrl ?? mediaUrl}
+                imageSrc={imageUrl!}
                 key={idx}
-                onClick={() => handleShowNFT(id)}
+                onClick={() => handleShowCollection(id)}
               >
                 {isMobile ? (
                   <TableCell sx={{ maxWidth: 100 }}>
@@ -163,42 +143,31 @@ export default function ExploreNFTs({
                       }}
                     >
                       <Flex>
-                        {lastSale?.ethSalePrice
-                          ? weiToEth(lastSale.ethSalePrice)
-                          : '-'}
+                        Avg: {weiToEth(average)}
                       </Flex>
-                      <Flex
-                        sx={{
-                          maxWidth: 100,
-                          color: getPriceChangeColor(priceChangeFromFirstSale),
-                        }}
-                      >
-                        {getPriceChangeLabel(priceChangeFromFirstSale)}
+                      <Flex>
+                        Vol: {weiToEth(totalVolume, 0)}
                       </Flex>
                     </Flex>
                   </TableCell>
                 ) : (
                   <>
                     <TableCell sx={{ maxWidth: 100 }}>
-                      {lastSale?.timestamp
-                        ? format(lastSale.timestamp * 1000, 'M/d/yyyy')
-                        : '-'}
+                      soon
                     </TableCell>
                     <TableCell sx={{ maxWidth: 100 }}>
-                      {totalSaleCount}
+                      {weiToEth(average, 2)}
                     </TableCell>
                     <TableCell sx={{ maxWidth: 100 }}>
-                      {lastSale?.ethSalePrice
-                        ? weiToEth(lastSale.ethSalePrice)
-                        : '-'}
+                      {weiToEth(floor, 2)}
                     </TableCell>
                     <TableCell
                       sx={{
                         maxWidth: 100,
-                        color: getPriceChangeColor(priceChangeFromFirstSale),
+                        color: 'red',
                       }}
                     >
-                      {getPriceChangeLabel(priceChangeFromFirstSale)}
+                      {weiToEth(totalVolume, 0)}
                     </TableCell>
                   </>
                 )}
@@ -207,15 +176,15 @@ export default function ExploreNFTs({
           )}
         </TableBody>
       </CollectionTable>
-      <Flex sx={{ justifyContent: 'center', marginTop: '10px' }}>
+{/*       <Flex sx={{ justifyContent: 'center', marginTop: '10px' }}>
         <Pagination
           forcePage={page}
-          pageCount={Math.ceil(data.assetGlobalSearch.count / PAGE_SIZE)}
+          pageCount={Math.ceil(data.orderedCollectionsByMetricSearch.count / PAGE_SIZE)}
           pageRangeDisplayed={0}
           marginPagesDisplayed={0}
           onPageChange={handlePageChange}
         />
-      </Flex>
+      </Flex> */}
     </>
   )
 }

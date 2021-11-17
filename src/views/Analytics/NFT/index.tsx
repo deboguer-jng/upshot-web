@@ -33,7 +33,7 @@ import { getAssetName } from 'utils/asset'
 import { getPriceChangeColor } from 'utils/color'
 import { formatCurrencyUnits, weiToEth } from 'utils/number'
 
-import Collectors from '../components/Collectors'
+import Collectors from '../components/ExplorePanel/Collectors'
 import { GET_ASSET, GetAssetData, GetAssetVars } from './queries'
 
 function Layout({ children }: { children: React.ReactNode }) {
