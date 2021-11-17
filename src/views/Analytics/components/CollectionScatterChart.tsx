@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client'
 import { ScatterChart } from '@upshot-tech/upshot-ui'
-import { ethers } from 'ethers'
+import { shortenAddress } from 'utils/address'
 
 import {
   GET_ALL_COLLECTION_SALES,
@@ -34,9 +34,11 @@ export default function CollectionScatterChart({
     return <ScatterChart noData />
 
   const chartData = data.collectionById.allSaleEvents.map(
-    ({ ethFloatPrice, millisecondsTimestamp }) => [
+    ({ ethFloatPrice, millisecondsTimestamp, id, assetEvent }) => [
       millisecondsTimestamp,
       ethFloatPrice,
+      id,
+      assetEvent?.txToAddress ? shortenAddress(assetEvent.txToAddress) : null,
     ]
   )
 

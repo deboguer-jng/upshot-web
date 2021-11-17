@@ -55,6 +55,10 @@ export type GetAllCollectionSalesData = {
     allSaleEvents?: {
       millisecondsTimestamp: number
       ethFloatPrice: number
+      id: string
+      assetEvent: {
+        txToAddress: string
+      }
     }[]
   }
 }
@@ -65,6 +69,10 @@ export const GET_ALL_COLLECTION_SALES = gql`
       allSaleEvents(windowSize: MONTH) {
         millisecondsTimestamp
         ethFloatPrice
+        id
+        assetEvent {
+          txToAddress
+        }
       }
     }
   }
