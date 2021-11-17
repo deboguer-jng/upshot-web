@@ -211,7 +211,9 @@ export default function CollectionView() {
           </Text>
         </Flex>
       </Grid>
-
+      <Text variant="large" sx={{ textTransform: 'uppercase' }}>
+        {name} sales this month
+      </Text>
       {scatterChart}
 
       <Flex sx={{ flexDirection: 'column', flexGrow: 1, gap: 5 }}>
