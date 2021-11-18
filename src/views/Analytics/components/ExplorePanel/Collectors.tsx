@@ -18,7 +18,8 @@ import {
   GetCollectorsVars,
   GetPreviousOwnersData,
   GetPreviousOwnersVars,
-} from '../queries'
+} from '../../queries'
+import { ExplorePanelSkeleton } from './NFTs'
 
 export default function Collectors({
   id,

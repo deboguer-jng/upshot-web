@@ -211,6 +211,48 @@ export type GetTopSalesData = {
   }[]
 }
 
+
+/**
+ * Get top collections for explore panel
+ * @see TopCollectionsChart
+ */
+
+export type GetExploreCollectionsVars = {
+  metric: string
+  limit: number
+  // offset: number
+}
+ 
+export type GetExploreCollectionsData = {
+  orderedCollectionsByMetricSearch: {
+    id: number
+    name: string
+    imageUrl?: string
+    average: string
+    floor: string
+    totalVolume: string
+  }[]
+}
+ 
+export const GET_EXPLORE_COLLECTIONS = gql`
+  query GetTopCollections(
+    $metric: EOrderedAssetSetMetric!
+    $limit: OneToHundredInt!
+  ) {
+    orderedCollectionsByMetricSearch(
+      metric: $metric
+      limit: $limit
+    ) {
+      id
+      name
+      imageUrl
+      average
+      floor
+      totalVolume
+     }
+   }
+ ` 
+
 export const GET_TOP_SALES = gql`
   query TopSales(
     $windowSize: ETimeWindow!
