@@ -72,7 +72,7 @@ export default function CollectionAvgPricePanel({
       : `Collections by ${
           metric.charAt(0) + metric.slice(1).toLowerCase()
         } Price`
-  const subtitle = '(Select Collections to change graph)'
+  const subtitle = 'Select collections to add them to the chart, or click icons to see more'
 
   if (error)
     return (
