@@ -1,5 +1,2 @@
 http://app.upshot.io/* https://app.upshot.xyz/:splat 301!
 https://app.upshot.io/* https://app.upshot.xyz/:splat 301!
-
-http://stage.analytics.upshot.io/* https://app.upshot.xyz/:splat 301!
-http://stage.analytics.upshot.io/* https://app.upshot.xyz/:splat 301!
