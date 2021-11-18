@@ -1,5 +1,7 @@
 import { ethers } from 'ethers'
 
+type EnsDetails = { name?: string; avatar?: string }
+
 /**
  * Shorten address
  *
@@ -20,17 +22,24 @@ export function shortenAddress(
 }
 
 /**
- * Format username.
+ * Fetch ENS
  *
- * @returns A shortened address if the username is an address. Otherwise, the username.
+ * Looks up the ENS name & avatar.
+ *
+ * @returns Promise<EnsDetails>
  */
-export const formatUsername = (username: string) => {
-  if (username.slice(0, 2) !== '0x') return username
+export const fetchEns = async (address: string, provider: any) => {
+  const ens: EnsDetails = { name: undefined, avatar: undefined }
 
+  if (!provider) return ens
+
+  /* Reverse lookup of ENS name via address */
   try {
-    const parsed = ethers.utils.getAddress(username)
-    return shortenAddress(parsed)
-  } catch (err) {}
+    ens.name = await provider.lookupAddress(address)
+  } catch (err) {
+    console.error(err)
+    return ens
+  }
 
-  return username
+  return ens
 }

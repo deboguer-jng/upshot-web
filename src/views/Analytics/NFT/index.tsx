@@ -20,20 +20,21 @@ import {
   TableHead,
   TableRow,
 } from '@upshot-tech/upshot-ui'
+import { FormattedENS } from 'components/FormattedENS'
 import { Nav } from 'components/Nav'
-import { PIXELATED_CONTRACTS } from 'constants/'
+import { ART_BLOCKS_CONTRACTS, PIXELATED_CONTRACTS } from 'constants/'
 import { format } from 'date-fns'
 import { ethers } from 'ethers'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { shortenAddress } from 'utils/address'
+import { fetchEns, shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
 import { getPriceChangeColor } from 'utils/color'
 import { formatCurrencyUnits, weiToEth } from 'utils/number'
 
-import Collectors from '../components/Collectors'
+import Collectors from '../components/ExplorePanel/Collectors'
 import { GET_ASSET, GetAssetData, GetAssetVars } from './queries'
 
 function Layout({ children }: { children: React.ReactNode }) {
@@ -61,6 +62,7 @@ export default function NFTView() {
   const isMobile = breakpointIndex <= 1
   const router = useRouter()
   const { theme } = useTheme()
+  const [ensName, setEnsName] = useState<string>()
 
   useEffect(() => {
     /* Parse assetId from router */
@@ -82,6 +84,25 @@ export default function NFTView() {
       skip: !id,
     }
   )
+
+  useEffect(() => {
+    if (!data?.assetById) return
+
+    const updateEnsName = async () => {
+      try {
+        const { name } = await fetchEns(
+          data.assetById.creatorAddress,
+          ethers.getDefaultProvider()
+        )
+        setEnsName(name)
+      } catch (err) {
+        console.error(err)
+      }
+    }
+
+    updateEnsName()
+  }, [data])
+
   /* Load state. */
   if (loading)
     return (
@@ -158,6 +179,11 @@ export default function NFTView() {
   ]
 
   const assetName = getAssetName(name, collection?.name, tokenId)
+  const displayName =
+    ensName ?? creatorUsername ?? shortenAddress(creatorAddress) ?? 'Unknown'
+  const creatorLabel = ART_BLOCKS_CONTRACTS.includes(contractAddress)
+    ? 'Created'
+    : 'Minted'
 
   return (
     <>
@@ -210,23 +236,23 @@ export default function NFTView() {
                     sx={{ width: 20, height: 20 }}
                   />
                 </a>
-                {contractAddress ===
+                {(contractAddress ===
                   '0x059EDD72Cd353dF5106D2B9cC5ab83a52287aC3a' ||
-                  (contractAddress ===
-                    '0xa7d8d9ef8D8Ce8992Df33D8b8CF4Aebabd5bD270' && (
-                    <a
-                      href={`https://generator.artblocks.io/${id}`}
-                      target="_blank"
-                      sx={{ marginLeft: '13px' }}
-                      rel="noreferrer"
-                    >
-                      <Icon
-                        icon="openLink"
-                        color="primary"
-                        sx={{ width: 20, height: 20 }}
-                      />
-                    </a>
-                  ))}
+                  contractAddress ===
+                    '0xa7d8d9ef8D8Ce8992Df33D8b8CF4Aebabd5bD270') && (
+                  <a
+                    href={`https://generator.artblocks.io/${id}`}
+                    target="_blank"
+                    sx={{ marginLeft: '13px' }}
+                    rel="noreferrer"
+                  >
+                    <Icon
+                      icon="openLink"
+                      color="primary"
+                      sx={{ width: 20, height: 20 }}
+                    />
+                  </a>
+                )}
               </Flex>
             </Flex>
           </Flex>
@@ -322,7 +348,7 @@ export default function NFTView() {
                             color="grey-500"
                             sx={{ lineHeight: 1.25, fontSize: 2 }}
                           >
-                            Created By
+                            {creatorLabel} By
                           </Text>
                           <Text
                             color="grey-300"
@@ -332,9 +358,7 @@ export default function NFTView() {
                               fontSize: [3, 3, 4],
                             }}
                           >
-                            {creatorUsername ??
-                              shortenAddress(creatorAddress) ??
-                              '/img/defaultAvatar.png'}
+                            {displayName}
                           </Text>
                         </Flex>
                       </Flex>
@@ -639,11 +663,7 @@ export default function NFTView() {
                                           height: 3,
                                         }}
                                       />
-                                      <Text>
-                                        {txFromAddress
-                                          ? shortenAddress(txFromAddress, 2, 4)
-                                          : '-'}
-                                      </Text>
+                                      <FormattedENS address={txFromAddress} />
                                     </Flex>
                                   </TableCell>
                                   <TableCell sx={{ minWidth: 140 }}>
@@ -656,11 +676,7 @@ export default function NFTView() {
                                           height: 3,
                                         }}
                                       />
-                                      <Text>
-                                        {txToAddress
-                                          ? shortenAddress(txToAddress, 2, 4)
-                                          : '-'}
-                                      </Text>
+                                      <FormattedENS address={txToAddress} />
                                     </Flex>
                                   </TableCell>
                                 </>
@@ -689,7 +705,16 @@ export default function NFTView() {
                                       verticalAlign: 'middle',
                                     }}
                                   >
-                                    <Icon icon="disconnect" color={'SALE' === type ? 'pink' : 'TRANSFER' === type ? 'blue' : 'green'} />
+                                    <Icon
+                                      icon="disconnect"
+                                      color={
+                                        'SALE' === type
+                                          ? 'pink'
+                                          : 'TRANSFER' === type
+                                          ? 'blue'
+                                          : 'green'
+                                      }
+                                    />
                                   </IconButton>
                                 </a>
                               </TableCell>
