@@ -322,7 +322,7 @@ export default function NFTView() {
                             color="grey-500"
                             sx={{ lineHeight: 1.25, fontSize: 2 }}
                           >
-                            Created By
+                            Minted By
                           </Text>
                           <Text
                             color="grey-300"
