@@ -2,3 +2,7 @@ export const PAGE_SIZE = 24
 export const PIXELATED_CONTRACTS = [
   '0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB',
 ]
+export const ART_BLOCKS_CONTRACTS = [
+  '0x059EDD72Cd353dF5106D2B9cC5ab83a52287aC3a',
+  '0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270',
+]
