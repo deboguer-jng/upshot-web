@@ -4,5 +4,5 @@ export const PIXELATED_CONTRACTS = [
 ]
 export const ART_BLOCKS_CONTRACTS = [
   '0x059EDD72Cd353dF5106D2B9cC5ab83a52287aC3a',
-  '0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270',
+  '0xa7d8d9ef8D8Ce8992Df33D8b8CF4Aebabd5bD270',
 ]
