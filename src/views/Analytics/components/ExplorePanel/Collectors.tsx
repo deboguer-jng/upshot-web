@@ -21,7 +21,8 @@ import {
   GetCollectorsVars,
   GetPreviousOwnersData,
   GetPreviousOwnersVars,
-} from '../queries'
+} from '../../queries'
+import { ExplorePanelSkeleton } from './NFTs'
 
 export default function Collectors({
   id,
@@ -46,22 +47,6 @@ export default function Collectors({
         variables: { id, limit: 10 },
         skip: !id,
       })
-
-  const ExplorePanelSkeleton = () => {
-    return (
-      <CollectorAccordion>
-        {[...new Array(PAGE_SIZE)].map((_, idx) => (
-          <CollectorAccordionRow key={idx}>
-            <Skeleton sx={{ height: 56 }} as="tr" key={idx}>
-              <TableCell colSpan={5}>
-                <Box sx={{ height: 40, width: '100%' }} />
-              </TableCell>
-            </Skeleton>
-          </CollectorAccordionRow>
-        ))}
-      </CollectorAccordion>
-    )
-  }
 
   /* Load state. */
   if (loading) return <ExplorePanelSkeleton />
