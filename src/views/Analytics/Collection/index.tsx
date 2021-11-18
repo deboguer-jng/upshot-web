@@ -209,7 +209,7 @@ export default function CollectionView() {
               cursor: 'pointer',
               textOverflow: 'ellipsis',
               overflow: 'hidden',
-              WebkitLineClamp: descriptionOpen ? 20 : 6,
+              WebkitLineClamp: descriptionOpen ? 'unset' : 6,
               display: '-webkit-box',
               WebkitBoxOrient: 'vertical',
             }}
