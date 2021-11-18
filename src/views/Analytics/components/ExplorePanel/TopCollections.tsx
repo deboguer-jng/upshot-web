@@ -97,7 +97,7 @@ export default function ExploreNFTs({
     variables: {
       metric: 'VOLUME',
       limit: PAGE_SIZE,
-      // offset: page * PAGE_SIZE,
+      offset: page * PAGE_SIZE,
     },
   })
 
@@ -107,7 +107,7 @@ export default function ExploreNFTs({
   /* Error state. */
   if (error) return <div>There was an error completing your request.</div>
 
-  if (!data?.orderedCollectionsByMetricSearch.length)
+  if (!data?.orderedCollectionsByMetricSearch.assetSets.length)
     return <div>No results available.</div>
 
   return (
@@ -115,7 +115,7 @@ export default function ExploreNFTs({
       <CollectionTable>
         <CollectionTableHead />
         <TableBody>
-          {data.orderedCollectionsByMetricSearch.map(
+          {data.orderedCollectionsByMetricSearch.assetSets.map(
             ({ id, name, imageUrl, average, floor, totalVolume }, idx) => (
               <CollectionRow
                 dark
@@ -154,7 +154,7 @@ export default function ExploreNFTs({
           )}
         </TableBody>
       </CollectionTable>
-      {/*       <Flex sx={{ justifyContent: 'center', marginTop: '10px' }}>
+      <Flex sx={{ justifyContent: 'center', marginTop: '10px' }}>
         <Pagination
           forcePage={page}
           pageCount={Math.ceil(data.orderedCollectionsByMetricSearch.count / PAGE_SIZE)}
@@ -162,7 +162,7 @@ export default function ExploreNFTs({
           marginPagesDisplayed={0}
           onPageChange={handlePageChange}
         />
-      </Flex> */}
+      </Flex>
     </>
   )
 }
