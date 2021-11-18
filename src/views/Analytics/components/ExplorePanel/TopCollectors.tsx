@@ -5,7 +5,9 @@ import {
   CollectorAccordion,
   CollectorAccordionHead,
   CollectorAccordionRow,
+  Flex,
   MiniNftCard,
+  Pagination,
   Skeleton,
   TableCell,
   Text,
@@ -14,7 +16,7 @@ import {
 import { PAGE_SIZE, PIXELATED_CONTRACTS } from 'constants/'
 import makeBlockie from 'ethereum-blockies-base64'
 import { useRouter } from 'next/router'
-import { formatUsername } from 'utils/address'
+import { useState } from 'react'
 import { shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
 import { weiToEth } from 'utils/number'
@@ -27,12 +29,16 @@ import {
 import { MiniNFTContainer } from '.././Styled'
 import { ExplorePanelSkeleton } from './NFTs'
 
-
 export default function TopCollectors() {
   const router = useRouter()
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
- 
+  const [page, setPage] = useState(0)
+
+  const handlePageChange = ({ selected }: { selected: number }) => {
+    setPage(selected)
+  }
+
   const handleClickNFT = (id: string) => {
     router.push('/analytics/nft/' + id)
   }
@@ -42,7 +48,7 @@ export default function TopCollectors() {
     GetTopCollectorsVars
   >(GET_TOP_COLLECTORS, {
     errorPolicy: 'all',
-    variables: { limit: 10 },
+    variables: { limit: PAGE_SIZE, offset: page * PAGE_SIZE },
   })
 
   /* Load state. */
@@ -63,17 +69,11 @@ export default function TopCollectors() {
       </CollectorAccordionHead>
       <CollectorAccordion>
         {data.getOwnersByWhaleness['owners'].map(
-          (
-            { username, addresses, ownedAssets },
-            idx
-          ) => (
+          ({ username, addresses, ownedAssets }, idx) => (
             <CollectorAccordionRow
-              avatarImageUrl={
-                addresses?.[0] ? makeBlockie(addresses[0]) : undefined
-              }
-              name={formatUsername(username ?? addresses?.[0] ?? 'Unknown')}
-              // portfolioValue='soon'
+              address={addresses?.[0]}
               key={idx}
+              {...{ username }}
             >
               <div style={{ display: 'grid' }}>
                 <Text sx={{ fontSize: 4, fontWeight: 'heading' }}>
@@ -142,6 +142,15 @@ export default function TopCollectors() {
           )
         )}
       </CollectorAccordion>
+      <Flex sx={{ justifyContent: 'center', marginTop: '18px' }}>
+        <Pagination
+          forcePage={page}
+          pageCount={Math.ceil(data.getOwnersByWhaleness['count'] / PAGE_SIZE)}
+          pageRangeDisplayed={0}
+          marginPagesDisplayed={0}
+          onPageChange={handlePageChange}
+        />
+      </Flex>
     </>
   )
 }

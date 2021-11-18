@@ -188,7 +188,7 @@ export default function CollectionView() {
               </Text>
             </Flex>
           </Flex>
-          <Text variant="large" sx={{ textTransform: 'uppercase' }}>
+          <Text variant="large" sx={{ textTransform: 'uppercase', fontWeight: 400 }}>
             General Stats
           </Text>
           <Grid columns="repeat(auto-fit, minmax(100px, 1fr))" sx={{ gap: 4 }}>
@@ -218,7 +218,12 @@ export default function CollectionView() {
           </Text>
         </Flex>
       </Grid>
-
+      <Text variant="large" sx={{ textTransform: 'uppercase', fontWeight: 400, marginTop: '20px' }}>
+        {name}
+      </Text>
+      <Text variant="h2Primary" sx={{ textTransform: 'uppercase', fontWeight: 400, marginTop: '-15px' }}>
+        sales this month
+      </Text>
       {scatterChart}
 
       <Flex sx={{ flexDirection: 'column', flexGrow: 1, gap: 5 }}>
