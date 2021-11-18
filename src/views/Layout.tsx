@@ -1,7 +1,7 @@
 import { useWeb3React } from '@web3-react/core'
 import { connectorsByName } from 'constants/connectors'
 import { ethers } from 'ethers'
-import { useInactiveListener } from 'hooks/web3'
+import { useEagerConnect, useInactiveListener } from 'hooks/web3'
 import { useEffect, useState } from 'react'
 import { useAppSelector } from 'redux/hooks'
 import { useAppDispatch } from 'redux/hooks'
@@ -85,12 +85,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     fetchEns(account)
   }, [account, library])
 
-  // Eagerly connect to the Injected provider, if it exists and has granted access.
-  // const triedEager = useEagerConnect()
+  // Eagerly connect to the Injected provider, if granted access and authenticated in redux.
+  const triedEager = useEagerConnect(address)
 
   // React to Injected provider events, if it exists.
-  // useInactiveListener(!triedEager || !!activatingConnector)
-  useInactiveListener(!!activatingConnector)
+  useInactiveListener(!triedEager || !!activatingConnector)
 
   return <>{children}</>
 }
