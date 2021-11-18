@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { useBreakpointIndex } from '@theme-ui/match-media'
+import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { InputRoundedSearch, Pagination } from '@upshot-tech/upshot-ui'
 import {
@@ -28,10 +28,9 @@ import {
   GetExploreNFTsVars,
 } from '../queries'
 import Collectors from './ExplorePanel/Collectors'
-import TopCollectors from './ExplorePanel/TopCollectors'
 import ExploreNFTs from './ExplorePanel/NFTs'
 import TopCollections from './ExplorePanel/TopCollections'
-
+import TopCollectors from './ExplorePanel/TopCollectors'
 
 function searchForm(handleSearch, searchTerm, searchTermRef, handleChange) {
   return (
@@ -91,7 +90,8 @@ function ExplorePanelHead({
   }
 
   const dropdownOptions = ['NFTs', 'Collectors']
-  if (!router.pathname.includes('/collection')) // if page is not collection page
+  if (!router.pathname.includes('/collection'))
+    // if page is not collection page
     dropdownOptions.push('Collections')
 
   return (
@@ -142,13 +142,10 @@ function ExplorePanelHead({
             {searchForm(handleSearch, searchTerm, searchTermRef, handleChange)}
           </Flex>
         )}
-
       </Flex>
     </>
   )
 }
-
-
 
 export default function ExplorePanel({
   collectionId,
@@ -173,18 +170,14 @@ export default function ExplorePanel({
           {...{ searchTerm, tab }}
         />
         <Box sx={{ paddingTop: isMobile && tab === 'NFTs' ? '110px' : '70px' }}>
-          { tab === 'NFTs' && (
+          {tab === 'NFTs' && (
             <ExploreNFTs searchTerm={searchTerm} collectionId={collectionId} />
           )}
-          { tab === 'Collectors' && !collectionId &&(
-            <TopCollectors />
-          )}
-          { tab === 'Collectors' && !!collectionId && (
+          {tab === 'Collectors' && !collectionId && <TopCollectors />}
+          {tab === 'Collectors' && !!collectionId && (
             <Collectors id={collectionId} name={collectionName} />
           )}
-          { tab === 'Collections' && (
-            <TopCollections />
-          )}          
+          {tab === 'Collections' && <TopCollections />}
         </Box>
       </Flex>
     </Panel>
