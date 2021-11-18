@@ -59,7 +59,7 @@ export default function CollectionAvgPricePanel({
 
   useEffect(() => {
     if (data && !selectedCollections.length) {
-      const defaultSelected = data.orderedCollectionsByMetricSearch
+      const defaultSelected = data.orderedCollectionsByMetricSearch.assetSets
         .slice(0, 3)
         .map((val) => val.id)
       setSelectedCollections(defaultSelected)
@@ -99,7 +99,7 @@ export default function CollectionAvgPricePanel({
       </CollectionPanel>
     )
 
-  if (!data?.orderedCollectionsByMetricSearch.length)
+  if (!data?.orderedCollectionsByMetricSearch.assetSets.length)
     return (
       <CollectionPanel {...{ title, subtitle }}>
         No results available.
@@ -114,7 +114,7 @@ export default function CollectionAvgPricePanel({
       onSearch={handleSearch}
       {...{ title, subtitle }}
     >
-      {data.orderedCollectionsByMetricSearch.map(
+      {data.orderedCollectionsByMetricSearch.assetSets.map(
         ({ id, name, imageUrl, average, floor, volume }, index) => (
           <Flex
             key={index}
