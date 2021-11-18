@@ -1,6 +1,6 @@
 /** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
-import { useBreakpointIndex } from '@theme-ui/match-media'
+import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Flex, Image, Text } from '@upshot-tech/upshot-ui'
 import {
   Box,
@@ -72,7 +72,8 @@ export default function CollectionAvgPricePanel({
       : `Collections by ${
           metric.charAt(0) + metric.slice(1).toLowerCase()
         } Price`
-  const subtitle = 'Select collections to add them to the chart, or click icons to see more'
+  const subtitle =
+    'Select collections to add them to the chart, or click icons to see more'
 
   if (error)
     return (

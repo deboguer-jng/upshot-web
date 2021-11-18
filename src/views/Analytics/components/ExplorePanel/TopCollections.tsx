@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { useBreakpointIndex } from '@theme-ui/match-media'
+import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { InputRoundedSearch, Pagination } from '@upshot-tech/upshot-ui'
 import {
@@ -116,17 +116,7 @@ export default function ExploreNFTs({
         <CollectionTableHead />
         <TableBody>
           {data.orderedCollectionsByMetricSearch.map(
-            (
-              {
-                id,
-                name,
-                imageUrl,
-                average,
-                floor,
-                totalVolume,
-              },
-              idx
-            ) => (
+            ({ id, name, imageUrl, average, floor, totalVolume }, idx) => (
               <CollectionRow
                 dark
                 title={name}
@@ -142,12 +132,8 @@ export default function ExploreNFTs({
                         alignItems: 'flex-end',
                       }}
                     >
-                      <Flex>
-                        Avg: {weiToEth(average)}
-                      </Flex>
-                      <Flex>
-                        Vol: {weiToEth(totalVolume, 0)}
-                      </Flex>
+                      <Flex>Avg: {weiToEth(average)}</Flex>
+                      <Flex>Vol: {weiToEth(totalVolume, 0)}</Flex>
                     </Flex>
                   </TableCell>
                 ) : (
@@ -168,7 +154,7 @@ export default function ExploreNFTs({
           )}
         </TableBody>
       </CollectionTable>
-{/*       <Flex sx={{ justifyContent: 'center', marginTop: '10px' }}>
+      {/*       <Flex sx={{ justifyContent: 'center', marginTop: '10px' }}>
         <Pagination
           forcePage={page}
           pageCount={Math.ceil(data.orderedCollectionsByMetricSearch.count / PAGE_SIZE)}

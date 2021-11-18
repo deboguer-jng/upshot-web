@@ -1,6 +1,6 @@
 /** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
-import { useBreakpointIndex } from '@theme-ui/match-media'
+import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Container } from '@upshot-tech/upshot-ui'
 import { Flex, Footer, Grid, Image, Text } from '@upshot-tech/upshot-ui'
 import {
