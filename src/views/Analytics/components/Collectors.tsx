@@ -10,9 +10,6 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { PAGE_SIZE } from 'constants/'
-import { format, formatDistance } from 'date-fns'
-import makeBlockie from 'ethereum-blockies-base64'
-import { formatUsername } from 'utils/address'
 
 import {
   GET_COLLECTORS,
@@ -51,13 +48,11 @@ export default function Collectors({
     return (
       <CollectorAccordion>
         {[...new Array(PAGE_SIZE)].map((_, idx) => (
-          <CollectorAccordionRow key={idx}>
-            <Skeleton sx={{ height: 56 }} as="tr" key={idx}>
-              <TableCell colSpan={5}>
-                <Box sx={{ height: 40, width: '100%' }} />
-              </TableCell>
-            </Skeleton>
-          </CollectorAccordionRow>
+          <Skeleton sx={{ height: 56 }} as="tr" key={idx}>
+            <TableCell colSpan={5}>
+              <Box sx={{ height: 40, width: '100%' }} />
+            </TableCell>
+          </Skeleton>
         ))}
       </CollectorAccordion>
     )
