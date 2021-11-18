@@ -61,8 +61,14 @@ function Layout({ children }: { children: React.ReactNode }) {
         <meta name="twitter:creator" content="@UpshotHQ" />
         <meta property="og:url" content="https://upshot.io" />
         <meta property="og:title" content="Upshot Analytics" />
-        <meta property="og:description" content="" />
-        <meta property="og:image" content="https://upshot.io/img/opengraph/" />
+        <meta
+          property="og:description"
+          content="NFTs offer us a vehicle for tokenizing anything, while the explosive growth of DeFi has demonstrated the power of permissionless financial primitives. Upshot is building scalable NFT pricing infrastructure at the intersection of DeFi x NFTs. Through a combination of crowdsourced appraisals and proprietary machine learning algorithms, Upshot provides deep insight into NFT markets and unlocks a wave of exotic new DeFi possibilities."
+        />
+        <meta
+          property="og:image"
+          content="https://upshot.io/img/opengraph/opengraph_collection.jpg"
+        />
       </Head>
       <Container
         p={4}
@@ -188,7 +194,10 @@ export default function CollectionView() {
               </Text>
             </Flex>
           </Flex>
-          <Text variant="large" sx={{ textTransform: 'uppercase', fontWeight: 400 }}>
+          <Text
+            variant="large"
+            sx={{ textTransform: 'uppercase', fontWeight: 400 }}
+          >
             General Stats
           </Text>
           <Grid columns="repeat(auto-fit, minmax(100px, 1fr))" sx={{ gap: 4 }}>
@@ -218,10 +227,16 @@ export default function CollectionView() {
           </Text>
         </Flex>
       </Grid>
-      <Text variant="large" sx={{ textTransform: 'uppercase', fontWeight: 400, marginTop: '20px' }}>
+      <Text
+        variant="large"
+        sx={{ textTransform: 'uppercase', fontWeight: 400, marginTop: '20px' }}
+      >
         {name}
       </Text>
-      <Text variant="h2Primary" sx={{ textTransform: 'uppercase', fontWeight: 400, marginTop: '-15px' }}>
+      <Text
+        variant="h2Primary"
+        sx={{ textTransform: 'uppercase', fontWeight: 400, marginTop: '-15px' }}
+      >
         sales this month
       </Text>
       {scatterChart}

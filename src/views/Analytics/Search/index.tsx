@@ -382,8 +382,14 @@ export default function SearchView() {
         <meta name="twitter:creator" content="@UpshotHQ" />
         <meta property="og:url" content="https://upshot.io" />
         <meta property="og:title" content="Upshot Analytics" />
-        <meta property="og:description" content="" />
-        <meta property="og:image" content="https://upshot.io/img/opengraph/" />
+        <meta
+          property="og:description"
+          content="NFTs offer us a vehicle for tokenizing anything, while the explosive growth of DeFi has demonstrated the power of permissionless financial primitives. Upshot is building scalable NFT pricing infrastructure at the intersection of DeFi x NFTs. Through a combination of crowdsourced appraisals and proprietary machine learning algorithms, Upshot provides deep insight into NFT markets and unlocks a wave of exotic new DeFi possibilities."
+        />
+        <meta
+          property="og:image"
+          content="https://upshot.io/img/opengraph/opengraph_search.jpg"
+        />
       </Head>
       <Flex sx={{ minHeight: '100vh', flexDirection: 'column' }}>
         <Container
