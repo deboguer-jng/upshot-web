@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { useBreakpointIndex } from '@theme-ui/match-media'
+import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import {
   Box,
   CollectorAccordion,
@@ -17,7 +17,6 @@ import { PAGE_SIZE, PIXELATED_CONTRACTS } from 'constants/'
 import makeBlockie from 'ethereum-blockies-base64'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import { formatUsername } from 'utils/address'
 import { shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
 import { weiToEth } from 'utils/number'
@@ -72,12 +71,9 @@ export default function TopCollectors() {
         {data.getOwnersByWhaleness['owners'].map(
           ({ username, addresses, ownedAssets }, idx) => (
             <CollectorAccordionRow
-              avatarImageUrl={
-                addresses?.[0] ? makeBlockie(addresses[0]) : undefined
-              }
-              name={formatUsername(username ?? addresses?.[0] ?? 'Unknown')}
-              // portfolioValue='soon'
+              address={addresses?.[0]}
               key={idx}
+              {...{ username }}
             >
               <div style={{ display: 'grid' }}>
                 <Text sx={{ fontSize: 4, fontWeight: 'heading' }}>

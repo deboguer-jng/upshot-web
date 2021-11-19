@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { useBreakpointIndex } from '@theme-ui/match-media'
+import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Button, Container, Footer } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Grid, MiniNftCard, Text } from '@upshot-tech/upshot-ui'
 import {
@@ -214,7 +214,9 @@ export default function SearchView() {
         </Box>
 
         <Box sx={{ paddingTop: [5, 5, 0] }}>
-          <Button capitalize onClick={handleApplyFilters}>Apply Filters</Button>
+          <Button capitalize onClick={handleApplyFilters}>
+            Apply Filters
+          </Button>
         </Box>
       </>
     )
@@ -230,16 +232,16 @@ export default function SearchView() {
           alignSelf: 'flex-start',
           flexDirection: 'column',
           gap: 8,
-          width: '100%'
+          width: '100%',
         }}
       >
         {isMobile ? (
           <>
-          <Box>
-            <Accordion isDropdown title="Search Filters">
-              {searchFilters()}
-            </Accordion>
-          </Box>
+            <Box>
+              <Accordion isDropdown title="Search Filters">
+                {searchFilters()}
+              </Accordion>
+            </Box>
           </>
         ) : (
           <>

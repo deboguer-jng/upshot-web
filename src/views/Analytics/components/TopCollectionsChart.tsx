@@ -59,12 +59,12 @@ export default function TopCollectionsCharts({
   // if (error) return <Chart error />
 
   /* No results state. */
-  if (!data?.orderedCollectionsByMetricSearch?.length) return <Chart noData />
+  if (!data?.orderedCollectionsByMetricSearch?.assetSets?.length) return <Chart noData />
 
   /* No selected state. */
   if (!selectedCollections.length) return <Chart noSelected />
 
-  const assetSets = data.orderedCollectionsByMetricSearch.filter(
+  const assetSets = data.orderedCollectionsByMetricSearch.assetSets.filter(
     ({ timeSeries }) => timeSeries?.length
   )
   if (!assetSets?.length) return <Chart noData />
