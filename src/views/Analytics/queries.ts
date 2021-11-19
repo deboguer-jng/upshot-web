@@ -15,29 +15,31 @@ export type TimeSeries = {
 
 export type GetTopCollectionsData = {
   orderedCollectionsByMetricSearch: {
-    name: string
-    id: number
-    athAverage: {
-      value: string
-    }
-    atlAverage: {
-      value: string
-    }
-    athFloor: {
-      value: string
-    }
-    atlFloor: {
-      value: string
-    }
-    athVolume: {
-      value: string
-    }
-    atlVolume: {
-      value: string
-    }
-    timeSeries?: TimeSeries[]
-    sevenDayMCChange: number
-  }[]
+    assetSets: {
+      name: string
+      id: number
+      athAverage: {
+        value: string
+      }
+      atlAverage: {
+        value: string
+      }
+      athFloor: {
+        value: string
+      }
+      atlFloor: {
+        value: string
+      }
+      athVolume: {
+        value: string
+      }
+      atlVolume: {
+        value: string
+      }
+      timeSeries?: TimeSeries[]
+      sevenDayMCChange: number
+    }[]
+  }
 }
 
 export const GET_TOP_COLLECTIONS = gql`
@@ -50,33 +52,35 @@ export const GET_TOP_COLLECTIONS = gql`
       stringifiedCollectionIds: $stringifiedCollectionIds
       limit: 3
     ) {
-      name
-      id
-      athAverage {
-        value
+      assetSets {
+        name
+        id
+        athAverage {
+          value
+        }
+        atlAverage {
+          value
+        }
+        athFloor {
+          value
+        }
+        atlFloor {
+          value
+        }
+        athVolume {
+          value
+        }
+        atlVolume {
+          value
+        }
+        timeSeries {
+          timestamp
+          average
+          marketCap
+          floor
+        }
+        sevenDayMCChange
       }
-      atlAverage {
-        value
-      }
-      athFloor {
-        value
-      }
-      atlFloor {
-        value
-      }
-      athVolume {
-        value
-      }
-      atlVolume {
-        value
-      }
-      timeSeries {
-        timestamp
-        average
-        marketCap
-        floor
-      }
-      sevenDayMCChange
     }
   }
 `
@@ -93,13 +97,15 @@ export type GetCollectionAvgPriceVars = {
 
 export type GetCollectionAvgPriceData = {
   orderedCollectionsByMetricSearch: {
-    id: number
-    name?: string
-    imageUrl?: string
-    average?: string
-    floor?: string
-    volume?: string
-  }[]
+    assetSets: {
+      id: number
+      name?: string
+      imageUrl?: string
+      average?: string
+      floor?: string
+      volume?: string
+    }[]
+  }
 }
 
 export const GET_COLLECTION_AVG_PRICE = gql`
@@ -113,12 +119,14 @@ export const GET_COLLECTION_AVG_PRICE = gql`
       limit: $limit
       name: $name
     ) {
-      id
-      name
-      imageUrl
-      average
-      floor
-      volume
+      assetSets {
+        id
+        name
+        imageUrl
+        average
+        floor
+        volume
+      }
     }
   }
 `
@@ -210,6 +218,56 @@ export type GetTopSalesData = {
     }
   }[]
 }
+
+
+/**
+ * Get top collections for explore panel
+ * @see TopCollectionsChart
+ */
+
+export type GetExploreCollectionsVars = {
+  metric: string
+  limit: number
+  offset: number
+}
+ 
+export type GetExploreCollectionsData = {
+  orderedCollectionsByMetricSearch: {
+    count: number
+    assetSets: {
+      id: number
+      name: string
+      imageUrl?: string
+      average: string
+      floor: string
+      totalVolume: string
+    }[]
+  }
+}
+ 
+export const GET_EXPLORE_COLLECTIONS = gql`
+  query GetTopCollections(
+    $metric: EOrderedAssetSetMetric!
+    $limit: OneToHundredInt!
+    $offset: Int!
+  ) {
+    orderedCollectionsByMetricSearch(
+      metric: $metric
+      limit: $limit
+      offset: $offset
+    ) {
+      count
+      assetSets {
+        id
+        name
+        imageUrl
+        average
+        floor
+        totalVolume
+      }
+     }
+   }
+ ` 
 
 export const GET_TOP_SALES = gql`
   query TopSales(

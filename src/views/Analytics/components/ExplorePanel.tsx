@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { useBreakpointIndex } from '@theme-ui/match-media'
+import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { InputRoundedSearch, Pagination } from '@upshot-tech/upshot-ui'
 import {
@@ -27,10 +27,10 @@ import {
   GetExploreNFTsData,
   GetExploreNFTsVars,
 } from '../queries'
-import Collectors from './Collectors'
-import TopCollectors from './ExplorePanel/TopCollectors'
+import Collectors from './ExplorePanel/Collectors'
 import ExploreNFTs from './ExplorePanel/NFTs'
-
+import TopCollections from './ExplorePanel/TopCollections'
+import TopCollectors from './ExplorePanel/TopCollectors'
 
 function searchForm(handleSearch, searchTerm, searchTermRef, handleChange) {
   return (
@@ -89,6 +89,11 @@ function ExplorePanelHead({
     )
   }
 
+  const dropdownOptions = ['NFTs', 'Collectors']
+  if (!router.pathname.includes('/collection'))
+    // if page is not collection page
+    dropdownOptions.push('Collections')
+
   return (
     <>
       <Flex
@@ -100,8 +105,7 @@ function ExplorePanelHead({
           position: 'absolute',
           width: '100%',
           zIndex: 2,
-          background:
-            'linear-gradient(180deg, #231F20 60.42%, rgba(35, 31, 32, 0) 100%)',
+          background: '#231F20',
         }}
       >
         <Flex sx={{ flexDirection: 'column' }}>
@@ -113,7 +117,7 @@ function ExplorePanelHead({
             <SwitchDropdown
               onChange={(val) => onChangeTab?.(val)}
               value={tab ?? ''}
-              options={['NFTs', 'Collectors']}
+              options={dropdownOptions}
             />
           </Flex>
         </Flex>
@@ -138,13 +142,10 @@ function ExplorePanelHead({
             {searchForm(handleSearch, searchTerm, searchTermRef, handleChange)}
           </Flex>
         )}
-
       </Flex>
     </>
   )
 }
-
-
 
 export default function ExplorePanel({
   collectionId,
@@ -169,15 +170,14 @@ export default function ExplorePanel({
           {...{ searchTerm, tab }}
         />
         <Box sx={{ paddingTop: isMobile && tab === 'NFTs' ? '110px' : '70px' }}>
-          { tab === 'NFTs' && (
+          {tab === 'NFTs' && (
             <ExploreNFTs searchTerm={searchTerm} collectionId={collectionId} />
           )}
-          { tab === 'Collectors' && !collectionId &&(
-            <TopCollectors />
+          {tab === 'Collectors' && !collectionId && <TopCollectors />}
+          {tab === 'Collectors' && !!collectionId && (
+            <Collectors id={collectionId} name={collectionName} />
           )}
-          { tab === 'Collectors' && !!collectionId && (
-             <Collectors id={collectionId} name={collectionName} />
-          )}
+          {tab === 'Collections' && <TopCollections />}
         </Box>
       </Flex>
     </Panel>
