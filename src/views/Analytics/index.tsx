@@ -25,8 +25,11 @@ export default function AnalyticsView() {
         selectedCollections.filter((_id) => _id !== id)
       )
     }
-    if (selectedCollections.length === 3) return
-    setSelectedCollections([...selectedCollections, id])
+    if (selectedCollections.length === 3) {
+      setSelectedCollections([...selectedCollections.slice(1, 3), id])
+    } else {
+      setSelectedCollections([...selectedCollections, id])
+    }
   }
 
   return (
