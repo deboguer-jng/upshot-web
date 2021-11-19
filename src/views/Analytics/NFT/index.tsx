@@ -251,6 +251,21 @@ export default function NFTView() {
                     />
                   </a>
                 )}
+                {contractAddress ===
+                  '0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB' && (
+                  <a
+                    href={`https://www.larvalabs.com/cryptopunks/details/${tokenId}`}
+                    target="_blank"
+                    sx={{ marginLeft: '13px' }}
+                    rel="noreferrer"
+                  >
+                    <Icon
+                      icon="openLink"
+                      color="primary"
+                      sx={{ width: 20, height: 20 }}
+                    />
+                  </a>
+                )}
               </Flex>
             </Flex>
           </Flex>
