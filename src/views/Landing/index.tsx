@@ -11,31 +11,35 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { Nav } from 'components/Nav'
 import Head from 'next/head'
-import { Image,Link } from 'theme-ui'
+import { Image, Link } from 'theme-ui'
 
 import { projects } from './content'
 import AnalyticsSVG from './panelBackgrounds/Analytics.svg'
 import UpshotOneSVG from './panelBackgrounds/UpshotOne.svg'
 
 type PanelData = {
-  projectType: string,
-  title: string,
-  description: string,
-  image: any,
-  url: string,
+  projectType: string
+  title: string
+  description: string
+  image: any
+  url: string
 }
 
 // Render function for Discover panels
 function renderLandingPanel(data: PanelData) {
   return (
-    <Link href={data.url} target='_blank' sx={{
-      color: 'initial',
-      textDecoration: 'none',
-      display: 'grid',
-      '&:hover': {
+    <Link
+      href={data.url}
+      target="_blank"
+      sx={{
+        color: 'initial',
         textDecoration: 'none',
-      }
-    }}>
+        display: 'grid',
+        '&:hover': {
+          textDecoration: 'none',
+        },
+      }}
+    >
       <LandingPanel
         projectType={data.projectType}
         title={data.title}
@@ -50,7 +54,20 @@ export default function LandingView() {
   return (
     <>
       <Head>
-        <title>Upshot</title>
+        <title>Upshot: Where NFTs meet DeFi</title>
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@UpshotHQ" />
+        <meta name="twitter:creator" content="@UpshotHQ" />
+        <meta property="og:url" content="https://upshot.io" />
+        <meta property="og:title" content="Upshot: Where NFTs meet DeFi" />
+        <meta
+          property="og:description"
+          content="NFTs offer us a vehicle for tokenizing anything, while the explosive growth of DeFi has demonstrated the power of permissionless financial primitives. Upshot is building scalable NFT pricing infrastructure at the intersection of DeFi x NFTs. Through a combination of crowdsourced appraisals and proprietary machine learning algorithms, Upshot provides deep insight into NFT markets and unlocks a wave of exotic new DeFi possibilities."
+        />
+        <meta
+          property="og:image"
+          content="https://upshot.io/img/opengraph/opengraph_analytics.jpg"
+        />
       </Head>
       <Container
         p={4}
@@ -70,17 +87,23 @@ export default function LandingView() {
             <Box>
               <Box>
                 <Box>
-                <Text variant="h0Primary" sx={{ fontSize: '50px' }}>
+                  <Text variant="h0Primary" sx={{ fontSize: '50px' }}>
                     Upshot: Where NFTs meet DeFi
                   </Text>
                 </Box>
                 <Box sx={{ marginTop: '30px' }}>
-                  <Text variant="h3Primary" sx={{ fontWeight: 'normal', lineHeight: '1.3em' }}>
-                    NFTs offer us a vehicle for tokenizing anything, while the explosive growth of DeFi has demonstrated 
-                    the power of permissionless financial primitives. Upshot is building scalable NFT pricing infrastructure 
-                    at the intersection of DeFi x NFTs. Through a combination of crowdsourced appraisals and proprietary machine 
-                    learning algorithms, Upshot provides deep insight into NFT markets and unlocks a wave of exotic 
-                    new DeFi possibilities.
+                  <Text
+                    variant="h3Primary"
+                    sx={{ fontWeight: 'normal', lineHeight: '1.3em' }}
+                  >
+                    NFTs offer us a vehicle for tokenizing anything, while the
+                    explosive growth of DeFi has demonstrated the power of
+                    permissionless financial primitives. Upshot is building
+                    scalable NFT pricing infrastructure at the intersection of
+                    DeFi x NFTs. Through a combination of crowdsourced
+                    appraisals and proprietary machine learning algorithms,
+                    Upshot provides deep insight into NFT markets and unlocks a
+                    wave of exotic new DeFi possibilities.
                   </Text>
                 </Box>
               </Box>
@@ -92,75 +115,97 @@ export default function LandingView() {
           Gain insight into NFT markets with our suite of tools.
         </Text>
         <Grid gap={5} columns={[1, 1, 2, 3]}>
-          <Link href='/analytics' rel="noopener noreferrer" sx={{
-            color: 'text',
-            textDecoration: 'none',
-            display: 'grid',
-            '&:hover': {
-              textDecoration: 'none'
-            }}}>
+          <Link
+            href="/analytics"
+            rel="noopener noreferrer"
+            sx={{
+              color: 'text',
+              textDecoration: 'none',
+              display: 'grid',
+              '&:hover': {
+                textDecoration: 'none',
+              },
+            }}
+          >
             <Panel
-              hoverUnderglow='pink'
+              hoverUnderglow="pink"
               sx={{
                 position: 'relative',
                 padding: '32px !important',
                 paddingRight: '88px !important',
-                background: 'linear-gradient(229.88deg, rgba(236, 91, 148, 0.18) 14.66%, rgba(236, 91, 148, 0.18) 14.66%, rgba(236, 91, 148, 0) 100.35%), #231F20',
+                background:
+                  'linear-gradient(229.88deg, rgba(236, 91, 148, 0.18) 14.66%, rgba(236, 91, 148, 0.18) 14.66%, rgba(236, 91, 148, 0) 100.35%), #231F20',
                 '&:hover img': {
                   opacity: '1',
-                }
-              }} >
-              <Image src={AnalyticsSVG.src} sx={{
-                opacity: '0.3',
-                position: 'absolute',
-                left: '0',
-                top: '0',
-                width: '100%',
-                height: 'auto',
-                objectFit: 'cover',
-              }}></Image>
+                },
+              }}
+            >
+              <Image
+                src={AnalyticsSVG.src}
+                sx={{
+                  opacity: '0.3',
+                  position: 'absolute',
+                  left: '0',
+                  top: '0',
+                  width: '100%',
+                  height: 'auto',
+                  objectFit: 'cover',
+                }}
+              ></Image>
               <div style={{ position: 'relative' }}>
-                <Text variant='h1Secondary'>
-                  Analytics
-                </Text>
-                <Text variant='large' sx={{ paddingTop: '60px', display: 'block' }}>
+                <Text variant="h1Secondary">Analytics</Text>
+                <Text
+                  variant="large"
+                  sx={{ paddingTop: '60px', display: 'block' }}
+                >
                   Discover the world of NFTs using powerful data.
                 </Text>
               </div>
             </Panel>
           </Link>
-          <Link href='https://upshot.gitbook.io/upshot-api/' rel="noopener noreferrer" sx={{
-            color: 'text',
-            textDecoration: 'none',
-            display: 'grid',
-            '&:hover': {
-              textDecoration: 'none'
-            }}}>
+          <Link
+            href="https://upshot.gitbook.io/upshot-api/"
+            rel="noopener noreferrer"
+            sx={{
+              color: 'text',
+              textDecoration: 'none',
+              display: 'grid',
+              '&:hover': {
+                textDecoration: 'none',
+              },
+            }}
+          >
             <Panel
-              hoverUnderglow='blue'
+              hoverUnderglow="blue"
               sx={{
                 position: 'relative',
                 padding: '32px !important',
                 paddingRight: '88px !important',
-                background: 'linear-gradient(229.88deg, rgba(0, 145, 255, 0.3) 14.66%, rgba(0, 145, 255, 0) 100.35%), #231F20',
+                background:
+                  'linear-gradient(229.88deg, rgba(0, 145, 255, 0.3) 14.66%, rgba(0, 145, 255, 0) 100.35%), #231F20',
                 '&:hover img': {
                   opacity: '1',
-                }
-              }}>
-              <Image src={UpshotOneSVG.src} sx={{
-                opacity: '0.3',
-                position: 'absolute',
-                right: '0',
-                top: '0',
-                width: 'auto',
-                height: '50%',
-                objectFit: 'cover',
-              }}></Image>
+                },
+              }}
+            >
+              <Image
+                src={UpshotOneSVG.src}
+                sx={{
+                  opacity: '0.3',
+                  position: 'absolute',
+                  right: '0',
+                  top: '0',
+                  width: 'auto',
+                  height: '50%',
+                  objectFit: 'cover',
+                }}
+              ></Image>
               <div style={{ position: 'relative' }}>
-                <Text variant='h1Secondary'>
-                  Upshot API
-                </Text>
-                <Text variant='large' sx={{ paddingTop: '60px', display: 'block' }}>
+                <Text variant="h1Secondary">Upshot API</Text>
+                <Text
+                  variant="large"
+                  sx={{ paddingTop: '60px', display: 'block' }}
+                >
                   Integrate Upshot data into your project.
                 </Text>
               </div>
@@ -187,69 +232,85 @@ export default function LandingView() {
             >
               Additional Resources
             </Text>
-            <Link href={'https://blog.upshot.io'} target='_blank' sx={{
-              color: 'initial',
-              textDecoration: 'none',
-              display: 'grid',
-              '&:hover': {
+            <Link
+              href={'https://blog.upshot.io'}
+              target="_blank"
+              sx={{
+                color: 'initial',
                 textDecoration: 'none',
-              }
-            }}>
+                display: 'grid',
+                '&:hover': {
+                  textDecoration: 'none',
+                },
+              }}
+            >
               <LandingPanel
                 title="Blog"
                 description="Check out our blog"
                 showLinkIcon={true}
-                hoverUnderglow='blue'
+                hoverUnderglow="blue"
               />
             </Link>
-            <Link href={'https://jobs.lever.co/upshot.io'} target='_blank' sx={{
-              color: 'initial',
-              textDecoration: 'none',
-              display: 'grid',
-              '&:hover': {
+            <Link
+              href={'https://jobs.lever.co/upshot.io'}
+              target="_blank"
+              sx={{
+                color: 'initial',
                 textDecoration: 'none',
-              }
-            }}>
+                display: 'grid',
+                '&:hover': {
+                  textDecoration: 'none',
+                },
+              }}
+            >
               <LandingPanel
                 title="Careers"
                 description="Join our team"
                 showLinkIcon={true}
-                hoverUnderglow='blue'
+                hoverUnderglow="blue"
               />
             </Link>
-            <Link href={'https://discord.gg/upshot'} target='_blank' sx={{
-              color: 'initial',
-              textDecoration: 'none',
-              display: 'grid',
-              '&:hover': {
+            <Link
+              href={'https://discord.gg/upshot'}
+              target="_blank"
+              sx={{
+                color: 'initial',
                 textDecoration: 'none',
-              }
-            }}>
+                display: 'grid',
+                '&:hover': {
+                  textDecoration: 'none',
+                },
+              }}
+            >
               <LandingPanel
                 title="Discord"
                 description="Become a part of the community"
                 showLinkIcon={true}
-                hoverUnderglow='blue'
+                hoverUnderglow="blue"
               />
             </Link>
-            <Link href={'https://twitter.com/UpshotHQ'} target='_blank' sx={{
-              color: 'initial',
-              textDecoration: 'none',
-              display: 'grid',
-              '&:hover': {
+            <Link
+              href={'https://twitter.com/UpshotHQ'}
+              target="_blank"
+              sx={{
+                color: 'initial',
                 textDecoration: 'none',
-              }
-            }}>
+                display: 'grid',
+                '&:hover': {
+                  textDecoration: 'none',
+                },
+              }}
+            >
               <LandingPanel
                 title="Twitter"
                 description="Follow us on Twitter"
                 showLinkIcon={true}
-                hoverUnderglow='blue'
+                hoverUnderglow="blue"
               />
             </Link>
           </Grid>
         </Grid>
-        
+
         <Text variant="h2Primary">Discover</Text>
         <Text variant="xLarge" color="grey-500">
           Explore innovative products at the intersection of DeFi x NFTs.
@@ -259,33 +320,33 @@ export default function LandingView() {
         <Grid gap={2} columns={[1, 1, 1, 2]}>
           <Grid gap={2} sx={{ flexDirection: 'column' }}>
             <Grid gap={2} columns={[1, 1, '10fr 6fr']}>
-              { renderLandingPanel(projects[0]) }
+              {renderLandingPanel(projects[0])}
               <Grid gap={2} sx={{ flexDirection: 'column' }}>
-                { renderLandingPanel(projects[1]) }
-                { renderLandingPanel(projects[2]) }
+                {renderLandingPanel(projects[1])}
+                {renderLandingPanel(projects[2])}
               </Grid>
             </Grid>
             <Grid gap={2} columns={[1, 1, '6fr 10fr']}>
               <Grid gap={2} sx={{ flexDirection: 'column' }}>
-                { renderLandingPanel(projects[3]) }
-                { renderLandingPanel(projects[4]) }
+                {renderLandingPanel(projects[3])}
+                {renderLandingPanel(projects[4])}
               </Grid>
-              { renderLandingPanel(projects[5]) }
+              {renderLandingPanel(projects[5])}
             </Grid>
           </Grid>
           <Grid gap={2} sx={{ flexDirection: 'column' }}>
             <Grid gap={2} columns={[1, 1, '6fr 10fr']}>
               <Grid gap={2} sx={{ flexDirection: 'column' }}>
-                { renderLandingPanel(projects[6]) }
-                { renderLandingPanel(projects[7]) }
+                {renderLandingPanel(projects[6])}
+                {renderLandingPanel(projects[7])}
               </Grid>
-              { renderLandingPanel(projects[8]) }
+              {renderLandingPanel(projects[8])}
             </Grid>
             <Grid gap={2} columns={[1, 1, '10fr 6fr']}>
-              { renderLandingPanel(projects[9]) }
+              {renderLandingPanel(projects[9])}
               <Grid gap={2} sx={{ flexDirection: 'column' }}>
-                { renderLandingPanel(projects[10]) }
-                { renderLandingPanel(projects[11]) }
+                {renderLandingPanel(projects[10])}
+                {renderLandingPanel(projects[11])}
               </Grid>
             </Grid>
           </Grid>
