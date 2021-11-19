@@ -140,12 +140,9 @@ export default function NFTView() {
     mediaUrl,
     collection,
     tokenId,
-    priceChangeFromFirstSale,
-    firstSale,
     traits,
     lastSale,
     latestAppraisal,
-    avgResalePrice,
     txHistory,
     appraisalHistory,
     creatorAvatar,
@@ -153,18 +150,6 @@ export default function NFTView() {
     creatorUsername,
     contractAddress,
   } = data.assetById
-
-  const salesSeries = txHistory
-    .filter(({ price, type }) => type === 'SALE' && price)
-    .map(({ price, txAt }) => [
-      txAt * 1000,
-      parseFloat(ethers.utils.formatEther(price)),
-    ])
-
-  // Temporarily reversed here, but should be done
-  // on the backend and removed here ASAP to support
-  // pagination.
-  const reversedTxHistory = [...txHistory].reverse()
 
   const appraisalSeries = appraisalHistory.map(
     ({ timestamp, estimatedPrice }) => [
@@ -618,7 +603,7 @@ export default function NFTView() {
                   >
                     <Text variant="h3Secondary">Transaction History</Text>
                   </Flex>
-                  {reversedTxHistory.length > 0 && (
+                  {txHistory.length > 0 && (
                     <Table sx={{ borderSpacing: '0 10px' }}>
                       <TableHead>
                         <TableRow>
@@ -634,7 +619,7 @@ export default function NFTView() {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {reversedTxHistory.map(
+                        {txHistory.map(
                           (
                             {
                               type,
@@ -724,7 +709,7 @@ export default function NFTView() {
                       </TableBody>
                     </Table>
                   )}
-                  {reversedTxHistory.length == 0 && (
+                  {txHistory.length == 0 && (
                     <Text sx={{ color: 'grey-500' }}>
                       This asset hasn’t been sold or transferred yet.
                     </Text>
