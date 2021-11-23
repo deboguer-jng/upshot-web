@@ -148,7 +148,7 @@ export default function ExploreNFTs({
               idx
             ) => (
               <CollectionRow
-                dark
+                variant="black"
                 title={name}
                 imageSrc={previewImageUrl ?? mediaUrl}
                 key={idx}

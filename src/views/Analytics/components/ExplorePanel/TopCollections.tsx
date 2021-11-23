@@ -118,7 +118,7 @@ export default function ExploreNFTs({
           {data.orderedCollectionsByMetricSearch.assetSets.map(
             ({ id, name, imageUrl, average, floor, totalVolume }, idx) => (
               <CollectionRow
-                dark
+                variant="black"
                 title={name}
                 imageSrc={imageUrl!}
                 key={idx}
@@ -157,7 +157,9 @@ export default function ExploreNFTs({
       <Flex sx={{ justifyContent: 'center', marginTop: '10px' }}>
         <Pagination
           forcePage={page}
-          pageCount={Math.ceil(data.orderedCollectionsByMetricSearch.count / PAGE_SIZE)}
+          pageCount={Math.ceil(
+            data.orderedCollectionsByMetricSearch.count / PAGE_SIZE
+          )}
           pageRangeDisplayed={0}
           marginPagesDisplayed={0}
           onPageChange={handlePageChange}
