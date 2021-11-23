@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { useBreakpointIndex } from '@theme-ui/match-media'
+import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { InputRoundedSearch, Pagination } from '@upshot-tech/upshot-ui'
 import {
@@ -126,7 +126,7 @@ export default function ExploreNFTs({
   /* Error state. */
   if (error) return <div>There was an error completing your request.</div>
 
-  if (!data?.assetGlobalSearch.assets.length)
+  if (!data?.assetGlobalSearch?.assets?.length)
     return <div>No results available.</div>
 
   return (

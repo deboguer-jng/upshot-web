@@ -1,4 +1,4 @@
-import { useBreakpointIndex } from '@theme-ui/match-media'
+import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Button, Flex, Scroll } from '@upshot-tech/upshot-ui'
 import { useState } from 'react'
 

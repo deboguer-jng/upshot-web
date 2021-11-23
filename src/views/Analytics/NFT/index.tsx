@@ -1,6 +1,6 @@
 /** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
-import { useBreakpointIndex } from '@theme-ui/match-media'
+import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Container } from '@upshot-tech/upshot-ui'
 import { Flex, Footer, Grid, Image, Text } from '@upshot-tech/upshot-ui'
 import {
@@ -20,15 +20,17 @@ import {
   TableHead,
   TableRow,
 } from '@upshot-tech/upshot-ui'
+import { FormattedENS } from 'components/FormattedENS'
 import { Nav } from 'components/Nav'
-import { PIXELATED_CONTRACTS } from 'constants/'
+import { ART_BLOCKS_CONTRACTS, PIXELATED_CONTRACTS } from 'constants/'
 import { format } from 'date-fns'
+import makeBlockie from 'ethereum-blockies-base64'
 import { ethers } from 'ethers'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { shortenAddress } from 'utils/address'
+import { fetchEns, shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
 import { getPriceChangeColor } from 'utils/color'
 import { formatCurrencyUnits, weiToEth } from 'utils/number'
@@ -61,6 +63,7 @@ export default function NFTView() {
   const isMobile = breakpointIndex <= 1
   const router = useRouter()
   const { theme } = useTheme()
+  const [ensName, setEnsName] = useState<string>()
 
   useEffect(() => {
     /* Parse assetId from router */
@@ -82,6 +85,25 @@ export default function NFTView() {
       skip: !id,
     }
   )
+
+  useEffect(() => {
+    if (!data?.assetById) return
+
+    const updateEnsName = async () => {
+      try {
+        const { name } = await fetchEns(
+          data.assetById.creatorAddress,
+          ethers.getDefaultProvider()
+        )
+        setEnsName(name)
+      } catch (err) {
+        console.error(err)
+      }
+    }
+
+    updateEnsName()
+  }, [data])
+
   /* Load state. */
   if (loading)
     return (
@@ -119,12 +141,9 @@ export default function NFTView() {
     mediaUrl,
     collection,
     tokenId,
-    priceChangeFromFirstSale,
-    firstSale,
     traits,
     lastSale,
     latestAppraisal,
-    avgResalePrice,
     txHistory,
     appraisalHistory,
     creatorAvatar,
@@ -132,18 +151,6 @@ export default function NFTView() {
     creatorUsername,
     contractAddress,
   } = data.assetById
-
-  const salesSeries = txHistory
-    .filter(({ price, type }) => type === 'SALE' && price)
-    .map(({ price, txAt }) => [
-      txAt * 1000,
-      parseFloat(ethers.utils.formatEther(price)),
-    ])
-
-  // Temporarily reversed here, but should be done
-  // on the backend and removed here ASAP to support
-  // pagination.
-  const reversedTxHistory = [...txHistory].reverse()
 
   const appraisalSeries = appraisalHistory.map(
     ({ timestamp, estimatedPrice }) => [
@@ -158,11 +165,29 @@ export default function NFTView() {
   ]
 
   const assetName = getAssetName(name, collection?.name, tokenId)
+  const displayName =
+    ensName ?? creatorUsername ?? shortenAddress(creatorAddress) ?? 'Unknown'
+  const creatorLabel = ART_BLOCKS_CONTRACTS.includes(contractAddress)
+    ? 'Created'
+    : 'Minted'
 
   return (
     <>
       <Head>
         <title>Upshot Analytics</title>
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@UpshotHQ" />
+        <meta name="twitter:creator" content="@UpshotHQ" />
+        <meta property="og:url" content="https://upshot.io" />
+        <meta property="og:title" content="Upshot Analytics" />
+        <meta
+          property="og:description"
+          content="NFTs offer us a vehicle for tokenizing anything, while the explosive growth of DeFi has demonstrated the power of permissionless financial primitives. Upshot is building scalable NFT pricing infrastructure at the intersection of DeFi x NFTs. Through a combination of crowdsourced appraisals and proprietary machine learning algorithms, Upshot provides deep insight into NFT markets and unlocks a wave of exotic new DeFi possibilities."
+        />
+        <meta
+          property="og:image"
+          content="https://upshot.io/img/opengraph/opengraph_nft.jpg"
+        />
       </Head>
       <Layout>
         <Grid
@@ -216,6 +241,21 @@ export default function NFTView() {
                     '0xa7d8d9ef8D8Ce8992Df33D8b8CF4Aebabd5bD270') && (
                   <a
                     href={`https://generator.artblocks.io/${id}`}
+                    target="_blank"
+                    sx={{ marginLeft: '13px' }}
+                    rel="noreferrer"
+                  >
+                    <Icon
+                      icon="openLink"
+                      color="primary"
+                      sx={{ width: 20, height: 20 }}
+                    />
+                  </a>
+                )}
+                {contractAddress ===
+                  '0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB' && (
+                  <a
+                    href={`https://www.larvalabs.com/cryptopunks/details/${tokenId}`}
                     target="_blank"
                     sx={{ marginLeft: '13px' }}
                     rel="noreferrer"
@@ -303,7 +343,7 @@ export default function NFTView() {
 
                       <Flex sx={{ gap: [1, 1, 4], alignItems: 'center' }}>
                         <Image
-                          src={creatorAvatar ?? '/img/defaultAvatar.png'}
+                          src={creatorAddress ? makeBlockie(creatorAddress) : '/img/defaultAvatar.png'}
                           alt="Creator avatar"
                           sx={{
                             borderRadius: 'circle',
@@ -322,7 +362,7 @@ export default function NFTView() {
                             color="grey-500"
                             sx={{ lineHeight: 1.25, fontSize: 2 }}
                           >
-                            Minted By
+                            {creatorLabel} By
                           </Text>
                           <Text
                             color="grey-300"
@@ -332,9 +372,7 @@ export default function NFTView() {
                               fontSize: [3, 3, 4],
                             }}
                           >
-                            {creatorUsername ??
-                              shortenAddress(creatorAddress) ??
-                              '/img/defaultAvatar.png'}
+                            {displayName}
                           </Text>
                         </Flex>
                       </Flex>
@@ -594,7 +632,7 @@ export default function NFTView() {
                   >
                     <Text variant="h3Secondary">Transaction History</Text>
                   </Flex>
-                  {reversedTxHistory.length > 0 && (
+                  {txHistory.length > 0 && (
                     <Table sx={{ borderSpacing: '0 10px' }}>
                       <TableHead>
                         <TableRow>
@@ -610,7 +648,7 @@ export default function NFTView() {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {reversedTxHistory.map(
+                        {txHistory.map(
                           (
                             {
                               type,
@@ -639,11 +677,7 @@ export default function NFTView() {
                                           height: 3,
                                         }}
                                       />
-                                      <Text>
-                                        {txFromAddress
-                                          ? shortenAddress(txFromAddress, 2, 4)
-                                          : '-'}
-                                      </Text>
+                                      <FormattedENS address={txFromAddress} />
                                     </Flex>
                                   </TableCell>
                                   <TableCell sx={{ minWidth: 140 }}>
@@ -656,11 +690,7 @@ export default function NFTView() {
                                           height: 3,
                                         }}
                                       />
-                                      <Text>
-                                        {txToAddress
-                                          ? shortenAddress(txToAddress, 2, 4)
-                                          : '-'}
-                                      </Text>
+                                      <FormattedENS address={txToAddress} />
                                     </Flex>
                                   </TableCell>
                                 </>
@@ -689,7 +719,16 @@ export default function NFTView() {
                                       verticalAlign: 'middle',
                                     }}
                                   >
-                                    <Icon icon="disconnect" color={'SALE' === type ? 'pink' : 'TRANSFER' === type ? 'blue' : 'green'} />
+                                    <Icon
+                                      icon="disconnect"
+                                      color={
+                                        'SALE' === type
+                                          ? 'pink'
+                                          : 'TRANSFER' === type
+                                          ? 'blue'
+                                          : 'green'
+                                      }
+                                    />
                                   </IconButton>
                                 </a>
                               </TableCell>
@@ -699,7 +738,7 @@ export default function NFTView() {
                       </TableBody>
                     </Table>
                   )}
-                  {reversedTxHistory.length == 0 && (
+                  {txHistory.length == 0 && (
                     <Text sx={{ color: 'grey-500' }}>
                       This asset hasn’t been sold or transferred yet.
                     </Text>
