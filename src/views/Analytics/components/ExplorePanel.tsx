@@ -105,7 +105,7 @@ function ExplorePanelHead({
           position: 'absolute',
           width: '100%',
           zIndex: 2,
-          background: '#231F20',
+          background: 'rgba(35, 31, 32, 0.8)'
         }}
       >
         <Flex sx={{ flexDirection: 'column' }}>
