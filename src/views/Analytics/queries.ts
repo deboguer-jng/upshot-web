@@ -508,6 +508,10 @@ export type GetPreviousOwnersData = {
             id: number
             name: string
             imageUrl: string
+            ownerAssetsInCollection: {
+              id: string
+              previewImageUrl: string
+            }
           }
         }[]
       }
@@ -541,7 +545,11 @@ export const GET_PREVIOUS_OWNERS = gql`
             collection {
               id
               name
-              imageUrl
+              imageUrl,
+              ownerAssetsInCollection {
+                id
+                previewImageUrl
+              }
             }
           }
         }

@@ -10,6 +10,7 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { PAGE_SIZE } from 'constants/'
+import { useState } from 'react'
 
 import {
   GET_COLLECTORS,
@@ -30,6 +31,7 @@ export default function Collectors({
   name?: string
   assetId?: string
 }) {
+  const [selectedExtraCollection, setSelectedExtraCollection] = useState(null)
   const { loading, error, data } = assetId
     ? useQuery<GetPreviousOwnersData, GetPreviousOwnersVars>(
         GET_PREVIOUS_OWNERS,
@@ -108,7 +110,11 @@ export default function Collectors({
                     url: `/analytics/collection/${id}`,
                   })
                 )}
-                nftCollection={assets.map(({ previewImageUrl, id }) => ({
+                extraCollectionChanged={(collectionId) => {
+                  const selected = collectionAssetCounts.find(({collection}) => collection.id === collectionId);
+                  setSelectedExtraCollection(selected?.collection?.ownerAssetsInCollection);
+                }}
+                nftCollection={(selectedExtraCollection || assets).map(({ previewImageUrl, id }) => ({
                   id,
                   imageUrl: previewImageUrl,
                   url: `/analytics/nft/${id}`,
