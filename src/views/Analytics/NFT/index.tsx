@@ -33,11 +33,31 @@ import { fetchEns, shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
 import { getPriceChangeColor } from 'utils/color'
 import { formatCurrencyUnits, weiToEth } from 'utils/number'
+import Breadcrumbs from '../components/Breadcrumbs'
 
 import Collectors from '../components/ExplorePanel/Collectors'
 import { GET_ASSET, GetAssetData, GetAssetVars } from './queries'
 
 function Layout({ children }: { children: React.ReactNode }) {
+  const storage = globalThis?.sessionStorage
+  const prevPath = storage.getItem("prevPath")
+
+  const breadcrumbs = prevPath?.includes('search') || prevPath?.includes('collection') ? [
+    {
+      text: 'Analytics Home',
+      link: '/analytics'
+    },
+    {
+      text: prevPath?.includes('search') ? 'Search' : prevPath?.includes('collection') ? 'Collection' : '',
+      link: prevPath
+    }
+  ] : [
+    {
+      text: 'Analytics Home',
+      link: '/analytics'
+    }
+  ]
+
   return (
     <Container
       p={4}
@@ -50,6 +70,7 @@ function Layout({ children }: { children: React.ReactNode }) {
       }}
     >
       <Nav />
+      <Breadcrumbs crumbs={breadcrumbs} />
       {children}
       <Footer />
     </Container>

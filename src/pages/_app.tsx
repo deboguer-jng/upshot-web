@@ -15,6 +15,7 @@ import { PersistGate } from 'redux-persist/integration/react'
 import client from 'utils/apolloClient'
 import { initGA } from 'utils/googleAnalytics'
 import Layout from 'views/Layout'
+import { useRouter } from 'next/router'
 
 /**
  * Instantiate an Ethers web3 provider library.
@@ -25,6 +26,24 @@ import Layout from 'views/Layout'
 const getLibrary = (
   provider: providers.ExternalProvider | providers.JsonRpcFetchFunc
 ): providers.Web3Provider => new providers.Web3Provider(provider)
+
+function PreviousRouterWrapper ({children}) {
+  const router = useRouter()
+
+  useEffect(() => storePathValues, [router.asPath])
+
+  const storePathValues = () => {
+    const storage = globalThis?.sessionStorage
+    if (!storage) return;
+    // Set the previous path as the value of the current path.
+    const prevPath = storage.getItem("currentPath")
+    storage.setItem("prevPath", prevPath as string)
+    // Set the current path value by looking at the browser's location object.
+    storage.setItem("currentPath", globalThis.location.href.replace(`${globalThis.location.origin}`, ''))
+  }
+
+  return <> {children} </>
+}
 
 export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
@@ -56,9 +75,11 @@ export default function App({ Component, pageProps }: AppProps) {
           <Web3ReactProvider {...{ getLibrary }}>
             <Provider store={store}>
               <PersistGate {...{ persistor }}>
-                <Layout>
-                  <Component {...pageProps} />
-                </Layout>
+                <PreviousRouterWrapper>
+                  <Layout>
+                    <Component {...pageProps} />
+                  </Layout>
+                </PreviousRouterWrapper>
               </PersistGate>
             </Provider>
           </Web3ReactProvider>

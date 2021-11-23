@@ -11,6 +11,7 @@ import { weiToEth } from 'utils/number'
 import CollectionScatterChart from 'views/Analytics/components/CollectionScatterChart'
 import ExplorePanel from 'views/Analytics/components/ExplorePanel'
 import TopSellingNFTs from 'views/Analytics/components/TopSellingNFTs'
+import Breadcrumbs from '../components/Breadcrumbs'
 
 import { GET_COLLECTION, GetCollectionData, GetCollectionVars } from './queries'
 
@@ -52,6 +53,13 @@ function CollectionStat({
 }
 
 function Layout({ children }: { children: React.ReactNode }) {
+  const breadcrumbs = [
+    {
+      text: 'Analytics Home',
+      link: '/analytics'
+    }
+  ]
+
   return (
     <>
       <Head>
@@ -81,6 +89,7 @@ function Layout({ children }: { children: React.ReactNode }) {
         }}
       >
         <Nav />
+        <Breadcrumbs crumbs={breadcrumbs} />
         {children}
         <Footer />
       </Container>
