@@ -158,7 +158,11 @@ export default function ExplorePanel({
   const isMobile = breakpointIndex <= 1
 
   const [searchTerm, setSearchTerm] = useState('')
-  const [tab, setTab] = useState('Collections')
+  const [tab, setTab] = useState(
+    router.pathname.includes('/collection')
+      ? 'NFTs'
+      : 'Collections'
+  )
   const handleSearch = (searchTerm) => setSearchTerm(searchTerm)
 
   return (
