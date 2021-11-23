@@ -24,6 +24,7 @@ import { FormattedENS } from 'components/FormattedENS'
 import { Nav } from 'components/Nav'
 import { ART_BLOCKS_CONTRACTS, PIXELATED_CONTRACTS } from 'constants/'
 import { format } from 'date-fns'
+import makeBlockie from 'ethereum-blockies-base64'
 import { ethers } from 'ethers'
 import Head from 'next/head'
 import Link from 'next/link'
@@ -342,7 +343,7 @@ export default function NFTView() {
 
                       <Flex sx={{ gap: [1, 1, 4], alignItems: 'center' }}>
                         <Image
-                          src={creatorAvatar ?? '/img/defaultAvatar.png'}
+                          src={creatorAddress ? makeBlockie(creatorAddress) : '/img/defaultAvatar.png'}
                           alt="Creator avatar"
                           sx={{
                             borderRadius: 'circle',
