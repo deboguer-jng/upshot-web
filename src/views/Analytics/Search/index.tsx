@@ -18,8 +18,8 @@ import React, { useEffect, useState } from 'react'
 import { shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
 import { parseEthString, weiToEth } from 'utils/number'
-import Breadcrumbs from '../components/Breadcrumbs'
 
+import Breadcrumbs from '../components/Breadcrumbs'
 import {
   GET_ASSETS_SEARCH,
   GetAssetsSearchData,
@@ -377,8 +377,8 @@ export default function SearchView() {
   const breadcrumbs = [
     {
       text: 'Analytics Home',
-      link: '/analytics'
-    }
+      link: '/analytics',
+    },
   ]
 
   return (

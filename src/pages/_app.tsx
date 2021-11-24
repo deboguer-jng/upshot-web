@@ -8,6 +8,7 @@ import { Web3ReactProvider } from '@web3-react/core'
 import { providers } from 'ethers'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { Provider } from 'react-redux'
 import { persistor, store } from 'redux/store'
@@ -15,7 +16,6 @@ import { PersistGate } from 'redux-persist/integration/react'
 import client from 'utils/apolloClient'
 import { initGA } from 'utils/googleAnalytics'
 import Layout from 'views/Layout'
-import { useRouter } from 'next/router'
 
 /**
  * Instantiate an Ethers web3 provider library.
@@ -27,19 +27,22 @@ const getLibrary = (
   provider: providers.ExternalProvider | providers.JsonRpcFetchFunc
 ): providers.Web3Provider => new providers.Web3Provider(provider)
 
-function PreviousRouterWrapper ({children}) {
+function PreviousRouterWrapper({ children }) {
   const router = useRouter()
 
   useEffect(() => storePathValues, [router.asPath])
 
   const storePathValues = () => {
     const storage = globalThis?.sessionStorage
-    if (!storage) return;
+    if (!storage) return
     // Set the previous path as the value of the current path.
-    const prevPath = storage.getItem("currentPath")
-    storage.setItem("prevPath", prevPath as string)
+    const prevPath = storage.getItem('currentPath')
+    storage.setItem('prevPath', prevPath as string)
     // Set the current path value by looking at the browser's location object.
-    storage.setItem("currentPath", globalThis.location.href.replace(`${globalThis.location.origin}`, ''))
+    storage.setItem(
+      'currentPath',
+      globalThis.location.href.replace(`${globalThis.location.origin}`, '')
+    )
   }
 
   return <> {children} </>

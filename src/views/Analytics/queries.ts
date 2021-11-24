@@ -38,6 +38,7 @@ export type GetTopCollectionsData = {
       }
       timeSeries?: TimeSeries[]
       sevenDayMCChange: number
+      volume: string
     }[]
   }
 }
@@ -55,6 +56,7 @@ export const GET_TOP_COLLECTIONS = gql`
       assetSets {
         name
         id
+        volume
         athAverage {
           value
         }
@@ -219,7 +221,6 @@ export type GetTopSalesData = {
   }[]
 }
 
-
 /**
  * Get top collections for explore panel
  * @see TopCollectionsChart
@@ -230,7 +231,7 @@ export type GetExploreCollectionsVars = {
   limit: number
   offset: number
 }
- 
+
 export type GetExploreCollectionsData = {
   orderedCollectionsByMetricSearch: {
     count: number
@@ -244,7 +245,7 @@ export type GetExploreCollectionsData = {
     }[]
   }
 }
- 
+
 export const GET_EXPLORE_COLLECTIONS = gql`
   query GetTopCollections(
     $metric: EOrderedAssetSetMetric!
@@ -265,9 +266,9 @@ export const GET_EXPLORE_COLLECTIONS = gql`
         floor
         totalVolume
       }
-     }
-   }
- ` 
+    }
+  }
+`
 
 export const GET_TOP_SALES = gql`
   query TopSales(
