@@ -13,7 +13,14 @@ import { useState } from 'react'
 import { shortenAddress } from 'utils/address'
 import { weiToEth } from 'utils/number'
 
-import { GET_TOP_SALES, GetTopSalesData, GetTopSalesVars } from '../queries'
+import {
+  GET_TOP_SALES,
+  GetTopSalesData,
+  GetTopSalesVars,
+  GetCollectionAvgPriceData,
+  GetCollectionAvgPriceVars,
+  GET_COLLECTION_AVG_PRICE,
+} from '../queries'
 import { MiniNFTContainer } from './Styled'
 
 export const WINDOWS = {
@@ -103,6 +110,20 @@ export default function TopSellingNFTs({
       },
     }
   ) // Using `all` to include data with errors.
+
+  const {
+    loading: collectionLoading,
+    error: collectionError,
+    data: collectionData,
+  } = useQuery<GetCollectionAvgPriceData, GetCollectionAvgPriceVars>(
+    GET_COLLECTION_AVG_PRICE,
+    {
+      variables: {
+        metric: 'VOLUME',
+        limit: 10,
+      },
+    }
+  )
 
   const handleClickNFT = (id: string) => {
     router.push('/analytics/nft/' + id)
