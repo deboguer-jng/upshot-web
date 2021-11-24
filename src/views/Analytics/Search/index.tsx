@@ -374,12 +374,26 @@ export default function SearchView() {
     </>
   )
 
-  const breadcrumbs = [
-    {
-      text: 'Analytics Home',
-      link: '/analytics'
-    }
-  ]
+  const storage = globalThis?.sessionStorage
+  const prevPath = storage.getItem('prevPath')
+
+  const breadcrumbs = prevPath?.includes('/nft/')
+    ? [
+        {
+          text: 'Analytics Home',
+          link: '/analytics',
+        },
+        {
+          text: decodeURI(prevPath as string).split('nftName=')[1],
+          link: prevPath,
+        },
+      ]
+    : [
+        {
+          text: 'Analytics Home',
+          link: '/analytics',
+        },
+      ]
 
   return (
     <>
