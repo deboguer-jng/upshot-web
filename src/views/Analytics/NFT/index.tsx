@@ -22,7 +22,7 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { FormattedENS } from 'components/FormattedENS'
 import { Nav } from 'components/Nav'
-import { ART_BLOCKS_CONTRACTS, PIXELATED_CONTRACTS } from 'constants/'
+import { PIXELATED_CONTRACTS } from 'constants/'
 import { format } from 'date-fns'
 import makeBlockie from 'ethereum-blockies-base64'
 import { ethers } from 'ethers'
@@ -366,7 +366,7 @@ export default function NFTView() {
 
                       <Flex sx={{ gap: [1, 1, 4], alignItems: 'center' }}>
                         <Image
-                          src={creatorAddress ? makeBlockie(creatorAddress) : '/img/defaultAvatar.png'}
+                          src={txHistory[0].txToAddress ? makeBlockie(txHistory[0].txToAddress) : '/img/defaultAvatar.png'}
                           alt="Creator avatar"
                           sx={{
                             borderRadius: 'circle',
