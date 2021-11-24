@@ -19,6 +19,7 @@ import { shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
 import { parseEthString, weiToEth } from 'utils/number'
 
+import Breadcrumbs from '../components/Breadcrumbs'
 import {
   GET_ASSETS_SEARCH,
   GetAssetsSearchData,
@@ -373,6 +374,13 @@ export default function SearchView() {
     </>
   )
 
+  const breadcrumbs = [
+    {
+      text: 'Analytics Home',
+      link: '/analytics',
+    },
+  ]
+
   return (
     <>
       <Head>
@@ -402,6 +410,7 @@ export default function SearchView() {
           }}
         >
           <Nav />
+          <Breadcrumbs crumbs={breadcrumbs} />
         </Container>
         {!isMobile ? (
           <Grid

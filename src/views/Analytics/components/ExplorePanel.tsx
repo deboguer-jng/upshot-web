@@ -159,9 +159,7 @@ export default function ExplorePanel({
 
   const [searchTerm, setSearchTerm] = useState('')
   const [tab, setTab] = useState(
-    router.pathname.includes('/collection')
-      ? 'NFTs'
-      : 'Collections'
+    router.pathname.includes('/collection') ? 'NFTs' : 'Collections'
   )
   const handleSearch = (searchTerm) => setSearchTerm(searchTerm)
 
