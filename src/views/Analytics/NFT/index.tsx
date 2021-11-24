@@ -113,7 +113,7 @@ export default function NFTView() {
     const updateEnsName = async () => {
       try {
         const { name } = await fetchEns(
-          data.assetById.creatorAddress,
+          txHistory[0].txToAddress,
           ethers.getDefaultProvider()
         )
         setEnsName(name)
@@ -192,10 +192,7 @@ export default function NFTView() {
 
   const assetName = getAssetName(name, collection?.name, tokenId)
   const displayName =
-    ensName ?? creatorUsername ?? shortenAddress(creatorAddress) ?? 'Unknown'
-  const creatorLabel = ART_BLOCKS_CONTRACTS.includes(contractAddress)
-    ? 'Created'
-    : 'Minted'
+    ensName ?? creatorUsername ?? shortenAddress(txHistory[0].txToAddress) ?? 'Unknown'
 
   return (
     <>
@@ -388,7 +385,7 @@ export default function NFTView() {
                             color="grey-500"
                             sx={{ lineHeight: 1.25, fontSize: 2 }}
                           >
-                            {creatorLabel} By
+                            Owned By
                           </Text>
                           <Text
                             color="grey-300"
