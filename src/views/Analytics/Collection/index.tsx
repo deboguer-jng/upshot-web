@@ -11,8 +11,8 @@ import { weiToEth } from 'utils/number'
 import CollectionScatterChart from 'views/Analytics/components/CollectionScatterChart'
 import ExplorePanel from 'views/Analytics/components/ExplorePanel'
 import TopSellingNFTs from 'views/Analytics/components/TopSellingNFTs'
-import Breadcrumbs from '../components/Breadcrumbs'
 
+import Breadcrumbs from '../components/Breadcrumbs'
 import { GET_COLLECTION, GetCollectionData, GetCollectionVars } from './queries'
 
 interface CollectionStatProps {
@@ -54,23 +54,25 @@ function CollectionStat({
 
 function Layout({ children }: { children: React.ReactNode }) {
   const storage = globalThis?.sessionStorage
-  const prevPath = storage.getItem("prevPath")
+  const prevPath = storage.getItem('prevPath')
 
-  const breadcrumbs = !prevPath?.includes('/nft/') ? [
-    {
-      text: 'Analytics Home',
-      link: '/analytics'
-    }
-  ] : [
-    {
-      text: 'Analytics Home',
-      link: '/analytics'
-    },
-    {
-      text: decodeURI(prevPath as string).split('nftName=')[1],
-      link: prevPath
-    }
-  ]
+  const breadcrumbs = !prevPath?.includes('/nft/')
+    ? [
+        {
+          text: 'Analytics Home',
+          link: '/analytics',
+        },
+      ]
+    : [
+        {
+          text: 'Analytics Home',
+          link: '/analytics',
+        },
+        {
+          text: decodeURI(prevPath as string).split('nftName=')[1],
+          link: prevPath,
+        },
+      ]
 
   return (
     <>
@@ -135,9 +137,12 @@ export default function CollectionView() {
   useEffect(() => {
     if (data?.collectionById && data?.collectionById.name) {
       const storage = globalThis?.sessionStorage
-      const curPath = storage.getItem("currentPath")
+      const curPath = storage.getItem('currentPath')
       if (curPath?.indexOf('collectionName=') === -1)
-        storage.setItem("currentPath", `${curPath}?collectionName=${data?.collectionById.name}`)
+        storage.setItem(
+          'currentPath',
+          `${curPath}?collectionName=${data?.collectionById.name}`
+        )
     }
   }, [data?.collectionById])
 

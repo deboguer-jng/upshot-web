@@ -22,8 +22,9 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { FormattedENS } from 'components/FormattedENS'
 import { Nav } from 'components/Nav'
-import { ART_BLOCKS_CONTRACTS, PIXELATED_CONTRACTS } from 'constants/'
+import { PIXELATED_CONTRACTS } from 'constants/'
 import { format } from 'date-fns'
+import makeBlockie from 'ethereum-blockies-base64'
 import { ethers } from 'ethers'
 import Head from 'next/head'
 import Link from 'next/link'
@@ -33,30 +34,37 @@ import { fetchEns, shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
 import { getPriceChangeColor } from 'utils/color'
 import { formatCurrencyUnits, weiToEth } from 'utils/number'
-import Breadcrumbs from '../components/Breadcrumbs'
 
+import Breadcrumbs from '../components/Breadcrumbs'
 import Collectors from '../components/ExplorePanel/Collectors'
 import { GET_ASSET, GetAssetData, GetAssetVars } from './queries'
 
 function Layout({ children }: { children: React.ReactNode }) {
   const storage = globalThis?.sessionStorage
-  const prevPath = storage.getItem("prevPath")
+  const prevPath = storage.getItem('prevPath')
 
-  const breadcrumbs = prevPath?.includes('search') || prevPath?.includes('collection') ? [
-    {
-      text: 'Analytics Home',
-      link: '/analytics'
-    },
-    {
-      text: prevPath?.includes('search') ? 'Search' : prevPath?.includes('collection') ? decodeURI(prevPath as string).split('?collectionName=')[1] : '',
-      link: prevPath
-    }
-  ] : [
-    {
-      text: 'Analytics Home',
-      link: '/analytics'
-    }
-  ]
+  const breadcrumbs =
+    prevPath?.includes('search') || prevPath?.includes('collection')
+      ? [
+          {
+            text: 'Analytics Home',
+            link: '/analytics',
+          },
+          {
+            text: prevPath?.includes('search')
+              ? 'Search'
+              : prevPath?.includes('collection')
+              ? decodeURI(prevPath as string).split('?collectionName=')[1]
+              : '',
+            link: prevPath,
+          },
+        ]
+      : [
+          {
+            text: 'Analytics Home',
+            link: '/analytics',
+          },
+        ]
 
   return (
     <Container
@@ -112,7 +120,7 @@ export default function NFTView() {
     const updateEnsName = async () => {
       try {
         const { name } = await fetchEns(
-          data.assetById.creatorAddress,
+          txHistory[0].txToAddress,
           ethers.getDefaultProvider()
         )
         setEnsName(name)
@@ -122,9 +130,12 @@ export default function NFTView() {
     }
 
     const storage = globalThis?.sessionStorage
-    const curPath = storage.getItem("currentPath")
+    const curPath = storage.getItem('currentPath')
     if (curPath?.indexOf('nftName=') === -1)
-      storage.setItem("currentPath", `${curPath}?nftName=${data?.assetById.name}`)
+      storage.setItem(
+        'currentPath',
+        `${curPath}?nftName=${data?.assetById.name}`
+      )
 
     updateEnsName()
   }, [data])
@@ -191,10 +202,10 @@ export default function NFTView() {
 
   const assetName = getAssetName(name, collection?.name, tokenId)
   const displayName =
-    ensName ?? creatorUsername ?? shortenAddress(creatorAddress) ?? 'Unknown'
-  const creatorLabel = ART_BLOCKS_CONTRACTS.includes(contractAddress)
-    ? 'Created'
-    : 'Minted'
+    ensName ??
+    creatorUsername ??
+    shortenAddress(txHistory[0].txToAddress) ??
+    'Unknown'
 
   return (
     <>
@@ -368,7 +379,11 @@ export default function NFTView() {
 
                       <Flex sx={{ gap: [1, 1, 4], alignItems: 'center' }}>
                         <Image
-                          src={creatorAvatar ?? '/img/defaultAvatar.png'}
+                          src={
+                            txHistory[0].txToAddress
+                              ? makeBlockie(txHistory[0].txToAddress)
+                              : '/img/defaultAvatar.png'
+                          }
                           alt="Creator avatar"
                           sx={{
                             borderRadius: 'circle',
@@ -387,7 +402,7 @@ export default function NFTView() {
                             color="grey-500"
                             sx={{ lineHeight: 1.25, fontSize: 2 }}
                           >
-                            {creatorLabel} By
+                            Owned By
                           </Text>
                           <Text
                             color="grey-300"

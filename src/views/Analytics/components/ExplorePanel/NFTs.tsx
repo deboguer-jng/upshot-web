@@ -126,7 +126,7 @@ export default function ExploreNFTs({
   /* Error state. */
   if (error) return <div>There was an error completing your request.</div>
 
-  if (!data?.assetGlobalSearch.assets.length)
+  if (!data?.assetGlobalSearch?.assets?.length)
     return <div>No results available.</div>
 
   return (
@@ -148,7 +148,7 @@ export default function ExploreNFTs({
               idx
             ) => (
               <CollectionRow
-                dark
+                variant="black"
                 title={name}
                 imageSrc={previewImageUrl ?? mediaUrl}
                 key={idx}
