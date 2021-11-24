@@ -1,8 +1,8 @@
 /** @jsxImportSource theme-ui */
-import { Flex } from '@theme-ui/components'
+import React from 'react'
+import { Box, Flex } from '@theme-ui/components'
 import { Breadcrumb } from '@upshot-tech/upshot-ui'
 import Link from 'next/link'
-import React from 'react'
 
 interface BreadcrumbsProps {
   crumbs: Array<{
@@ -18,7 +18,9 @@ function Breadcrumbs({ crumbs }: BreadcrumbsProps) {
         ?.filter((crumb) => !!crumb)
         .map((crumb) => (
           <Link href={crumb.link}>
-            <Breadcrumb text={crumb.text} />
+            <Box sx={{ marginRight: 3 }}>
+              <Breadcrumb text={crumb.text} />
+            </Box>
           </Link>
         ))}
     </Flex>
