@@ -18,7 +18,7 @@ function Breadcrumbs ({
     <Flex>
       {crumbs?.filter(crumb => !!crumb).map(crumb => (
         <Link href={crumb.link}>
-          <Breadcrumb text={crumb.text} sx={{marginRight: 3}} />
+          <Breadcrumb text={crumb.text} />
         </Link>
       ))}
     </Flex>
