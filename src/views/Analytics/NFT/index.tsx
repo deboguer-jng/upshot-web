@@ -48,7 +48,7 @@ function Layout({ children }: { children: React.ReactNode }) {
       link: '/analytics'
     },
     {
-      text: prevPath?.includes('search') ? 'Search' : prevPath?.includes('collection') ? 'Collection' : '',
+      text: prevPath?.includes('search') ? 'Search' : prevPath?.includes('collection') ? decodeURI(prevPath as string).split('?collectionName=')[1] : '',
       link: prevPath
     }
   ] : [
@@ -120,6 +120,11 @@ export default function NFTView() {
         console.error(err)
       }
     }
+
+    const storage = globalThis?.sessionStorage
+    const curPath = storage.getItem("currentPath")
+    if (curPath?.indexOf('nftName=') === -1)
+      storage.setItem("currentPath", `${curPath}?nftName=${data?.assetById.name}`)
 
     updateEnsName()
   }, [data])

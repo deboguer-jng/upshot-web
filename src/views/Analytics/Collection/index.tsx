@@ -53,10 +53,22 @@ function CollectionStat({
 }
 
 function Layout({ children }: { children: React.ReactNode }) {
-  const breadcrumbs = [
+  const storage = globalThis?.sessionStorage
+  const prevPath = storage.getItem("prevPath")
+
+  const breadcrumbs = !prevPath?.includes('/nft/') ? [
     {
       text: 'Analytics Home',
       link: '/analytics'
+    }
+  ] : [
+    {
+      text: 'Analytics Home',
+      link: '/analytics'
+    },
+    {
+      text: decodeURI(prevPath as string).split('nftName=')[1],
+      link: prevPath
     }
   ]
 
@@ -119,6 +131,15 @@ export default function CollectionView() {
       skip: !id,
     }
   )
+
+  useEffect(() => {
+    if (data?.collectionById && data?.collectionById.name) {
+      const storage = globalThis?.sessionStorage
+      const curPath = storage.getItem("currentPath")
+      if (curPath?.indexOf('collectionName=') === -1)
+        storage.setItem("currentPath", `${curPath}?collectionName=${data?.collectionById.name}`)
+    }
+  }, [data?.collectionById])
 
   /* Memoize scatter chart to avoid unnecessary updates. */
   const scatterChart = useMemo(
