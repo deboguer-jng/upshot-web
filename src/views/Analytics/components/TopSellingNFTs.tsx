@@ -29,10 +29,16 @@ export type WINDOW = keyof typeof WINDOWS
 function TopSellingNFTsHeader({
   period,
   setPeriod,
+  topSellingType,
+  setTopSellingType,
 }: {
   period?: string
   setPeriod?: (val: string) => void
+  topSellingType?: string
+  setTopSellingType?: (val: string) => void
 }) {
+  const [open, setOpen] = useState(false)
+
   return (
     <Flex
       variant="text.h1Secondary"
@@ -42,15 +48,31 @@ function TopSellingNFTsHeader({
         paddingBottom: '1rem',
         position: 'absolute',
         width: '100%',
-        background:
-          'rgba(0, 0, 0, 0.8)',
+        height: open ? '100%' : 'auto',
+        background: 'rgba(0, 0, 0, 0.8)',
         zIndex: 2,
       }}
     >
-      Top NFT Sales in
+      Top Selling
+      {!!setTopSellingType ? (
+        <SwitchDropdown
+          onChange={(val) => setTopSellingType?.(val)}
+          onStatusChange={(status) => {
+            setOpen(status)
+          }}
+          value={topSellingType ?? ''}
+          options={['NFTs', 'Collections']}
+        />
+      ) : (
+        ' '
+      )}
+      Sales in
       {!!setPeriod ? (
         <SwitchDropdown
           onChange={(val) => setPeriod?.(val)}
+          onStatusChange={(status) => {
+            setOpen(status)
+          }}
           value={period ?? ''}
           options={['1 day', '1 week', '1 month']}
         />
@@ -68,6 +90,7 @@ export default function TopSellingNFTs({
 }) {
   const router = useRouter()
   const [period, setPeriod] = useState('1 day')
+  const [topSellingType, setTopSellingType] = useState('NFTs')
   const { loading, error, data } = useQuery<GetTopSalesData, GetTopSalesVars>(
     GET_TOP_SALES,
     {
@@ -88,7 +111,12 @@ export default function TopSellingNFTs({
   if (loading)
     return (
       <>
-        <TopSellingNFTsHeader />
+        <TopSellingNFTsHeader
+          period={period}
+          setPeriod={(val) => setPeriod(val)}
+          topSellingType={topSellingType}
+          setTopSellingType={(val) => setTopSellingType(val)}
+        />
         <MiniNFTContainer sx={{ paddingTop: '80px' }}>
           {[...new Array(10)].map((_, idx) => (
             <BlurrySquareTemplate key={idx} />
@@ -100,18 +128,30 @@ export default function TopSellingNFTs({
   if (error)
     return (
       <>
-        <TopSellingNFTsHeader />
+        <TopSellingNFTsHeader
+          period={period}
+          setPeriod={(val) => setPeriod(val)}
+          topSellingType={topSellingType}
+          setTopSellingType={(val) => setTopSellingType(val)}
+        />
         There was an error completing your request.
       </>
     )
 
   if (!data?.topSales.length)
     return (
-      <Flex sx={{
-        paddingBottom: '2rem',
-        zIndex: 5,
-      }}>
-        <TopSellingNFTsHeader period={period} setPeriod={(val) => setPeriod(val)} />
+      <Flex
+        sx={{
+          paddingBottom: '2rem',
+          zIndex: 5,
+        }}
+      >
+        <TopSellingNFTsHeader
+          period={period}
+          setPeriod={(val) => setPeriod(val)}
+          topSellingType={topSellingType}
+          setTopSellingType={(val) => setTopSellingType(val)}
+        />
         No results available.
       </Flex>
     )
@@ -121,6 +161,8 @@ export default function TopSellingNFTs({
       <TopSellingNFTsHeader
         period={period}
         setPeriod={(val) => setPeriod(val)}
+        topSellingType={topSellingType}
+        setTopSellingType={(val) => setTopSellingType(val)}
       />
       <MiniNFTContainer sx={{ paddingTop: '80px' }}>
         {data.topSales.map(
