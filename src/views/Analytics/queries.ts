@@ -273,7 +273,7 @@ export const GET_EXPLORE_COLLECTIONS = gql`
 export const GET_TOP_SALES = gql`
   query TopSales(
     $windowSize: ETimeWindow!
-    $limit: OneToHundredInt
+    $limit: OneToHundredInt!
     $collectionId: Int
   ) {
     topSales(
