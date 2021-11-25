@@ -57,7 +57,6 @@ function Layout({ children }: { children: React.ReactNode }) {
 }
 
 function Header({ address }: { address: string }) {
-  console.log('load header')
   const shortAddress = shortenAddress(address)
   const [displayName, setDisplayName] = useState(shortAddress)
 
@@ -114,8 +113,6 @@ export default function UserView() {
       skip: !address,
     }
   )
-
-  console.log(data)
 
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
