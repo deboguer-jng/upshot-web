@@ -4,8 +4,6 @@ import { Avatar, Flex, Footer, Grid, Panel, Text } from '@upshot-tech/upshot-ui'
 import {
   Box,
   CollectionCard,
-  CollectionCardExpanded,
-  CollectionCardItem,
   CollectionRow,
   CollectionTable,
   Icon,
@@ -25,12 +23,12 @@ import { format, formatDistance } from 'date-fns'
 import makeBlockie from 'ethereum-blockies-base64'
 import { ethers } from 'ethers'
 import Head from 'next/head'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { fetchEns, shortenAddress } from 'utils/address'
 import { formatCurrencyUnits, formatLargeNumber } from 'utils/number'
 
-import NFTs from '../components/ExplorePanel/NFTs'
 import { GET_COLLECTOR, GetCollectorData, GetCollectorVars } from './queries'
 
 function Layout({ children }: { children: React.ReactNode }) {
@@ -105,9 +103,9 @@ export default function UserView() {
       errorPolicy: 'all',
       variables: {
         address,
-        collectionLimit: 10,
+        collectionLimit: 100,
         collectionOffset: 0,
-        assetLimit: 10,
+        assetLimit: 5,
         assetOffset: 0,
       },
       skip: !address,
@@ -137,11 +135,11 @@ export default function UserView() {
             ({ collection, count }, idx) => (
               <CollectionRow
                 variant="dark"
-                title={collection['name']}
+                title={collection.name}
                 imageSrc={collection['imageUrl']}
                 key={idx}
               >
-                <TableCell>{collection['name']}</TableCell>
+                <TableCell>{collection.name}</TableCell>
                 <TableCell sx={{ color: 'blue' }}>{count}</TableCell>
               </CollectionRow>
             )
@@ -178,7 +176,7 @@ export default function UserView() {
               ],
               labels:
                 data?.getUser?.extraCollections?.collectionAssetCounts?.map(
-                  ({ collection }) => collection['name']
+                  ({ collection }) => collection.name
                 ) ?? [],
             }}
           />
@@ -565,10 +563,40 @@ export default function UserView() {
             : distributionRadar}
         </Grid>
         <Text variant="h1Primary">Collection</Text>
-        <Grid columns={[1, 1, 3]}>
-          <div>1</div>
-          <div>2</div>
-          <div>3</div>
+        <Grid columns="repeat(auto-fit, minmax(100px, 1fr))" sx={{ gap: 4 }}>
+          {data?.getUser?.extraCollections?.collectionAssetCounts?.map(
+            ({ collection }, idx) => (
+              <CollectionCard
+                hasSeeAll
+                avatarImage={collection.imageUrl}
+                total={collection.ownerAssetsInCollection.count}
+                name={collection.name}
+                key={idx}
+              >
+                {collection.ownerAssetsInCollection.assets.map(
+                  ({ id, previewImageUrl }, idx) => (
+                    <Link passHref href={`/analytics/nft/${id}`} key={idx}>
+                      <Box
+                        sx={{
+                          width: '100%',
+                          '&::after': {
+                            content: "''",
+                            display: 'block',
+                            paddingTop: '100%',
+                            backgroundImage: `url(${previewImageUrl})`,
+                            backgroundSize: 'cover',
+                            backgroundRepeat: 'no-repeat',
+                            backgroundPosition: 'center',
+                            borderRadius: 'sm',
+                          },
+                        }}
+                      />
+                    </Link>
+                  )
+                )}
+              </CollectionCard>
+            )
+          )}
         </Grid>
       </Flex>
     </Layout>

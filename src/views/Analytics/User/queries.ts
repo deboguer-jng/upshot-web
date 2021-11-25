@@ -35,7 +35,7 @@ export type GetCollectorData = {
               description?: string
             }[]
           }
-        }[]
+        }
       }[]
     }
     mostRecentSell: {
