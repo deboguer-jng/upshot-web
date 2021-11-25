@@ -242,6 +242,7 @@ export type GetExploreCollectionsData = {
       average: string
       floor: string
       totalVolume: string
+      sevenDayFloorChange: number
     }[]
   }
 }
@@ -265,6 +266,7 @@ export const GET_EXPLORE_COLLECTIONS = gql`
         average
         floor
         totalVolume
+        sevenDayFloorChange
       }
     }
   }

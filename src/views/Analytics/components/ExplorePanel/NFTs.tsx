@@ -20,7 +20,7 @@ import { format } from 'date-fns'
 import router from 'next/router'
 import React, { useMemo, useRef, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
-import { weiToEth } from 'utils/number'
+import { weiToEth, getPriceChangeLabel } from 'utils/number'
 
 import {
   GET_EXPLORE_NFTS,
@@ -58,18 +58,6 @@ function NFTTableHead() {
 
 const handleShowNFT = (id: string) => {
   router.push('/analytics/nft/' + id)
-}
-
-/**
- * Get price change label.
- *
- * @returns + prefixed percent if positive, - prefixed percent if negative.
- */
-const getPriceChangeLabel = (val: number | null) => {
-  if (val === null) return '-'
-
-  const percentChange = val.toFixed(2) + '%'
-  return val > 0 ? '+' + percentChange : percentChange
 }
 
 export function ExplorePanelSkeleton() {
