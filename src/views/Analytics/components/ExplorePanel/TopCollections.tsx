@@ -81,7 +81,7 @@ export default function ExploreNFTs({
     GetExploreCollectionsData,
     GetExploreCollectionsVars
   >(GET_EXPLORE_COLLECTIONS, {
-    errorPolicy: 'all',
+    errorPolicy: 'ignore',
     variables: {
       metric: 'VOLUME',
       limit: PAGE_SIZE,
@@ -93,7 +93,7 @@ export default function ExploreNFTs({
   if (loading) return <ExplorePanelSkeleton />
 
   /* Error state. */
-  // if (error) return <div>There was an error completing your request.</div>
+  if (error) return <div>There was an error completing your request.</div>
 
   if (!data?.orderedCollectionsByMetricSearch.assetSets.length)
     return <div>No results available.</div>
