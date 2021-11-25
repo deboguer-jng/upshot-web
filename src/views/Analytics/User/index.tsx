@@ -19,6 +19,7 @@ import {
 import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { FormattedENS } from 'components/FormattedENS'
 import { Nav } from 'components/Nav'
+import { PIXELATED_CONTRACTS } from 'constants/'
 import { format, formatDistance } from 'date-fns'
 import makeBlockie from 'ethereum-blockies-base64'
 import { ethers } from 'ethers'
@@ -166,18 +167,19 @@ export default function UserView() {
                 {
                   name: 'Portfolio Distribution',
                   data:
-                    data?.getUser?.extraCollections?.collectionAssetCounts?.map(
-                      ({ count }) =>
+                    data?.getUser?.extraCollections?.collectionAssetCounts
+                      ?.slice(0, 5)
+                      ?.map(({ count }) =>
                         Math.floor(
                           (count / data.getUser.extraCollections.count) * 100
                         )
-                    ) ?? [],
+                      ) ?? [],
                 },
               ],
               labels:
-                data?.getUser?.extraCollections?.collectionAssetCounts?.map(
-                  ({ collection }) => collection.name
-                ) ?? [],
+                data?.getUser?.extraCollections?.collectionAssetCounts
+                  ?.slice(0, 5)
+                  ?.map(({ collection }) => collection.name) ?? [],
             }}
           />
         </Box>
@@ -567,14 +569,13 @@ export default function UserView() {
           {data?.getUser?.extraCollections?.collectionAssetCounts?.map(
             ({ collection }, idx) => (
               <CollectionCard
-                hasSeeAll
                 avatarImage={collection.imageUrl}
                 total={collection.ownerAssetsInCollection.count}
                 name={collection.name}
                 key={idx}
               >
                 {collection.ownerAssetsInCollection.assets.map(
-                  ({ id, previewImageUrl }, idx) => (
+                  ({ id, previewImageUrl, contractAddress }, idx) => (
                     <Link passHref href={`/analytics/nft/${id}`} key={idx}>
                       <Box
                         sx={{
@@ -588,6 +589,11 @@ export default function UserView() {
                             backgroundRepeat: 'no-repeat',
                             backgroundPosition: 'center',
                             borderRadius: 'sm',
+                            imageRendering: PIXELATED_CONTRACTS.includes(
+                              contractAddress
+                            )
+                              ? 'pixelated'
+                              : 'auto',
                           },
                         }}
                       />

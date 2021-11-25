@@ -30,6 +30,7 @@ export type GetCollectorData = {
             count: number
             assets: {
               id: string
+              contractAddress: string
               previewImageUrl?: string
               name?: string
               description?: string
@@ -89,6 +90,7 @@ export const GET_COLLECTOR = gql`
               count
               assets {
                 id
+                contractAddress
                 previewImageUrl
                 name
                 description
