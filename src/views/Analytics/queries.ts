@@ -158,6 +158,8 @@ export type GetExploreNFTsData = {
         timestamp: number
         ethSalePrice: string
       }
+      lastAppraisalWeiPrice: string
+      lastSaleAppraisalRelativeDiff: number
     }[]
   }
 }
@@ -187,6 +189,8 @@ export const GET_EXPLORE_NFTS = gql`
           timestamp
           ethSalePrice
         }
+        lastAppraisalWeiPrice
+        lastSaleAppraisalRelativeDiff
       }
     }
   }

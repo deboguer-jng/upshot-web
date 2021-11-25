@@ -29,7 +29,7 @@ import {
 } from '../../queries'
 import { ExplorePanelSkeleton } from './NFTs'
 
-const columns = ['Average NFT Price', 'Total Volume', 'Floor Price', 'Floor Change (7 Days)']
+const columns = ['Average Price', 'Total Volume', 'Floor Price', 'Floor Change (7 Days)']
 
 function CollectionTableHead() {
   const breakpointIndex = useBreakpointIndex()
@@ -39,7 +39,7 @@ function CollectionTableHead() {
     <TableHead>
       <TableRow>
         <TableCell></TableCell>
-        <TableCell color="grey-500">Collection title</TableCell>
+        <TableCell color="grey-500">Collection</TableCell>
         {isMobile ? (
           // Mobile only shows the first and last columns
           <TableCell color="grey-500">Details</TableCell>

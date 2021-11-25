@@ -28,7 +28,7 @@ import {
   GetExploreNFTsVars,
 } from '../../queries'
 
-const columns = ['Last Sale', 'Total Sales', 'Sale Price', '% Change']
+const columns = ['Last Sale Date', 'Last Sale Price', 'Latest Appraised Value', 'Last Sale/Latest Appraisal']
 
 function NFTTableHead() {
   const breakpointIndex = useBreakpointIndex()
@@ -38,7 +38,7 @@ function NFTTableHead() {
     <TableHead>
       <TableRow>
         <TableCell></TableCell>
-        <TableCell color="grey-500">NFT Name</TableCell>
+        <TableCell color="grey-500">NFT</TableCell>
         {isMobile ? (
           // Mobile only shows the first and last columns
           <TableCell color="grey-500">Details</TableCell>
@@ -130,8 +130,9 @@ export default function ExploreNFTs({
                 previewImageUrl,
                 mediaUrl,
                 totalSaleCount,
-                priceChangeFromFirstSale,
                 lastSale,
+                lastAppraisalWeiPrice,
+                lastSaleAppraisalRelativeDiff
               },
               idx
             ) => (
@@ -155,13 +156,18 @@ export default function ExploreNFTs({
                           ? weiToEth(lastSale.ethSalePrice)
                           : '-'}
                       </Flex>
+                      <Flex>
+                        {lastAppraisalWeiPrice
+                          ? weiToEth(lastAppraisalWeiPrice)
+                          : '-'}
+                      </Flex>
                       <Flex
                         sx={{
                           maxWidth: 100,
-                          color: getPriceChangeColor(priceChangeFromFirstSale),
+                          color: getPriceChangeColor(lastSaleAppraisalRelativeDiff),
                         }}
                       >
-                        {getPriceChangeLabel(priceChangeFromFirstSale)}
+                        {getPriceChangeLabel(lastSaleAppraisalRelativeDiff)}
                       </Flex>
                     </Flex>
                   </TableCell>
@@ -173,20 +179,22 @@ export default function ExploreNFTs({
                         : '-'}
                     </TableCell>
                     <TableCell sx={{ maxWidth: 100 }}>
-                      {totalSaleCount}
-                    </TableCell>
-                    <TableCell sx={{ maxWidth: 100 }}>
                       {lastSale?.ethSalePrice
                         ? weiToEth(lastSale.ethSalePrice)
+                        : '-'}
+                    </TableCell>
+                    <TableCell sx={{ maxWidth: 100 }}>
+                      {lastAppraisalWeiPrice
+                        ? weiToEth(lastAppraisalWeiPrice)
                         : '-'}
                     </TableCell>
                     <TableCell
                       sx={{
                         maxWidth: 100,
-                        color: getPriceChangeColor(priceChangeFromFirstSale),
+                        color: getPriceChangeColor(lastSaleAppraisalRelativeDiff),
                       }}
                     >
-                      {getPriceChangeLabel(priceChangeFromFirstSale)}
+                      {getPriceChangeLabel(lastSaleAppraisalRelativeDiff)}
                     </TableCell>
                   </>
                 )}
