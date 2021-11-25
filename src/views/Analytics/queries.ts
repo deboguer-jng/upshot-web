@@ -158,6 +158,8 @@ export type GetExploreNFTsData = {
         timestamp: number
         ethSalePrice: string
       }
+      lastAppraisalWeiPrice: string
+      lastSaleAppraisalRelativeDiff: number
     }[]
   }
 }
@@ -187,6 +189,8 @@ export const GET_EXPLORE_NFTS = gql`
           timestamp
           ethSalePrice
         }
+        lastAppraisalWeiPrice
+        lastSaleAppraisalRelativeDiff
       }
     }
   }
@@ -242,6 +246,7 @@ export type GetExploreCollectionsData = {
       average: string
       floor: string
       totalVolume: string
+      sevenDayFloorChange: number
     }[]
   }
 }
@@ -265,6 +270,7 @@ export const GET_EXPLORE_COLLECTIONS = gql`
         average
         floor
         totalVolume
+        sevenDayFloorChange
       }
     }
   }
