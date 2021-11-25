@@ -57,3 +57,15 @@ export const formatCurrencyUnits = (
 
   return (val / 10 ** precision).toFixed(precision)
 }
+
+/**
+ * Get price change label.
+ *
+ * @returns + prefixed percent if positive, - prefixed percent if negative.
+ */
+export const getPriceChangeLabel = (val: number | null) => {
+  if (val === null) return '-'
+
+  const percentChange = val.toFixed(2) + '%'
+  return val > 0 ? '+' + percentChange : percentChange
+}

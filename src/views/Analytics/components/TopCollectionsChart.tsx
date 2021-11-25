@@ -59,7 +59,8 @@ export default function TopCollectionsCharts({
   // if (error) return <Chart error />
 
   /* No results state. */
-  if (!data?.orderedCollectionsByMetricSearch?.assetSets?.length) return <Chart noData />
+  if (!data?.orderedCollectionsByMetricSearch?.assetSets?.length)
+    return <Chart noData />
 
   /* No selected state. */
   if (!selectedCollections.length) return <Chart noSelected />
@@ -117,6 +118,7 @@ export default function TopCollectionsCharts({
         atl: atl && metric !== 'FLOOR' ? weiToEth(atl, 2) : null,
         /* priceUsd: 10, */
         priceChange,
+        volume: parseFloat(weiToEth(rest.volume, 2, false)),
         data: data.map((val, i) =>
           i === 0
             ? [minDate * 1000, val[1]] // Align window start
