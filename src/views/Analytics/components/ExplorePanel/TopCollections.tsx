@@ -20,7 +20,7 @@ import { format } from 'date-fns'
 import router from 'next/router'
 import React, { useMemo, useRef, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
-import { weiToEth } from 'utils/number'
+import { weiToEth, getPriceChangeLabel } from 'utils/number'
 
 import {
   GET_EXPLORE_COLLECTIONS,
@@ -29,7 +29,7 @@ import {
 } from '../../queries'
 import { ExplorePanelSkeleton } from './NFTs'
 
-const columns = ['Average NFT Price', 'Floor Price', 'Total Volume']
+const columns = ['Average Price', 'Total Volume', 'Floor Price', 'Floor Change (7 Days)']
 
 function CollectionTableHead() {
   const breakpointIndex = useBreakpointIndex()
@@ -39,7 +39,7 @@ function CollectionTableHead() {
     <TableHead>
       <TableRow>
         <TableCell></TableCell>
-        <TableCell color="grey-500">Collection title</TableCell>
+        <TableCell color="grey-500">Collection</TableCell>
         {isMobile ? (
           // Mobile only shows the first and last columns
           <TableCell color="grey-500">Details</TableCell>
@@ -59,18 +59,6 @@ function CollectionTableHead() {
 
 const handleShowCollection = (id: number) => {
   router.push('/analytics/collection/' + id)
-}
-
-/**
- * Get price change label.
- *
- * @returns + prefixed percent if positive, - prefixed percent if negative.
- */
-const getPriceChangeLabel = (val: number | null) => {
-  if (val === null) return '-'
-
-  const percentChange = val.toFixed(2) + '%'
-  return val > 0 ? '+' + percentChange : percentChange
 }
 
 /**
@@ -116,7 +104,7 @@ export default function ExploreNFTs({
         <CollectionTableHead />
         <TableBody>
           {data.orderedCollectionsByMetricSearch.assetSets.map(
-            ({ id, name, imageUrl, average, floor, totalVolume }, idx) => (
+            ({ id, name, imageUrl, average, floor, totalVolume, sevenDayFloorChange }, idx) => (
               <CollectionRow
                 variant="black"
                 title={name}
@@ -146,6 +134,9 @@ export default function ExploreNFTs({
                     </TableCell>
                     <TableCell sx={{ maxWidth: 100 }}>
                       {weiToEth(totalVolume, 0)}
+                    </TableCell>
+                    <TableCell sx={{ maxWidth: 100, color: getPriceChangeColor(sevenDayFloorChange) }}>
+                      {getPriceChangeLabel(sevenDayFloorChange)}
                     </TableCell>
                   </>
                 )}
