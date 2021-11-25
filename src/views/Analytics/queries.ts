@@ -219,7 +219,6 @@ export type GetTopSalesData = {
   }[]
 }
 
-
 /**
  * Get top collections for explore panel
  * @see TopCollectionsChart
@@ -230,7 +229,7 @@ export type GetExploreCollectionsVars = {
   limit: number
   offset: number
 }
- 
+
 export type GetExploreCollectionsData = {
   orderedCollectionsByMetricSearch: {
     count: number
@@ -244,7 +243,7 @@ export type GetExploreCollectionsData = {
     }[]
   }
 }
- 
+
 export const GET_EXPLORE_COLLECTIONS = gql`
   query GetTopCollections(
     $metric: EOrderedAssetSetMetric!
@@ -265,14 +264,14 @@ export const GET_EXPLORE_COLLECTIONS = gql`
         floor
         totalVolume
       }
-     }
-   }
- ` 
+    }
+  }
+`
 
 export const GET_TOP_SALES = gql`
   query TopSales(
     $windowSize: ETimeWindow!
-    $limit: OneToHundredInt
+    $limit: OneToHundredInt!
     $collectionId: Int
   ) {
     topSales(

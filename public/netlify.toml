@@ -9,8 +9,8 @@
   status = 200
 
 [[redirects]]
-  from = "/analytics/user/:address"
-  to = "/analytics/user/[address].html?address=:address"
+  from = "/analytics/user/:id"
+  to = "/analytics/user/[id].html?id=:id"
   status = 200
 
 [[redirects]]

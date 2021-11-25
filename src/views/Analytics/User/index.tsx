@@ -1,7 +1,11 @@
+import { useQuery } from '@apollo/client'
 import { Container } from '@upshot-tech/upshot-ui'
 import { Avatar, Flex, Footer, Grid, Panel, Text } from '@upshot-tech/upshot-ui'
 import {
   Box,
+  CollectionCard,
+  CollectionCardExpanded,
+  CollectionCardItem,
   CollectionRow,
   CollectionTable,
   Icon,
@@ -17,16 +21,17 @@ import {
 import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { FormattedENS } from 'components/FormattedENS'
 import { Nav } from 'components/Nav'
-import { format } from 'date-fns'
+import { format, formatDistance } from 'date-fns'
 import makeBlockie from 'ethereum-blockies-base64'
 import { ethers } from 'ethers'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { fetchEns, shortenAddress } from 'utils/address'
-import { formatCurrencyUnits } from 'utils/number'
+import { formatCurrencyUnits, formatLargeNumber } from 'utils/number'
 
 import NFTs from '../components/ExplorePanel/NFTs'
+import { GET_COLLECTOR, GetCollectorData, GetCollectorVars } from './queries'
 
 function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -53,6 +58,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 }
 
 function Header({ address }: { address: string }) {
+  console.log('load header')
   const shortAddress = shortenAddress(address)
   const [displayName, setDisplayName] = useState(shortAddress)
 
@@ -92,17 +98,26 @@ export default function UserView() {
   const router = useRouter()
   const { theme } = useTheme()
   const address = router.query.address as string
+
+  const { loading, error, data } = useQuery<GetCollectorData, GetCollectorVars>(
+    GET_COLLECTOR,
+    {
+      errorPolicy: 'all',
+      variables: {
+        address,
+        collectionLimit: 10,
+        collectionOffset: 0,
+        assetLimit: 10,
+        assetOffset: 0,
+      },
+      skip: !address,
+    }
+  )
+
+  console.log(data)
+
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
-  const txHistory = [...new Array(10)].map((_) => ({
-    type: 'SALE',
-    txAt: Date.now() / 1000,
-    txFromAddress: address,
-    txToAddress: address,
-    txHash: '0x0',
-    price: '1000000000000000000',
-    currency: { symbol: 'ETH', decimals: 18 },
-  }))
 
   const distributionTable = (
     <Panel sx={{ flexGrow: 1 }}>
@@ -118,24 +133,19 @@ export default function UserView() {
         </TableHead>
 
         <TableBody>
-          <CollectionRow
-            variant="dark"
-            title="Meebits"
-            imageSrc={'/img/defaultAvatar.png'}
-            sx={{ background: 'blue' }}
-          >
-            <TableCell>40</TableCell>
-            <TableCell sx={{ color: 'blue' }}>50%</TableCell>
-          </CollectionRow>
-          <CollectionRow
-            variant="dark"
-            title="Bored Ape Yacht Club"
-            imageSrc={'/img/defaultAvatar.png'}
-            sx={{ background: 'blue' }}
-          >
-            <TableCell>40</TableCell>
-            <TableCell sx={{ color: 'blue' }}>50%</TableCell>
-          </CollectionRow>
+          {data?.getUser?.extraCollections?.collectionAssetCounts?.map(
+            ({ collection, count }, idx) => (
+              <CollectionRow
+                variant="dark"
+                title={collection['name']}
+                imageSrc={collection['imageUrl']}
+                key={idx}
+              >
+                <TableCell>{collection['name']}</TableCell>
+                <TableCell sx={{ color: 'blue' }}>{count}</TableCell>
+              </CollectionRow>
+            )
+          )}
         </TableBody>
       </CollectionTable>
     </Panel>
@@ -151,22 +161,25 @@ export default function UserView() {
           alignItems: 'center',
         }}
       >
-        <Box sx={{ width: '100%', maxWidth: '450px', marginBottom: -30 }}>
+        <Box sx={{ width: '100%', marginBottom: '-2rem' }}>
           <RadarChart
             data={{
               series: [
                 {
                   name: 'Portfolio Distribution',
-                  data: [5, 10, 20, 30, 35],
+                  data:
+                    data?.getUser?.extraCollections?.collectionAssetCounts?.map(
+                      ({ count }) =>
+                        Math.floor(
+                          (count / data.getUser.extraCollections.count) * 100
+                        )
+                    ) ?? [],
                 },
               ],
-              labels: [
-                'CyberKongz',
-                'CryptoPunks',
-                'The Sandbox',
-                'Doodles',
-                'BAYC',
-              ],
+              labels:
+                data?.getUser?.extraCollections?.collectionAssetCounts?.map(
+                  ({ collection }) => collection['name']
+                ) ?? [],
             }}
           />
         </Box>
@@ -179,7 +192,7 @@ export default function UserView() {
       <Flex sx={{ flexDirection: 'column', gap: 4 }}>
         {!!address && <Header {...{ address }} />}
         {/* User Description */}
-        {/* <Text color="grey-400"></Text> */}
+        <Text color="grey-400">{data?.getUser?.bio}</Text>
         <Grid gap={4} columns={[1, 1, 1, 2]}>
           <Flex sx={{ flexDirection: 'column', gap: 4 }}>
             <Grid gap={2} columns={[1, 2, 3]}>
@@ -200,13 +213,22 @@ export default function UserView() {
                       marginRight: '2px',
                     }}
                   >
-                    $
+                    {data?.getUser?.totalAssetAppraisedValueUsd ? '$' : ''}
                   </Text>
                   <Text
                     color="blue"
                     sx={{ fontWeight: 'bold', fontSize: 4, lineHeight: 1 }}
                   >
-                    12,345.53
+                    {data?.getUser?.totalAssetAppraisedValueUsd
+                      ? formatLargeNumber(
+                          Number(
+                            formatCurrencyUnits(
+                              data.getUser.totalAssetAppraisedValueUsd,
+                              6
+                            )
+                          )
+                        )
+                      : '-'}
                   </Text>
                 </Flex>
                 <Text
@@ -234,12 +256,18 @@ export default function UserView() {
                     color: 'grey-500',
                     background:
                       '-webkit-linear-gradient(0deg, #0091FF, #1BB441)',
-                    '-webkit-background-clip': 'text',
-                    '-webkit-text-fill-color': 'transparent',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
                     textAlign: 'center',
+                    textTransform: 'capitalize',
                   }}
                 >
-                  15 mo
+                  {data?.getUser?.firstAssetPurchaseTime
+                    ? formatDistance(
+                        data.getUser.firstAssetPurchaseTime * 1000,
+                        new Date()
+                      )
+                    : '-'}
                 </Text>
                 <Text
                   color="blue"
@@ -248,8 +276,8 @@ export default function UserView() {
                     fontWeight: 'heading',
                     background:
                       '-webkit-linear-gradient(0deg, #0091FF, #1BB441)',
-                    '-webkit-background-clip': 'text',
-                    '-webkit-text-fill-color': 'transparent',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
                     textAlign: 'center',
                   }}
                 >
@@ -276,7 +304,7 @@ export default function UserView() {
                     textAlign: 'center',
                   }}
                 >
-                  5
+                  {data?.getUser?.extraCollections?.count ?? 0}
                 </Text>
                 <Text
                   color="blue"
@@ -308,7 +336,12 @@ export default function UserView() {
                     textAlign: 'center',
                   }}
                 >
-                  10/21/2021
+                  {data?.getUser?.mostRecentSell?.txAt
+                    ? format(
+                        data.getUser.mostRecentSell.txAt * 1000,
+                        'M/d/yyyy'
+                      )
+                    : '-'}
                 </Text>
                 <Text
                   color="grey-500"
@@ -337,7 +370,9 @@ export default function UserView() {
                     textAlign: 'center',
                   }}
                 >
-                  10/22/2021
+                  {data?.getUser?.mostRecentBuy?.txAt
+                    ? format(data.getUser.mostRecentBuy.txAt * 1000, 'M/d/yyyy')
+                    : '-'}
                 </Text>
                 <Text
                   color="grey-500"
@@ -365,7 +400,12 @@ export default function UserView() {
                     textAlign: 'center',
                   }}
                 >
-                  3 mo
+                  {data?.getUser?.avgHoldTime
+                    ? formatDistance(
+                        data.getUser.avgHoldTime * 1000,
+                        new Date(0)
+                      )
+                    : '-'}
                 </Text>
                 <Text
                   color="grey-500"
@@ -392,121 +432,125 @@ export default function UserView() {
                   <Flex sx={{ flexDirection: 'column', gap: 4 }}>
                     <Text variant="h3Secondary">Transaction History</Text>
 
-                    {txHistory.length > 0 && (
-                      <Table sx={{ borderSpacing: '0 10px' }}>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell color="grey-500">Date</TableCell>
-                            {!isMobile && (
-                              <>
-                                <TableCell color="grey-500">Sender</TableCell>
-                                <TableCell color="grey-500">
-                                  Recipient
-                                </TableCell>
-                              </>
-                            )}
+                    {data?.getUser?.txHistory &&
+                      data?.getUser?.txHistory.length > 0 && (
+                        <Table sx={{ borderSpacing: '0 10px' }}>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell color="grey-500">Date</TableCell>
+                              {!isMobile && (
+                                <>
+                                  <TableCell color="grey-500">Sender</TableCell>
+                                  <TableCell color="grey-500">
+                                    Recipient
+                                  </TableCell>
+                                </>
+                              )}
 
-                            <TableCell color="grey-500">Sale Price</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {txHistory.map(
-                            (
-                              {
-                                type,
-                                txAt,
-                                txFromAddress,
-                                txToAddress,
-                                txHash,
-                                price,
-                                currency: { symbol, decimals },
-                              },
-                              idx
-                            ) => (
-                              <TableRow key={idx}>
-                                <TableCell sx={{ minWidth: 140 }}>
-                                  {format(txAt * 1000, 'M/d/yyyy')}
-                                </TableCell>
-                                {!isMobile && (
-                                  <>
-                                    <TableCell sx={{ minWidth: 140 }}>
-                                      <Flex
-                                        sx={{ alignItems: 'center', gap: 2 }}
-                                      >
-                                        <Box
-                                          sx={{
-                                            borderRadius: 'circle',
-                                            bg: 'yellow',
-                                            width: 3,
-                                            height: 3,
-                                          }}
-                                        />
-                                        <FormattedENS address={txFromAddress} />
-                                      </Flex>
-                                    </TableCell>
-                                    <TableCell sx={{ minWidth: 140 }}>
-                                      <Flex
-                                        sx={{ alignItems: 'center', gap: 2 }}
-                                      >
-                                        <Box
-                                          sx={{
-                                            borderRadius: 'circle',
-                                            bg: 'purple',
-                                            width: 3,
-                                            height: 3,
-                                          }}
-                                        />
-                                        <FormattedENS address={txToAddress} />
-                                      </Flex>
-                                    </TableCell>
-                                  </>
-                                )}
-                                <TableCell
-                                  sx={{ minWidth: 100, color: 'pink' }}
-                                >
-                                  {'SALE' === type &&
-                                    price &&
-                                    `${formatCurrencyUnits(price, decimals)} ${
-                                      symbol ?? 'ETH'
-                                    }`}
-                                  {'TRANSFER' === type && (
-                                    <Text color="blue">Transfer</Text>
+                              <TableCell color="grey-500">Sale Price</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {data?.getUser?.txHistory?.map(
+                              (
+                                {
+                                  type,
+                                  txAt,
+                                  txFromAddress,
+                                  txToAddress,
+                                  txHash,
+                                  price,
+                                  currency: { symbol, decimals },
+                                },
+                                idx
+                              ) => (
+                                <TableRow key={idx}>
+                                  <TableCell sx={{ minWidth: 140 }}>
+                                    {format(txAt * 1000, 'M/d/yyyy')}
+                                  </TableCell>
+                                  {!isMobile && (
+                                    <>
+                                      <TableCell sx={{ minWidth: 140 }}>
+                                        <Flex
+                                          sx={{ alignItems: 'center', gap: 2 }}
+                                        >
+                                          <Box
+                                            sx={{
+                                              borderRadius: 'circle',
+                                              bg: 'yellow',
+                                              width: 3,
+                                              height: 3,
+                                            }}
+                                          />
+                                          <FormattedENS
+                                            address={txFromAddress}
+                                          />
+                                        </Flex>
+                                      </TableCell>
+                                      <TableCell sx={{ minWidth: 140 }}>
+                                        <Flex
+                                          sx={{ alignItems: 'center', gap: 2 }}
+                                        >
+                                          <Box
+                                            sx={{
+                                              borderRadius: 'circle',
+                                              bg: 'purple',
+                                              width: 3,
+                                              height: 3,
+                                            }}
+                                          />
+                                          <FormattedENS address={txToAddress} />
+                                        </Flex>
+                                      </TableCell>
+                                    </>
                                   )}
-                                  {'MINT' === type && (
-                                    <Text color="green">Mint</Text>
-                                  )}
-                                  <a
-                                    href={`https://etherscan.io/tx/${txHash}`}
-                                    target="_blank"
-                                    title="Open transaction on Etherscan"
-                                    rel="noopener noreferrer nofollow"
+                                  <TableCell
+                                    sx={{ minWidth: 100, color: 'pink' }}
                                   >
-                                    <IconButton
-                                      sx={{
-                                        marginLeft: '6px;',
-                                        verticalAlign: 'middle',
-                                      }}
+                                    {'SALE' === type &&
+                                      price &&
+                                      `${formatCurrencyUnits(
+                                        price,
+                                        decimals
+                                      )} ${symbol ?? 'ETH'}`}
+                                    {'TRANSFER' === type && (
+                                      <Text color="blue">Transfer</Text>
+                                    )}
+                                    {'MINT' === type && (
+                                      <Text color="green">Mint</Text>
+                                    )}
+                                    <a
+                                      href={`https://etherscan.io/tx/${txHash}`}
+                                      target="_blank"
+                                      title="Open transaction on Etherscan"
+                                      rel="noopener noreferrer nofollow"
                                     >
-                                      <Icon
-                                        icon="disconnect"
-                                        color={
-                                          'SALE' === type
-                                            ? 'pink'
-                                            : 'TRANSFER' === type
-                                            ? 'blue'
-                                            : 'green'
-                                        }
-                                      />
-                                    </IconButton>
-                                  </a>
-                                </TableCell>
-                              </TableRow>
-                            )
-                          )}
-                        </TableBody>
-                      </Table>
-                    )}
-                    {txHistory.length == 0 && (
+                                      <IconButton
+                                        sx={{
+                                          marginLeft: '6px;',
+                                          verticalAlign: 'middle',
+                                        }}
+                                      >
+                                        <Icon
+                                          icon="disconnect"
+                                          color={
+                                            'SALE' === type
+                                              ? 'pink'
+                                              : 'TRANSFER' === type
+                                              ? 'blue'
+                                              : 'green'
+                                          }
+                                        />
+                                      </IconButton>
+                                    </a>
+                                  </TableCell>
+                                </TableRow>
+                              )
+                            )}
+                          </TableBody>
+                        </Table>
+                      )}
+                    {data?.getUser?.txHistory.length == 0 && (
                       <Text sx={{ color: 'grey-500' }}>
                         No transaction history found.
                       </Text>
@@ -516,12 +560,16 @@ export default function UserView() {
               </Box>
             </Panel>
           </Flex>
-          {false ? distributionTable : distributionRadar}
+          {(data?.getUser?.extraCollections?.count ?? 0) < 3
+            ? distributionTable
+            : distributionRadar}
         </Grid>
         <Text variant="h1Primary">Collection</Text>
-        <Panel>
-          <NFTs />
-        </Panel>
+        <Grid columns={[1, 1, 3]}>
+          <div>1</div>
+          <div>2</div>
+          <div>3</div>
+        </Grid>
       </Flex>
     </Layout>
   )
