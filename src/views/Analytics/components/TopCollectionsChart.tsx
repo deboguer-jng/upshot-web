@@ -118,7 +118,7 @@ export default function TopCollectionsCharts({
         atl: atl && metric !== 'FLOOR' ? weiToEth(atl, 2) : null,
         /* priceUsd: 10, */
         priceChange,
-        volume: parseFloat(weiToEth(rest.volume, 2, false)),
+        volume: metric === 'VOLUME' && parseFloat(weiToEth(rest.volume, 2, false)),
         data: data.map((val, i) =>
           i === 0
             ? [minDate * 1000, val[1]] // Align window start
