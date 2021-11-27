@@ -95,14 +95,18 @@ export default function LandingView() {
                 </Text>
               </Box>
               <Box sx={{ marginTop: ['0', null, '0', '1rem'] }}>
-                <Text variant="h1Primary" sx={{ fontSize: ['1.15rem', null, '1.8rem', '2.8rem'] }}>
+                <Text variant="h1Primary" sx={{ fontSize: ['1.6rem', null, '1.8rem', '2.8rem'] }}>
                   Where NFTs meet DeFi
                 </Text>
               </Box>
-              <Box sx={{ marginTop: ['0', null, '0.6rem', '1rem'] }}>
+              <Box sx={{ marginTop: ['0.4rem', null, '0.6rem', '1rem'] }}>
                 <Text
                   variant="h3Primary"
-                  sx={{ fontWeight: 'normal', lineHeight: ['1.25rem', null, '1.375em', '1.75rem'] }}
+                  sx={{
+                    fontWeight: 'normal',
+                    lineHeight: ['1.25rem', null, '1.375em', '1.75rem'],
+                    fontSize: ['1.1rem', null, '1.3rem', '1.438rem']
+                  }}
                 >
                   Upshot provides deep insight into NFT markets and unlocks a wave of exotic new DeFi possibilities.
                 </Text>
