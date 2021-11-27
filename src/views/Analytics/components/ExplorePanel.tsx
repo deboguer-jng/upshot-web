@@ -65,6 +65,7 @@ function ExplorePanelHead({
   searchTerm,
 }: ExplorePanelHeadProps) {
   const [autoFilter, setAutoFilter] = useState<any>()
+  const [open, setOpen] = useState(false)
   const searchTermRef = useRef<HTMLInputElement>(null)
   const breakpointIndex = useBreakpointIndex()
   const handleSearch = (e: React.FormEvent) => {
@@ -104,31 +105,12 @@ function ExplorePanelHead({
           gap: 1,
           position: 'absolute',
           width: '100%',
+          height: open ? '170px' : 'auto',
           zIndex: 2,
-          background: 'rgba(35, 31, 32, 0.8)'
+          background: 'rgba(35, 31, 32, 0.8)',
         }}
       >
-        <Flex sx={{ flexDirection: 'column' }}>
-          <Flex
-            variant="text.h1Secondary"
-            sx={{ gap: 2, alignItems: 'flex-start' }}
-          >
-            Explore
-            <SwitchDropdown
-              onChange={(val) => onChangeTab?.(val)}
-              value={tab ?? ''}
-              options={dropdownOptions}
-            />
-          </Flex>
-        </Flex>
-
-        {tab === 'NFTs' && breakpointIndex > 1 ? (
-          <Flex sx={{ justifyContent: 'flex-end', alignItems: 'stretch' }}>
-            {searchForm(handleSearch, searchTerm, searchTermRef, handleChange)}
-          </Flex>
-        ) : null}
-
-        {breakpointIndex <= 1 && tab === 'NFTs' && (
+        {breakpointIndex <= 1 && tab === 'NFTs' && !open && (
           <Flex
             sx={{
               justifyContent: 'flex-end',
@@ -142,6 +124,26 @@ function ExplorePanelHead({
             {searchForm(handleSearch, searchTerm, searchTermRef, handleChange)}
           </Flex>
         )}
+        <Flex sx={{ flexDirection: 'column' }}>
+          <Flex
+            variant="text.h1Secondary"
+            sx={{ gap: 2, alignItems: 'flex-start' }}
+          >
+            Explore
+            <SwitchDropdown
+              onChange={(val) => onChangeTab?.(val)}
+              value={tab ?? ''}
+              options={dropdownOptions}
+              onStatusChange={(status) => setOpen(status)}
+            />
+          </Flex>
+        </Flex>
+
+        {tab === 'NFTs' && breakpointIndex > 1 ? (
+          <Flex sx={{ justifyContent: 'flex-end', alignItems: 'stretch' }}>
+            {searchForm(handleSearch, searchTerm, searchTermRef, handleChange)}
+          </Flex>
+        ) : null}
       </Flex>
     </>
   )

@@ -95,6 +95,7 @@ export type GetCollectionAvgPriceVars = {
   metric: string
   limit: number
   name?: string
+  windowSize: string
 }
 
 export type GetCollectionAvgPriceData = {
@@ -115,11 +116,13 @@ export const GET_COLLECTION_AVG_PRICE = gql`
     $metric: EOrderedAssetSetMetric!
     $limit: OneToHundredInt!
     $name: String
+    $windowSize: ETimeWindow
   ) {
     orderedCollectionsByMetricSearch(
       metric: $metric
       limit: $limit
       name: $name
+      windowSize: $windowSize
     ) {
       assetSets {
         id

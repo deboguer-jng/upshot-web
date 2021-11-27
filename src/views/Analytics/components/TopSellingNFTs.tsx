@@ -1,3 +1,4 @@
+/** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
 import {
   BlurrySquareTemplate,
@@ -5,13 +6,15 @@ import {
   Icon,
   MiniNftCard,
   SwitchDropdown,
+  useBreakpointIndex,
 } from '@upshot-tech/upshot-ui'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { formatDistance } from 'date-fns'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { shortenAddress } from 'utils/address'
 import { weiToEth } from 'utils/number'
+import Link from 'next/link'
 
 import {
   GET_TOP_SALES,
@@ -44,7 +47,13 @@ function TopSellingNFTsHeader({
   topSellingType?: string
   setTopSellingType?: (val: string) => void
 }) {
+  const breakpointIndex = useBreakpointIndex()
   const [open, setOpen] = useState(false)
+  const [collectionOpen, setCollectionOpen] = useState(false)
+
+  useEffect(() => {
+    console.log(open, collectionOpen)
+  }, [open, collectionOpen])
 
   return (
     <Flex
@@ -55,9 +64,13 @@ function TopSellingNFTsHeader({
         paddingBottom: '1rem',
         position: 'absolute',
         width: '100%',
-        height: open ? '100%' : 'auto',
+        height: open || collectionOpen ? '100%' : 'auto',
         background: 'rgba(0, 0, 0, 0.8)',
         zIndex: 2,
+        '&,& *': breakpointIndex <= 1 && {
+          fontSize: '1rem!important',
+          lineHeight: '1.5rem!important',
+        },
       }}
     >
       Top Selling
@@ -65,7 +78,7 @@ function TopSellingNFTsHeader({
         <SwitchDropdown
           onChange={(val) => setTopSellingType?.(val)}
           onStatusChange={(status) => {
-            setOpen(status)
+            setCollectionOpen(status)
           }}
           value={topSellingType ?? ''}
           options={['NFTs', 'Collections']}
@@ -98,6 +111,7 @@ export default function TopSellingNFTs({
   const router = useRouter()
   const [period, setPeriod] = useState('1 day')
   const [topSellingType, setTopSellingType] = useState('NFTs')
+  const breakpointIndex = useBreakpointIndex()
   const { loading, error, data } = useQuery<GetTopSalesData, GetTopSalesVars>(
     GET_TOP_SALES,
     {
@@ -120,6 +134,8 @@ export default function TopSellingNFTs({
     {
       variables: {
         metric: 'VOLUME',
+        windowSize:
+          period === '1 day' ? 'DAY' : period === '1 week' ? 'WEEK' : 'MONTH',
         limit: 10,
       },
     }
@@ -129,7 +145,7 @@ export default function TopSellingNFTs({
     router.push('/analytics/nft/' + id)
   }
 
-  if (loading)
+  if (loading || collectionLoading)
     return (
       <>
         <TopSellingNFTsHeader
@@ -138,7 +154,9 @@ export default function TopSellingNFTs({
           topSellingType={topSellingType}
           setTopSellingType={(val) => setTopSellingType(val)}
         />
-        <MiniNFTContainer sx={{ paddingTop: '80px' }}>
+        <MiniNFTContainer
+          sx={{ paddingTop: breakpointIndex <= 1 ? '50px' : '80px' }}
+        >
           {[...new Array(10)].map((_, idx) => (
             <BlurrySquareTemplate key={idx} />
           ))}
@@ -146,7 +164,7 @@ export default function TopSellingNFTs({
       </>
     )
 
-  if (error)
+  if (error || collectionError)
     return (
       <>
         <TopSellingNFTsHeader
@@ -159,7 +177,10 @@ export default function TopSellingNFTs({
       </>
     )
 
-  if (!data?.topSales.length)
+  if (
+    !data?.topSales.length ||
+    !collectionData?.orderedCollectionsByMetricSearch?.assetSets.length
+  )
     return (
       <Flex
         sx={{
@@ -173,7 +194,9 @@ export default function TopSellingNFTs({
           topSellingType={topSellingType}
           setTopSellingType={(val) => setTopSellingType(val)}
         />
-        No results available.
+        <text sx={{ paddingTop: breakpointIndex <= 1 ? '50px' : '80px' }}>
+          No results available.{' '}
+        </text>
       </Flex>
     )
 
@@ -185,42 +208,69 @@ export default function TopSellingNFTs({
         topSellingType={topSellingType}
         setTopSellingType={(val) => setTopSellingType(val)}
       />
-      <MiniNFTContainer sx={{ paddingTop: '80px' }}>
-        {data.topSales.map(
-          (
-            {
-              txAt,
-              txFromAddress,
-              txToAddress,
-              price,
-              asset: {
-                id,
-                contractAddress,
-                previewImageUrl,
-                mediaUrl,
-                rarity,
-                collection,
-              },
-            },
-            key
-          ) => (
-            <a
-              key={key}
-              onClick={() => handleClickNFT(id)}
-              style={{ cursor: 'pointer' }}
-            >
-              <MiniNftCard
-                price={price ? weiToEth(price) : undefined}
-                to={shortenAddress(txToAddress, 2, 4)}
-                from={shortenAddress(txFromAddress, 2, 4)}
-                rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
-                image={previewImageUrl ?? mediaUrl}
-                date={formatDistance(txAt * 1000, new Date())}
-                pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
-                link={`https://app.upshot.io/analytics/collection/${collection?.id}`}
-              />
-            </a>
-          )
+      <MiniNFTContainer
+        sx={{ paddingTop: breakpointIndex <= 1 ? '50px' : '80px' }}
+      >
+        {topSellingType === 'NFTs' ? (
+          <>
+            {data.topSales.map(
+              (
+                {
+                  txAt,
+                  txFromAddress,
+                  txToAddress,
+                  price,
+                  asset: {
+                    id,
+                    contractAddress,
+                    previewImageUrl,
+                    mediaUrl,
+                    rarity,
+                    collection,
+                  },
+                },
+                key
+              ) => (
+                <a
+                  key={key}
+                  onClick={() => handleClickNFT(id)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <MiniNftCard
+                    price={price ? weiToEth(price) : undefined}
+                    to={shortenAddress(txToAddress, 2, 4)}
+                    from={shortenAddress(txFromAddress, 2, 4)}
+                    rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
+                    image={previewImageUrl ?? mediaUrl}
+                    date={formatDistance(txAt * 1000, new Date())}
+                    pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
+                    link={`https://app.upshot.io/analytics/collection/${collection?.id}`}
+                  />
+                </a>
+              )
+            )}
+          </>
+        ) : (
+          <>
+            {collectionData?.orderedCollectionsByMetricSearch.assetSets.map(
+              ({ id, name, imageUrl, average, floor, volume }) => (
+                <Link key={id} href={`/analytics/collection/${id}`}>
+                  <a style={{ textDecoration: 'none' }}>
+                    <MiniNftCard
+                      tooltip={`volume / ${period}`}
+                      price={volume ? weiToEth(volume) : undefined}
+                      name={name}
+                      type="collection"
+                      image={imageUrl}
+                      floorPrice={floor ? weiToEth(floor) : undefined}
+                      sales={'130'}
+                      link={`https://app.upshot.io/analytics/collection/${id}`}
+                    />
+                  </a>
+                </Link>
+              )
+            )}
+          </>
         )}
       </MiniNFTContainer>
     </>
