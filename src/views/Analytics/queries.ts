@@ -95,7 +95,7 @@ export type GetCollectionAvgPriceVars = {
   metric: string
   limit: number
   name?: string
-  windowSize: string
+  windowSize?: string
 }
 
 export type GetCollectionAvgPriceData = {
