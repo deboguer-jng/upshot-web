@@ -208,7 +208,7 @@ export default function LandingView() {
                   variant="large"
                   sx={{ display: 'block', width: ['100%', null, null, '50%'], }}
                 >
-                  Discover the world of NFTs using powerful data.
+                  Explore the world of NFTs using powerful data.
                 </Text>
               </div>
             </Panel>
@@ -265,7 +265,7 @@ export default function LandingView() {
             </Panel>
           </Link>
           <Link
-            href="https://blog.upshot.io/"
+            href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
             rel="noopener noreferrer"
             sx={{
               color: 'text',
