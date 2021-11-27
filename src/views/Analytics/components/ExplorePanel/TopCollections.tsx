@@ -29,7 +29,7 @@ import {
 } from '../../queries'
 import { ExplorePanelSkeleton } from './NFTs'
 
-const columns = ['Average Price', 'Total Volume', 'Floor Price', 'Floor Change (7 Days)']
+const columns = ['Total Volume', 'Average Price', 'Floor Price', 'Floor Change (7 Days)']
 
 function CollectionTableHead() {
   const breakpointIndex = useBreakpointIndex()
@@ -127,13 +127,13 @@ export default function ExploreNFTs({
                 ) : (
                   <>
                     <TableCell sx={{ maxWidth: 100 }}>
+                      {weiToEth(totalVolume, 0)}
+                    </TableCell>
+                    <TableCell sx={{ maxWidth: 100 }}>
                       {weiToEth(average, 2)}
                     </TableCell>
                     <TableCell sx={{ maxWidth: 100 }}>
                       {weiToEth(floor, 2)}
-                    </TableCell>
-                    <TableCell sx={{ maxWidth: 100 }}>
-                      {weiToEth(totalVolume, 0)}
                     </TableCell>
                     <TableCell sx={{ maxWidth: 100, color: getPriceChangeColor(sevenDayFloorChange) }}>
                       {getPriceChangeLabel(sevenDayFloorChange)}
