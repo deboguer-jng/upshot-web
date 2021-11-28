@@ -86,7 +86,7 @@ function TopSellingNFTsHeader({
       ) : (
         ' '
       )}
-      Sales in
+      in
       {!!setPeriod ? (
         <SwitchDropdown
           onChange={(val) => setPeriod?.(val)}
