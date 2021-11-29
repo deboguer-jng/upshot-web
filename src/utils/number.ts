@@ -77,7 +77,7 @@ export const formatLargeNumber = (num: number, digits = 2) => {
     : Number(0).toFixed(digits)
 }
 
-/*
+/**
  * Get price change label.
  *
  * @returns + prefixed percent if positive, - prefixed percent if negative.
