@@ -9,6 +9,11 @@
   status = 200
 
 [[redirects]]
+  from = "/analytics/user/:id"
+  to = "/analytics/user/[id].html?id=:id"
+  status = 200
+
+[[redirects]]
   from = "/analytics"
   to = "/analytics.html"
   status = 200

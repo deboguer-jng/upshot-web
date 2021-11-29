@@ -80,16 +80,18 @@ export default function TopCollectors() {
                   Most Notable NFTs
                 </Text>
                 {!isMobile && (
-                  <Text
-                    sx={{
-                      fontWeight: 'heading',
-                      color: theme.colors.blue,
-                      paddingBottom: '12px',
-                      fontSize: 2,
-                    }}
-                  >
-                    {addresses[0]}
-                  </Text>
+                  <a href={`/analytics/user/${addresses[0]}`} style={{ textDecoration: 'none' }}>
+                    <Text
+                      sx={{
+                        fontWeight: 'heading',
+                        color: theme.colors.blue,
+                        paddingBottom: '12px',
+                        fontSize: 2,
+                      }}
+                    >
+                      {addresses[0]}
+                    </Text>
+                  </a>
                 )}
               </div>
               <MiniNFTContainer>
@@ -132,7 +134,7 @@ export default function TopCollectors() {
                         )}
                         type="search"
                         name={getAssetName(name, collection?.name, tokenId)}
-                        link={`https://app.upshot.io/analytics/collection/${collection?.id}`}
+                        link={`/analytics/collection/${collection?.id}`}
                       />
                     </a>
                   )

@@ -57,7 +57,20 @@ function Layout({ children }: { children: React.ReactNode }) {
   const storage = globalThis?.sessionStorage
   const prevPath = storage.getItem('prevPath')
 
-  const breadcrumbs = !prevPath?.includes('/nft/')
+  const breadcrumbs = prevPath?.includes('user')
+    ? [
+        {
+          text: 'Analytics Home',
+          link: '/analytics',
+        },
+        {
+          text: `${
+            decodeURI(prevPath as string).split('?userWallet=')[1]
+          }'s Collection`,
+          link: prevPath,
+        },
+      ]
+    : !prevPath?.includes('/nft/')
     ? [
         {
           text: 'Analytics Home',
