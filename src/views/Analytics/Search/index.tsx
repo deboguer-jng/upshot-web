@@ -19,6 +19,7 @@ import { shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
 import { parseEthString, weiToEth } from 'utils/number'
 
+import Breadcrumbs from '../components/Breadcrumbs'
 import {
   GET_ASSETS_SEARCH,
   GetAssetsSearchData,
@@ -373,6 +374,27 @@ export default function SearchView() {
     </>
   )
 
+  const storage = globalThis?.sessionStorage
+  const prevPath = storage.getItem('prevPath')
+
+  const breadcrumbs = prevPath?.includes('/nft/')
+    ? [
+        {
+          text: 'Analytics Home',
+          link: '/analytics',
+        },
+        {
+          text: decodeURI(prevPath as string).split('nftName=')[1],
+          link: prevPath,
+        },
+      ]
+    : [
+        {
+          text: 'Analytics Home',
+          link: '/analytics',
+        },
+      ]
+
   return (
     <>
       <Head>
@@ -402,6 +424,7 @@ export default function SearchView() {
           }}
         >
           <Nav />
+          <Breadcrumbs crumbs={breadcrumbs} />
         </Container>
         {!isMobile ? (
           <Grid

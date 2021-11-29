@@ -20,7 +20,7 @@ import { format } from 'date-fns'
 import router from 'next/router'
 import React, { useMemo, useRef, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
-import { weiToEth } from 'utils/number'
+import { weiToEth, getPriceChangeLabel } from 'utils/number'
 
 import {
   GET_EXPLORE_COLLECTIONS,
@@ -29,7 +29,7 @@ import {
 } from '../../queries'
 import { ExplorePanelSkeleton } from './NFTs'
 
-const columns = ['Average NFT Price', 'Floor Price', 'Total Volume']
+const columns = ['Total Volume', 'Average Price', 'Floor Price', 'Floor Change (7 Days)']
 
 function CollectionTableHead() {
   const breakpointIndex = useBreakpointIndex()
@@ -39,7 +39,7 @@ function CollectionTableHead() {
     <TableHead>
       <TableRow>
         <TableCell></TableCell>
-        <TableCell color="grey-500">Collection title</TableCell>
+        <TableCell color="grey-500">Collection</TableCell>
         {isMobile ? (
           // Mobile only shows the first and last columns
           <TableCell color="grey-500">Details</TableCell>
@@ -62,18 +62,6 @@ const handleShowCollection = (id: number) => {
 }
 
 /**
- * Get price change label.
- *
- * @returns + prefixed percent if positive, - prefixed percent if negative.
- */
-const getPriceChangeLabel = (val: number | null) => {
-  if (val === null) return '-'
-
-  const percentChange = val.toFixed(2) + '%'
-  return val > 0 ? '+' + percentChange : percentChange
-}
-
-/**
  *Default render function
  */
 export default function ExploreNFTs({
@@ -93,7 +81,7 @@ export default function ExploreNFTs({
     GetExploreCollectionsData,
     GetExploreCollectionsVars
   >(GET_EXPLORE_COLLECTIONS, {
-    errorPolicy: 'all',
+    errorPolicy: 'ignore',
     variables: {
       metric: 'VOLUME',
       limit: PAGE_SIZE,
@@ -116,9 +104,9 @@ export default function ExploreNFTs({
         <CollectionTableHead />
         <TableBody>
           {data.orderedCollectionsByMetricSearch.assetSets.map(
-            ({ id, name, imageUrl, average, floor, totalVolume }, idx) => (
+            ({ id, name, imageUrl, average, floor, totalVolume, sevenDayFloorChange }, idx) => (
               <CollectionRow
-                dark
+                variant="black"
                 title={name}
                 imageSrc={imageUrl!}
                 key={idx}
@@ -139,13 +127,16 @@ export default function ExploreNFTs({
                 ) : (
                   <>
                     <TableCell sx={{ maxWidth: 100 }}>
+                      {weiToEth(totalVolume, 0)}
+                    </TableCell>
+                    <TableCell sx={{ maxWidth: 100 }}>
                       {weiToEth(average, 2)}
                     </TableCell>
                     <TableCell sx={{ maxWidth: 100 }}>
                       {weiToEth(floor, 2)}
                     </TableCell>
-                    <TableCell sx={{ maxWidth: 100 }}>
-                      {weiToEth(totalVolume, 0)}
+                    <TableCell sx={{ maxWidth: 100, color: getPriceChangeColor(sevenDayFloorChange) }}>
+                      {getPriceChangeLabel(sevenDayFloorChange)}
                     </TableCell>
                   </>
                 )}
@@ -157,7 +148,9 @@ export default function ExploreNFTs({
       <Flex sx={{ justifyContent: 'center', marginTop: '10px' }}>
         <Pagination
           forcePage={page}
-          pageCount={Math.ceil(data.orderedCollectionsByMetricSearch.count / PAGE_SIZE)}
+          pageCount={Math.ceil(
+            data.orderedCollectionsByMetricSearch.count / PAGE_SIZE
+          )}
           pageRangeDisplayed={0}
           marginPagesDisplayed={0}
           onPageChange={handlePageChange}

@@ -38,6 +38,7 @@ export type GetTopCollectionsData = {
       }
       timeSeries?: TimeSeries[]
       sevenDayMCChange: number
+      volume: string
     }[]
   }
 }
@@ -55,6 +56,7 @@ export const GET_TOP_COLLECTIONS = gql`
       assetSets {
         name
         id
+        volume
         athAverage {
           value
         }
@@ -93,6 +95,7 @@ export type GetCollectionAvgPriceVars = {
   metric: string
   limit: number
   name?: string
+  windowSize?: string
 }
 
 export type GetCollectionAvgPriceData = {
@@ -113,11 +116,13 @@ export const GET_COLLECTION_AVG_PRICE = gql`
     $metric: EOrderedAssetSetMetric!
     $limit: OneToHundredInt!
     $name: String
+    $windowSize: ETimeWindow
   ) {
     orderedCollectionsByMetricSearch(
       metric: $metric
       limit: $limit
       name: $name
+      windowSize: $windowSize
     ) {
       assetSets {
         id
@@ -156,6 +161,8 @@ export type GetExploreNFTsData = {
         timestamp: number
         ethSalePrice: string
       }
+      lastAppraisalWeiPrice: string
+      lastSaleAppraisalRelativeDiff: number
     }[]
   }
 }
@@ -185,6 +192,8 @@ export const GET_EXPLORE_NFTS = gql`
           timestamp
           ethSalePrice
         }
+        lastAppraisalWeiPrice
+        lastSaleAppraisalRelativeDiff
       }
     }
   }
@@ -219,7 +228,6 @@ export type GetTopSalesData = {
   }[]
 }
 
-
 /**
  * Get top collections for explore panel
  * @see TopCollectionsChart
@@ -230,7 +238,7 @@ export type GetExploreCollectionsVars = {
   limit: number
   offset: number
 }
- 
+
 export type GetExploreCollectionsData = {
   orderedCollectionsByMetricSearch: {
     count: number
@@ -241,10 +249,11 @@ export type GetExploreCollectionsData = {
       average: string
       floor: string
       totalVolume: string
+      sevenDayFloorChange: number
     }[]
   }
 }
- 
+
 export const GET_EXPLORE_COLLECTIONS = gql`
   query GetTopCollections(
     $metric: EOrderedAssetSetMetric!
@@ -264,15 +273,16 @@ export const GET_EXPLORE_COLLECTIONS = gql`
         average
         floor
         totalVolume
+        sevenDayFloorChange
       }
-     }
-   }
- ` 
+    }
+  }
+`
 
 export const GET_TOP_SALES = gql`
   query TopSales(
     $windowSize: ETimeWindow!
-    $limit: OneToHundredInt
+    $limit: OneToHundredInt!
     $collectionId: Int
   ) {
     topSales(
