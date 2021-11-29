@@ -20,7 +20,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12.x
-      
+
       - name: Build codebase
         run: |
           yarn
@@ -37,7 +37,6 @@ jobs:
           args: deploy --dir=out --prod
           secrets: '["NETLIFY_AUTH_TOKEN", "NETLIFY_SITE_ID"]'
 
-
   deploy-prod:
     if: github.ref == 'refs/heads/main'
     name: Deploy to production
@@ -51,7 +50,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12.x
-      
+
       - name: Build codebase
         run: |
           yarn
