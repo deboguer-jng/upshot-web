@@ -199,7 +199,21 @@ export default function UserView() {
                 imageSrc={collection['imageUrl']}
                 key={idx}
               >
-                <TableCell>{collection.name}</TableCell>
+                <TableCell>
+                  <Link href={`/analytics/collection/${collection.id}`}>
+                    <a
+                      sx={{
+                        cursor: 'pointer',
+                        textDecoration: 'none',
+                        '&:hover': {
+                          textDecoration: 'underline',
+                        },
+                      }}
+                    >
+                      {collection.name}
+                    </a>
+                  </Link>
+                </TableCell>
                 <TableCell sx={{ color: 'blue' }}>{count}</TableCell>
               </CollectionRow>
             )
@@ -657,6 +671,7 @@ export default function UserView() {
             ({ collection }, idx) => (
               <CollectionCard
                 avatarImage={collection.imageUrl}
+                link={`/analytics/collection/${collection.id}`}
                 total={collection.ownerAssetsInCollection.count}
                 name={collection.name}
                 key={idx}
@@ -667,6 +682,7 @@ export default function UserView() {
                       <Box
                         sx={{
                           width: '100%',
+                          cursor: 'pointer',
                           '&::after': {
                             content: "''",
                             display: 'block',

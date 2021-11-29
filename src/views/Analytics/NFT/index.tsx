@@ -43,28 +43,40 @@ function Layout({ children }: { children: React.ReactNode }) {
   const storage = globalThis?.sessionStorage
   const prevPath = storage.getItem('prevPath')
 
-  const breadcrumbs =
-    prevPath?.includes('search') || prevPath?.includes('collection')
-      ? [
-          {
-            text: 'Analytics Home',
-            link: '/analytics',
-          },
-          {
-            text: prevPath?.includes('search')
-              ? 'Search'
-              : prevPath?.includes('collection')
-              ? decodeURI(prevPath as string).split('?collectionName=')[1]
-              : '',
-            link: prevPath,
-          },
-        ]
-      : [
-          {
-            text: 'Analytics Home',
-            link: '/analytics',
-          },
-        ]
+  const breadcrumbs = prevPath?.includes('user')
+    ? [
+        {
+          text: 'Analytics Home',
+          link: '/analytics',
+        },
+        {
+          text: `${
+            decodeURI(prevPath as string).split('?userWallet=')[1]
+          }'s Collection`,
+          link: prevPath,
+        },
+      ]
+    : prevPath?.includes('search') || prevPath?.includes('collection')
+    ? [
+        {
+          text: 'Analytics Home',
+          link: '/analytics',
+        },
+        {
+          text: prevPath?.includes('search')
+            ? 'Search'
+            : prevPath?.includes('collection')
+            ? decodeURI(prevPath as string).split('?collectionName=')[1]
+            : '',
+          link: prevPath,
+        },
+      ]
+    : [
+        {
+          text: 'Analytics Home',
+          link: '/analytics',
+        },
+      ]
 
   return (
     <Container
