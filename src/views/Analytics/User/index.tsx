@@ -96,13 +96,20 @@ export default function UserView() {
   const router = useRouter()
   const { theme } = useTheme()
   const address = router.query.address as string
+  let addressFormatted
+
+  try {
+    addressFormatted = ethers.utils.getAddress(address)
+  } catch (err) {
+    console.error(err)
+  }
 
   const { loading, error, data } = useQuery<GetCollectorData, GetCollectorVars>(
     GET_COLLECTOR,
     {
       errorPolicy: 'all',
       variables: {
-        address,
+        address: addressFormatted,
         collectionLimit: 100,
         collectionOffset: 0,
         assetLimit: 5,
@@ -110,7 +117,7 @@ export default function UserView() {
         txLimit: 100,
         txOffset: 0,
       },
-      skip: !address,
+      skip: !addressFormatted,
     }
   )
 
@@ -432,7 +439,7 @@ export default function UserView() {
                     <Text variant="h3Secondary">Transaction History</Text>
 
                     {data?.getUser?.txHistory &&
-                      data?.getUser?.txHistory.length > 0 && (
+                      data?.getUser?.txHistory.count > 0 && (
                         <Table sx={{ borderSpacing: '0 10px' }}>
                           <TableHead>
                             <TableRow>
@@ -450,7 +457,7 @@ export default function UserView() {
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {data?.getUser?.txHistory?.map(
+                            {data?.getUser?.txHistory?.events?.map(
                               (
                                 {
                                   type,
@@ -564,7 +571,7 @@ export default function UserView() {
             : distributionRadar}
         </Grid>
         <Text variant="h1Primary">Collection</Text>
-        <Grid columns="repeat(auto-fit, minmax(100px, 1fr))" sx={{ gap: 4 }}>
+        <Grid columns="repeat(auto-fit, minmax(300px, 1fr))" sx={{ gap: 4 }}>
           {data?.getUser?.extraCollections?.collectionAssetCounts?.map(
             ({ collection }, idx) => (
               <CollectionCard
