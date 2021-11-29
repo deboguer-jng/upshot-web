@@ -29,10 +29,43 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { fetchEns, shortenAddress } from 'utils/address'
 import { formatCurrencyUnits, formatLargeNumber } from 'utils/number'
+import Breadcrumbs from '../components/Breadcrumbs'
 
 import { GET_COLLECTOR, GetCollectorData, GetCollectorVars } from './queries'
 
 function Layout({ children }: { children: React.ReactNode }) {
+  const storage = globalThis?.sessionStorage
+  const prevPath = storage.getItem('prevPath')
+
+  const breadcrumbs = prevPath?.includes('/nft/')
+    ? [
+        {
+          text: 'Analytics Home',
+          link: '/analytics',
+        },
+        {
+          text: decodeURI(prevPath as string).split('nftName=')[1],
+          link: prevPath,
+        },
+      ]
+    : prevPath?.includes('collection')
+    ? [
+        {
+          text: 'Analytics Home',
+          link: '/analytics',
+        },
+        {
+          text: decodeURI(prevPath as string).split('?collectionName=')[1],
+          link: prevPath,
+        },
+      ]
+    : [
+        {
+          text: 'Analytics Home',
+          link: '/analytics',
+        },
+      ]
+
   return (
     <>
       <Head>
@@ -49,6 +82,7 @@ function Layout({ children }: { children: React.ReactNode }) {
         }}
       >
         <Nav />
+        <Breadcrumbs crumbs={breadcrumbs} />
         {children}
         <Footer />
       </Container>
