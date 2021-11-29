@@ -14,12 +14,16 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { Nav } from 'components/Nav'
 import Head from 'next/head'
+import { useState } from 'react'
 import { Image, Link } from 'theme-ui'
 
 import { projects } from './content'
 import AnalyticsSVG from './panelBackgrounds/Analytics.svg'
+import AnalyticsHoverSVG from './panelBackgrounds/AnalyticsHover.svg'
+import ApiSVG from './panelBackgrounds/Api.svg'
+import ApiHoverSVG from './panelBackgrounds/ApiHover.svg'
 import BlogSVG from './panelBackgrounds/Blog.svg'
-import UpshotApiSVG from './panelBackgrounds/UpshotApi.svg'
+import BlogHoverSVG from './panelBackgrounds/BlogHover.svg'
 import UpshotArtworkSVG from './panelBackgrounds/UpshotArtwork.svg'
 
 type PanelData = {
@@ -56,6 +60,24 @@ function renderLandingPanel(data: PanelData) {
 }
 
 export default function LandingView() {
+  const images = {
+    analytics: {
+      original: AnalyticsSVG,
+      hover: AnalyticsHoverSVG,
+    },
+    api: {
+      original: ApiSVG,
+      hover: ApiHoverSVG,
+    },
+    blog: {
+      original: BlogSVG,
+      hover: BlogHoverSVG,
+    },
+  }
+  const [analyticsImage, setAnalyticsImage] = useState(images.analytics.original.src)
+  const [apiImage, setApiImage] = useState(images.api.original.src)
+  const [blogImage, setBlogImage] = useState(images.blog.original.src)
+
   return (
     <>
       <Head>
@@ -196,16 +218,18 @@ export default function LandingView() {
                   backgroundColor: theme.colors.black + ' !important',
                 },
               }}
+              onMouseEnter={() => setAnalyticsImage(images.analytics.hover.src)}
+              onMouseLeave={() => setAnalyticsImage(images.analytics.original.src)}
             >
               <Image
-                src={AnalyticsSVG.src}
+                src={analyticsImage}
                 sx={{
                   opacity: '0.7',
                   position: 'absolute',
                   right: '5%',
                   bottom: '0',
                   width: '70%',
-                  objectFit: 'cover',
+                  maxHeight: '95%',
                 }}
                 alt="Analytics"
               ></Image>
@@ -252,9 +276,11 @@ export default function LandingView() {
                   backgroundColor: theme.colors.black + ' !important',
                 },
               }}
+              onMouseEnter={() => setApiImage(images.api.hover.src)}
+              onMouseLeave={() => setApiImage(images.api.original.src)}
             >
               <Image
-                src={UpshotApiSVG.src}
+                src={apiImage}
                 sx={{
                   opacity: '0.7',
                   position: 'absolute',
@@ -310,9 +336,11 @@ export default function LandingView() {
                   backgroundColor: theme.colors.black + ' !important',
                 },
               }}
+              onMouseEnter={() => setBlogImage(images.blog.hover.src)}
+              onMouseLeave={() => setBlogImage(images.blog.original.src)}
             >
               <Image
-                src={BlogSVG.src}
+                src={blogImage}
                 sx={{
                   opacity: '0.7',
                   position: 'absolute',
