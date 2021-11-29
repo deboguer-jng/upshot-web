@@ -49,17 +49,20 @@ export type GetCollectorData = {
     }
     avgHoldTime: number
     txHistory: {
-      type: string
-      txAt: number
-      txFromAddress: string
-      txToAddress: string
-      txHash: string
-      price: string
-      currency: {
-        symbol: string
-        decimals: number
-      }
-    }[]
+      count: number
+      events: {
+        type: string
+        txAt: number
+        txFromAddress: string
+        txToAddress: string
+        txHash: string
+        price: string
+        currency: {
+          symbol: string
+          decimals: number
+        }
+      }[]
+    }
   }
 }
 
