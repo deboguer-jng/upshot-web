@@ -1,2 +1,10 @@
 http://app.upshot.io/* https://app.upshot.xyz/:splat 301!
 https://app.upshot.io/* https://app.upshot.xyz/:splat 301!
+http://upshot.io/* https://app.upshot.xyz/:splat 301!
+https://upshot.io/* https://app.upshot.xyz/:splat 301!
+http://upshot.xyz/* https://app.upshot.xyz/:splat 301!
+https://upshot.xyz/* https://app.upshot.xyz/:splat 301!
+http://www.upshot.io/* https://app.upshot.xyz/:splat 301!
+https://www.upshot.io/* https://app.upshot.xyz/:splat 301!
+http://www.upshot.xyz/* https://app.upshot.xyz/:splat 301!
+https://www.upshot.xyz/* https://app.upshot.xyz/:splat 301!
