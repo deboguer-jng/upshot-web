@@ -178,6 +178,7 @@ export default function LandingView() {
           >
             <Panel
               hoverUnderglow="pink"
+              hoverBorder="pink"
               sx={{
                 height: ['225px', null, null, '250px'],
                 position: 'relative',
@@ -187,6 +188,12 @@ export default function LandingView() {
                 backgroundColor: theme.colors['grey-900'] + ' !important',
                 '&:hover img': {
                   opacity: '1',
+                },
+                '&:hover span:first-of-type': {
+                  color: theme.colors.pink,
+                },
+                '&:hover': {
+                  backgroundColor: theme.colors.black + ' !important',
                 },
               }}
             >
@@ -227,6 +234,7 @@ export default function LandingView() {
           >
             <Panel
               hoverUnderglow="blue"
+              hoverBorder="blue"
               sx={{
                 height: ['225px', null, null, '250px'],
                 position: 'relative',
@@ -236,6 +244,12 @@ export default function LandingView() {
                 backgroundColor: theme.colors['grey-900'] + ' !important',
                 '&:hover img': {
                   opacity: '1',
+                },
+                '&:hover span:first-of-type': {
+                  color: theme.colors.blue,
+                },
+                '&:hover': {
+                  backgroundColor: theme.colors.black + ' !important',
                 },
               }}
             >
@@ -277,7 +291,8 @@ export default function LandingView() {
             }}
           >
             <Panel
-              hoverUnderglow="blue"
+              hoverUnderglow="red"
+              hoverBorder="red"
               sx={{
                 height: ['225px', null, null, '250px'],
                 position: 'relative',
@@ -287,6 +302,12 @@ export default function LandingView() {
                 backgroundColor: theme.colors['grey-900'] + ' !important',
                 '&:hover img': {
                   opacity: '1',
+                },
+                '&:hover span:first-of-type': {
+                  color: theme.colors.red,
+                },
+                '&:hover': {
+                  backgroundColor: theme.colors.black + ' !important',
                 },
               }}
             >
