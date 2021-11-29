@@ -637,7 +637,7 @@ export default function UserView() {
                           </TableBody>
                         </Table>
                       )}
-                    {data?.getUser?.txHistory.length == 0 && (
+                    {data?.getUser?.txHistory?.count == 0 && (
                       <Text sx={{ color: 'grey-500' }}>
                         No transaction history found.
                       </Text>
