@@ -10,19 +10,19 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { formatDistance } from 'date-fns'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useState, useEffect } from 'react'
+import { useEffect,useState } from 'react'
 import { shortenAddress } from 'utils/address'
 import { weiToEth } from 'utils/number'
-import Link from 'next/link'
 
 import {
+  GET_COLLECTION_AVG_PRICE,
   GET_TOP_SALES,
-  GetTopSalesData,
-  GetTopSalesVars,
   GetCollectionAvgPriceData,
   GetCollectionAvgPriceVars,
-  GET_COLLECTION_AVG_PRICE,
+  GetTopSalesData,
+  GetTopSalesVars,
 } from '../queries'
 import { MiniNFTContainer } from './Styled'
 
@@ -246,7 +246,7 @@ export default function TopSellingNFTs({
                     image={previewImageUrl ?? mediaUrl}
                     date={formatDistance(txAt * 1000, new Date())}
                     pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
-                    link={`https://app.upshot.io/analytics/collection/${collection?.id}`}
+                    link={`/analytics/collection/${collection?.id}`}
                   />
                 </a>
               )
@@ -266,7 +266,7 @@ export default function TopSellingNFTs({
                       image={imageUrl}
                       floorPrice={floor ? weiToEth(floor) : undefined}
                       sales={'130'}
-                      link={`https://app.upshot.io/analytics/collection/${id}`}
+                      link={`/analytics/collection/${id}`}
                     />
                   </a>
                 </Link>
