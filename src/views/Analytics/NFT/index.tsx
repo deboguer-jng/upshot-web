@@ -404,16 +404,29 @@ export default function NFTView() {
                           >
                             Owned By
                           </Text>
-                          <Text
-                            color="grey-300"
-                            sx={{
-                              fontWeight: 'bold',
-                              lineHeight: 1.25,
-                              fontSize: [3, 3, 4],
-                            }}
+                          <Link
+                            href={`/analytics/user/${txHistory[0].txToAddress}`}
                           >
-                            {displayName}
-                          </Text>
+                            <a
+                              sx={{
+                                cursor: 'pointer',
+                                '&:hover': {
+                                  textDecoration: 'underline',
+                                },
+                              }}
+                            >
+                              <Text
+                                color="grey-300"
+                                sx={{
+                                  fontWeight: 'bold',
+                                  lineHeight: 1.25,
+                                  fontSize: [3, 3, 4],
+                                }}
+                              >
+                                {displayName}
+                              </Text>
+                            </a>
+                          </Link>
                         </Flex>
                       </Flex>
                     </Flex>
@@ -717,7 +730,22 @@ export default function NFTView() {
                                           height: 3,
                                         }}
                                       />
-                                      <FormattedENS address={txFromAddress} />
+                                      <Link
+                                        href={`/analytics/user/${txFromAddress}`}
+                                      >
+                                        <a
+                                          sx={{
+                                            cursor: 'pointer',
+                                            '&:hover': {
+                                              textDecoration: 'underline',
+                                            },
+                                          }}
+                                        >
+                                          <FormattedENS
+                                            address={txFromAddress}
+                                          />
+                                        </a>
+                                      </Link>
                                     </Flex>
                                   </TableCell>
                                   <TableCell sx={{ minWidth: 140 }}>
@@ -730,7 +758,20 @@ export default function NFTView() {
                                           height: 3,
                                         }}
                                       />
-                                      <FormattedENS address={txToAddress} />
+                                      <Link
+                                        href={`/analytics/user/${txToAddress}`}
+                                      >
+                                        <a
+                                          sx={{
+                                            cursor: 'pointer',
+                                            '&:hover': {
+                                              textDecoration: 'underline',
+                                            },
+                                          }}
+                                        >
+                                          <FormattedENS address={txToAddress} />
+                                        </a>
+                                      </Link>
                                     </Flex>
                                   </TableCell>
                                 </>

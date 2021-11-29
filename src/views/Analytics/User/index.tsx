@@ -1,3 +1,4 @@
+/** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
 import { Container } from '@upshot-tech/upshot-ui'
 import { Avatar, Flex, Footer, Grid, Panel, Text } from '@upshot-tech/upshot-ui'
@@ -59,6 +60,19 @@ function Layout({ children }: { children: React.ReactNode }) {
           link: prevPath,
         },
       ]
+    : prevPath?.includes('user')
+    ? [
+        {
+          text: 'Analytics Home',
+          link: '/analytics',
+        },
+        {
+          text: `${
+            decodeURI(prevPath as string).split('?userWallet=')[1]
+          }'s Collection`,
+          link: prevPath,
+        },
+      ]
     : [
         {
           text: 'Analytics Home',
@@ -107,6 +121,11 @@ function Header({ address }: { address: string }) {
         console.error(err)
       }
     }
+
+    const storage = globalThis?.sessionStorage
+    const curPath = storage.getItem('currentPath')
+    if (curPath?.indexOf('userWallet=') === -1)
+      storage.setItem('currentPath', `${curPath}?userWallet=${displayName}`)
 
     updateEns()
   }, [address])
@@ -522,9 +541,22 @@ export default function UserView() {
                                               height: 3,
                                             }}
                                           />
-                                          <FormattedENS
-                                            address={txFromAddress}
-                                          />
+                                          <Link
+                                            href={`/analytics/user/${txFromAddress}`}
+                                          >
+                                            <a
+                                              sx={{
+                                                cursor: 'pointer',
+                                                '&:hover': {
+                                                  textDecoration: 'underline',
+                                                },
+                                              }}
+                                            >
+                                              <FormattedENS
+                                                address={txFromAddress}
+                                              />
+                                            </a>
+                                          </Link>
                                         </Flex>
                                       </TableCell>
                                       <TableCell sx={{ minWidth: 140 }}>
@@ -539,7 +571,22 @@ export default function UserView() {
                                               height: 3,
                                             }}
                                           />
-                                          <FormattedENS address={txToAddress} />
+                                          <Link
+                                            href={`/analytics/user/${txToAddress}`}
+                                          >
+                                            <a
+                                              sx={{
+                                                cursor: 'pointer',
+                                                '&:hover': {
+                                                  textDecoration: 'underline',
+                                                },
+                                              }}
+                                            >
+                                              <FormattedENS
+                                                address={txToAddress}
+                                              />
+                                            </a>
+                                          </Link>
                                         </Flex>
                                       </TableCell>
                                     </>

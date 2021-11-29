@@ -239,7 +239,9 @@ export default function TopSellingNFTs({
                   <MiniNftCard
                     price={price ? weiToEth(price) : undefined}
                     to={shortenAddress(txToAddress, 2, 4)}
+                    toLink={`/analytics/user/${txToAddress}`}
                     from={shortenAddress(txFromAddress, 2, 4)}
+                    fromLink={`/analytics/user/${txFromAddress}`}
                     rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
                     image={previewImageUrl ?? mediaUrl}
                     date={formatDistance(txAt * 1000, new Date())}
