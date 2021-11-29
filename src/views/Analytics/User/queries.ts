@@ -48,7 +48,7 @@ export type GetCollectorData = {
       txAt: number
     }
     avgHoldTime: number
-    txHistoryPaginated: {
+    txHistory: {
       type: string
       txAt: number
       txFromAddress: string
@@ -110,16 +110,19 @@ export const GET_COLLECTOR = gql`
         txAt
       }
       avgHoldTime
-      txHistoryPaginated(limit: $txLimit, offset: $txOffset) {
-        type
-        txAt
-        txFromAddress
-        txToAddress
-        txHash
-        price
-        currency {
-          symbol
-          decimals
+      txHistory(limit: $txLimit, offset: $txOffset) {
+        count
+        events {
+          type
+          txAt
+          txFromAddress
+          txToAddress
+          txHash
+          price
+          currency {
+            symbol
+            decimals
+          }
         }
       }
     }

@@ -431,8 +431,8 @@ export default function UserView() {
                   <Flex sx={{ flexDirection: 'column', gap: 4 }}>
                     <Text variant="h3Secondary">Transaction History</Text>
 
-                    {data?.getUser?.txHistoryPaginated &&
-                      data?.getUser?.txHistoryPaginated.length > 0 && (
+                    {data?.getUser?.txHistory &&
+                      data?.getUser?.txHistory.length > 0 && (
                         <Table sx={{ borderSpacing: '0 10px' }}>
                           <TableHead>
                             <TableRow>
@@ -450,7 +450,7 @@ export default function UserView() {
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {data?.getUser?.txHistoryPaginated?.map(
+                            {data?.getUser?.txHistory?.map(
                               (
                                 {
                                   type,
@@ -549,7 +549,7 @@ export default function UserView() {
                           </TableBody>
                         </Table>
                       )}
-                    {data?.getUser?.txHistoryPaginated.length == 0 && (
+                    {data?.getUser?.txHistory.length == 0 && (
                       <Text sx={{ color: 'grey-500' }}>
                         No transaction history found.
                       </Text>
