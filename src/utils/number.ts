@@ -76,3 +76,15 @@ export const formatLargeNumber = (num: number, digits = 2) => {
     ? (num / item.value).toFixed(2) + item.symbol
     : Number(0).toFixed(digits)
 }
+
+/**
+ * Get price change label.
+ *
+ * @returns + prefixed percent if positive, - prefixed percent if negative.
+ */
+export const getPriceChangeLabel = (val: number | null) => {
+  if (val === null) return '-'
+
+  const percentChange = val.toFixed(2) + '%'
+  return val > 0 ? '+' + percentChange : percentChange
+}

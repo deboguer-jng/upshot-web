@@ -60,10 +60,15 @@ export default function AnalyticsView() {
         }}
       >
         <Nav />
-        <Flex sx={{ flex: '1 1 auto', flexDirection: 'column', gap: 5 }}>
-          <Text variant="h1Secondary" sx={{ lineHeight: '2.25rem' }}>
-            Top Collections
+        <Box sx={{ display: 'inline-block', paddingBottom: ['0px', '0px', '10px'], marginTop: ['-20px', '-20px', '-10px']}}>
+          <Text variant="h0Secondary" sx={{ lineHeight: '2.25rem', display: 'inline-block', color: 'blue', fontWeight: '700', fontSize: ['46px', '46px', 8] }}>
+            UPSHOT
           </Text>
+          <Text variant="h0Secondary" sx={{ lineHeight: '2.25rem', display: 'inline-block', fontWeight: '500', fontSize: ['46px', '46px', 8] }}>
+            Analytics
+          </Text>
+        </Box>
+        <Flex sx={{ flex: '1 1 auto', flexDirection: 'column', gap: 5 }}>
           <ButtonTabs onChange={handleChange} />
           <TopCollectionsChart
             metric={chartMetric}
