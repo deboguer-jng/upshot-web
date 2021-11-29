@@ -87,7 +87,7 @@ export const Nav = () => {
           ens.avatar ?? address ? makeBlockie(address) : undefined
         }
         ensName={ens.name}
-        address={address ? shortenAddress(address) : undefined}
+        address={address}
         searchValue={navSearchTerm}
         onSearchValueChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           setNavSearchTerm(e.currentTarget.value)
