@@ -310,7 +310,14 @@ export default function CollectionView() {
       </Text>
       {scatterChart}
 
-      <Flex sx={{ flexDirection: 'column', flexGrow: 1, gap: 5 }}>
+      <Flex
+        sx={{
+          position: 'relative',
+          flexDirection: 'column',
+          flexGrow: 1,
+          gap: 5,
+        }}
+      >
         <TopSellingNFTs collectionId={id} />
       </Flex>
 
