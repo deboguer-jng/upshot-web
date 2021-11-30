@@ -12,7 +12,7 @@ import { PIXELATED_CONTRACTS } from 'constants/'
 import { formatDistance } from 'date-fns'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useEffect,useState } from 'react'
+import { useEffect, useState } from 'react'
 import { shortenAddress } from 'utils/address'
 import { weiToEth } from 'utils/number'
 
@@ -39,21 +39,12 @@ export type WINDOW = keyof typeof WINDOWS
 function TopSellingNFTsHeader({
   period,
   setPeriod,
-  topSellingType,
-  setTopSellingType,
 }: {
   period?: string
   setPeriod?: (val: string) => void
-  topSellingType?: string
-  setTopSellingType?: (val: string) => void
 }) {
   const breakpointIndex = useBreakpointIndex()
   const [open, setOpen] = useState(false)
-  const [collectionOpen, setCollectionOpen] = useState(false)
-
-  useEffect(() => {
-    console.log(open, collectionOpen)
-  }, [open, collectionOpen])
 
   return (
     <Flex
@@ -64,7 +55,7 @@ function TopSellingNFTsHeader({
         paddingBottom: '1rem',
         position: 'absolute',
         width: '100%',
-        height: open || collectionOpen ? '100%' : 'auto',
+        height: open ? '100%' : 'auto',
         background: 'rgba(0, 0, 0, 0.8)',
         zIndex: 2,
         '&,& *': breakpointIndex <= 1 && {
@@ -73,20 +64,7 @@ function TopSellingNFTsHeader({
         },
       }}
     >
-      Top Selling
-      {!!setTopSellingType ? (
-        <SwitchDropdown
-          onChange={(val) => setTopSellingType?.(val)}
-          onStatusChange={(status) => {
-            setCollectionOpen(status)
-          }}
-          value={topSellingType ?? ''}
-          options={['NFTs', 'Collections']}
-        />
-      ) : (
-        ' '
-      )}
-      in
+      Top Selling NFTs in
       {!!setPeriod ? (
         <SwitchDropdown
           onChange={(val) => setPeriod?.(val)}
@@ -125,34 +103,16 @@ export default function TopSellingNFTs({
     }
   ) // Using `all` to include data with errors.
 
-  const {
-    loading: collectionLoading,
-    error: collectionError,
-    data: collectionData,
-  } = useQuery<GetCollectionAvgPriceData, GetCollectionAvgPriceVars>(
-    GET_COLLECTION_AVG_PRICE,
-    {
-      variables: {
-        metric: 'VOLUME',
-        windowSize:
-          period === '1 day' ? 'DAY' : period === '1 week' ? 'WEEK' : 'MONTH',
-        limit: 10,
-      },
-    }
-  )
-
   const handleClickNFT = (id: string) => {
     router.push('/analytics/nft/' + id)
   }
 
-  if (loading || collectionLoading)
+  if (loading)
     return (
       <>
         <TopSellingNFTsHeader
           period={period}
           setPeriod={(val) => setPeriod(val)}
-          topSellingType={topSellingType}
-          setTopSellingType={(val) => setTopSellingType(val)}
         />
         <MiniNFTContainer
           sx={{ paddingTop: breakpointIndex <= 1 ? '50px' : '80px' }}
@@ -164,23 +124,18 @@ export default function TopSellingNFTs({
       </>
     )
 
-  if (error || collectionError)
+  if (error)
     return (
       <>
         <TopSellingNFTsHeader
           period={period}
           setPeriod={(val) => setPeriod(val)}
-          topSellingType={topSellingType}
-          setTopSellingType={(val) => setTopSellingType(val)}
         />
         There was an error completing your request.
       </>
     )
 
-  if (
-    !data?.topSales.length ||
-    !collectionData?.orderedCollectionsByMetricSearch?.assetSets.length
-  )
+  if (!data?.topSales.length)
     return (
       <Flex
         sx={{
@@ -191,8 +146,6 @@ export default function TopSellingNFTs({
         <TopSellingNFTsHeader
           period={period}
           setPeriod={(val) => setPeriod(val)}
-          topSellingType={topSellingType}
-          setTopSellingType={(val) => setTopSellingType(val)}
         />
         <text sx={{ paddingTop: breakpointIndex <= 1 ? '50px' : '80px' }}>
           No results available.{' '}
@@ -205,74 +158,47 @@ export default function TopSellingNFTs({
       <TopSellingNFTsHeader
         period={period}
         setPeriod={(val) => setPeriod(val)}
-        topSellingType={topSellingType}
-        setTopSellingType={(val) => setTopSellingType(val)}
       />
       <MiniNFTContainer
         sx={{ paddingTop: breakpointIndex <= 1 ? '50px' : '80px' }}
       >
-        {topSellingType === 'NFTs' ? (
-          <>
-            {data.topSales.map(
-              (
-                {
-                  txAt,
-                  txFromAddress,
-                  txToAddress,
-                  price,
-                  asset: {
-                    id,
-                    contractAddress,
-                    previewImageUrl,
-                    mediaUrl,
-                    rarity,
-                    collection,
-                  },
-                },
-                key
-              ) => (
-                <a
-                  key={key}
-                  onClick={() => handleClickNFT(id)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <MiniNftCard
-                    price={price ? weiToEth(price) : undefined}
-                    to={shortenAddress(txToAddress, 2, 4)}
-                    toLink={`/analytics/user/${txToAddress}`}
-                    from={shortenAddress(txFromAddress, 2, 4)}
-                    fromLink={`/analytics/user/${txFromAddress}`}
-                    rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
-                    image={previewImageUrl ?? mediaUrl}
-                    date={formatDistance(txAt * 1000, new Date())}
-                    pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
-                    link={`/analytics/collection/${collection?.id}`}
-                  />
-                </a>
-              )
-            )}
-          </>
-        ) : (
-          <>
-            {collectionData?.orderedCollectionsByMetricSearch.assetSets.map(
-              ({ id, name, imageUrl, average, floor, volume }) => (
-                <Link key={id} href={`/analytics/collection/${id}`}>
-                  <a style={{ textDecoration: 'none' }}>
-                    <MiniNftCard
-                      tooltip={`volume / ${period}`}
-                      price={volume ? weiToEth(volume) : undefined}
-                      name={name}
-                      type="collection"
-                      image={imageUrl}
-                      floorPrice={floor ? weiToEth(floor) : undefined}
-                      sales={'130'}
-                      link={`/analytics/collection/${id}`}
-                    />
-                  </a>
-                </Link>
-              )
-            )}
-          </>
+        {data.topSales.map(
+          (
+            {
+              txAt,
+              txFromAddress,
+              txToAddress,
+              price,
+              asset: {
+                id,
+                contractAddress,
+                previewImageUrl,
+                mediaUrl,
+                rarity,
+                collection,
+              },
+            },
+            key
+          ) => (
+            <a
+              key={key}
+              onClick={() => handleClickNFT(id)}
+              style={{ cursor: 'pointer' }}
+            >
+              <MiniNftCard
+                price={price ? weiToEth(price) : undefined}
+                to={shortenAddress(txToAddress, 2, 4)}
+                toLink={`/analytics/user/${txToAddress}`}
+                from={shortenAddress(txFromAddress, 2, 4)}
+                fromLink={`/analytics/user/${txFromAddress}`}
+                rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
+                image={previewImageUrl ?? mediaUrl}
+                date={formatDistance(txAt * 1000, new Date())}
+                pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
+                link={`/analytics/collection/${collection?.id}`}
+              />
+            </a>
+          )
         )}
       </MiniNFTContainer>
     </>
