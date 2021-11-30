@@ -392,7 +392,7 @@ export default function NFTView() {
                       <Flex sx={{ gap: [1, 1, 4], alignItems: 'center' }}>
                         <Image
                           src={
-                            txHistory[0].txToAddress
+                            txHistory[0]?.txToAddress
                               ? makeBlockie(txHistory[0].txToAddress)
                               : '/img/defaultAvatar.png'
                           }
@@ -417,7 +417,7 @@ export default function NFTView() {
                             Owned By
                           </Text>
                           <Link
-                            href={`/analytics/user/${txHistory[0].txToAddress}`}
+                            href={`/analytics/user/${txHistory[0]?.txToAddress}`}
                           >
                             <a
                               sx={{
