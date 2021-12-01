@@ -88,7 +88,6 @@ export default function TopSellingNFTs({
 }) {
   const router = useRouter()
   const [period, setPeriod] = useState('1 day')
-  const [topSellingType, setTopSellingType] = useState('NFTs')
   const breakpointIndex = useBreakpointIndex()
   const { loading, error, data } = useQuery<GetTopSalesData, GetTopSalesVars>(
     GET_TOP_SALES,

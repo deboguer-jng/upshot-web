@@ -130,7 +130,7 @@ export const GET_COLLECTION_AVG_PRICE = gql`
         imageUrl
         average
         floor
-        volume
+        volume(windowSize: $windowSize)
       }
     }
   }
