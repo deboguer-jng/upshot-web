@@ -7,6 +7,7 @@ import { ethers } from 'ethers'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
+import ReactMarkdown from 'react-markdown'
 import { weiToEth } from 'utils/number'
 import CollectionScatterChart from 'views/Analytics/components/CollectionScatterChart'
 import ExplorePanel from 'views/Analytics/components/ExplorePanel'
@@ -56,7 +57,20 @@ function Layout({ children }: { children: React.ReactNode }) {
   const storage = globalThis?.sessionStorage
   const prevPath = storage.getItem('prevPath')
 
-  const breadcrumbs = !prevPath?.includes('/nft/')
+  const breadcrumbs = prevPath?.includes('user')
+    ? [
+        {
+          text: 'Analytics Home',
+          link: '/analytics',
+        },
+        {
+          text: `${
+            decodeURI(prevPath as string).split('?userWallet=')[1]
+          }'s Collection`,
+          link: prevPath,
+        },
+      ]
+    : !prevPath?.includes('/nft/')
     ? [
         {
           text: 'Analytics Home',
@@ -271,9 +285,14 @@ export default function CollectionView() {
               WebkitLineClamp: descriptionOpen ? 'unset' : 6,
               display: '-webkit-box',
               WebkitBoxOrient: 'vertical',
+              '& a': { color: 'white' },
             }}
           >
-            {description ?? 'No information.'}
+            {(
+              <ReactMarkdown allowedElements={['a', 'p']}>
+                {description}
+              </ReactMarkdown>
+            ) ?? 'No information.'}
           </Text>
         </Flex>
       </Grid>

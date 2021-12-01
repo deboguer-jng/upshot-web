@@ -43,28 +43,40 @@ function Layout({ children }: { children: React.ReactNode }) {
   const storage = globalThis?.sessionStorage
   const prevPath = storage.getItem('prevPath')
 
-  const breadcrumbs =
-    prevPath?.includes('search') || prevPath?.includes('collection')
-      ? [
-          {
-            text: 'Analytics Home',
-            link: '/analytics',
-          },
-          {
-            text: prevPath?.includes('search')
-              ? 'Search'
-              : prevPath?.includes('collection')
-              ? decodeURI(prevPath as string).split('?collectionName=')[1]
-              : '',
-            link: prevPath,
-          },
-        ]
-      : [
-          {
-            text: 'Analytics Home',
-            link: '/analytics',
-          },
-        ]
+  const breadcrumbs = prevPath?.includes('user')
+    ? [
+        {
+          text: 'Analytics Home',
+          link: '/analytics',
+        },
+        {
+          text: `${
+            decodeURI(prevPath as string).split('?userWallet=')[1]
+          }'s Collection`,
+          link: prevPath,
+        },
+      ]
+    : prevPath?.includes('search') || prevPath?.includes('collection')
+    ? [
+        {
+          text: 'Analytics Home',
+          link: '/analytics',
+        },
+        {
+          text: prevPath?.includes('search')
+            ? 'Search'
+            : prevPath?.includes('collection')
+            ? decodeURI(prevPath as string).split('?collectionName=')[1]
+            : '',
+          link: prevPath,
+        },
+      ]
+    : [
+        {
+          text: 'Analytics Home',
+          link: '/analytics',
+        },
+      ]
 
   return (
     <Container
@@ -380,7 +392,7 @@ export default function NFTView() {
                       <Flex sx={{ gap: [1, 1, 4], alignItems: 'center' }}>
                         <Image
                           src={
-                            txHistory[0].txToAddress
+                            txHistory[0]?.txToAddress
                               ? makeBlockie(txHistory[0].txToAddress)
                               : '/img/defaultAvatar.png'
                           }
@@ -404,16 +416,29 @@ export default function NFTView() {
                           >
                             Owned By
                           </Text>
-                          <Text
-                            color="grey-300"
-                            sx={{
-                              fontWeight: 'bold',
-                              lineHeight: 1.25,
-                              fontSize: [3, 3, 4],
-                            }}
+                          <Link
+                            href={`/analytics/user/${txHistory[0]?.txToAddress}`}
                           >
-                            {displayName}
-                          </Text>
+                            <a
+                              sx={{
+                                cursor: 'pointer',
+                                '&:hover': {
+                                  textDecoration: 'underline',
+                                },
+                              }}
+                            >
+                              <Text
+                                color="grey-300"
+                                sx={{
+                                  fontWeight: 'bold',
+                                  lineHeight: 1.25,
+                                  fontSize: [3, 3, 4],
+                                }}
+                              >
+                                {displayName}
+                              </Text>
+                            </a>
+                          </Link>
                         </Flex>
                       </Flex>
                     </Flex>
@@ -717,7 +742,22 @@ export default function NFTView() {
                                           height: 3,
                                         }}
                                       />
-                                      <FormattedENS address={txFromAddress} />
+                                      <Link
+                                        href={`/analytics/user/${txFromAddress}`}
+                                      >
+                                        <a
+                                          sx={{
+                                            cursor: 'pointer',
+                                            '&:hover': {
+                                              textDecoration: 'underline',
+                                            },
+                                          }}
+                                        >
+                                          <FormattedENS
+                                            address={txFromAddress}
+                                          />
+                                        </a>
+                                      </Link>
                                     </Flex>
                                   </TableCell>
                                   <TableCell sx={{ minWidth: 140 }}>
@@ -730,7 +770,20 @@ export default function NFTView() {
                                           height: 3,
                                         }}
                                       />
-                                      <FormattedENS address={txToAddress} />
+                                      <Link
+                                        href={`/analytics/user/${txToAddress}`}
+                                      >
+                                        <a
+                                          sx={{
+                                            cursor: 'pointer',
+                                            '&:hover': {
+                                              textDecoration: 'underline',
+                                            },
+                                          }}
+                                        >
+                                          <FormattedENS address={txToAddress} />
+                                        </a>
+                                      </Link>
                                     </Flex>
                                   </TableCell>
                                 </>
