@@ -102,6 +102,16 @@ export default function TopSellingNFTs({
     }
   ) // Using `all` to include data with errors.
 
+  useEffect(() => {
+    if (!loading && !data?.topSales.length) {
+      if (period === '1 day') {
+        setPeriod('1 week')
+      } else if (period === '1 week') {
+        setPeriod('1 month')
+      }
+    }
+  }, [loading])
+
   const handleClickNFT = (id: string) => {
     router.push('/analytics/nft/' + id)
   }
