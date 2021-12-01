@@ -147,6 +147,7 @@ export type GetCollectionAssetsData = {
     ownerAssetsInCollection: {
       count: number
       assets: {
+        id: string
         name?: string
         description?: string
         previewImageUrl?: string
@@ -165,6 +166,7 @@ export const GET_COLLECTION_ASSETS = gql`
       ownerAssetsInCollection(limit: $limit, offset: $offset) {
         count
         assets {
+          id
           name
           description
           previewImageUrl

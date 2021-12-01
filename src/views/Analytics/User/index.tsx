@@ -774,7 +774,8 @@ export default function UserView() {
               }
               items={
                 dataAssets?.collectionById?.ownerAssetsInCollection?.assets?.map(
-                  ({ name, description, previewImageUrl }) => ({
+                  ({ id, name, description, previewImageUrl }) => ({
+                    id,
                     expanded: isMobile,
                     avatarImage:
                       showCollectionId?.imageUrl ?? '/img/defaultAvatar.png',
