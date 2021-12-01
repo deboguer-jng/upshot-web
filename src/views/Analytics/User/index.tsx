@@ -762,7 +762,7 @@ export default function UserView() {
             <Spinner size="lg" />
           </Flex>
         ) : (
-          <Box sx={{ width: '95vw', maxHeight: '95vh' }}>
+          <Box sx={{ width: '95vw' }}>
             <CollectionCardExpanded
               avatarImage={
                 showCollectionId?.imageUrl ?? '/img/defaultAvatar.png'
@@ -776,7 +776,8 @@ export default function UserView() {
                 dataAssets?.collectionById?.ownerAssetsInCollection?.assets?.map(
                   ({ name, description, previewImageUrl }) => ({
                     expanded: isMobile,
-
+                    avatarImage:
+                      showCollectionId?.imageUrl ?? '/img/defaultAvatar.png',
                     imageSrc: previewImageUrl ?? '/img/defaultAvatar.png',
                     name: name ?? '',
                     description: description ?? '',
