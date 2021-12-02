@@ -7,6 +7,7 @@ import {
   Skeleton,
   TableCell,
   Text,
+  useBreakpointIndex,
 } from '@upshot-tech/upshot-ui'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { PAGE_SIZE } from 'constants/'
@@ -45,6 +46,9 @@ export default function Collectors({
         skip: !id,
       })
 
+    const breakpointIndex = useBreakpointIndex()
+    const isMobile = breakpointIndex <= 1
+
   const ExplorePanelSkeleton = () => {
     return (
       <CollectorAccordion>
@@ -72,7 +76,7 @@ export default function Collectors({
     <>
       <CollectorAccordionHead>
         <Text>Collector</Text>
-        <Text sx={{ whiteSpace: 'nowrap' }}>{`${name} Count`}</Text>
+        <Text sx={{ whiteSpace: 'nowrap' }}>{`${ isMobile ? '' : name} Count`}</Text>
       </CollectorAccordionHead>
       <CollectorAccordion>
         {[...data.getOwnersByWhaleness.owners]
