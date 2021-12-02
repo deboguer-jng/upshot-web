@@ -735,7 +735,7 @@ export default function UserView() {
                   total={collection?.ownerAssetsInCollection?.count ?? 0}
                   name={collection.name}
                   key={idx}
-                  onSeeAllClick={() =>
+                  onClick={() =>
                     setShowCollectionId({
                       id: collection.id,
                       name: collection.name,
