@@ -166,6 +166,7 @@ export default function UserView() {
   const [showCollectionId, setShowCollectionId] = useState<Collection>()
   const modalRef = useRef<HTMLDivElement>(null)
   const [addressFormatted, setAddressFormatted] = useState<string>()
+  const [errorAddress, setErrorAddress] = useState(false)
   const address = router.query.address as string
 
   useEffect(() => {
@@ -173,6 +174,14 @@ export default function UserView() {
       setAddressFormatted(ethers.utils.getAddress(address))
     } catch (err) {
       console.error(err)
+
+      /**
+       * Address failed to format.
+       *
+       * This occurs if a user manually entered an invalid address.
+       * @note We should show an appropriate error message.
+       */
+      setErrorAddress(true)
     }
   }, [address])
 
@@ -193,12 +202,8 @@ export default function UserView() {
     }
   )
 
-  /**
-   * Waiting for address to format.
-   *
-   * @note We should show an error message if this fails.
-   */
-  const isLoading = loading || !addressFormatted
+  /* Waiting for collector data or query string address param to format. */
+  const isLoading = loading || (!addressFormatted && !errorAddress)
 
   const {
     loading: loadingAssets,
