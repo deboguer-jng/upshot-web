@@ -76,23 +76,21 @@ export default function TopCollectors() {
               {...{ username }}
             >
               <div style={{ display: 'grid' }}>
+                <a href={`/analytics/user/${addresses[0]}`} style={{ textDecoration: 'none' }}>
+                  <Text
+                    variant='h3Primary'
+                    sx={{
+                      color: 'primary',
+                      paddingBottom: '12px',
+                      fontSize: 4,
+                    }}
+                  >
+                    View Portfolio
+                  </Text>
+                </a>
                 <Text sx={{ fontSize: 4, fontWeight: 'heading' }}>
                   Most Notable NFTs
                 </Text>
-                {!isMobile && (
-                  <a href={`/analytics/user/${addresses[0]}`} style={{ textDecoration: 'none' }}>
-                    <Text
-                      sx={{
-                        fontWeight: 'heading',
-                        color: theme.colors.blue,
-                        paddingBottom: '12px',
-                        fontSize: 2,
-                      }}
-                    >
-                      {addresses[0]}
-                    </Text>
-                  </a>
-                )}
               </div>
               <MiniNFTContainer>
                 {ownedAssets?.assets?.map(
