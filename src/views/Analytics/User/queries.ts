@@ -131,3 +131,47 @@ export const GET_COLLECTOR = gql`
     }
   }
 `
+
+/**
+ * Get Collection Assets
+ */
+
+export type GetCollectionAssetsVars = {
+  id: number
+  limit: number
+  offset: number
+}
+
+export type GetCollectionAssetsData = {
+  collectionById: {
+    ownerAssetsInCollection: {
+      count: number
+      assets: {
+        id: string
+        name?: string
+        description?: string
+        previewImageUrl?: string
+      }[]
+    }
+  }
+}
+
+export const GET_COLLECTION_ASSETS = gql`
+  query GetCollectionAssets(
+    $id: Int!
+    $limit: OneToHundredInt!
+    $offset: Int!
+  ) {
+    collectionById(id: $id) {
+      ownerAssetsInCollection(limit: $limit, offset: $offset) {
+        count
+        assets {
+          id
+          name
+          description
+          previewImageUrl
+        }
+      }
+    }
+  }
+`
