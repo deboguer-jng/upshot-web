@@ -12,7 +12,6 @@ import {
   Text,
   theme,
 } from '@upshot-tech/upshot-ui'
-import { Nav } from 'components/Nav'
 import Head from 'next/head'
 import { Image, Link } from 'theme-ui'
 
@@ -83,7 +82,6 @@ export default function LandingView() {
           gap: 4,
         }}
       >
-        <Nav />
         <Box sx={{ display: 'flex' }}>
           {' '}
           {/* Display only on Desktop */}
