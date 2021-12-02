@@ -190,18 +190,50 @@ export default function UserView() {
     }
   )
 
-  const { loading: loadingAssets, data: dataAssets } = useQuery<
-    GetCollectionAssetsData,
-    GetCollectionAssetsVars
-  >(GET_COLLECTION_ASSETS, {
-    errorPolicy: 'all',
-    variables: {
-      id: Number(showCollectionId?.id),
-      limit: 10,
-      offset: 0,
-    },
-    skip: !showCollectionId?.id,
-  })
+  const {
+    loading: loadingAssets,
+    data: dataAssets,
+    fetchMore: fetchMoreAssets,
+  } = useQuery<GetCollectionAssetsData, GetCollectionAssetsVars>(
+    GET_COLLECTION_ASSETS,
+    {
+      errorPolicy: 'all',
+      variables: {
+        userAddress: addressFormatted,
+        id: Number(showCollectionId?.id),
+        limit: 10,
+        offset: 0,
+      },
+      skip: !showCollectionId?.id || !addressFormatted,
+    }
+  )
+
+  const handleFetchMore = (offset: number) => {
+    if (loadingAssets) return
+
+    fetchMoreAssets({
+      variables: { offset },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) return prev
+
+        return {
+          collectionById: {
+            ownerAssetsInCollection: {
+              count:
+                fetchMoreResult?.collectionById?.ownerAssetsInCollection
+                  ?.count ?? 0,
+              assets: [
+                ...(prev?.collectionById?.ownerAssetsInCollection?.assets ??
+                  []),
+                ...(fetchMoreResult?.collectionById?.ownerAssetsInCollection
+                  ?.assets ?? []),
+              ],
+            },
+          },
+        }
+      },
+    })
+  }
 
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
@@ -695,12 +727,12 @@ export default function UserView() {
           <Text variant="h1Primary">Collection</Text>
           <Grid columns="repeat(auto-fit, minmax(300px, 1fr))" sx={{ gap: 4 }}>
             {data?.getUser?.extraCollections?.collectionAssetCounts?.map(
-              ({ collection }, idx) => (
+              ({ count, collection }, idx) => (
                 <CollectionCard
-                  hasSeeAll
+                  hasSeeAll={count > 5}
                   avatarImage={collection.imageUrl}
                   link={`/analytics/collection/${collection.id}`}
-                  total={collection.ownerAssetsInCollection.count}
+                  total={collection?.ownerAssetsInCollection?.count ?? 0}
                   name={collection.name}
                   key={idx}
                   onSeeAllClick={() =>
@@ -769,13 +801,11 @@ export default function UserView() {
               }
               name={showCollectionId?.name ?? ''}
               total={
-                dataAssets?.collectionById?.ownerAssetsInCollection?.count ??
-                '-'
+                dataAssets?.collectionById?.ownerAssetsInCollection?.count ?? 0
               }
               items={
                 dataAssets?.collectionById?.ownerAssetsInCollection?.assets?.map(
-                  ({ id, name, description, previewImageUrl }, index) => ({
-                    index,
+                  ({ id, name, description, previewImageUrl }) => ({
                     id,
                     expanded: isMobile,
                     avatarImage:
@@ -787,6 +817,7 @@ export default function UserView() {
                 ) ?? []
               }
               onClose={() => modalRef?.current?.click()}
+              onFetchMore={handleFetchMore}
             />
           </Box>
         )}
