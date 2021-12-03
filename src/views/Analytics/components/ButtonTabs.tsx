@@ -1,5 +1,5 @@
 import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
-import { Button, Flex, Scroll } from '@upshot-tech/upshot-ui'
+import { Button, Flex, SliderFade } from '@upshot-tech/upshot-ui'
 import { useState } from 'react'
 
 export const METRICS = {
@@ -42,7 +42,7 @@ export default function ButtonTabs({ onChange }: ButtonTabsProps) {
   return (
     <>
       {isMobile ? (
-        <Scroll>
+        <SliderFade>
           <Flex
             sx={{
               gap: 4,
@@ -53,7 +53,7 @@ export default function ButtonTabs({ onChange }: ButtonTabsProps) {
           >
             {renderButtons()}
           </Flex>
-        </Scroll>
+        </SliderFade>
       ) : (
         <Flex
           sx={{

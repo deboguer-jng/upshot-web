@@ -137,6 +137,7 @@ export const GET_COLLECTOR = gql`
  */
 
 export type GetCollectionAssetsVars = {
+  userAddress?: string
   id: number
   limit: number
   offset: number
@@ -151,6 +152,7 @@ export type GetCollectionAssetsData = {
         name?: string
         description?: string
         previewImageUrl?: string
+        lastAppraisalWeiPrice: string
       }[]
     }
   }
@@ -158,18 +160,24 @@ export type GetCollectionAssetsData = {
 
 export const GET_COLLECTION_ASSETS = gql`
   query GetCollectionAssets(
+    $userAddress: String
     $id: Int!
     $limit: OneToHundredInt!
     $offset: Int!
   ) {
     collectionById(id: $id) {
-      ownerAssetsInCollection(limit: $limit, offset: $offset) {
+      ownerAssetsInCollection(
+        userAddress: $userAddress
+        limit: $limit
+        offset: $offset
+      ) {
         count
         assets {
           id
           name
           description
           previewImageUrl
+          lastAppraisalWeiPrice
         }
       }
     }
