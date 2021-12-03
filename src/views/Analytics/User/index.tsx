@@ -33,7 +33,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
 import { fetchEns, shortenAddress } from 'utils/address'
-import { formatCurrencyUnits, formatLargeNumber } from 'utils/number'
+import { formatCurrencyUnits, formatLargeNumber, weiToEth } from 'utils/number'
 
 import Breadcrumbs from '../components/Breadcrumbs'
 import { GET_COLLECTOR, GetCollectorData, GetCollectorVars } from './queries'
@@ -870,14 +870,14 @@ export default function UserView() {
               }
               items={
                 dataAssets?.collectionById?.ownerAssetsInCollection?.assets?.map(
-                  ({ id, name, description, previewImageUrl }) => ({
+                  ({ id, name, lastAppraisalWeiPrice, previewImageUrl }) => ({
                     id,
                     expanded: isMobile,
                     avatarImage:
                       showCollectionId?.imageUrl ?? '/img/defaultAvatar.png',
                     imageSrc: previewImageUrl ?? '/img/defaultAvatar.png',
                     name: name ?? '',
-                    description: description ?? '',
+                    description: `Latest Appraised Value: ${weiToEth(lastAppraisalWeiPrice)}` ?? '',
                   })
                 ) ?? []
               }

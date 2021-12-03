@@ -152,6 +152,7 @@ export type GetCollectionAssetsData = {
         name?: string
         description?: string
         previewImageUrl?: string
+        lastAppraisalWeiPrice: string
       }[]
     }
   }
@@ -176,6 +177,7 @@ export const GET_COLLECTION_ASSETS = gql`
           name
           description
           previewImageUrl
+          lastAppraisalWeiPrice
         }
       }
     }
