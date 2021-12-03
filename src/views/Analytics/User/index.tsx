@@ -98,7 +98,7 @@ function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Head>
-        <title>Upshot Analytics: User Profile</title>
+        <title>Upshot Analytics</title>
       </Head>
       <Container
         p={4}
