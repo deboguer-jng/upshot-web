@@ -169,6 +169,8 @@ export default function UserView() {
   const [errorAddress, setErrorAddress] = useState(false)
   const address = router.query.address as string
 
+  const loadingAddressFormatted = !addressFormatted && !errorAddress
+
   useEffect(() => {
     try {
       setAddressFormatted(ethers.utils.getAddress(address))
@@ -185,25 +187,26 @@ export default function UserView() {
     }
   }, [address])
 
-  const { loading, error, data } = useQuery<GetCollectorData, GetCollectorVars>(
-    GET_COLLECTOR,
-    {
-      errorPolicy: 'all',
-      variables: {
-        address: addressFormatted,
-        collectionLimit: 8,
-        collectionOffset: 0,
-        assetLimit: 5,
-        assetOffset: 0,
-        txLimit: 25,
-        txOffset: 0,
-      },
-      skip: !addressFormatted,
-    }
-  )
+  const {
+    loading: loadingCollector,
+    error,
+    data,
+  } = useQuery<GetCollectorData, GetCollectorVars>(GET_COLLECTOR, {
+    errorPolicy: 'all',
+    variables: {
+      address: addressFormatted,
+      collectionLimit: 8,
+      collectionOffset: 0,
+      assetLimit: 5,
+      assetOffset: 0,
+      txLimit: 25,
+      txOffset: 0,
+    },
+    skip: !addressFormatted,
+  })
 
   /* Waiting for collector data or query string address param to format. */
-  const isLoading = loading || (!addressFormatted && !errorAddress)
+  const isLoading = loadingCollector || loadingAddressFormatted
 
   const {
     loading: loadingAssets,
