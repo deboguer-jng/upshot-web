@@ -327,7 +327,7 @@ export default function UserView() {
     <>
       <Layout>
         <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-          {!!address && <Header {...{ address }} />}
+          {!!address && <Header key={address} {...{ address }} />}
           {/* User Description */}
           <Text color="grey-400">{data?.getUser?.bio}</Text>
           <Grid gap={4} columns={[1, 1, 1, 2]}>
