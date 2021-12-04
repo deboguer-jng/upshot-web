@@ -31,6 +31,7 @@ import { ethers } from 'ethers'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { transparentize } from 'polished'
 import { useEffect, useRef, useState } from 'react'
 import { fetchEns, shortenAddress } from 'utils/address'
 import { formatCurrencyUnits, formatLargeNumber, weiToEth } from 'utils/number'
@@ -197,7 +198,7 @@ export default function UserView() {
       address: addressFormatted,
       collectionLimit: 8,
       collectionOffset: 0,
-      assetLimit: 5,
+      assetLimit: 6,
       assetOffset: 0,
       txLimit: 25,
       txOffset: 0,
@@ -255,10 +256,26 @@ export default function UserView() {
 
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
+  const shortAddress = shortenAddress(address)
 
   const distributionTable = (
     <Panel sx={{ flexGrow: 1 }}>
-      <Text variant="h3Secondary">Collection Distribution</Text>
+      <Text variant="h3Secondary" sx={{ lineHeight: 1.3 }}>
+        Collection Distribution
+      </Text>
+      <Flex sx={{ gap: 2 }}>
+        <Box
+          sx={{
+            border: '2px solid',
+            borderColor: theme.colors.blue,
+            width: '16px',
+            height: '16px',
+            borderRadius: '4px',
+            backgroundColor: transparentize(0.75, theme.rawColors.blue),
+          }}
+        ></Box>
+        <Text sx={{ fontSize: 2, color: 'grey-600' }}>{shortAddress}</Text>
+      </Flex>
       <CollectionTable>
         <TableHead>
           <TableRow>
@@ -288,7 +305,22 @@ export default function UserView() {
 
   const distributionRadar = (
     <Panel sx={{ display: 'flex', flexDirection: 'column' }}>
-      <Text variant="h3Secondary">Collection Distribution</Text>
+      <Text variant="h3Secondary" sx={{ lineHeight: 1.3 }}>
+        Collection Distribution
+      </Text>
+      <Flex sx={{ gap: 2 }}>
+        <Box
+          sx={{
+            border: '2px solid',
+            borderColor: theme.colors.blue,
+            width: '16px',
+            height: '16px',
+            borderRadius: '4px',
+            backgroundColor: transparentize(0.75, theme.rawColors.blue),
+          }}
+        ></Box>
+        <Text sx={{ fontSize: 2, color: 'grey-600' }}>{shortAddress}</Text>
+      </Flex>
       <Flex
         sx={{
           flexGrow: 1,
@@ -296,7 +328,7 @@ export default function UserView() {
           alignItems: 'center',
         }}
       >
-        <Box sx={{ width: '100%', marginBottom: '-2rem' }}>
+        <Box sx={{ width: '100%' }}>
           <RadarChart
             data={{
               series: [
@@ -304,7 +336,7 @@ export default function UserView() {
                   name: 'Portfolio Distribution',
                   data:
                     data?.getUser?.extraCollections?.collectionAssetCounts
-                      ?.slice(0, 5)
+                      ?.slice(0, 6)
                       ?.map(({ count }) =>
                         Math.floor(
                           (count / data.getUser.extraCollections.count) * 100
@@ -314,7 +346,7 @@ export default function UserView() {
               ],
               labels:
                 data?.getUser?.extraCollections?.collectionAssetCounts
-                  ?.slice(0, 5)
+                  ?.slice(0, 6)
                   ?.map(({ collection }) => collection.name) ?? [],
             }}
           />
@@ -795,12 +827,16 @@ export default function UserView() {
               ({ count, collection }, idx) => (
                 <CollectionCard
                   hasSeeAll={count > 5}
+                  seeAllImageSrc={
+                    collection.ownerAssetsInCollection.assets.slice(-1)[0]
+                      .previewImageUrl
+                  }
                   avatarImage={collection.imageUrl}
                   link={`/analytics/collection/${collection.id}`}
                   total={collection?.ownerAssetsInCollection?.count ?? 0}
                   name={collection.name}
                   key={idx}
-                  onClick={() =>
+                  onExpand={() =>
                     setShowCollectionId({
                       id: collection.id,
                       name: collection.name,
@@ -808,8 +844,9 @@ export default function UserView() {
                     })
                   }
                 >
-                  {collection.ownerAssetsInCollection.assets.map(
-                    ({ id, previewImageUrl, contractAddress }, idx) => (
+                  {collection.ownerAssetsInCollection.assets
+                    .slice(0, 5)
+                    .map(({ id, previewImageUrl, contractAddress }, idx) => (
                       <Link passHref href={`/analytics/nft/${id}`} key={idx}>
                         <Box
                           sx={{
@@ -833,8 +870,7 @@ export default function UserView() {
                           }}
                         />
                       </Link>
-                    )
-                  )}
+                    ))}
                 </CollectionCard>
               )
             )}
@@ -877,7 +913,10 @@ export default function UserView() {
                       showCollectionId?.imageUrl ?? '/img/defaultAvatar.png',
                     imageSrc: previewImageUrl ?? '/img/defaultAvatar.png',
                     name: name ?? '',
-                    description: `Latest Appraised Value: ${weiToEth(lastAppraisalWeiPrice)}` ?? '',
+                    description:
+                      `Latest Appraised Value: ${weiToEth(
+                        lastAppraisalWeiPrice
+                      )}` ?? '',
                   })
                 ) ?? []
               }
