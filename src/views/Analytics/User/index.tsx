@@ -197,7 +197,7 @@ export default function UserView() {
       address: addressFormatted,
       collectionLimit: 8,
       collectionOffset: 0,
-      assetLimit: 5,
+      assetLimit: 6,
       assetOffset: 0,
       txLimit: 25,
       txOffset: 0,
@@ -795,12 +795,16 @@ export default function UserView() {
               ({ count, collection }, idx) => (
                 <CollectionCard
                   hasSeeAll={count > 5}
+                  seeAllImageSrc={
+                    collection.ownerAssetsInCollection.assets.slice(-1)[0]
+                      .previewImageUrl
+                  }
                   avatarImage={collection.imageUrl}
                   link={`/analytics/collection/${collection.id}`}
                   total={collection?.ownerAssetsInCollection?.count ?? 0}
                   name={collection.name}
                   key={idx}
-                  onClick={() =>
+                  onExpand={() =>
                     setShowCollectionId({
                       id: collection.id,
                       name: collection.name,
@@ -808,8 +812,9 @@ export default function UserView() {
                     })
                   }
                 >
-                  {collection.ownerAssetsInCollection.assets.map(
-                    ({ id, previewImageUrl, contractAddress }, idx) => (
+                  {collection.ownerAssetsInCollection.assets
+                    .slice(0, 5)
+                    .map(({ id, previewImageUrl, contractAddress }, idx) => (
                       <Link passHref href={`/analytics/nft/${id}`} key={idx}>
                         <Box
                           sx={{
@@ -833,8 +838,7 @@ export default function UserView() {
                           }}
                         />
                       </Link>
-                    )
-                  )}
+                    ))}
                 </CollectionCard>
               )
             )}
@@ -877,7 +881,10 @@ export default function UserView() {
                       showCollectionId?.imageUrl ?? '/img/defaultAvatar.png',
                     imageSrc: previewImageUrl ?? '/img/defaultAvatar.png',
                     name: name ?? '',
-                    description: `Latest Appraised Value: ${weiToEth(lastAppraisalWeiPrice)}` ?? '',
+                    description:
+                      `Latest Appraised Value: ${weiToEth(
+                        lastAppraisalWeiPrice
+                      )}` ?? '',
                   })
                 ) ?? []
               }
