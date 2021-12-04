@@ -31,6 +31,7 @@ import { ethers } from 'ethers'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { transparentize } from 'polished'
 import { useEffect, useRef, useState } from 'react'
 import { fetchEns, shortenAddress } from 'utils/address'
 import { formatCurrencyUnits, formatLargeNumber, weiToEth } from 'utils/number'
@@ -255,10 +256,26 @@ export default function UserView() {
 
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
+  const shortAddress = shortenAddress(address)
 
   const distributionTable = (
     <Panel sx={{ flexGrow: 1 }}>
-      <Text variant="h3Secondary">Collection Distribution</Text>
+      <Text variant="h3Secondary" sx={{ lineHeight: 1.3 }}>
+        Collection Distribution
+      </Text>
+      <Flex sx={{ gap: 2 }}>
+        <Box
+          sx={{
+            border: '2px solid',
+            borderColor: theme.colors.blue,
+            width: '16px',
+            height: '16px',
+            borderRadius: '4px',
+            backgroundColor: transparentize(0.75, theme.rawColors.blue),
+          }}
+        ></Box>
+        <Text sx={{ fontSize: 2, color: 'grey-600' }}>{shortAddress}</Text>
+      </Flex>
       <CollectionTable>
         <TableHead>
           <TableRow>
@@ -288,7 +305,22 @@ export default function UserView() {
 
   const distributionRadar = (
     <Panel sx={{ display: 'flex', flexDirection: 'column' }}>
-      <Text variant="h3Secondary">Collection Distribution</Text>
+      <Text variant="h3Secondary" sx={{ lineHeight: 1.3 }}>
+        Collection Distribution
+      </Text>
+      <Flex sx={{ gap: 2 }}>
+        <Box
+          sx={{
+            border: '2px solid',
+            borderColor: theme.colors.blue,
+            width: '16px',
+            height: '16px',
+            borderRadius: '4px',
+            backgroundColor: transparentize(0.75, theme.rawColors.blue),
+          }}
+        ></Box>
+        <Text sx={{ fontSize: 2, color: 'grey-600' }}>{shortAddress}</Text>
+      </Flex>
       <Flex
         sx={{
           flexGrow: 1,
@@ -296,7 +328,7 @@ export default function UserView() {
           alignItems: 'center',
         }}
       >
-        <Box sx={{ width: '100%', marginBottom: '-2rem' }}>
+        <Box sx={{ width: '100%' }}>
           <RadarChart
             data={{
               series: [
@@ -304,7 +336,7 @@ export default function UserView() {
                   name: 'Portfolio Distribution',
                   data:
                     data?.getUser?.extraCollections?.collectionAssetCounts
-                      ?.slice(0, 5)
+                      ?.slice(0, 6)
                       ?.map(({ count }) =>
                         Math.floor(
                           (count / data.getUser.extraCollections.count) * 100
@@ -314,7 +346,7 @@ export default function UserView() {
               ],
               labels:
                 data?.getUser?.extraCollections?.collectionAssetCounts
-                  ?.slice(0, 5)
+                  ?.slice(0, 6)
                   ?.map(({ collection }) => collection.name) ?? [],
             }}
           />
