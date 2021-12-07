@@ -136,6 +136,7 @@ export default function CollectionAvgPricePanel({
                         display: 'block',
                       },
                     }}
+                    onClick={e => e.stopPropagation()}
                   >
                     <Image
                       alt={`${name} Cover Artwork`}
