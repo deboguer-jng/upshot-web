@@ -810,17 +810,15 @@ export default function NFTView() {
                                     sx={{
                                       marginLeft: '6px;',
                                       verticalAlign: 'middle',
+                                      opacity: .3,
+                                      '&:hover': {
+                                        opacity: 1,
+                                      },
                                     }}
                                   >
                                     <Icon
                                       icon="disconnect"
-                                      color={
-                                        'SALE' === type
-                                          ? 'pink'
-                                          : 'TRANSFER' === type
-                                          ? 'blue'
-                                          : 'green'
-                                      }
+                                      color="grey-500"
                                     />
                                   </IconButton>
                                 </a>
