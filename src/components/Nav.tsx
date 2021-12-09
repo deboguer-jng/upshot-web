@@ -84,7 +84,7 @@ export const Nav = () => {
     <>
       <Navbar
         avatarImageUrl={
-          ens.avatar ?? address ? makeBlockie(address) : undefined
+          address ? makeBlockie(address) : undefined
         }
         ensName={ens.name}
         address={address}
