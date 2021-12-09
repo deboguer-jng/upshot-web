@@ -28,6 +28,7 @@ import { PIXELATED_CONTRACTS } from 'constants/'
 import { format, formatDistance } from 'date-fns'
 import makeBlockie from 'ethereum-blockies-base64'
 import { ethers } from 'ethers'
+import { Masonry, useInfiniteLoader } from 'masonic'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -192,6 +193,7 @@ export default function UserView() {
     loading: loadingCollector,
     error,
     data,
+    fetchMore: fetchMoreCollections,
   } = useQuery<GetCollectorData, GetCollectorVars>(GET_COLLECTOR, {
     errorPolicy: 'all',
     variables: {
@@ -257,6 +259,87 @@ export default function UserView() {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
   const shortAddress = shortenAddress(address)
+
+  const handleFetchMoreCollections = (startIndex: number) => {
+    if (loadingCollector) return
+
+    fetchMoreCollections({
+      variables: { collectionOffset: startIndex },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) return prev
+
+        return {
+          getUser: {
+            ...prev.getUser,
+            extraCollections: {
+              count: fetchMoreResult?.getUser?.extraCollections?.count ?? 0,
+              collectionAssetCounts: [
+                ...(prev?.getUser?.extraCollections?.collectionAssetCounts ??
+                  []),
+                ...(fetchMoreResult?.getUser?.extraCollections
+                  ?.collectionAssetCounts ?? []),
+              ],
+            },
+          },
+        }
+      },
+    })
+  }
+
+  const maybeLoadMore = useInfiniteLoader(handleFetchMoreCollections, {
+    isItemLoaded: (index, items) => !!items[index],
+  })
+
+  const RenderMasonry = ({ index, data: { count, collection } }) => {
+    return (
+      <CollectionCard
+        hasSeeAll={count > 5}
+        seeAllImageSrc={
+          collection.ownerAssetsInCollection.assets.slice(-1)[0].previewImageUrl
+        }
+        avatarImage={collection.imageUrl}
+        link={`/analytics/collection/${collection.id}`}
+        total={collection?.ownerAssetsInCollection?.count ?? 0}
+        name={collection.name}
+        key={index}
+        onExpand={() =>
+          setShowCollectionId({
+            id: collection.id,
+            name: collection.name,
+            imageUrl: collection.imageUrl,
+          })
+        }
+      >
+        {collection.ownerAssetsInCollection.assets
+          .slice(0, 5)
+          .map(({ id, previewImageUrl, contractAddress }, idx) => (
+            <Link passHref href={`/analytics/nft/${id}`} key={idx}>
+              <Box
+                sx={{
+                  width: '100%',
+                  cursor: 'pointer',
+                  '&::after': {
+                    content: "''",
+                    display: 'block',
+                    paddingTop: '100%',
+                    backgroundImage: `url(${previewImageUrl})`,
+                    backgroundSize: 'cover',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'center',
+                    borderRadius: 'sm',
+                    imageRendering: PIXELATED_CONTRACTS.includes(
+                      contractAddress
+                    )
+                      ? 'pixelated'
+                      : 'auto',
+                  },
+                }}
+              />
+            </Link>
+          ))}
+      </CollectionCard>
+    )
+  }
 
   const distributionTable = (
     <Panel sx={{ flexGrow: 1 }}>
@@ -821,60 +904,14 @@ export default function UserView() {
           {!!data?.getUser?.extraCollections?.count && (
             <Text variant="h1Primary">Collection</Text>
           )}
-
-          <Grid columns="repeat(auto-fit, minmax(300px, 1fr))" sx={{ gap: 4 }}>
-            {data?.getUser?.extraCollections?.collectionAssetCounts?.map(
-              ({ count, collection }, idx) => (
-                <CollectionCard
-                  hasSeeAll={count > 5}
-                  seeAllImageSrc={
-                    collection.ownerAssetsInCollection.assets.slice(-1)[0]
-                      .previewImageUrl
-                  }
-                  avatarImage={collection.imageUrl}
-                  link={`/analytics/collection/${collection.id}`}
-                  total={collection?.ownerAssetsInCollection?.count ?? 0}
-                  name={collection.name}
-                  key={idx}
-                  onExpand={() =>
-                    setShowCollectionId({
-                      id: collection.id,
-                      name: collection.name,
-                      imageUrl: collection.imageUrl,
-                    })
-                  }
-                >
-                  {collection.ownerAssetsInCollection.assets
-                    .slice(0, 5)
-                    .map(({ id, previewImageUrl, contractAddress }, idx) => (
-                      <Link passHref href={`/analytics/nft/${id}`} key={idx}>
-                        <Box
-                          sx={{
-                            width: '100%',
-                            cursor: 'pointer',
-                            '&::after': {
-                              content: "''",
-                              display: 'block',
-                              paddingTop: '100%',
-                              backgroundImage: `url(${previewImageUrl})`,
-                              backgroundSize: 'cover',
-                              backgroundRepeat: 'no-repeat',
-                              backgroundPosition: 'center',
-                              borderRadius: 'sm',
-                              imageRendering: PIXELATED_CONTRACTS.includes(
-                                contractAddress
-                              )
-                                ? 'pixelated'
-                                : 'auto',
-                            },
-                          }}
-                        />
-                      </Link>
-                    ))}
-                </CollectionCard>
-              )
-            )}
-          </Grid>
+          <Masonry
+            columnWidth={300}
+            columnGutter={16}
+            rowGutter={16}
+            items={data?.getUser?.extraCollections?.collectionAssetCounts ?? []}
+            render={RenderMasonry}
+            onRender={maybeLoadMore}
+          />
         </Flex>
       </Layout>
       <Modal
