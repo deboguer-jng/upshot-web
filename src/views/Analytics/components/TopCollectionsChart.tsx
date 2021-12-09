@@ -42,6 +42,7 @@ export default function TopCollectionsCharts({
 }) {
   const currentDate = Date.now()
   const before7Daysdate = currentDate - 1000*60*60*24*7 // extract 7 days in millisec
+  const minTimestamp = metric === 'VOLUME' ? Math.floor(before7Daysdate/1000) : 0
 
   const { loading, error, data } = useQuery<
     GetTopCollectionsData,
@@ -53,7 +54,7 @@ export default function TopCollectionsCharts({
       stringifiedCollectionIds: selectedCollections.length
         ? `[${selectedCollections.join(',')}]`
         : undefined,
-      minTimestamp: Math.floor(before7Daysdate/1000), 
+      minTimestamp: minTimestamp, 
     },
   })
   /* Load state. */
