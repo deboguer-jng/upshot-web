@@ -33,7 +33,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { transparentize } from 'polished'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { fetchEns, shortenAddress } from 'utils/address'
 import { formatCurrencyUnits, formatLargeNumber, weiToEth } from 'utils/number'
 
@@ -165,13 +165,20 @@ function Header({ address }: { address: string }) {
 export default function UserView() {
   const router = useRouter()
   const { theme } = useTheme()
+  const breakpointIndex = useBreakpointIndex()
+  const isMobile = breakpointIndex <= 1
+  const modalRef = useRef<HTMLDivElement>(null)
+
+  /* Collection & Asset offsets */
   const [showCollection, setShowCollection] = useState<Collection>()
   const [collectionOffset, setCollectionOffset] = useState(0)
-  const modalRef = useRef<HTMLDivElement>(null)
+  const [assetOffset, setAssetOffset] = useState(0)
+
+  /* Address formatting */
   const [addressFormatted, setAddressFormatted] = useState<string>()
   const [errorAddress, setErrorAddress] = useState(false)
   const address = router.query.address as string
-
+  const shortAddress = useMemo(() => shortenAddress(address), [address])
   const loadingAddressFormatted = !addressFormatted && !errorAddress
 
   useEffect(() => {
@@ -231,38 +238,12 @@ export default function UserView() {
   )
 
   const handleFetchMoreAssets = useCallback(
-    (offset: number) => {
-      if (loadingAssets) return
-
-      fetchMoreAssets({
-        variables: { offset },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) return prev
-
-          return {
-            collectionById: {
-              ownerAssetsInCollection: {
-                count:
-                  fetchMoreResult?.collectionById?.ownerAssetsInCollection
-                    ?.count ?? 0,
-                assets: [
-                  ...(prev?.collectionById?.ownerAssetsInCollection?.assets ??
-                    []),
-                  ...(fetchMoreResult?.collectionById?.ownerAssetsInCollection
-                    ?.assets ?? []),
-                ],
-              },
-            },
-          }
-        },
-      })
+    (startIndex: number) => {
+      if (loadingAssets || assetOffset === startIndex) return
+      setAssetOffset(startIndex)
     },
-    [fetchMoreAssets, loadingAssets]
+    [loadingAssets, assetOffset]
   )
-
-  const breakpointIndex = useBreakpointIndex()
-  const isMobile = breakpointIndex <= 1
-  const shortAddress = shortenAddress(address)
 
   const handleFetchMoreCollections = useCallback(
     (startIndex: number) => {
@@ -273,6 +254,8 @@ export default function UserView() {
   )
 
   useEffect(() => {
+    if (!collectionOffset) return
+
     fetchMoreCollections({
       variables: { collectionOffset },
       updateQuery: (prev, { fetchMoreResult }) => {
@@ -294,7 +277,34 @@ export default function UserView() {
         }
       },
     })
-  }, [fetchMoreCollections, collectionOffset])
+  }, [collectionOffset])
+
+  useEffect(() => {
+    if (!assetOffset) return
+
+    fetchMoreAssets({
+      variables: { offset: assetOffset },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) return prev
+
+        return {
+          collectionById: {
+            ownerAssetsInCollection: {
+              count:
+                fetchMoreResult?.collectionById?.ownerAssetsInCollection
+                  ?.count ?? 0,
+              assets: [
+                ...(prev?.collectionById?.ownerAssetsInCollection?.assets ??
+                  []),
+                ...(fetchMoreResult?.collectionById?.ownerAssetsInCollection
+                  ?.assets ?? []),
+              ],
+            },
+          },
+        }
+      },
+    })
+  }, [assetOffset])
 
   const maybeLoadMore = useInfiniteLoader(handleFetchMoreCollections, {
     isItemLoaded: (index, items) => !!items[index],
