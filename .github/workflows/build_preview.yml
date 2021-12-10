@@ -14,11 +14,13 @@ jobs:
 
       # Sets the branch name as environment variable
       - uses: nelonoel/branch-name@v1.0.1
-      - uses: jsmrcaga/action-netlify-deploy@master
+
+      - name: Deploy to Netlify
+        id: netlify-deploy
+        uses: jsmrcaga/action-netlify-deploy@master
         with:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-          deploy_alias: preview
           build_directory: "out"
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -30,7 +32,7 @@ jobs:
           authToken: ${{ secrets.GITHUB_TOKEN }}
           context: Netlify preview
           state: success
-          target_url: https://preview--lucid-edison-f6f7b9.netlify.app
+          target_url: ${{ steps.netlify-deploy.outputs.NETLIFY_PREVIEW_URL }}
       
       - name: PR comment
         uses: actions/github-script@v5
@@ -41,5 +43,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '👋 You can check the preview app at https://preview--lucid-edison-f6f7b9.netlify.app'
+              body: '👋 You can check the preview app at ${{ steps.netlify-deploy.outputs.NETLIFY_PREVIEW_URL }}'
             })
