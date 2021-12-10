@@ -24,6 +24,8 @@ jobs:
           NETLIFY_DEPLOY_TO_PROD: true
           build_directory: "out"
           node-version: 12.x
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   deploy-prod:
     if: github.ref == 'refs/heads/main'
