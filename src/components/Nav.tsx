@@ -51,7 +51,7 @@ export const Nav = () => {
 
     getNavCollections({ variables: { limit: 1000 } })
   }
-  
+
   const handleSearchSuggestionChange = (item: InputSuggestion) => {
     router.push(`/analytics/collection/${encodeURIComponent(item.id)}`)
   }
@@ -83,9 +83,7 @@ export const Nav = () => {
   return (
     <>
       <Navbar
-        avatarImageUrl={
-          address ? makeBlockie(address) : undefined
-        }
+        avatarImageUrl={address ? makeBlockie(address) : undefined}
         ensName={ens.name}
         address={address}
         searchValue={navSearchTerm}

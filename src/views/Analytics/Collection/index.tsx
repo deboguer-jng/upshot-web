@@ -2,6 +2,7 @@ import { useQuery } from '@apollo/client'
 import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Chart, Container, Flex, Grid } from '@upshot-tech/upshot-ui'
 import { Avatar, Footer, Text } from '@upshot-tech/upshot-ui'
+import { BetaBanner } from 'components/BetaBanner'
 import { Nav } from 'components/Nav'
 import { ethers } from 'ethers'
 import Head from 'next/head'
@@ -106,6 +107,7 @@ function Layout({ children }: { children: React.ReactNode }) {
           content="https://upshot.io/img/opengraph/opengraph_collection.jpg"
         />
       </Head>
+      <BetaBanner />
       <Container
         p={4}
         sx={{
@@ -266,8 +268,20 @@ export default function CollectionView() {
               label="Floor Price"
             />
             <CollectionStat
-              color={sevenDayFloorChange ? sevenDayFloorChange > 0 ? "green" : "red" : "white"}
-              value={sevenDayFloorChange ? sevenDayFloorChange > 0 ? '+' + sevenDayFloorChange.toFixed(2) + '%' : sevenDayFloorChange.toFixed(2) + '%' : '-'}
+              color={
+                sevenDayFloorChange
+                  ? sevenDayFloorChange > 0
+                    ? 'green'
+                    : 'red'
+                  : 'white'
+              }
+              value={
+                sevenDayFloorChange
+                  ? sevenDayFloorChange > 0
+                    ? '+' + sevenDayFloorChange.toFixed(2) + '%'
+                    : sevenDayFloorChange.toFixed(2) + '%'
+                  : '-'
+              }
               label="7 Day Floor Change"
             />
             <CollectionStat

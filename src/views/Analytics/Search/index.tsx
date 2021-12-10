@@ -8,6 +8,7 @@ import {
   InputRounded,
   Pagination,
 } from '@upshot-tech/upshot-ui'
+import { BetaBanner } from 'components/BetaBanner'
 import { Nav } from 'components/Nav'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { PAGE_SIZE } from 'constants/'
@@ -333,7 +334,9 @@ export default function SearchView() {
                                     ? weiToEth(lastSale.ethSalePrice)
                                     : undefined
                                 }
-                                rarity={rarity ? (rarity*100).toFixed(2) + '%' : '-'}
+                                rarity={
+                                  rarity ? (rarity * 100).toFixed(2) + '%' : '-'
+                                }
                                 image={previewImageUrl ?? mediaUrl}
                                 creator={
                                   creatorUsername ||
@@ -414,6 +417,7 @@ export default function SearchView() {
         />
       </Head>
       <Flex sx={{ minHeight: '100vh', flexDirection: 'column' }}>
+        <BetaBanner />
         <Container
           p={4}
           sx={{
