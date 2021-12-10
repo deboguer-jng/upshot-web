@@ -51,9 +51,9 @@ export const Nav = () => {
 
     getNavCollections({ variables: { limit: 1000 } })
   }
-
+  
   const handleSearchSuggestionChange = (item: InputSuggestion) => {
-    router.push(`/analytics/search?collection=${encodeURIComponent(item.name)}`)
+    router.push(`/analytics/collection/${encodeURIComponent(item.id)}`)
   }
 
   const handleNavSearch = (e: React.FormEvent) => {
