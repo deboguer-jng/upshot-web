@@ -961,13 +961,20 @@ export default function UserView() {
               }
               items={
                 dataAssets?.collectionById?.ownerAssetsInCollection?.assets?.map(
-                  ({ id, name, lastAppraisalWeiPrice, previewImageUrl }) => ({
+                  ({
+                    id,
+                    name,
+                    lastAppraisalWeiPrice,
+                    previewImageUrl,
+                    contractAddress,
+                  }) => ({
                     id,
                     expanded: isMobile,
                     avatarImage:
                       showCollection?.imageUrl ?? '/img/defaultAvatar.png',
                     imageSrc: previewImageUrl ?? '/img/defaultAvatar.png',
                     name: name ?? '',
+                    isPixelated: PIXELATED_CONTRACTS.includes(contractAddress),
                     description:
                       `Latest Appraised Value: ${weiToEth(
                         lastAppraisalWeiPrice

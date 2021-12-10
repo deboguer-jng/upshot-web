@@ -73,6 +73,7 @@ export default function TopCollectors() {
             <CollectorAccordionRow
               address={addresses?.[0]}
               key={idx}
+              defaultOpen={ idx === 0 ? true : false }
               {...{ username }}
             >
               <div style={{ display: 'grid' }}>

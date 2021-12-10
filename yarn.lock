@@ -3938,10 +3938,10 @@
     "@typescript-eslint/types" "4.29.3"
     eslint-visitor-keys "^2.0.0"
 
-"@upshot-tech/upshot-ui@^0.3.48":
-  version "0.3.48"
-  resolved "https://registry.yarnpkg.com/@upshot-tech/upshot-ui/-/upshot-ui-0.3.48.tgz#4bde69b79d8288434a08f6922833af44771a3ef9"
-  integrity sha512-0McO1fp538496cWs7RHoe+KS47reZJ7qNrVtiGlEb4vGRQpIxQRMWb2ykEiU19aVLdncSpyqlXG5Ii5NIGVE0g==
+"@upshot-tech/upshot-ui@^0.3.49":
+  version "0.3.49"
+  resolved "https://registry.yarnpkg.com/@upshot-tech/upshot-ui/-/upshot-ui-0.3.49.tgz#9644378961662a06f1b6128495d0939ffd6d29b3"
+  integrity sha512-5cYG3WjhUlaygynugN7yIyKNs1RQvA4LCATwqJlwYu8d2BbG7WwGjroS55nhVORDBico6yDUD3aoz8fz6cn6ew==
   dependencies:
     "@emotion/react" "^11.4.1"
     "@emotion/styled" "^11.3.0"

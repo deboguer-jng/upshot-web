@@ -153,6 +153,7 @@ export type GetCollectionAssetsData = {
         description?: string
         previewImageUrl?: string
         lastAppraisalWeiPrice: string
+        contractAddress: string
       }[]
     }
   }
@@ -178,6 +179,7 @@ export const GET_COLLECTION_ASSETS = gql`
           description
           previewImageUrl
           lastAppraisalWeiPrice
+          contractAddress
         }
       }
     }
