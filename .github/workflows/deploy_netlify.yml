@@ -23,6 +23,7 @@ jobs:
           NETLIFY_DEPLOY_MESSAGE: "Staging deploy v${{ github.ref }}"
           NETLIFY_DEPLOY_TO_PROD: true
           build_directory: "out"
+          node-version: 12.x
 
   deploy-prod:
     if: github.ref == 'refs/heads/main'
