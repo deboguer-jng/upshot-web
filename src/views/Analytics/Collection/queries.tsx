@@ -14,9 +14,14 @@ export type GetCollectionData = {
     description: string
     imageUrl: string
     ceil: string
+    floor: string
     size: string
     average: string
+    volume: string
     totalVolume: string
+    marketCap: string
+    sevenDayFloorChange: number
+    numCollectors: number
     timeSeries?: {
       average: string
       timestamp: number
@@ -31,9 +36,14 @@ export const GET_COLLECTION = gql`
       description
       imageUrl
       ceil
+      floor
       size
       average
+      volume
       totalVolume
+      marketCap
+      sevenDayFloorChange
+      numCollectors
       timeSeries {
         average
         timestamp

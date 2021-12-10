@@ -202,10 +202,14 @@ export default function CollectionView() {
     name,
     description,
     imageUrl,
-    ceil,
+    floor,
     size,
     average,
     totalVolume,
+    volume,
+    marketCap,
+    sevenDayFloorChange,
+    numCollectors,
     timeSeries,
   } = data.collectionById
 
@@ -254,18 +258,31 @@ export default function CollectionView() {
             <CollectionStat
               color="blue"
               value={average ? weiToEth(average) : '-'}
-              label="Avg. NFT Value"
+              label="Average Price"
             />
             <CollectionStat
               color="pink"
-              value={ceil ? weiToEth(ceil) : '-'}
-              label="Highest Listing"
+              value={floor ? weiToEth(floor) : '-'}
+              label="Floor Price"
             />
             <CollectionStat
-              value={totalVolume ? weiToEth(totalVolume) : '-'}
-              label="Total Volume"
+              color={sevenDayFloorChange ? sevenDayFloorChange > 0 ? "green" : "red" : "white"}
+              value={sevenDayFloorChange ? sevenDayFloorChange > 0 ? '+' + sevenDayFloorChange.toFixed(2) + '%' : sevenDayFloorChange.toFixed(2) + '%' : '-'}
+              label="7 Day Floor Change"
+            />
+            <CollectionStat
+              value={marketCap ? weiToEth(marketCap) : '-'}
+              label="Market Cap"
+            />
+            <CollectionStat
+              value={volume ? weiToEth(volume) : '-'}
+              label="Wkly Volume"
             />
             <CollectionStat value={size} label="NFTs in Collection" />
+            {/* <CollectionStat
+              value={numCollectors ? numCollectors.toString() : '-'}
+              label="Collectors"
+            /> */}
           </Grid>
         </Flex>
         <Flex sx={{ flexDirection: 'column', paddingTop: isMobile ? 0 : 116 }}>
