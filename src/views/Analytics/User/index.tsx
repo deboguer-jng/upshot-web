@@ -596,7 +596,7 @@ export default function UserView() {
                           textAlign: 'center',
                         }}
                       >
-                        {data?.getUser?.extraCollections?.count ?? 0}
+                        {data?.getUser?.numAssets ?? 0}
                       </Text>
                       <Text
                         color="blue"
@@ -607,6 +607,37 @@ export default function UserView() {
                             '-webkit-linear-gradient(0deg, #FF5628, #E44BBE)',
                           '-webkit-background-clip': 'text',
                           '-webkit-text-fill-color': 'transparent',
+                          textAlign: 'center',
+                        }}
+                      >
+                        Number of NFTs
+                      </Text>
+                    </Panel>
+                    <Panel
+                      sx={{
+                        display: 'flex',
+                        borderRadius: '20px',
+                        flexDirection: 'column',
+                        textAlign: 'center',
+                        justifyContent: 'center',
+                        height: 80,
+                      }}
+                    >
+                      <Text
+                        sx={{
+                          fontWeight: 'bold',
+                          fontSize: 4,
+                          color: 'grey-500',
+                          textAlign: 'center',
+                        }}
+                      >
+                        {data?.getUser?.extraCollections?.count ?? 0}
+                      </Text>
+                      <Text
+                        color="grey-500"
+                        sx={{
+                          fontSize: 2,
+                          fontWeight: 'heading',
                           textAlign: 'center',
                         }}
                       >
