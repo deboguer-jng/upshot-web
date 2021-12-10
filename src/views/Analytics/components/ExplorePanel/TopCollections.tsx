@@ -183,7 +183,8 @@ export default function ExploreNFTs({
                     }}
                   >
                     <Text sx={{ textAlign: 'center', marginBottom: 1 }}>
-                      Floor Change (7 Days)
+                      Floor Change
+                      <br /> (7 Days)
                     </Text>
                     <Text
                       sx={{ color: getPriceChangeColor(sevenDayFloorChange) }}
