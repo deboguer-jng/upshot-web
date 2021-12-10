@@ -21,9 +21,7 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           NETLIFY_DEPLOY_MESSAGE: "Staging deploy v${{ github.ref }}"
-          NETLIFY_DEPLOY_TO_PROD: true
           build_directory: "out"
-          node-version: 12.x
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -36,23 +34,12 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - name: Use Node.js 12.x
-        uses: actions/setup-node@v1
+      - uses: jsmrcaga/action-netlify-deploy@master
         with:
-          node-version: 12.x
-
-      - name: Build codebase
-        run: |
-          yarn
-          yarn build
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_DEPLOY_MESSAGE: "Staging deploy v${{ github.ref }}"
+          NETLIFY_DEPLOY_TO_PROD: true
+          build_directory: "out"
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Deploy to netlify
-        uses: netlify/actions/cli@master
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.PROD_NETLIFY_SITE_ID }}
-        with:
-          args: deploy --dir=out --prod
-          secrets: '["NETLIFY_AUTH_TOKEN", "NETLIFY_SITE_ID"]'
