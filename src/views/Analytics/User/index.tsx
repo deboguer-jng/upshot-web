@@ -164,7 +164,7 @@ function Header({ address }: { address: string }) {
 export default function UserView() {
   const router = useRouter()
   const { theme } = useTheme()
-  const [showCollectionId, setShowCollectionId] = useState<Collection>()
+  const [showCollection, setShowCollection] = useState<Collection>()
   const modalRef = useRef<HTMLDivElement>(null)
   const [addressFormatted, setAddressFormatted] = useState<string>()
   const [errorAddress, setErrorAddress] = useState(false)
@@ -219,11 +219,11 @@ export default function UserView() {
       errorPolicy: 'all',
       variables: {
         userAddress: addressFormatted,
-        id: Number(showCollectionId?.id),
+        id: Number(showCollection?.id),
         limit: 10,
         offset: 0,
       },
-      skip: !showCollectionId?.id || !addressFormatted,
+      skip: !showCollection?.id || !addressFormatted,
     }
   )
 
@@ -837,7 +837,7 @@ export default function UserView() {
                   name={collection.name}
                   key={idx}
                   onExpand={() =>
-                    setShowCollectionId({
+                    setShowCollection({
                       id: collection.id,
                       name: collection.name,
                       imageUrl: collection.imageUrl,
@@ -879,8 +879,8 @@ export default function UserView() {
       </Layout>
       <Modal
         ref={modalRef}
-        onClose={() => setShowCollectionId(undefined)}
-        open={showCollectionId?.id !== undefined}
+        onClose={() => setShowCollection(undefined)}
+        open={showCollection?.id !== undefined}
       >
         {loadingAssets ? (
           <Flex
@@ -897,22 +897,27 @@ export default function UserView() {
         ) : (
           <Box sx={{ width: '95vw' }}>
             <CollectionCardExpanded
-              avatarImage={
-                showCollectionId?.imageUrl ?? '/img/defaultAvatar.png'
-              }
-              name={showCollectionId?.name ?? ''}
+              avatarImage={showCollection?.imageUrl ?? '/img/defaultAvatar.png'}
+              name={showCollection?.name ?? ''}
               total={
                 dataAssets?.collectionById?.ownerAssetsInCollection?.count ?? 0
               }
               items={
                 dataAssets?.collectionById?.ownerAssetsInCollection?.assets?.map(
-                  ({ id, name, lastAppraisalWeiPrice, previewImageUrl }) => ({
+                  ({
+                    id,
+                    name,
+                    lastAppraisalWeiPrice,
+                    previewImageUrl,
+                    contractAddress,
+                  }) => ({
                     id,
                     expanded: isMobile,
                     avatarImage:
-                      showCollectionId?.imageUrl ?? '/img/defaultAvatar.png',
+                      showCollection?.imageUrl ?? '/img/defaultAvatar.png',
                     imageSrc: previewImageUrl ?? '/img/defaultAvatar.png',
                     name: name ?? '',
+                    isPixelated: PIXELATED_CONTRACTS.includes(contractAddress),
                     description:
                       `Latest Appraised Value: ${weiToEth(
                         lastAppraisalWeiPrice
