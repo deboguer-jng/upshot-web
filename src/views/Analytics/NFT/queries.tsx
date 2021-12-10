@@ -35,6 +35,7 @@ export type GetAssetData = {
       ethSalePrice: string
       usdSalePrice: string
       confidence: number
+      medianRelativeError: number
       timestamp: number
     }
     firstSale?: {
@@ -94,6 +95,9 @@ export const GET_ASSET = gql`
         ethSalePrice
         usdSalePrice
         confidence
+        low
+        high
+        medianRelativeError
         timestamp
       }
       firstSale {

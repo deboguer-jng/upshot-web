@@ -633,17 +633,10 @@ export default function NFTView() {
                               >
                                 Last Appraisal
                               </Text>
-
-                              {/* Confidence score
-                                <Label color="primary">
-                                  {latestAppraisal.confidence
-                                    ? (latestAppraisal.confidence * 100).toFixed(
-                                        2
-                                      ) + '%'
-                                    : '-'}
-                                </Label>
-                              */}
+                             
                             </Flex>
+                            <Flex sx={{ gap: 2 }}>
+
                             <Label
                               color="primary"
                               currencySymbol={lastSale ? 'Ξ' : undefined}
@@ -658,6 +651,15 @@ export default function NFTView() {
                                   )
                                 : '-'}
                             </Label>
+                                <Label color="primary">
+                                  {latestAppraisal?.medianRelativeError
+                                    ? '± ' + (latestAppraisal.medianRelativeError * 100).toFixed(
+                                        2
+                                      ) + '%'
+                                    : ''}
+                                </Label>
+                             
+                            </Flex>
                             <Text
                               color="primary"
                               sx={{ fontSize: 2, textTransform: 'uppercase' }}
