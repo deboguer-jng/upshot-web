@@ -279,10 +279,10 @@ export default function CollectionView() {
               label="Wkly Volume"
             />
             <CollectionStat value={size} label="NFTs in Collection" />
-            <CollectionStat
+            {/* <CollectionStat
               value={numCollectors ? numCollectors.toString() : '-'}
               label="Collectors"
-            />
+            /> */}
           </Grid>
         </Flex>
         <Flex sx={{ flexDirection: 'column', paddingTop: isMobile ? 0 : 116 }}>
