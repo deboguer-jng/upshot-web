@@ -47,6 +47,7 @@ export const GET_TOP_COLLECTIONS = gql`
   query GetTopCollections(
     $metric: EOrderedAssetSetMetric!
     $stringifiedCollectionIds: String
+    $minTimestamp: Int!
   ) {
     orderedCollectionsByMetricSearch(
       metric: $metric
@@ -75,10 +76,10 @@ export const GET_TOP_COLLECTIONS = gql`
         atlVolume {
           value
         }
-        timeSeries {
+        timeSeries(minTimestamp: $minTimestamp) {
           timestamp
           average
-          marketCap
+          volume
           floor
         }
         sevenDayMCChange

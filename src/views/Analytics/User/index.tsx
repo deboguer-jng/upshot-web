@@ -28,11 +28,12 @@ import { PIXELATED_CONTRACTS } from 'constants/'
 import { format, formatDistance } from 'date-fns'
 import makeBlockie from 'ethereum-blockies-base64'
 import { ethers } from 'ethers'
+import { Masonry, useInfiniteLoader } from 'masonic'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { transparentize } from 'polished'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { fetchEns, shortenAddress } from 'utils/address'
 import { formatCurrencyUnits, formatLargeNumber, weiToEth } from 'utils/number'
 
@@ -164,12 +165,20 @@ function Header({ address }: { address: string }) {
 export default function UserView() {
   const router = useRouter()
   const { theme } = useTheme()
-  const [showCollectionId, setShowCollectionId] = useState<Collection>()
+  const breakpointIndex = useBreakpointIndex()
+  const isMobile = breakpointIndex <= 1
   const modalRef = useRef<HTMLDivElement>(null)
+
+  /* Collection & Asset offsets */
+  const [showCollection, setShowCollection] = useState<Collection>()
+  const [collectionOffset, setCollectionOffset] = useState(0)
+  const [assetOffset, setAssetOffset] = useState(0)
+
+  /* Address formatting */
   const [addressFormatted, setAddressFormatted] = useState<string>()
   const [errorAddress, setErrorAddress] = useState(false)
   const address = router.query.address as string
-
+  const shortAddress = useMemo(() => shortenAddress(address), [address])
   const loadingAddressFormatted = !addressFormatted && !errorAddress
 
   useEffect(() => {
@@ -192,6 +201,7 @@ export default function UserView() {
     loading: loadingCollector,
     error,
     data,
+    fetchMore: fetchMoreCollections,
   } = useQuery<GetCollectorData, GetCollectorVars>(GET_COLLECTOR, {
     errorPolicy: 'all',
     variables: {
@@ -219,19 +229,61 @@ export default function UserView() {
       errorPolicy: 'all',
       variables: {
         userAddress: addressFormatted,
-        id: Number(showCollectionId?.id),
+        id: Number(showCollection?.id),
         limit: 10,
         offset: 0,
       },
-      skip: !showCollectionId?.id || !addressFormatted,
+      skip: !showCollection?.id || !addressFormatted,
     }
   )
 
-  const handleFetchMore = (offset: number) => {
-    if (loadingAssets) return
+  const handleFetchMoreAssets = useCallback(
+    (startIndex: number) => {
+      if (loadingAssets || assetOffset === startIndex) return
+      setAssetOffset(startIndex)
+    },
+    [loadingAssets, assetOffset]
+  )
+
+  const handleFetchMoreCollections = useCallback(
+    (startIndex: number) => {
+      if (loadingCollector || collectionOffset === startIndex) return
+      setCollectionOffset(startIndex)
+    },
+    [loadingCollector, collectionOffset]
+  )
+
+  useEffect(() => {
+    if (!collectionOffset) return
+
+    fetchMoreCollections({
+      variables: { collectionOffset },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) return prev
+
+        return {
+          getUser: {
+            ...prev.getUser,
+            extraCollections: {
+              count: fetchMoreResult?.getUser?.extraCollections?.count ?? 0,
+              collectionAssetCounts: [
+                ...(prev?.getUser?.extraCollections?.collectionAssetCounts ??
+                  []),
+                ...(fetchMoreResult?.getUser?.extraCollections
+                  ?.collectionAssetCounts ?? []),
+              ],
+            },
+          },
+        }
+      },
+    })
+  }, [collectionOffset])
+
+  useEffect(() => {
+    if (!assetOffset) return
 
     fetchMoreAssets({
-      variables: { offset },
+      variables: { offset: assetOffset },
       updateQuery: (prev, { fetchMoreResult }) => {
         if (!fetchMoreResult) return prev
 
@@ -252,11 +304,62 @@ export default function UserView() {
         }
       },
     })
-  }
+  }, [assetOffset])
 
-  const breakpointIndex = useBreakpointIndex()
-  const isMobile = breakpointIndex <= 1
-  const shortAddress = shortenAddress(address)
+  const maybeLoadMore = useInfiniteLoader(handleFetchMoreCollections, {
+    isItemLoaded: (index, items) => !!items[index],
+  })
+
+  const RenderMasonry = ({ index, data: { count, collection } }) => {
+    return (
+      <CollectionCard
+        hasSeeAll={count > 5}
+        seeAllImageSrc={
+          collection.ownerAssetsInCollection.assets.slice(-1)[0].previewImageUrl
+        }
+        avatarImage={collection.imageUrl}
+        link={`/analytics/collection/${collection.id}`}
+        total={collection?.ownerAssetsInCollection?.count ?? 0}
+        name={collection.name}
+        key={index}
+        onExpand={() =>
+          setShowCollection({
+            id: collection.id,
+            name: collection.name,
+            imageUrl: collection.imageUrl,
+          })
+        }
+      >
+        {collection.ownerAssetsInCollection.assets
+          .slice(0, 5)
+          .map(({ id, previewImageUrl, contractAddress }, idx) => (
+            <Link passHref href={`/analytics/nft/${id}`} key={idx}>
+              <Box
+                sx={{
+                  width: '100%',
+                  cursor: 'pointer',
+                  '&::after': {
+                    content: "''",
+                    display: 'block',
+                    paddingTop: '100%',
+                    backgroundImage: `url(${previewImageUrl})`,
+                    backgroundSize: 'cover',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'center',
+                    borderRadius: 'sm',
+                    imageRendering: PIXELATED_CONTRACTS.includes(
+                      contractAddress
+                    )
+                      ? 'pixelated'
+                      : 'auto',
+                  },
+                }}
+              />
+            </Link>
+          ))}
+      </CollectionCard>
+    )
+  }
 
   const distributionTable = (
     <Panel sx={{ flexGrow: 1 }}>
@@ -821,66 +924,20 @@ export default function UserView() {
           {!!data?.getUser?.extraCollections?.count && (
             <Text variant="h1Primary">Collection</Text>
           )}
-
-          <Grid columns="repeat(auto-fit, minmax(300px, 1fr))" sx={{ gap: 4 }}>
-            {data?.getUser?.extraCollections?.collectionAssetCounts?.map(
-              ({ count, collection }, idx) => (
-                <CollectionCard
-                  hasSeeAll={count > 5}
-                  seeAllImageSrc={
-                    collection.ownerAssetsInCollection.assets.slice(-1)[0]
-                      .previewImageUrl
-                  }
-                  avatarImage={collection.imageUrl}
-                  link={`/analytics/collection/${collection.id}`}
-                  total={collection?.ownerAssetsInCollection?.count ?? 0}
-                  name={collection.name}
-                  key={idx}
-                  onExpand={() =>
-                    setShowCollectionId({
-                      id: collection.id,
-                      name: collection.name,
-                      imageUrl: collection.imageUrl,
-                    })
-                  }
-                >
-                  {collection.ownerAssetsInCollection.assets
-                    .slice(0, 5)
-                    .map(({ id, previewImageUrl, contractAddress }, idx) => (
-                      <Link passHref href={`/analytics/nft/${id}`} key={idx}>
-                        <Box
-                          sx={{
-                            width: '100%',
-                            cursor: 'pointer',
-                            '&::after': {
-                              content: "''",
-                              display: 'block',
-                              paddingTop: '100%',
-                              backgroundImage: `url(${previewImageUrl})`,
-                              backgroundSize: 'cover',
-                              backgroundRepeat: 'no-repeat',
-                              backgroundPosition: 'center',
-                              borderRadius: 'sm',
-                              imageRendering: PIXELATED_CONTRACTS.includes(
-                                contractAddress
-                              )
-                                ? 'pixelated'
-                                : 'auto',
-                            },
-                          }}
-                        />
-                      </Link>
-                    ))}
-                </CollectionCard>
-              )
-            )}
-          </Grid>
+          <Masonry
+            columnWidth={300}
+            columnGutter={16}
+            rowGutter={16}
+            items={data?.getUser?.extraCollections?.collectionAssetCounts ?? []}
+            render={RenderMasonry}
+            onRender={maybeLoadMore}
+          />
         </Flex>
       </Layout>
       <Modal
         ref={modalRef}
-        onClose={() => setShowCollectionId(undefined)}
-        open={showCollectionId?.id !== undefined}
+        onClose={() => setShowCollection(undefined)}
+        open={showCollection?.id !== undefined}
       >
         {loadingAssets ? (
           <Flex
@@ -897,22 +954,27 @@ export default function UserView() {
         ) : (
           <Box sx={{ width: '95vw' }}>
             <CollectionCardExpanded
-              avatarImage={
-                showCollectionId?.imageUrl ?? '/img/defaultAvatar.png'
-              }
-              name={showCollectionId?.name ?? ''}
+              avatarImage={showCollection?.imageUrl ?? '/img/defaultAvatar.png'}
+              name={showCollection?.name ?? ''}
               total={
                 dataAssets?.collectionById?.ownerAssetsInCollection?.count ?? 0
               }
               items={
                 dataAssets?.collectionById?.ownerAssetsInCollection?.assets?.map(
-                  ({ id, name, lastAppraisalWeiPrice, previewImageUrl }) => ({
+                  ({
+                    id,
+                    name,
+                    lastAppraisalWeiPrice,
+                    previewImageUrl,
+                    contractAddress,
+                  }) => ({
                     id,
                     expanded: isMobile,
                     avatarImage:
-                      showCollectionId?.imageUrl ?? '/img/defaultAvatar.png',
+                      showCollection?.imageUrl ?? '/img/defaultAvatar.png',
                     imageSrc: previewImageUrl ?? '/img/defaultAvatar.png',
                     name: name ?? '',
+                    isPixelated: PIXELATED_CONTRACTS.includes(contractAddress),
                     description:
                       `Latest Appraised Value: ${weiToEth(
                         lastAppraisalWeiPrice
@@ -921,7 +983,7 @@ export default function UserView() {
                 ) ?? []
               }
               onClose={() => modalRef?.current?.click()}
-              onFetchMore={handleFetchMore}
+              onFetchMore={handleFetchMoreAssets}
             />
           </Box>
         )}

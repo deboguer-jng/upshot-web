@@ -119,6 +119,7 @@ export default function Collectors({
                   pixelated: PIXELATED_CONTRACTS.includes(id.split('/')[0]),
                 }))}
                 key={idx}
+                defaultOpen={ idx === 0 ? true : false }
                 {...{ username, count, avgHoldTime }}
               />
             )
