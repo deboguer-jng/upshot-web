@@ -22,6 +22,7 @@ import {
   useTheme,
 } from '@upshot-tech/upshot-ui'
 import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import { BetaBanner } from 'components/BetaBanner'
 import { FormattedENS } from 'components/FormattedENS'
 import { Nav } from 'components/Nav'
 import { PIXELATED_CONTRACTS } from 'constants/'
@@ -102,6 +103,7 @@ function Layout({ children }: { children: React.ReactNode }) {
       <Head>
         <title>Upshot Analytics</title>
       </Head>
+      <BetaBanner />
       <Container
         p={4}
         sx={{

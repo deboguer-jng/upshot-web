@@ -20,6 +20,7 @@ import {
   TableHead,
   TableRow,
 } from '@upshot-tech/upshot-ui'
+import { BetaBanner } from 'components/BetaBanner'
 import { FormattedENS } from 'components/FormattedENS'
 import { Nav } from 'components/Nav'
 import { PIXELATED_CONTRACTS } from 'constants/'
@@ -79,21 +80,24 @@ function Layout({ children }: { children: React.ReactNode }) {
       ]
 
   return (
-    <Container
-      p={4}
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        width: '100%',
-        minHeight: '100vh',
-        gap: 4,
-      }}
-    >
-      <Nav />
-      <Breadcrumbs crumbs={breadcrumbs} />
-      {children}
-      <Footer />
-    </Container>
+    <>
+      <BetaBanner />
+      <Container
+        p={4}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          width: '100%',
+          minHeight: '100vh',
+          gap: 4,
+        }}
+      >
+        <Nav />
+        <Breadcrumbs crumbs={breadcrumbs} />
+        {children}
+        <Footer />
+      </Container>
+    </>
   )
 }
 
@@ -633,32 +637,31 @@ export default function NFTView() {
                               >
                                 Last Appraisal
                               </Text>
-                             
                             </Flex>
                             <Flex sx={{ gap: 2 }}>
-
-                            <Label
-                              color="primary"
-                              currencySymbol={lastSale ? 'Ξ' : undefined}
-                              variant="currency"
-                              size="md"
-                            >
-                              {latestAppraisal?.ethSalePrice
-                                ? weiToEth(
-                                    latestAppraisal.ethSalePrice,
-                                    3,
-                                    false
-                                  )
-                                : '-'}
-                            </Label>
-                                <Label color="primary">
-                                  {latestAppraisal?.medianRelativeError
-                                    ? '± ' + (latestAppraisal.medianRelativeError * 100).toFixed(
-                                        2
-                                      ) + '%'
-                                    : ''}
-                                </Label>
-                             
+                              <Label
+                                color="primary"
+                                currencySymbol={lastSale ? 'Ξ' : undefined}
+                                variant="currency"
+                                size="md"
+                              >
+                                {latestAppraisal?.ethSalePrice
+                                  ? weiToEth(
+                                      latestAppraisal.ethSalePrice,
+                                      3,
+                                      false
+                                    )
+                                  : '-'}
+                              </Label>
+                              <Label color="primary">
+                                {latestAppraisal?.medianRelativeError
+                                  ? '± ' +
+                                    (
+                                      latestAppraisal.medianRelativeError * 100
+                                    ).toFixed(2) +
+                                    '%'
+                                  : ''}
+                              </Label>
                             </Flex>
                             <Text
                               color="primary"
@@ -812,16 +815,13 @@ export default function NFTView() {
                                     sx={{
                                       marginLeft: '6px;',
                                       verticalAlign: 'middle',
-                                      opacity: .3,
+                                      opacity: 0.3,
                                       '&:hover': {
                                         opacity: 1,
                                       },
                                     }}
                                   >
-                                    <Icon
-                                      icon="disconnect"
-                                      color="grey-500"
-                                    />
+                                    <Icon icon="disconnect" color="grey-500" />
                                   </IconButton>
                                 </a>
                               </TableCell>
