@@ -3,7 +3,7 @@ import { Button, Flex, SliderFade } from '@upshot-tech/upshot-ui'
 import { useState } from 'react'
 
 export const METRICS = {
-  VOLUME: 'Daily Volume',
+  VOLUME: 'Weekly Volume',
   AVERAGE: 'Average Price',
   FLOOR: 'Floor Price',
 }

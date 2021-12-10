@@ -53,11 +53,12 @@ export const GET_TOP_COLLECTIONS = gql`
       metric: $metric
       stringifiedCollectionIds: $stringifiedCollectionIds
       limit: 3
+      windowSize: WEEK
     ) {
       assetSets {
         name
         id
-        volume
+        volume(windowSize: WEEK)
         athAverage {
           value
         }
@@ -76,7 +77,7 @@ export const GET_TOP_COLLECTIONS = gql`
         atlVolume {
           value
         }
-        timeSeries(minTimestamp: $minTimestamp) {
+        timeSeries(minTimestamp: $minTimestamp, windowSize: WEEK) {
           timestamp
           average
           volume
