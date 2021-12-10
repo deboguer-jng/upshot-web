@@ -333,7 +333,7 @@ export default function SearchView() {
                                     ? weiToEth(lastSale.ethSalePrice)
                                     : undefined
                                 }
-                                rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
+                                rarity={rarity ? (rarity*100).toFixed(2) + '%' : '-'}
                                 image={previewImageUrl ?? mediaUrl}
                                 creator={
                                   creatorUsername ||
