@@ -4,8 +4,8 @@ import { useState } from 'react'
 
 export const METRICS = {
   VOLUME: 'Weekly Volume',
-  AVERAGE: 'Average Price',
   FLOOR: 'Floor Price',
+  AVERAGE: 'Average Price',
 }
 
 export type METRIC = keyof typeof METRICS
@@ -26,15 +26,17 @@ export default function ButtonTabs({ onChange }: ButtonTabsProps) {
   const renderButtons = () => {
     return (
       <>
-        {Object.values(METRICS).map((children, idx) => (
-          <Button
-            key={idx}
-            variant="primary"
-            toggled={selected === idx}
-            onClick={() => handleChange(idx)}
-            {...{ children }}
-          />
-        ))}
+        {Object.values(METRICS)
+          .slice(1)
+          .map((children, idx) => (
+            <Button
+              key={idx}
+              variant="primary"
+              toggled={selected === idx}
+              onClick={() => handleChange(idx)}
+              {...{ children }}
+            />
+          ))}
       </>
     )
   }
