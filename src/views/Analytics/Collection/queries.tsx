@@ -14,6 +14,7 @@ export type GetCollectionData = {
     description: string
     imageUrl: string
     ceil: string
+    floor: string
     size: string
     average: string
     totalVolume: string
@@ -31,6 +32,7 @@ export const GET_COLLECTION = gql`
       description
       imageUrl
       ceil
+      floor
       size
       average
       totalVolume

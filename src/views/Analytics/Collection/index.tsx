@@ -202,7 +202,7 @@ export default function CollectionView() {
     name,
     description,
     imageUrl,
-    ceil,
+    floor,
     size,
     average,
     totalVolume,
@@ -258,8 +258,8 @@ export default function CollectionView() {
             />
             <CollectionStat
               color="pink"
-              value={ceil ? weiToEth(ceil) : '-'}
-              label="Highest Listing"
+              value={floor ? weiToEth(floor) : '-'}
+              label="Floor Price"
             />
             <CollectionStat
               value={totalVolume ? weiToEth(totalVolume) : '-'}
