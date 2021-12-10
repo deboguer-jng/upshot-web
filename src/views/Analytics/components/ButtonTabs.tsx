@@ -3,9 +3,9 @@ import { Button, Flex, SliderFade } from '@upshot-tech/upshot-ui'
 import { useState } from 'react'
 
 export const METRICS = {
-  VOLUME: 'Daily Volume',
-  AVERAGE: 'Average Price',
   FLOOR: 'Floor Price',
+  AVERAGE: 'Average Price',
+  VOLUME: 'Weekly Volume',
 }
 
 export type METRIC = keyof typeof METRICS
@@ -26,15 +26,17 @@ export default function ButtonTabs({ onChange }: ButtonTabsProps) {
   const renderButtons = () => {
     return (
       <>
-        {Object.values(METRICS).map((children, idx) => (
-          <Button
-            key={idx}
-            variant="primary"
-            toggled={selected === idx}
-            onClick={() => handleChange(idx)}
-            {...{ children }}
-          />
-        ))}
+        {Object.values(METRICS)
+          .slice(0, 2)
+          .map((children, idx) => (
+            <Button
+              key={idx}
+              variant="primary"
+              toggled={selected === idx}
+              onClick={() => handleChange(idx)}
+              {...{ children }}
+            />
+          ))}
       </>
     )
   }
