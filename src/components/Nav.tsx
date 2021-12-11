@@ -40,6 +40,9 @@ export const Nav = () => {
     name: string
   }
 
+  const isAddress = navSearchTerm.substring(0, 2) === '0x' && 
+    navSearchTerm.length === 42
+
   const handleConnect = (provider: ConnectorName) => {
     dispatch(setActivatingConnector(provider))
     activate(connectorsByName[provider])
@@ -53,7 +56,9 @@ export const Nav = () => {
   }
 
   const handleSearchSuggestionChange = (item: InputSuggestion) => {
-    router.push(`/analytics/collection/${encodeURIComponent(item.id)}`)
+    isAddress
+      ? router.push(`/analytics/user/${encodeURIComponent(navSearchTerm)}`)
+      : router.push(`/analytics/collection/${encodeURIComponent(item.id)}`)
   }
 
   const handleNavSearch = (e: React.FormEvent) => {
@@ -65,9 +70,11 @@ export const Nav = () => {
   const suggestions = useMemo(() => {
     const suggestions = navCollectionsData?.collections?.assetSets ?? []
 
-    return suggestions.filter(({ name }) =>
-      name.toLowerCase().includes(navSearchTerm.toLowerCase())
-    )
+    return isAddress
+      ? [{ id: 0, name: shortenAddress(navSearchTerm) }]
+      : suggestions.filter(({ name }) =>
+        name.toLowerCase().includes(navSearchTerm.toLowerCase())
+      )
   }, [navCollectionsData, navSearchTerm])
 
   const hideMetaMask =
