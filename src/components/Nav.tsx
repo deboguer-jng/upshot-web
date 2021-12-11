@@ -64,7 +64,9 @@ export const Nav = () => {
   const handleNavSearch = (e: React.FormEvent) => {
     e.preventDefault()
 
-    router.push(`/analytics/search?query=${encodeURIComponent(navSearchTerm)}`)
+    isAddress
+      ? router.push(`/analytics/user/${encodeURIComponent(navSearchTerm)}`)
+      : router.push(`/analytics/search?query=${encodeURIComponent(navSearchTerm)}`)
   }
 
   const suggestions = useMemo(() => {
