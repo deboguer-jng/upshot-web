@@ -110,7 +110,7 @@ export default function LandingView() {
           <Grid columns={[1, null, '3fr 2fr']} sx={{ marginTop: '5%', marginBottom: '2%' }}>
             <Box>
               <Box>
-                <Text variant="h0Primary" sx={{ fontSize: ['3rem', null, '5rem', '8rem'], textTransform: 'uppercase' }}>
+                <Text variant="h0Primary" sx={{ fontSize: ['3rem', null, '5rem', '8rem'], textTransform: 'uppercase', fontFamily: 'degular-display' }}>
                   Upshot
                 </Text>
               </Box>
