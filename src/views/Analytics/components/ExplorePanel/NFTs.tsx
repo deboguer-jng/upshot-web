@@ -15,12 +15,13 @@ import {
   TableHead,
   TableRow,
 } from '@upshot-tech/upshot-ui'
+import { PIXELATED_CONTRACTS } from 'constants/'
 import { PAGE_SIZE } from 'constants/'
 import { format } from 'date-fns'
 import router from 'next/router'
 import React, { useMemo, useRef, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
-import { weiToEth, getPriceChangeLabel } from 'utils/number'
+import { getPriceChangeLabel, weiToEth } from 'utils/number'
 
 import {
   GET_EXPLORE_NFTS,
@@ -28,7 +29,12 @@ import {
   GetExploreNFTsVars,
 } from '../../queries'
 
-const columns = ['Last Sale Date', 'Last Sale Price', 'Latest Appraised Value', 'Last Sale/Latest Appraisal']
+const columns = [
+  'Last Sale Date',
+  'Last Sale Price',
+  'Latest Appraised Value',
+  'Last Sale/Latest Appraisal',
+]
 
 function NFTTableHead() {
   const breakpointIndex = useBreakpointIndex()
@@ -127,12 +133,13 @@ export default function ExploreNFTs({
               {
                 id,
                 name,
+                contractAddress,
                 previewImageUrl,
                 mediaUrl,
                 totalSaleCount,
                 lastSale,
                 lastAppraisalWeiPrice,
-                lastSaleAppraisalRelativeDiff
+                lastSaleAppraisalRelativeDiff,
               },
               idx
             ) => (
@@ -142,6 +149,7 @@ export default function ExploreNFTs({
                 imageSrc={previewImageUrl ?? mediaUrl}
                 key={idx}
                 onClick={() => handleShowNFT(id)}
+                pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
               >
                 {isMobile ? (
                   <TableCell sx={{ maxWidth: 100 }}>
@@ -164,7 +172,9 @@ export default function ExploreNFTs({
                       <Flex
                         sx={{
                           maxWidth: 100,
-                          color: getPriceChangeColor(lastSaleAppraisalRelativeDiff),
+                          color: getPriceChangeColor(
+                            lastSaleAppraisalRelativeDiff
+                          ),
                         }}
                       >
                         {getPriceChangeLabel(lastSaleAppraisalRelativeDiff)}
@@ -191,7 +201,9 @@ export default function ExploreNFTs({
                     <TableCell
                       sx={{
                         maxWidth: 100,
-                        color: getPriceChangeColor(lastSaleAppraisalRelativeDiff),
+                        color: getPriceChangeColor(
+                          lastSaleAppraisalRelativeDiff
+                        ),
                       }}
                     >
                       {getPriceChangeLabel(lastSaleAppraisalRelativeDiff)}
