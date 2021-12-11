@@ -155,6 +155,7 @@ export type GetExploreNFTsData = {
     assets: {
       id: string
       name: string
+      contractAddress: string
       previewImageUrl?: string
       mediaUrl: string
       totalSaleCount: number
@@ -186,6 +187,7 @@ export const GET_EXPLORE_NFTS = gql`
       assets {
         id
         name
+        contractAddress
         previewImageUrl
         mediaUrl
         totalSaleCount
