@@ -46,8 +46,8 @@ export default function Collectors({
         skip: !id,
       })
 
-    const breakpointIndex = useBreakpointIndex()
-    const isMobile = breakpointIndex <= 1
+  const breakpointIndex = useBreakpointIndex()
+  const isMobile = breakpointIndex <= 1
 
   const ExplorePanelSkeleton = () => {
     return (
@@ -76,54 +76,48 @@ export default function Collectors({
     <>
       <CollectorAccordionHead>
         <Text>Collector</Text>
-        <Text sx={{ whiteSpace: 'nowrap' }}>{`${ isMobile ? '' : name} Count`}</Text>
+        <Text sx={{ whiteSpace: 'nowrap' }}>{`${
+          isMobile ? '' : name
+        } Count`}</Text>
       </CollectorAccordionHead>
       <CollectorAccordion>
-        {[...data.getOwnersByWhaleness.owners]
-          .sort((owner1, owner2) => {
-            if (owner1.firstAssetPurchaseTime < owner2.firstAssetPurchaseTime)
-              return 1
-            if (owner1.firstAssetPurchaseTime === owner2.firstAssetPurchaseTime)
-              return 0
-            return -1
-          })
-          .map(
-            (
-              {
-                username,
-                addresses,
-                avgHoldTime,
-                firstAssetPurchaseTime,
-                ownedAssets: { count, assets },
-                extraCollections: { collectionAssetCounts },
-              },
-              idx
-            ) => (
-              <CollectorAccordionRow
-                address={addresses?.[0]}
-                firstAcquisition={firstAssetPurchaseTime}
-                collectionName={name}
-                extraCollections={collectionAssetCounts.map(
-                  ({ count, collection: { imageUrl, name, id } }) => ({
-                    id,
-                    imageUrl,
-                    name,
-                    count,
-                    url: `/analytics/collection/${id}`,
-                  })
-                )}
-                nftCollection={assets.map(({ previewImageUrl, id }) => ({
+        {[...data.getOwnersByWhaleness.owners].map(
+          (
+            {
+              username,
+              addresses,
+              avgHoldTime,
+              firstAssetPurchaseTime,
+              ownedAssets: { count, assets },
+              extraCollections: { collectionAssetCounts },
+            },
+            idx
+          ) => (
+            <CollectorAccordionRow
+              address={addresses?.[0]}
+              firstAcquisition={firstAssetPurchaseTime}
+              collectionName={name}
+              extraCollections={collectionAssetCounts.map(
+                ({ count, collection: { imageUrl, name, id } }) => ({
                   id,
-                  imageUrl: previewImageUrl,
-                  url: `/analytics/nft/${id}`,
-                  pixelated: PIXELATED_CONTRACTS.includes(id.split('/')[0]),
-                }))}
-                key={idx}
-                defaultOpen={ idx === 0 ? true : false }
-                {...{ username, count, avgHoldTime }}
-              />
-            )
-          )}
+                  imageUrl,
+                  name,
+                  count,
+                  url: `/analytics/collection/${id}`,
+                })
+              )}
+              nftCollection={assets.map(({ previewImageUrl, id }) => ({
+                id,
+                imageUrl: previewImageUrl,
+                url: `/analytics/nft/${id}`,
+                pixelated: PIXELATED_CONTRACTS.includes(id.split('/')[0]),
+              }))}
+              key={idx}
+              defaultOpen={idx === 0 ? true : false}
+              {...{ username, count, avgHoldTime }}
+            />
+          )
+        )}
       </CollectorAccordion>
     </>
   )
