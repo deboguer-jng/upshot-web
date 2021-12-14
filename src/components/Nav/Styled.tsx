@@ -29,7 +29,7 @@ export const Sidebar = styled.div`
   flex-direction: column;
   position: fixed;
   top: 250px;
-  min-height: calc(100vh - 250px);
+  height: calc(100vh - 250px);
   left: 0;
   z-index: ${({ theme }) => theme.zIndex.nav + 2};
   text-align: center;
@@ -42,7 +42,7 @@ export const Sidebar = styled.div`
       width: auto;
       text-align: right;
       top: 150px;
-      min-height: calc(100vh - 150px);
+      height: calc(100vh - 150px);
       left: auto;
       right: 40px;
     }
