@@ -136,12 +136,18 @@ export const Nav = () => {
         <Flex sx={{ flexDirection: 'column', gap: 24 }}>
           <Text sx={{ color: 'grey-600', fontSize: 4 }}>Resources</Text>
           <Link href="https://upshot.gitbook.io/upshot-api/" passHref>
-            <SideLink sx={{ fontSize: 5, fontWeight: 'heading' }}>
+            <SideLink
+              sx={{ fontSize: 5, fontWeight: 'heading' }}
+              target="_blank"
+            >
               API Docs
             </SideLink>
           </Link>
           <Link href="https://jv3yfpod32j.typeform.com/to/CZ28JWz9" passHref>
-            <SideLink sx={{ fontSize: 5, fontWeight: 'heading' }}>
+            <SideLink
+              sx={{ fontSize: 5, fontWeight: 'heading' }}
+              target="_blank"
+            >
               Feedback
             </SideLink>
           </Link>
