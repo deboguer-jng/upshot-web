@@ -1,6 +1,7 @@
 import { useLazyQuery } from '@apollo/client'
 import {
   ConnectModal,
+  Container,
   Flex,
   Icon,
   IconButton,
@@ -198,26 +199,28 @@ export const Nav = () => {
         }}
       >
         <BetaBanner />
-        <Navbar
-          avatarImageUrl={address ? makeBlockie(address) : undefined}
-          ensName={ens.name}
-          searchValue={navSearchTerm}
-          onSearchValueChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setNavSearchTerm(e.currentTarget.value)
-          }
-          onSearch={handleNavSearch}
-          onLogoClick={() => router.push('/')}
-          onSearchSuggestionChange={handleSearchSuggestionChange}
-          onSearchKeyUp={handleNavKeyUp}
-          onConnectClick={toggleModal}
-          onDisconnectClick={handleDisconnect}
-          onMenuClick={handleToggleMenu}
-          searchSuggestions={suggestions}
-          sx={{ marginBottom: 4 }}
-          {...{ address, showSidebar, p: 4 }}
-        >
-          {showSidebar && sidebar}
-        </Navbar>
+        <Container sx={{ width: '100%' }}>
+          <Navbar
+            avatarImageUrl={address ? makeBlockie(address) : undefined}
+            ensName={ens.name}
+            searchValue={navSearchTerm}
+            onSearchValueChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setNavSearchTerm(e.currentTarget.value)
+            }
+            onSearch={handleNavSearch}
+            onLogoClick={() => router.push('/')}
+            onSearchSuggestionChange={handleSearchSuggestionChange}
+            onSearchKeyUp={handleNavKeyUp}
+            onConnectClick={toggleModal}
+            onDisconnectClick={handleDisconnect}
+            onMenuClick={handleToggleMenu}
+            searchSuggestions={suggestions}
+            sx={{ marginBottom: 4, p: 4, width: '100%' }}
+            {...{ address, showSidebar }}
+          >
+            {showSidebar && sidebar}
+          </Navbar>
+        </Container>
         <Modal ref={modalRef} onClose={toggleModal} {...{ open }}>
           <ConnectModal {...{ hideMetaMask }} onConnect={handleConnect} />
         </Modal>
