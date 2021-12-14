@@ -28,8 +28,8 @@ export const Sidebar = styled.div`
   display: flex;
   flex-direction: column;
   position: fixed;
-  top: 260px;
-  height: calc(100vh - 260px);
+  top: 264px;
+  height: calc(100vh - 264px);
   left: 0;
   z-index: ${({ theme }) => theme.zIndex.nav + 2};
   text-align: center;
@@ -41,10 +41,10 @@ export const Sidebar = styled.div`
     @media only screen and (min-width: ${theme.breakpoints[1]}) {
       width: auto;
       text-align: right;
-      top: 160px;
-      height: calc(100vh - 160px);
+      top: 164px;
+      height: calc(100vh - 164px);
       left: auto;
-      right: 40px;
+      right: 80px;
     }
   `}
 `

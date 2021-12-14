@@ -220,7 +220,12 @@ export const Nav = () => {
           onDisconnectClick={handleDisconnect}
           onMenuClick={handleToggleMenu}
           searchSuggestions={suggestions}
-          sx={{ marginBottom: 4, paddingY: 5, paddingX: 8, width: '100%' }}
+          sx={{
+            marginBottom: 4,
+            paddingY: 6,
+            paddingX: ['24px', '24px', '80px'],
+            width: '100%',
+          }}
           {...{ address, showSidebar }}
         >
           {showSidebar && sidebar}
