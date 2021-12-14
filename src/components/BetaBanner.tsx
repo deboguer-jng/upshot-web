@@ -2,11 +2,12 @@ import styled from '@emotion/styled'
 import { Flex, Text } from 'theme-ui'
 
 const BetaBannerBase = styled.div`
-  position: relative;
+  position: sticky;
+  top: 0;
   padding: ${({ theme }) => theme.space[4] + 'px'};
   background: ${({ theme }) => theme.colors['grey-800']};
   width: 100%;
-  z-index: 2;
+  z-index: ${({ theme }) => theme.zIndex.nav + 2};
 `
 
 export const BetaBanner = () => (

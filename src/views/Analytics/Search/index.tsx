@@ -8,7 +8,6 @@ import {
   InputRounded,
   Pagination,
 } from '@upshot-tech/upshot-ui'
-import { BetaBanner } from 'components/BetaBanner'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import { PIXELATED_CONTRACTS } from 'constants/'
@@ -418,7 +417,7 @@ export default function SearchView() {
         />
       </Head>
       <Flex sx={{ minHeight: '100vh', flexDirection: 'column' }}>
-        <BetaBanner />
+        <Nav />
         <Container
           p={4}
           sx={{
@@ -428,7 +427,6 @@ export default function SearchView() {
             width: '100%',
           }}
         >
-          <Nav />
           <Breadcrumbs crumbs={breadcrumbs} />
         </Container>
         {!isMobile ? (

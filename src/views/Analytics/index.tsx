@@ -1,6 +1,5 @@
 import { Box, Container } from '@upshot-tech/upshot-ui'
 import { Flex, Text } from '@upshot-tech/upshot-ui'
-import { BetaBanner } from 'components/BetaBanner'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import Head from 'next/head'
@@ -52,8 +51,7 @@ export default function AnalyticsView() {
           content="https://upshot.io/img/opengraph/opengraph_analytics.jpg"
         />
       </Head>
-
-      <BetaBanner />
+      <Nav />
       <Container
         p={4}
         sx={{
@@ -63,7 +61,6 @@ export default function AnalyticsView() {
           gap: 4,
         }}
       >
-        <Nav />
         <Box
           sx={{
             display: 'inline-block',

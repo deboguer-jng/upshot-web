@@ -2,7 +2,6 @@ import { useQuery } from '@apollo/client'
 import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Chart, Container, Flex, Grid } from '@upshot-tech/upshot-ui'
 import { Avatar, Text } from '@upshot-tech/upshot-ui'
-import { BetaBanner } from 'components/BetaBanner'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import { ethers } from 'ethers'
@@ -108,7 +107,7 @@ function Layout({ children }: { children: React.ReactNode }) {
           content="https://upshot.io/img/opengraph/opengraph_collection.jpg"
         />
       </Head>
-      <BetaBanner />
+      <Nav />
       <Container
         p={4}
         sx={{
@@ -119,7 +118,6 @@ function Layout({ children }: { children: React.ReactNode }) {
           gap: 4,
         }}
       >
-        <Nav />
         <Breadcrumbs crumbs={breadcrumbs} />
         {children}
         <Footer />
