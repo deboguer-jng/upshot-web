@@ -1,6 +1,7 @@
 import { Box, Container } from '@upshot-tech/upshot-ui'
-import { Flex, Footer, Text } from '@upshot-tech/upshot-ui'
+import { Flex, Text } from '@upshot-tech/upshot-ui'
 import { BetaBanner } from 'components/BetaBanner'
+import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import Head from 'next/head'
 import { useState } from 'react'

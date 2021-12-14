@@ -1,7 +1,7 @@
 /** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
 import { Container } from '@upshot-tech/upshot-ui'
-import { Avatar, Flex, Footer, Grid, Panel, Text } from '@upshot-tech/upshot-ui'
+import { Avatar, Flex, Grid, Panel, Text } from '@upshot-tech/upshot-ui'
 import {
   Box,
   CollectionCard,
@@ -23,6 +23,7 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { BetaBanner } from 'components/BetaBanner'
+import { Footer } from 'components/Footer'
 import { FormattedENS } from 'components/FormattedENS'
 import { Nav } from 'components/Nav'
 import { PIXELATED_CONTRACTS } from 'constants/'

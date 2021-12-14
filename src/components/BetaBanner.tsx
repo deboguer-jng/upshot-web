@@ -2,9 +2,11 @@ import styled from '@emotion/styled'
 import { Flex, Text } from 'theme-ui'
 
 const BetaBannerBase = styled.div`
+  position: relative;
   padding: ${({ theme }) => theme.space[4] + 'px'};
   background: ${({ theme }) => theme.colors['grey-800']};
   width: 100%;
+  z-index: 2;
 `
 
 export const BetaBanner = () => (

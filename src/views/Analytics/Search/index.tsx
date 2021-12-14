@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client'
 import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
-import { Button, Container, Footer } from '@upshot-tech/upshot-ui'
+import { Button, Container } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Grid, MiniNftCard, Text } from '@upshot-tech/upshot-ui'
 import {
   Accordion,
@@ -9,6 +9,7 @@ import {
   Pagination,
 } from '@upshot-tech/upshot-ui'
 import { BetaBanner } from 'components/BetaBanner'
+import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { PAGE_SIZE } from 'constants/'
