@@ -61,40 +61,37 @@ export default function AnalyticsView() {
           gap: 4,
         }}
       >
-        <Box
+        <Flex
           sx={{
-            display: 'inline-block',
+            flexDirection: ['column', 'column', 'row'],
             paddingBottom: ['0px', '0px', '10px'],
             marginTop: ['-20px', '-20px', '-10px'],
           }}
         >
+          <Text
+            variant="h0Secondary"
+            sx={{
+              lineHeight: '2.25rem',
+              color: 'blue',
+              fontWeight: '700',
+              fontSize: ['46px', '46px', 8],
+              textTransform: 'uppercase',
+            }}
+          >
+            Upshot
+          </Text>
           <Flex>
-            <Flex>
-              <Text
-                variant="h0Secondary"
-                sx={{
-                  lineHeight: '2.25rem',
-                  display: 'inline-block',
-                  color: 'blue',
-                  fontWeight: '700',
-                  fontSize: ['46px', '46px', 8],
-                }}
-              >
-                UPSHOT
-              </Text>
-              <Text
-                variant="h0Secondary"
-                sx={{
-                  lineHeight: '2.25rem',
-                  display: 'inline-block',
-                  fontWeight: '500',
-                  fontSize: ['46px', '46px', 8],
-                }}
-              >
-                Analytics
-              </Text>
-            </Flex>
-            <Box sx={{ padding: 2 }}>
+            <Text
+              variant="h0Secondary"
+              sx={{
+                lineHeight: '2.25rem',
+                fontWeight: '500',
+                fontSize: ['46px', '46px', 8],
+              }}
+            >
+              Analytics
+            </Text>
+            <Box sx={{ p: 2 }}>
               <Text
                 sx={{
                   textTransform: 'uppercase',
@@ -111,7 +108,7 @@ export default function AnalyticsView() {
               </Text>
             </Box>
           </Flex>
-        </Box>
+        </Flex>
         <Flex sx={{ flex: '1 1 auto', flexDirection: 'column', gap: 5 }}>
           <ButtonTabs onChange={handleChange} />
           <TopCollectionsChart
