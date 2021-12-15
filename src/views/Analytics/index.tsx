@@ -63,7 +63,7 @@ export default function AnalyticsView() {
       >
         <Flex
           sx={{
-            flexDirection: ['column', 'column', 'row'],
+            flexDirection: ['column', 'row', 'row'],
             paddingBottom: ['0px', '0px', '10px'],
             marginTop: ['-20px', '-20px', '-10px'],
           }}
@@ -74,7 +74,7 @@ export default function AnalyticsView() {
               lineHeight: '2.25rem',
               color: 'blue',
               fontWeight: '700',
-              fontSize: ['46px', '46px', 8],
+              fontSize: ['42px', '42px', 8],
               textTransform: 'uppercase',
             }}
           >
@@ -86,12 +86,12 @@ export default function AnalyticsView() {
               sx={{
                 lineHeight: '2.25rem',
                 fontWeight: '500',
-                fontSize: ['46px', '46px', 8],
+                fontSize: ['42px', '42px', 8],
               }}
             >
               Analytics
             </Text>
-            <Box sx={{ p: 2 }}>
+            <Box sx={{ p: [1, 1, 2] }}>
               <Text
                 sx={{
                   textTransform: 'uppercase',
@@ -99,7 +99,7 @@ export default function AnalyticsView() {
                   backgroundColor: 'blue',
                   borderRadius: 'xs',
                   padding: '2px 4px',
-                  fontSize: 2,
+                  fontSize: ['9px', '9px', 2],
                   fontWeight: 'bold',
                   lineHeight: 1,
                 }}
