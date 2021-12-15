@@ -442,9 +442,9 @@ export default function UserView() {
                   data:
                     data?.getUser?.extraCollections?.collectionAssetCounts
                       ?.slice(0, 6)
-                      ?.map(({ count }) =>
-                        Math.floor(
-                          (count / data.getUser.extraCollections.count) * 100
+                      ?.map(({ ownedAppraisedValue }) =>
+                        parseFloat(
+                          ethers.utils.formatEther(ownedAppraisedValue)
                         )
                       ) ?? [],
                 },

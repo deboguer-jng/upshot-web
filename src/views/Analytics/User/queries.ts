@@ -25,6 +25,7 @@ export type GetCollectorData = {
       count: number
       collectionAssetCounts: {
         count: number
+        ownedAppraisedValue: string
         collection: {
           id: number
           name: string
@@ -87,6 +88,7 @@ export const GET_COLLECTOR = gql`
         count
         collectionAssetCounts {
           count
+          ownedAppraisedValue
           collection {
             id
             name
