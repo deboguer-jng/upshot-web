@@ -1089,7 +1089,7 @@ export default function UserView() {
                   backgroundColor: 'blue',
                   borderRadius: 'xs',
                   padding: '2px 4px',
-                  fontSize: ['9px', '9px', 2],
+                  fontSize: 2,
                   fontWeight: 'bold',
                   lineHeight: 1,
                 }}
