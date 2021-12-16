@@ -220,6 +220,9 @@ export default function UserView() {
   /* Waiting for collector data or query string address param to format. */
   const isLoading = loadingCollector || loadingAddressFormatted
 
+  const noCollection =
+    data?.getUser === null || data?.getUser?.extraCollections?.count === 0
+
   const {
     loading: loadingAssets,
     data: dataAssets,
@@ -438,20 +441,23 @@ export default function UserView() {
               series: [
                 {
                   name: 'Portfolio Distribution',
-                  data:
-                    data?.getUser?.extraCollections?.collectionAssetCounts
-                      ?.slice(0, 6)
-                      ?.map(({ ownedAppraisedValue }) =>
-                        parseFloat(
-                          ethers.utils.formatEther(ownedAppraisedValue)
-                        )
-                      ) ?? [],
+                  data: data?.getUser?.extraCollections?.collectionAssetCounts
+                    ?.slice(0, 6)
+                    ?.map(({ ownedAppraisedValue }) =>
+                      parseFloat(ethers.utils.formatEther(ownedAppraisedValue))
+                    ) ?? [0, 0, 0, 0, 0, 0],
                 },
               ],
-              labels:
-                data?.getUser?.extraCollections?.collectionAssetCounts
-                  ?.slice(0, 6)
-                  ?.map(({ collection }) => collection.name) ?? [],
+              labels: data?.getUser?.extraCollections?.collectionAssetCounts
+                ?.slice(0, 6)
+                ?.map(({ collection }) => collection.name) ?? [
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+              ],
             }}
           />
         </Box>
@@ -975,13 +981,16 @@ export default function UserView() {
                 </Box>
               </Panel>
             </Flex>
-            {isLoading ? (
-              <Skeleton sx={{ borderRadius: 'lg' }} />
-            ) : (data?.getUser?.extraCollections?.count ?? 0) < 3 ? (
-              distributionTable
-            ) : (
-              distributionRadar
-            )}
+            <>
+              {isLoading ? (
+                <Skeleton sx={{ borderRadius: 'lg' }} />
+              ) : noCollection ||
+                Number(data?.getUser?.extraCollections?.count) > 2 ? (
+                distributionRadar
+              ) : (
+                distributionTable
+              )}
+            </>
           </Grid>
           {!!data?.getUser?.extraCollections?.count && (
             <Text variant="h1Primary">Collection</Text>
@@ -1050,6 +1059,63 @@ export default function UserView() {
           </Box>
         )}
       </Modal>
+      {noCollection && (
+        <Flex
+          sx={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100vw',
+            height: '100vh',
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            backdropFilter: 'blur(4px)',
+          }}
+        >
+          <Flex
+            sx={{
+              maxWidth: 400,
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <Box>
+              <Text
+                sx={{
+                  textTransform: 'uppercase',
+                  color: 'black',
+                  backgroundColor: 'blue',
+                  borderRadius: 'xs',
+                  padding: '2px 4px',
+                  fontSize: ['9px', '9px', 2],
+                  fontWeight: 'bold',
+                  lineHeight: 1,
+                }}
+              >
+                Upshot Beta
+              </Text>
+            </Box>
+            <Text
+              color="white"
+              sx={{
+                textAlign: 'center',
+                fontWeight: 'heading',
+                fontSize: 4,
+                lineHeight: '1.5rem',
+              }}
+            >
+              <p>
+                This wallet currently does not hold any NFT collections Upshot
+                supports.
+              </p>
+              <p>We&apos;re working on expanding out collection list.</p>
+              <p>Please check back soon!</p>
+            </Text>
+          </Flex>
+        </Flex>
+      )}
     </>
   )
 }
