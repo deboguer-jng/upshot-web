@@ -3,7 +3,6 @@ import {
   Button,
   Container,
   Flex,
-  Footer,
   Grid,
   Icon,
   IconButton,
@@ -12,6 +11,7 @@ import {
   Text,
   theme,
 } from '@upshot-tech/upshot-ui'
+import { Footer } from 'components/Footer'
 import Head from 'next/head'
 import { useState } from 'react'
 import { Image, Link } from 'theme-ui'
@@ -73,7 +73,9 @@ export default function LandingView() {
       hover: BlogHoverSVG,
     },
   }
-  const [analyticsImage, setAnalyticsImage] = useState(images.analytics.original.src)
+  const [analyticsImage, setAnalyticsImage] = useState(
+    images.analytics.original.src
+  )
   const [apiImage, setApiImage] = useState(images.api.original.src)
   const [blogImage, setBlogImage] = useState(images.blog.original.src)
 
@@ -107,15 +109,28 @@ export default function LandingView() {
         <Box sx={{ display: 'flex' }}>
           {' '}
           {/* Display only on Desktop */}
-          <Grid columns={[1, null, '3fr 2fr']} sx={{ marginTop: '5%', marginBottom: '2%' }}>
+          <Grid
+            columns={[1, null, '3fr 2fr']}
+            sx={{ marginTop: '5%', marginBottom: '2%' }}
+          >
             <Box>
               <Box>
-                <Text variant="h0Primary" sx={{ fontSize: ['3rem', null, '5rem', '8rem'], textTransform: 'uppercase', fontFamily: 'degular-display' }}>
+                <Text
+                  variant="h0Primary"
+                  sx={{
+                    fontSize: ['3rem', null, '5rem', '8rem'],
+                    textTransform: 'uppercase',
+                    fontFamily: 'degular-display',
+                  }}
+                >
                   Upshot
                 </Text>
               </Box>
               <Box sx={{ marginTop: ['0', null, '0', '1rem'] }}>
-                <Text variant="h1Primary" sx={{ fontSize: ['1.6rem', null, '1.8rem', '2.8rem'] }}>
+                <Text
+                  variant="h1Primary"
+                  sx={{ fontSize: ['1.6rem', null, '1.8rem', '2.8rem'] }}
+                >
                   Where NFTs meet DeFi
                 </Text>
               </Box>
@@ -125,10 +140,11 @@ export default function LandingView() {
                   sx={{
                     fontWeight: 'normal',
                     lineHeight: ['1.25rem', null, '1.375em', '1.75rem'],
-                    fontSize: ['1.1rem', null, '1.3rem', '1.438rem']
+                    fontSize: ['1.1rem', null, '1.3rem', '1.438rem'],
                   }}
                 >
-                  Upshot provides deep insight into NFT markets and unlocks a wave of exotic new DeFi possibilities.
+                  Upshot provides deep insight into NFT markets and unlocks a
+                  wave of exotic new DeFi possibilities.
                 </Text>
               </Box>
               <Flex sx={{ gridGap: '14px', marginTop: '20px' }}>
@@ -154,25 +170,29 @@ export default function LandingView() {
                       textDecoration: 'none',
                       '&:hover': {
                         textDecoration: 'none',
-                      }
-                    }}>
-                      <Button capitalize={true} style={{
-                          borderRadius: '8px',
-                          height: '32px',
-                          padding: '8px 12px',
-                      }}>
-                        Join our team
-                      </Button>
+                      },
+                    }}
+                  >
+                    <Button
+                      capitalize={true}
+                      style={{
+                        borderRadius: '8px',
+                        height: '32px',
+                        padding: '8px 12px',
+                      }}
+                    >
+                      Join our team
+                    </Button>
                   </Link>
                 </Box>
               </Flex>
             </Box>
-            
+
             <Box sx={{ marginTop: ['-20px', null, '-40px', '-80px'] }}>
               <Image
                 src={UpshotArtworkSVG.src}
                 sx={{
-                  width: "100%",
+                  width: '100%',
                 }}
                 alt="Upshot"
               />
@@ -217,7 +237,9 @@ export default function LandingView() {
                 },
               }}
               onMouseEnter={() => setAnalyticsImage(images.analytics.hover.src)}
-              onMouseLeave={() => setAnalyticsImage(images.analytics.original.src)}
+              onMouseLeave={() =>
+                setAnalyticsImage(images.analytics.original.src)
+              }
             >
               <Image
                 src={analyticsImage}
@@ -235,7 +257,7 @@ export default function LandingView() {
                 <Text variant="h1Secondary">Analytics</Text>
                 <Text
                   variant="large"
-                  sx={{ display: 'block', width: ['100%', null, null, '50%'], }}
+                  sx={{ display: 'block', width: ['100%', null, null, '50%'] }}
                 >
                   Explore the world of NFTs using powerful data.
                 </Text>
@@ -295,10 +317,7 @@ export default function LandingView() {
                   ></Image>
                   <div style={{ position: 'relative' }}>
                     <Text variant="h1Secondary">Upshot API</Text>
-                    <Text
-                      variant="large"
-                      sx={{ display: 'block' }}
-                    >
+                    <Text variant="large" sx={{ display: 'block' }}>
                       Integrate Upshot data into your project.
                     </Text>
                   </div>
@@ -356,10 +375,7 @@ export default function LandingView() {
                   ></Image>
                   <div style={{ position: 'relative' }}>
                     <Text variant="h1Secondary">Blog</Text>
-                    <Text
-                      variant="large"
-                      sx={{ display: 'block' }}
-                    >
+                    <Text variant="large" sx={{ display: 'block' }}>
                       Learn more about NFTxDeFI
                     </Text>
                   </div>

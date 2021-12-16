@@ -1,6 +1,6 @@
 import { Box, Container } from '@upshot-tech/upshot-ui'
-import { Flex, Footer, Text } from '@upshot-tech/upshot-ui'
-import { BetaBanner } from 'components/BetaBanner'
+import { Flex, Text } from '@upshot-tech/upshot-ui'
+import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import Head from 'next/head'
 import { useState } from 'react'
@@ -51,8 +51,7 @@ export default function AnalyticsView() {
           content="https://upshot.io/img/opengraph/opengraph_analytics.jpg"
         />
       </Head>
-
-      <BetaBanner />
+      <Nav />
       <Container
         p={4}
         sx={{
@@ -62,10 +61,9 @@ export default function AnalyticsView() {
           gap: 4,
         }}
       >
-        <Nav />
-        <Box
+        <Flex
           sx={{
-            display: 'inline-block',
+            flexDirection: ['column', 'row', 'row'],
             paddingBottom: ['0px', '0px', '10px'],
             marginTop: ['-20px', '-20px', '-10px'],
           }}
@@ -74,26 +72,43 @@ export default function AnalyticsView() {
             variant="h0Secondary"
             sx={{
               lineHeight: '2.25rem',
-              display: 'inline-block',
               color: 'blue',
               fontWeight: '700',
-              fontSize: ['46px', '46px', 8],
+              fontSize: ['42px', '42px', 8],
+              textTransform: 'uppercase',
             }}
           >
-            UPSHOT
+            Upshot
           </Text>
-          <Text
-            variant="h0Secondary"
-            sx={{
-              lineHeight: '2.25rem',
-              display: 'inline-block',
-              fontWeight: '500',
-              fontSize: ['46px', '46px', 8],
-            }}
-          >
-            Analytics
-          </Text>
-        </Box>
+          <Flex>
+            <Text
+              variant="h0Secondary"
+              sx={{
+                lineHeight: '2.25rem',
+                fontWeight: '500',
+                fontSize: ['42px', '42px', 8],
+              }}
+            >
+              Analytics
+            </Text>
+            <Box sx={{ p: [1, 1, 2] }}>
+              <Text
+                sx={{
+                  textTransform: 'uppercase',
+                  color: 'black',
+                  backgroundColor: 'blue',
+                  borderRadius: 'xs',
+                  padding: '2px 4px',
+                  fontSize: ['9px', '9px', 2],
+                  fontWeight: 'bold',
+                  lineHeight: 1,
+                }}
+              >
+                Beta
+              </Text>
+            </Box>
+          </Flex>
+        </Flex>
         <Flex sx={{ flex: '1 1 auto', flexDirection: 'column', gap: 5 }}>
           <ButtonTabs onChange={handleChange} />
           <TopCollectionsChart

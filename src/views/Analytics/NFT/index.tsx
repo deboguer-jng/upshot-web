@@ -2,7 +2,7 @@
 import { useQuery } from '@apollo/client'
 import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Container } from '@upshot-tech/upshot-ui'
-import { Flex, Footer, Grid, Image, Text } from '@upshot-tech/upshot-ui'
+import { Flex, Grid, Image, Text } from '@upshot-tech/upshot-ui'
 import {
   Box,
   Chart,
@@ -20,7 +20,7 @@ import {
   TableHead,
   TableRow,
 } from '@upshot-tech/upshot-ui'
-import { BetaBanner } from 'components/BetaBanner'
+import { Footer } from 'components/Footer'
 import { FormattedENS } from 'components/FormattedENS'
 import { Nav } from 'components/Nav'
 import { PIXELATED_CONTRACTS } from 'constants/'
@@ -81,7 +81,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <BetaBanner />
+      <Nav />
       <Container
         p={4}
         sx={{
@@ -92,7 +92,6 @@ function Layout({ children }: { children: React.ReactNode }) {
           gap: 4,
         }}
       >
-        <Nav />
         <Breadcrumbs crumbs={breadcrumbs} />
         {children}
         <Footer />
