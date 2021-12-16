@@ -109,11 +109,11 @@ export default function Collectors({
               firstAcquisition={firstAssetPurchaseTime}
               collectionName={name}
               extraCollections={collectionAssetCounts.map(
-                ({ count, collection: { imageUrl, name, id } }) => ({
+                ({ collection: { imageUrl, id } }) => ({
                   id,
-                  imageUrl: previewImageUrl,
+                  imageUrl,
                   url: `/analytics/nft/${id}`,
-                  pixelated: PIXELATED_CONTRACTS.includes(id.split('/')[0]),
+                  pixelated: PIXELATED_CONTRACTS.includes(id.toString().split('/')[0]),
                 }))}
                 key={idx}
                 defaultOpen={idx === 0 ? true : false}
