@@ -993,6 +993,7 @@ export default function UserView() {
             items={data?.getUser?.extraCollections?.collectionAssetCounts ?? []}
             render={RenderMasonry}
             onRender={maybeLoadMore}
+            key={data?.getUser?.extraCollections?.count}
           />
         </Flex>
       </Layout>
