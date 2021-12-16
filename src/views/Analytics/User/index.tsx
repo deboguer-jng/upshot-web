@@ -505,7 +505,7 @@ export default function UserView() {
                           color="blue"
                           sx={{
                             fontWeight: 'bold',
-                            fontSize: 5,
+                            fontSize: 4,
                             lineHeight: 1,
                           }}
                         >
@@ -534,8 +534,8 @@ export default function UserView() {
                         <Text
                           color="blue"
                           sx={{
-                            fontWeight: 'bold',
-                            fontSize: 4,
+                            fontSize: 2,
+                            fontWeight: 'heading',
                             lineHeight: 1,
                           }}
                         >
