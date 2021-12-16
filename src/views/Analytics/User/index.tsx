@@ -1059,11 +1059,10 @@ export default function UserView() {
                       }}
                     >
                       <p>
-                        This wallet currently does not hold any NFT collections
-                        Upshot supports.
+                        This wallet does not hold any NFTs that have been appraised by Upshot.
                       </p>
                       <p>
-                        We&apos;re working on expanding out collection list.
+                        We&apos;re working hard to expand our list of supported NFT collections, and we&apos;re adding more all the time.
                       </p>
                       <p>Please check back soon!</p>
                     </Text>
