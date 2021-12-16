@@ -1,7 +1,7 @@
 /** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
 import { Container } from '@upshot-tech/upshot-ui'
-import { Avatar, Flex, Footer, Grid, Panel, Text } from '@upshot-tech/upshot-ui'
+import { Avatar, Flex, Grid, Panel, Text } from '@upshot-tech/upshot-ui'
 import {
   Box,
   CollectionCard,
@@ -22,7 +22,7 @@ import {
   useTheme,
 } from '@upshot-tech/upshot-ui'
 import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
-import { BetaBanner } from 'components/BetaBanner'
+import { Footer } from 'components/Footer'
 import { FormattedENS } from 'components/FormattedENS'
 import { Nav } from 'components/Nav'
 import { PIXELATED_CONTRACTS } from 'constants/'
@@ -103,7 +103,7 @@ function Layout({ children }: { children: React.ReactNode }) {
       <Head>
         <title>Upshot Analytics</title>
       </Head>
-      <BetaBanner />
+      <Nav />
       <Container
         p={4}
         sx={{
@@ -114,7 +114,6 @@ function Layout({ children }: { children: React.ReactNode }) {
           gap: 4,
         }}
       >
-        <Nav />
         <Breadcrumbs crumbs={breadcrumbs} />
         {children}
         <Footer />
@@ -442,9 +441,9 @@ export default function UserView() {
                   data:
                     data?.getUser?.extraCollections?.collectionAssetCounts
                       ?.slice(0, 6)
-                      ?.map(({ count }) =>
-                        Math.floor(
-                          (count / data.getUser.extraCollections.count) * 100
+                      ?.map(({ ownedAppraisedValue }) =>
+                        parseFloat(
+                          ethers.utils.formatEther(ownedAppraisedValue)
                         )
                       ) ?? [],
                 },
@@ -498,7 +497,7 @@ export default function UserView() {
                           }}
                         >
                           {data?.getUser?.totalAssetAppraisedValueUsd
-                            ? '$'
+                            ? 'Ξ'
                             : ''}
                         </Text>
                         <Text
@@ -506,6 +505,36 @@ export default function UserView() {
                           sx={{
                             fontWeight: 'bold',
                             fontSize: 4,
+                            lineHeight: 1,
+                          }}
+                        >
+                          {data?.getUser?.totalAssetAppraisedValueWei
+                            ? parseFloat(
+                                ethers.utils.formatEther(
+                                  data.getUser.totalAssetAppraisedValueWei
+                                )
+                              ).toFixed(2)
+                            : '-'}
+                        </Text>
+                      </Flex>
+                      <Flex sx={{ justifyContent: 'center' }}>
+                        <Text
+                          color="blue"
+                          sx={{
+                            fontSize: 1,
+                            lineHeight: 1,
+                            marginRight: '2px',
+                          }}
+                        >
+                          {data?.getUser?.totalAssetAppraisedValueUsd
+                            ? '~ $'
+                            : ''}
+                        </Text>
+                        <Text
+                          color="blue"
+                          sx={{
+                            fontSize: 2,
+                            fontWeight: 'heading',
                             lineHeight: 1,
                           }}
                         >

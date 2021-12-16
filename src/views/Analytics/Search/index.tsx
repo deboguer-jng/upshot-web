@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client'
 import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
-import { Button, Container, Footer } from '@upshot-tech/upshot-ui'
+import { Button, Container } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Grid, MiniNftCard, Text } from '@upshot-tech/upshot-ui'
 import {
   Accordion,
@@ -8,7 +8,7 @@ import {
   InputRounded,
   Pagination,
 } from '@upshot-tech/upshot-ui'
-import { BetaBanner } from 'components/BetaBanner'
+import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { PAGE_SIZE } from 'constants/'
@@ -417,7 +417,7 @@ export default function SearchView() {
         />
       </Head>
       <Flex sx={{ minHeight: '100vh', flexDirection: 'column' }}>
-        <BetaBanner />
+        <Nav />
         <Container
           p={4}
           sx={{
@@ -427,7 +427,6 @@ export default function SearchView() {
             width: '100%',
           }}
         >
-          <Nav />
           <Breadcrumbs crumbs={breadcrumbs} />
         </Container>
         {!isMobile ? (
