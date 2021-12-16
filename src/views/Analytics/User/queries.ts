@@ -18,6 +18,7 @@ export type GetCollectorVars = {
 export type GetCollectorData = {
   getUser: {
     totalAssetAppraisedValueUsd: string
+    totalAssetAppraisedValueWei: string
     firstAssetPurchaseTime: number
     bio: string
     numAssets: number
@@ -81,6 +82,7 @@ export const GET_COLLECTOR = gql`
   ) {
     getUser(userId: $userId, address: $address) {
       totalAssetAppraisedValueUsd
+      totalAssetAppraisedValueWei
       firstAssetPurchaseTime
       bio
       numAssets

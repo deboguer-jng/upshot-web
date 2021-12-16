@@ -498,7 +498,37 @@ export default function UserView() {
                           }}
                         >
                           {data?.getUser?.totalAssetAppraisedValueUsd
-                            ? '$'
+                            ? 'Ξ'
+                            : ''}
+                        </Text>
+                        <Text
+                          color="blue"
+                          sx={{
+                            fontWeight: 'bold',
+                            fontSize: 5,
+                            lineHeight: 1,
+                          }}
+                        >
+                          {data?.getUser?.totalAssetAppraisedValueWei
+                            ? parseFloat(
+                                ethers.utils.formatEther(
+                                  data.getUser.totalAssetAppraisedValueWei
+                                )
+                              ).toFixed(2)
+                            : '-'}
+                        </Text>
+                      </Flex>
+                      <Flex sx={{ justifyContent: 'center' }}>
+                        <Text
+                          color="blue"
+                          sx={{
+                            fontSize: 1,
+                            lineHeight: 1,
+                            marginRight: '2px',
+                          }}
+                        >
+                          {data?.getUser?.totalAssetAppraisedValueUsd
+                            ? '~ $'
                             : ''}
                         </Text>
                         <Text
