@@ -1008,9 +1008,9 @@ export default function UserView() {
                     left: 0,
                     width: 'calc(100% + 16px)',
                     height: 'calc(100% + 16px)',
+                    margin: '-8px', // Negative margin to prevent blur artifacts.
                     backgroundColor: 'rgba(0,0,0,0.5)',
                     backdropFilter: 'blur(4px)',
-                    margin: '-8px',
                   }}
                 />
                 <Flex
