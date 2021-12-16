@@ -267,7 +267,7 @@ export default function LandingView() {
           <Box>
             <Grid gap={5} columns={[1, 1, 2, 2]}>
               <Link
-                href="https://upshot.gitbook.io/upshot-api/"
+                href="https://docs.upshot.xyz/"
                 rel="noopener noreferrer"
                 sx={{
                   color: 'text',

@@ -441,9 +441,9 @@ export default function UserView() {
                   data:
                     data?.getUser?.extraCollections?.collectionAssetCounts
                       ?.slice(0, 6)
-                      ?.map(({ count }) =>
-                        Math.floor(
-                          (count / data.getUser.extraCollections.count) * 100
+                      ?.map(({ ownedAppraisedValue }) =>
+                        parseFloat(
+                          ethers.utils.formatEther(ownedAppraisedValue)
                         )
                       ) ?? [],
                 },
@@ -497,7 +497,7 @@ export default function UserView() {
                           }}
                         >
                           {data?.getUser?.totalAssetAppraisedValueUsd
-                            ? '$'
+                            ? 'Ξ'
                             : ''}
                         </Text>
                         <Text
@@ -505,6 +505,36 @@ export default function UserView() {
                           sx={{
                             fontWeight: 'bold',
                             fontSize: 4,
+                            lineHeight: 1,
+                          }}
+                        >
+                          {data?.getUser?.totalAssetAppraisedValueWei
+                            ? parseFloat(
+                                ethers.utils.formatEther(
+                                  data.getUser.totalAssetAppraisedValueWei
+                                )
+                              ).toFixed(2)
+                            : '-'}
+                        </Text>
+                      </Flex>
+                      <Flex sx={{ justifyContent: 'center' }}>
+                        <Text
+                          color="blue"
+                          sx={{
+                            fontSize: 1,
+                            lineHeight: 1,
+                            marginRight: '2px',
+                          }}
+                        >
+                          {data?.getUser?.totalAssetAppraisedValueUsd
+                            ? '~ $'
+                            : ''}
+                        </Text>
+                        <Text
+                          color="blue"
+                          sx={{
+                            fontSize: 2,
+                            fontWeight: 'heading',
                             lineHeight: 1,
                           }}
                         >
