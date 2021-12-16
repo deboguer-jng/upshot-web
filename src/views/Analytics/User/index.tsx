@@ -114,12 +114,9 @@ function Layout({ children }: { children: React.ReactNode }) {
           gap: 4,
         }}
       >
-        <Breadcrumbs
-          crumbs={breadcrumbs}
-          sx={{ position: 'relative', zIndex: 3 }}
-        />
+        <Breadcrumbs crumbs={breadcrumbs} />
         {children}
-        <Footer sx={{ position: 'relative', zIndex: 3 }} />
+        <Footer />
       </Container>
     </>
   )
@@ -152,9 +149,7 @@ function Header({ address }: { address: string }) {
   }, [address, displayName])
 
   return (
-    <Flex
-      sx={{ alignItems: 'center', gap: 4, position: 'relative', zIndex: 2 }}
-    >
+    <Flex sx={{ alignItems: 'center', gap: 4 }}>
       <Avatar size="lg" src={makeBlockie(address)} />
       <Flex sx={{ flexDirection: 'column', gap: 1 }}>
         <Text variant="h1Primary" sx={{ lineHeight: 1 }}>
@@ -1005,60 +1000,76 @@ export default function UserView() {
             </Grid>
 
             {noCollection && (
-              <Flex
-                sx={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  width: '100%',
-                  height: '100%',
-                  zIndex: 3,
-                }}
-              >
+              <>
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: 'calc(100% + 16px)',
+                    height: 'calc(100% + 16px)',
+                    backgroundColor: 'rgba(0,0,0,0.5)',
+                    backdropFilter: 'blur(4px)',
+                    margin: '-8px',
+                  }}
+                />
                 <Flex
                   sx={{
-                    maxWidth: 400,
-                    flexDirection: 'column',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    display: 'flex',
+                    justifyContent: 'center',
                     alignItems: 'center',
+                    width: '100%',
+                    height: '100%',
+                    zIndex: 2,
                   }}
                 >
-                  <Box>
-                    <Text
-                      sx={{
-                        textTransform: 'uppercase',
-                        color: 'black',
-                        backgroundColor: 'blue',
-                        borderRadius: 'xs',
-                        padding: '2px 4px',
-                        fontSize: 2,
-                        fontWeight: 'bold',
-                        lineHeight: 1,
-                      }}
-                    >
-                      Upshot Beta
-                    </Text>
-                  </Box>
-                  <Text
-                    color="white"
+                  <Flex
                     sx={{
-                      textAlign: 'center',
-                      fontWeight: 'heading',
-                      fontSize: 4,
-                      lineHeight: '1.5rem',
+                      maxWidth: 400,
+                      flexDirection: 'column',
+                      alignItems: 'center',
                     }}
                   >
-                    <p>
-                      This wallet currently does not hold any NFT collections
-                      Upshot supports.
-                    </p>
-                    <p>We&apos;re working on expanding out collection list.</p>
-                    <p>Please check back soon!</p>
-                  </Text>
+                    <Box>
+                      <Text
+                        sx={{
+                          textTransform: 'uppercase',
+                          color: 'black',
+                          backgroundColor: 'blue',
+                          borderRadius: 'xs',
+                          padding: '2px 4px',
+                          fontSize: 2,
+                          fontWeight: 'bold',
+                          lineHeight: 1,
+                        }}
+                      >
+                        Upshot Beta
+                      </Text>
+                    </Box>
+                    <Text
+                      color="white"
+                      sx={{
+                        textAlign: 'center',
+                        fontWeight: 'heading',
+                        fontSize: 4,
+                        lineHeight: '1.5rem',
+                      }}
+                    >
+                      <p>
+                        This wallet currently does not hold any NFT collections
+                        Upshot supports.
+                      </p>
+                      <p>
+                        We&apos;re working on expanding out collection list.
+                      </p>
+                      <p>Please check back soon!</p>
+                    </Text>
+                  </Flex>
                 </Flex>
-              </Flex>
+              </>
             )}
           </Box>
 
@@ -1129,7 +1140,7 @@ export default function UserView() {
           </Box>
         )}
       </Modal>
-      {noCollection && (
+      {/* {noCollection && (
         <Box
           sx={{
             position: 'fixed',
@@ -1141,7 +1152,7 @@ export default function UserView() {
             backdropFilter: 'blur(4px)',
           }}
         />
-      )}
+      )} */}
     </>
   )
 }
