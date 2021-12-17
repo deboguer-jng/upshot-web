@@ -257,7 +257,7 @@ export default function TopSellingCollectionNFTs({
                     <MiniNftCard
                       tooltip={`volume / ${period}`}
                       price={
-                        latestStats.pastDayWeiVolume
+                        latestStats?.pastDayWeiVolume
                           ? weiToEth(latestStats.pastDayWeiVolume)
                           : undefined
                       }
@@ -265,7 +265,7 @@ export default function TopSellingCollectionNFTs({
                       type="collection"
                       image={imageUrl}
                       floorPrice={
-                        latestStats.floor
+                        latestStats?.floor
                           ? weiToEth(latestStats.floor)
                           : undefined
                       }

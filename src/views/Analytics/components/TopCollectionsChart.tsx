@@ -110,12 +110,11 @@ export default function TopCollectionsCharts({
     .map(({ data, name, id, latestStats, ...rest }) => {
       const ath = rest[athKeys[metric]]?.value
       const atl = rest[atlKeys[metric]]?.value
-      const priceChange =
-        latestStats.sevenDayChange === null
-          ? null
-          : latestStats.sevenDayChange >= 0
-          ? '+' + latestStats.sevenDayChange + '%'
-          : latestStats.sevenDayChange + '%'
+      const priceChange = !latestStats?.sevenDayChange
+        ? null
+        : latestStats.sevenDayChange >= 0
+        ? '+' + latestStats.sevenDayChange + '%'
+        : latestStats.sevenDayChange + '%'
 
       return {
         name,
@@ -125,8 +124,9 @@ export default function TopCollectionsCharts({
         /* priceUsd: 10, */
         priceChange,
         volume:
-          metric === 'VOLUME' &&
-          parseFloat(weiToEth(latestStats.volume, 2, false)),
+          metric === 'VOLUME' && latestStats?.volume
+            ? parseFloat(weiToEth(latestStats.volume, 2, false))
+            : 0,
         data: data.map((val, i) =>
           i === 0
             ? [minDate * 1000, val[1]] // Align window start

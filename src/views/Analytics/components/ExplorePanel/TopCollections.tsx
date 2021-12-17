@@ -127,13 +127,13 @@ export default function ExploreNFTs({
                     >
                       <Flex>
                         Avg:{' '}
-                        {latestStats.pastDayWeiAverage
+                        {latestStats?.pastDayWeiAverage
                           ? weiToEth(latestStats.pastDayWeiAverage)
                           : '-'}
                       </Flex>
                       <Flex>
                         Vol:{' '}
-                        {latestStats.totalWeiVolume
+                        {latestStats?.totalWeiVolume
                           ? weiToEth(latestStats.totalWeiVolume, 0)
                           : '-'}
                       </Flex>
@@ -142,17 +142,19 @@ export default function ExploreNFTs({
                 ) : (
                   <>
                     <TableCell sx={{ maxWidth: 100 }}>
-                      {latestStats.totalWeiVolume
+                      {latestStats?.totalWeiVolume
                         ? weiToEth(latestStats.totalWeiVolume, 0)
                         : '-'}
                     </TableCell>
                     <TableCell sx={{ maxWidth: 100 }}>
-                      {latestStats.pastDayWeiAverage
+                      {latestStats?.pastDayWeiAverage
                         ? weiToEth(latestStats.pastDayWeiAverage, 2)
                         : '-'}
                     </TableCell>
                     <TableCell sx={{ maxWidth: 100 }}>
-                      {latestStats.floor ? weiToEth(latestStats.floor, 2) : '-'}
+                      {latestStats?.floor
+                        ? weiToEth(latestStats.floor, 2)
+                        : '-'}
                     </TableCell>
                     <TableCell
                       sx={{

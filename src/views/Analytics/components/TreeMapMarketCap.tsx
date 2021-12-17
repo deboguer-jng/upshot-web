@@ -35,9 +35,9 @@ export default function TreeMapMarketCap() {
     .map(({ id, name, latestStats }) => ({
       id,
       name,
-      delta: latestStats.sevenDayChange,
+      delta: latestStats?.sevenDayChange ?? 0,
       marketCap: parseFloat(
-        ethers.utils.formatEther(latestStats.totalWeiVolume ?? 0)
+        ethers.utils.formatEther(latestStats?.totalWeiVolume ?? 0)
       ),
     }))
 
