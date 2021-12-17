@@ -31,12 +31,14 @@ export default function TreeMapMarketCap() {
   if (!data?.collections?.assetSets?.length) return <TreeMap noData data={[]} />
 
   const chartData = data?.collections?.assetSets
-    ?.filter(({ sevenDayMCChange }) => sevenDayMCChange)
-    .map(({ id, name, sevenDayMCChange: delta, totalVolume }) => ({
+    ?.filter(({ latestStats }) => latestStats?.sevenDayChange)
+    .map(({ id, name, latestStats }) => ({
       id,
       name,
-      delta,
-      marketCap: parseFloat(ethers.utils.formatEther(totalVolume)),
+      delta: latestStats.sevenDayChange,
+      marketCap: parseFloat(
+        ethers.utils.formatEther(latestStats.totalWeiVolume ?? 0)
+      ),
     }))
 
   return (

@@ -20,7 +20,7 @@ import { format } from 'date-fns'
 import router from 'next/router'
 import React, { useMemo, useRef, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
-import { weiToEth, getPriceChangeLabel } from 'utils/number'
+import { getPriceChangeLabel, weiToEth } from 'utils/number'
 
 import {
   GET_EXPLORE_COLLECTIONS,
@@ -29,7 +29,12 @@ import {
 } from '../../queries'
 import { ExplorePanelSkeleton } from './NFTs'
 
-const columns = ['Total Volume', 'Average Price', 'Floor Price', 'Floor Change (7 Days)']
+const columns = [
+  'Total Volume',
+  'Average Price',
+  'Floor Price',
+  'Floor Change (7 Days)',
+]
 
 function CollectionTableHead() {
   const breakpointIndex = useBreakpointIndex()
@@ -104,7 +109,7 @@ export default function ExploreNFTs({
         <CollectionTableHead />
         <TableBody>
           {data.orderedCollectionsByMetricSearch.assetSets.map(
-            ({ id, name, imageUrl, average, floor, totalVolume, sevenDayFloorChange }, idx) => (
+            ({ id, name, imageUrl, sevenDayFloorChange, latestStats }, idx) => (
               <CollectionRow
                 variant="black"
                 title={name}
@@ -120,22 +125,41 @@ export default function ExploreNFTs({
                         alignItems: 'flex-end',
                       }}
                     >
-                      <Flex>Avg: {weiToEth(average)}</Flex>
-                      <Flex>Vol: {weiToEth(totalVolume, 0)}</Flex>
+                      <Flex>
+                        Avg:{' '}
+                        {latestStats.pastDayWeiAverage
+                          ? weiToEth(latestStats.pastDayWeiAverage)
+                          : '-'}
+                      </Flex>
+                      <Flex>
+                        Vol:{' '}
+                        {latestStats.totalWeiVolume
+                          ? weiToEth(latestStats.totalWeiVolume, 0)
+                          : '-'}
+                      </Flex>
                     </Flex>
                   </TableCell>
                 ) : (
                   <>
                     <TableCell sx={{ maxWidth: 100 }}>
-                      {weiToEth(totalVolume, 0)}
+                      {latestStats.totalWeiVolume
+                        ? weiToEth(latestStats.totalWeiVolume, 0)
+                        : '-'}
                     </TableCell>
                     <TableCell sx={{ maxWidth: 100 }}>
-                      {weiToEth(average, 2)}
+                      {latestStats.pastDayWeiAverage
+                        ? weiToEth(latestStats.pastDayWeiAverage, 2)
+                        : '-'}
                     </TableCell>
                     <TableCell sx={{ maxWidth: 100 }}>
-                      {weiToEth(floor, 2)}
+                      {latestStats.floor ? weiToEth(latestStats.floor, 2) : '-'}
                     </TableCell>
-                    <TableCell sx={{ maxWidth: 100, color: getPriceChangeColor(sevenDayFloorChange) }}>
+                    <TableCell
+                      sx={{
+                        maxWidth: 100,
+                        color: getPriceChangeColor(sevenDayFloorChange),
+                      }}
+                    >
                       {getPriceChangeLabel(sevenDayFloorChange)}
                     </TableCell>
                   </>

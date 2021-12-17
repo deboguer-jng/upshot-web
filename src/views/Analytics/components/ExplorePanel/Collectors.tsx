@@ -1,18 +1,18 @@
 import { useQuery } from '@apollo/client'
-import { useState } from 'react'
 import {
   Box,
   CollectorAccordion,
   CollectorAccordionHead,
   CollectorAccordionRow,
+  Flex,
   Pagination,
   Skeleton,
-  Flex,
   TableCell,
   Text,
   useBreakpointIndex,
 } from '@upshot-tech/upshot-ui'
-import { PIXELATED_CONTRACTS, PAGE_SIZE } from 'constants/'
+import { PAGE_SIZE, PIXELATED_CONTRACTS } from 'constants/'
+import { useState } from 'react'
 
 import {
   GET_COLLECTORS,

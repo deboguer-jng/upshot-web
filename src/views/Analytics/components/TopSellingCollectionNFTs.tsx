@@ -251,16 +251,24 @@ export default function TopSellingCollectionNFTs({
         ) : (
           <>
             {collectionData?.orderedCollectionsByMetricSearch.assetSets.map(
-              ({ id, name, imageUrl, average, floor, volume }) => (
+              ({ id, name, imageUrl, latestStats }) => (
                 <Link key={id} href={`/analytics/collection/${id}`}>
                   <a style={{ textDecoration: 'none' }}>
                     <MiniNftCard
                       tooltip={`volume / ${period}`}
-                      price={volume ? weiToEth(volume) : undefined}
+                      price={
+                        latestStats.pastDayWeiVolume
+                          ? weiToEth(latestStats.pastDayWeiVolume)
+                          : undefined
+                      }
                       name={name}
                       type="collection"
                       image={imageUrl}
-                      floorPrice={floor ? weiToEth(floor) : undefined}
+                      floorPrice={
+                        latestStats.floor
+                          ? weiToEth(latestStats.floor)
+                          : undefined
+                      }
                       sales={'130'}
                       link={`/analytics/collection/${id}`}
                     />
