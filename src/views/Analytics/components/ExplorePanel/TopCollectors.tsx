@@ -73,13 +73,16 @@ export default function TopCollectors() {
             <CollectorAccordionRow
               address={addresses?.[0]}
               key={idx}
-              defaultOpen={ idx === 0 ? true : false }
+              defaultOpen={idx === 0 ? true : false}
               {...{ username }}
             >
               <div style={{ display: 'grid' }}>
-                <a href={`/analytics/user/${addresses[0]}`} style={{ textDecoration: 'none' }}>
+                <a
+                  href={`/analytics/user/${addresses[0]}`}
+                  style={{ textDecoration: 'none' }}
+                >
                   <Text
-                    variant='h3Primary'
+                    variant="h3Primary"
                     sx={{
                       color: 'primary',
                       paddingBottom: '12px',
