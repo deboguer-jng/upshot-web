@@ -1,12 +1,14 @@
 import { useQuery } from '@apollo/client'
-import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import { useBreakpointIndex, CollectorAccordion } from '@upshot-tech/upshot-ui'
 import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { InputRoundedSearch, Pagination } from '@upshot-tech/upshot-ui'
 import {
   Box,
   Flex,
   Panel,
+  Grid,
   Skeleton,
+  Text,
   SwitchDropdown,
 } from '@upshot-tech/upshot-ui'
 import {
@@ -28,7 +30,12 @@ import {
   GetExploreNFTsVars,
 } from '../../queries'
 
-const columns = ['Last Sale Date', 'Last Sale Price', 'Latest Appraised Value', 'Last Sale/Latest Appraisal']
+const columns = [
+  'Last Sale Date',
+  'Last Sale Price',
+  'Latest Appraised Value',
+  'Last Sale/Latest Appraisal',
+]
 
 function NFTTableHead() {
   const breakpointIndex = useBreakpointIndex()
@@ -77,6 +84,26 @@ export function ExplorePanelSkeleton() {
   )
 }
 
+const NFTItemsWrapper = ({ children }) => {
+  const breakpointIndex = useBreakpointIndex()
+  const isMobile = breakpointIndex <= 1
+  return (
+    <>
+      {isMobile ? (
+        <>
+          <NFTTableHead />
+          <CollectorAccordion> {children} </CollectorAccordion>
+        </>
+      ) : (
+        <CollectionTable>
+          <NFTTableHead />
+          <TableBody>{children}</TableBody>
+        </CollectionTable>
+      )}
+    </>
+  )
+}
+
 /**
  *Default render function
  */
@@ -119,90 +146,130 @@ export default function ExploreNFTs({
 
   return (
     <>
-      <CollectionTable>
-        <NFTTableHead />
-        <TableBody>
-          {data.assetGlobalSearch.assets.map(
-            (
-              {
-                id,
-                name,
-                previewImageUrl,
-                mediaUrl,
-                totalSaleCount,
-                lastSale,
-                lastAppraisalWeiPrice,
-                lastSaleAppraisalRelativeDiff
-              },
-              idx
-            ) => (
-              <CollectionRow
-                variant="black"
-                title={name}
-                imageSrc={previewImageUrl ?? mediaUrl}
-                key={idx}
-                onClick={() => handleShowNFT(id)}
-              >
-                {isMobile ? (
-                  <TableCell sx={{ maxWidth: 100 }}>
-                    <Flex
-                      sx={{
-                        flexDirection: 'column',
-                        alignItems: 'flex-end',
-                      }}
-                    >
-                      <Flex>
-                        {lastSale?.ethSalePrice
-                          ? weiToEth(lastSale.ethSalePrice)
-                          : '-'}
-                      </Flex>
-                      <Flex>
-                        {lastAppraisalWeiPrice
-                          ? weiToEth(lastAppraisalWeiPrice)
-                          : '-'}
-                      </Flex>
-                      <Flex
-                        sx={{
-                          maxWidth: 100,
-                          color: getPriceChangeColor(lastSaleAppraisalRelativeDiff),
-                        }}
-                      >
-                        {getPriceChangeLabel(lastSaleAppraisalRelativeDiff)}
-                      </Flex>
-                    </Flex>
-                  </TableCell>
-                ) : (
-                  <>
-                    <TableCell sx={{ maxWidth: 100 }}>
+      <NFTItemsWrapper>
+        {data.assetGlobalSearch.assets.map(
+          (
+            {
+              id,
+              name,
+              previewImageUrl,
+              mediaUrl,
+              totalSaleCount,
+              lastSale,
+              lastAppraisalWeiPrice,
+              lastSaleAppraisalRelativeDiff,
+            },
+            idx
+          ) => (
+            <CollectionRow
+              variant="black"
+              title={name}
+              imageSrc={previewImageUrl ?? mediaUrl}
+              key={idx}
+              onClick={() => handleShowNFT(id)}
+            >
+              {isMobile ? (
+                <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>
+                  <Flex
+                    sx={{
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
+                      Last Sale Date
+                    </Text>
+                    <Text>
                       {lastSale?.timestamp
                         ? format(lastSale.timestamp * 1000, 'M/d/yyyy')
                         : '-'}
-                    </TableCell>
-                    <TableCell sx={{ maxWidth: 100 }}>
+                    </Text>
+                  </Flex>
+                  <Flex
+                    sx={{
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
+                      Last Sale Price
+                    </Text>
+                    <Text>
                       {lastSale?.ethSalePrice
                         ? weiToEth(lastSale.ethSalePrice)
                         : '-'}
-                    </TableCell>
-                    <TableCell sx={{ maxWidth: 100 }}>
+                    </Text>
+                  </Flex>
+                  <Flex
+                    sx={{
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
+                      Latest Appraised Value
+                    </Text>
+                    <Text>
                       {lastAppraisalWeiPrice
                         ? weiToEth(lastAppraisalWeiPrice)
                         : '-'}
-                    </TableCell>
-                    <TableCell
+                    </Text>
+                  </Flex>
+                  <Flex
+                    sx={{
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
+                      Last Sale/Latest Appraisal
+                    </Text>
+                    <Text
                       sx={{
-                        maxWidth: 100,
-                        color: getPriceChangeColor(lastSaleAppraisalRelativeDiff),
+                        color: getPriceChangeColor(
+                          lastSaleAppraisalRelativeDiff
+                        ),
                       }}
                     >
                       {getPriceChangeLabel(lastSaleAppraisalRelativeDiff)}
-                    </TableCell>
-                  </>
-                )}
-              </CollectionRow>
-            )
-          )}
-        </TableBody>
-      </CollectionTable>
+                    </Text>
+                  </Flex>
+                </Grid>
+              ) : (
+                <>
+                  <TableCell sx={{ maxWidth: 100 }}>
+                    {lastSale?.timestamp
+                      ? format(lastSale.timestamp * 1000, 'M/d/yyyy')
+                      : '-'}
+                  </TableCell>
+                  <TableCell sx={{ maxWidth: 100 }}>
+                    {lastSale?.ethSalePrice
+                      ? weiToEth(lastSale.ethSalePrice)
+                      : '-'}
+                  </TableCell>
+                  <TableCell sx={{ maxWidth: 100 }}>
+                    {lastAppraisalWeiPrice
+                      ? weiToEth(lastAppraisalWeiPrice)
+                      : '-'}
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      maxWidth: 100,
+                      color: getPriceChangeColor(lastSaleAppraisalRelativeDiff),
+                    }}
+                  >
+                    {getPriceChangeLabel(lastSaleAppraisalRelativeDiff)}
+                  </TableCell>
+                </>
+              )}
+            </CollectionRow>
+          )
+        )}
+      </NFTItemsWrapper>
       <Flex sx={{ justifyContent: 'center', marginTop: '10px' }}>
         <Pagination
           forcePage={page}
