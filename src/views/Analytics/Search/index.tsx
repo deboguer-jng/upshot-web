@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client'
 import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
-import { Button, Container, Footer } from '@upshot-tech/upshot-ui'
+import { Button, Container } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Grid, MiniNftCard, Text } from '@upshot-tech/upshot-ui'
 import {
   Accordion,
@@ -8,6 +8,7 @@ import {
   InputRounded,
   Pagination,
 } from '@upshot-tech/upshot-ui'
+import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { PAGE_SIZE } from 'constants/'
@@ -333,7 +334,9 @@ export default function SearchView() {
                                     ? weiToEth(lastSale.ethSalePrice)
                                     : undefined
                                 }
-                                rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
+                                rarity={
+                                  rarity ? (rarity * 100).toFixed(2) + '%' : '-'
+                                }
                                 image={previewImageUrl ?? mediaUrl}
                                 creator={
                                   creatorUsername ||
@@ -414,6 +417,7 @@ export default function SearchView() {
         />
       </Head>
       <Flex sx={{ minHeight: '100vh', flexDirection: 'column' }}>
+        <Nav />
         <Container
           p={4}
           sx={{
@@ -423,7 +427,6 @@ export default function SearchView() {
             width: '100%',
           }}
         >
-          <Nav />
           <Breadcrumbs crumbs={breadcrumbs} />
         </Container>
         {!isMobile ? (

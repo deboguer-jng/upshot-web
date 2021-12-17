@@ -1,16 +1,18 @@
 import { useQuery } from '@apollo/client'
+import { useState } from 'react'
 import {
   Box,
   CollectorAccordion,
   CollectorAccordionHead,
   CollectorAccordionRow,
+  Pagination,
   Skeleton,
+  Flex,
   TableCell,
   Text,
   useBreakpointIndex,
 } from '@upshot-tech/upshot-ui'
-import { PIXELATED_CONTRACTS } from 'constants/'
-import { PAGE_SIZE } from 'constants/'
+import { PIXELATED_CONTRACTS, PAGE_SIZE } from 'constants/'
 
 import {
   GET_COLLECTORS,
@@ -20,7 +22,6 @@ import {
   GetPreviousOwnersData,
   GetPreviousOwnersVars,
 } from '../../queries'
-import { ExplorePanelSkeleton } from './NFTs'
 
 export default function Collectors({
   id,
@@ -31,23 +32,33 @@ export default function Collectors({
   name?: string
   assetId?: string
 }) {
+  const [page, setPage] = useState(0)
+  const handlePageChange = ({ selected }: { selected: number }) => {
+    setPage(selected)
+  }
+
   const { loading, error, data } = assetId
     ? useQuery<GetPreviousOwnersData, GetPreviousOwnersVars>(
         GET_PREVIOUS_OWNERS,
         {
           errorPolicy: 'all',
-          variables: { id, limit: 10, assetId },
+          variables: {
+            id,
+            limit: PAGE_SIZE,
+            offset: page * PAGE_SIZE,
+            assetId,
+          },
           skip: !id,
         }
       )
     : useQuery<GetCollectorsData, GetCollectorsVars>(GET_COLLECTORS, {
         errorPolicy: 'all',
-        variables: { id, limit: 10 },
+        variables: { id, limit: PAGE_SIZE, offset: page * PAGE_SIZE },
         skip: !id,
       })
 
-    const breakpointIndex = useBreakpointIndex()
-    const isMobile = breakpointIndex <= 1
+  const breakpointIndex = useBreakpointIndex()
+  const isMobile = breakpointIndex <= 1
 
   const ExplorePanelSkeleton = () => {
     return (
@@ -76,54 +87,50 @@ export default function Collectors({
     <>
       <CollectorAccordionHead>
         <Text>Collector</Text>
-        <Text sx={{ whiteSpace: 'nowrap' }}>{`${ isMobile ? '' : name} Count`}</Text>
+        <Text sx={{ whiteSpace: 'nowrap' }}>{`${
+          isMobile ? '' : name
+        } Count`}</Text>
       </CollectorAccordionHead>
       <CollectorAccordion>
-        {[...data.getOwnersByWhaleness.owners]
-          .sort((owner1, owner2) => {
-            if (owner1.firstAssetPurchaseTime < owner2.firstAssetPurchaseTime)
-              return 1
-            if (owner1.firstAssetPurchaseTime === owner2.firstAssetPurchaseTime)
-              return 0
-            return -1
-          })
-          .map(
-            (
-              {
-                username,
-                addresses,
-                avgHoldTime,
-                firstAssetPurchaseTime,
-                ownedAssets: { count, assets },
-                extraCollections: { collectionAssetCounts },
-              },
-              idx
-            ) => (
-              <CollectorAccordionRow
-                address={addresses?.[0]}
-                firstAcquisition={firstAssetPurchaseTime}
-                collectionName={name}
-                extraCollections={collectionAssetCounts.map(
-                  ({ count, collection: { imageUrl, name, id } }) => ({
-                    id,
-                    imageUrl,
-                    name,
-                    count,
-                    url: `/analytics/collection/${id}`,
-                  })
-                )}
-                nftCollection={assets.map(({ previewImageUrl, id }) => ({
+        {[...data.getOwnersByWhaleness.owners].map(
+          (
+            {
+              username,
+              addresses,
+              avgHoldTime,
+              firstAssetPurchaseTime,
+              ownedAssets: { count, assets },
+              extraCollections: { collectionAssetCounts },
+            },
+            idx
+          ) => (
+            <CollectorAccordionRow
+              address={addresses?.[0]}
+              firstAcquisition={firstAssetPurchaseTime}
+              collectionName={name}
+              extraCollections={collectionAssetCounts.map(
+                ({ collection: { imageUrl, id } }) => ({
                   id,
-                  imageUrl: previewImageUrl,
+                  imageUrl,
                   url: `/analytics/nft/${id}`,
-                  pixelated: PIXELATED_CONTRACTS.includes(id.split('/')[0]),
+                  pixelated: PIXELATED_CONTRACTS.includes(id.toString().split('/')[0]),
                 }))}
                 key={idx}
+                defaultOpen={idx === 0 ? true : false}
                 {...{ username, count, avgHoldTime }}
               />
             )
           )}
       </CollectorAccordion>
+      <Flex sx={{ justifyContent: 'center', marginTop: '18px' }}>
+        <Pagination
+          forcePage={page}
+          pageCount={Math.ceil(data.getOwnersByWhaleness['count'] / PAGE_SIZE)}
+          pageRangeDisplayed={0}
+          marginPagesDisplayed={0}
+          onPageChange={handlePageChange}
+        />
+      </Flex>
     </>
   )
 }

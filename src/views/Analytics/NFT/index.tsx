@@ -2,7 +2,7 @@
 import { useQuery } from '@apollo/client'
 import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Container } from '@upshot-tech/upshot-ui'
-import { Flex, Footer, Grid, Image, Text } from '@upshot-tech/upshot-ui'
+import { Flex, Grid, Image, Text } from '@upshot-tech/upshot-ui'
 import {
   Box,
   Chart,
@@ -20,6 +20,7 @@ import {
   TableHead,
   TableRow,
 } from '@upshot-tech/upshot-ui'
+import { Footer } from 'components/Footer'
 import { FormattedENS } from 'components/FormattedENS'
 import { Nav } from 'components/Nav'
 import { PIXELATED_CONTRACTS } from 'constants/'
@@ -79,21 +80,23 @@ function Layout({ children }: { children: React.ReactNode }) {
       ]
 
   return (
-    <Container
-      p={4}
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        width: '100%',
-        minHeight: '100vh',
-        gap: 4,
-      }}
-    >
+    <>
       <Nav />
-      <Breadcrumbs crumbs={breadcrumbs} />
-      {children}
-      <Footer />
-    </Container>
+      <Container
+        p={4}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          width: '100%',
+          minHeight: '100vh',
+          gap: 4,
+        }}
+      >
+        <Breadcrumbs crumbs={breadcrumbs} />
+        {children}
+        <Footer />
+      </Container>
+    </>
   )
 }
 
@@ -633,31 +636,32 @@ export default function NFTView() {
                               >
                                 Last Appraisal
                               </Text>
-
-                              {/* Confidence score
-                                <Label color="primary">
-                                  {latestAppraisal.confidence
-                                    ? (latestAppraisal.confidence * 100).toFixed(
-                                        2
-                                      ) + '%'
-                                    : '-'}
-                                </Label>
-                              */}
                             </Flex>
-                            <Label
-                              color="primary"
-                              currencySymbol={lastSale ? 'Ξ' : undefined}
-                              variant="currency"
-                              size="md"
-                            >
-                              {latestAppraisal?.ethSalePrice
-                                ? weiToEth(
-                                    latestAppraisal.ethSalePrice,
-                                    3,
-                                    false
-                                  )
-                                : '-'}
-                            </Label>
+                            <Flex sx={{ gap: 2 }}>
+                              <Label
+                                color="primary"
+                                currencySymbol={lastSale ? 'Ξ' : undefined}
+                                variant="currency"
+                                size="md"
+                              >
+                                {latestAppraisal?.ethSalePrice
+                                  ? weiToEth(
+                                      latestAppraisal.ethSalePrice,
+                                      3,
+                                      false
+                                    )
+                                  : '-'}
+                              </Label>
+                              <Label color="primary">
+                                {latestAppraisal?.medianRelativeError
+                                  ? '± ' +
+                                    (
+                                      latestAppraisal.medianRelativeError * 100
+                                    ).toFixed(2) +
+                                    '%'
+                                  : ''}
+                              </Label>
+                            </Flex>
                             <Text
                               color="primary"
                               sx={{ fontSize: 2, textTransform: 'uppercase' }}
@@ -810,16 +814,13 @@ export default function NFTView() {
                                     sx={{
                                       marginLeft: '6px;',
                                       verticalAlign: 'middle',
-                                      opacity: .3,
+                                      opacity: 0.3,
                                       '&:hover': {
                                         opacity: 1,
                                       },
                                     }}
                                   >
-                                    <Icon
-                                      icon="disconnect"
-                                      color="grey-500"
-                                    />
+                                    <Icon icon="disconnect" color="grey-500" />
                                   </IconButton>
                                 </a>
                               </TableCell>
