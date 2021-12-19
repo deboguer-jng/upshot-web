@@ -109,12 +109,12 @@ export default function TopCollectionsCharts({
     .map(({ data, name, id, sevenDayMCChange, ...rest }) => {
       const ath = rest[athKeys[metric]]?.value
       const atl = rest[atlKeys[metric]]?.value
-      const priceChange =
+      /* const priceChange =
         sevenDayMCChange === null
           ? null
           : sevenDayMCChange >= 0
           ? '+' + sevenDayMCChange + '%'
-          : sevenDayMCChange + '%'
+          : sevenDayMCChange + '%' */
 
       return {
         name,
@@ -122,7 +122,7 @@ export default function TopCollectionsCharts({
         ath: ath && metric !== 'FLOOR' ? weiToEth(ath, 2) : null,
         atl: atl && metric !== 'FLOOR' ? weiToEth(atl, 2) : null,
         /* priceUsd: 10, */
-        priceChange,
+        /* priceChange, */
         volume: metric === 'VOLUME' && parseFloat(weiToEth(rest.volume, 2, false)),
         data: data.map((val, i) =>
           i === 0
