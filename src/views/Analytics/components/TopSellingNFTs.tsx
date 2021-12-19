@@ -59,8 +59,8 @@ function TopSellingNFTsHeader({
         background: 'rgba(0, 0, 0, 0.8)',
         zIndex: 2,
         '&,& *': breakpointIndex <= 1 && {
-          fontSize: '1rem!important',
-          lineHeight: '1.5rem!important',
+          fontSize: '1.8rem !important',
+          lineHeight: '1.5rem !important',
         },
       }}
     >
