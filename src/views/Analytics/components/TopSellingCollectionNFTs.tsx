@@ -2,8 +2,8 @@
 import { useQuery } from '@apollo/client'
 import {
   BlurrySquareTemplate,
+  Box,
   Flex,
-  Icon,
   MiniNftCard,
   SwitchDropdown,
   useBreakpointIndex,
@@ -52,7 +52,7 @@ function TopSellingCollectionNFTsHeader({
   const [collectionOpen, setCollectionOpen] = useState(false)
 
   return (
-    <Flex
+    <Box
       variant="text.h1Secondary"
       sx={{
         gap: 2,
@@ -64,8 +64,7 @@ function TopSellingCollectionNFTsHeader({
         background: 'rgba(0, 0, 0, 0.8)',
         zIndex: 2,
         '&,& *': breakpointIndex <= 1 && {
-          fontSize: '1.6rem !important',
-          lineHeight: '1.5rem !important',
+          lineHeight: '2rem !important',
         },
       }}
     >
@@ -78,6 +77,11 @@ function TopSellingCollectionNFTsHeader({
           }}
           value={topSellingType ?? ''}
           options={['NFTs', 'Collections']}
+          sx={{
+            display: 'inline-block',
+            marginLeft: '0.3rem',
+            marginRight: '0.3rem',
+          }}
         />
       ) : (
         ' '
@@ -91,11 +95,16 @@ function TopSellingCollectionNFTsHeader({
           }}
           value={period ?? ''}
           options={['1 day', '1 week', '1 month']}
+          sx={{
+            display: 'inline-block',
+            marginLeft: '0.3rem',
+            marginRight: '0.3rem',
+          }}
         />
       ) : (
         <></>
       )}
-    </Flex>
+    </Box>
   )
 }
 
@@ -151,7 +160,7 @@ export default function TopSellingCollectionNFTs({
           setTopSellingType={(val) => setTopSellingType(val)}
         />
         <MiniNFTContainer
-          sx={{ paddingTop: breakpointIndex <= 1 ? '50px' : '80px' }}
+          sx={{ paddingTop: '80px' }}
         >
           {[...new Array(10)].map((_, idx) => (
             <BlurrySquareTemplate key={idx} />
@@ -190,7 +199,7 @@ export default function TopSellingCollectionNFTs({
           topSellingType={topSellingType}
           setTopSellingType={(val) => setTopSellingType(val)}
         />
-        <text sx={{ paddingTop: breakpointIndex <= 1 ? '50px' : '80px' }}>
+        <text sx={{ paddingTop: '80px' }}>
           No results available.{' '}
         </text>
       </Flex>
@@ -205,7 +214,7 @@ export default function TopSellingCollectionNFTs({
         setTopSellingType={(val) => setTopSellingType(val)}
       />
       <MiniNFTContainer
-        sx={{ paddingTop: breakpointIndex <= 1 ? '50px' : '80px' }}
+        sx={{ paddingTop: '80px' }}
       >
         {topSellingType === 'NFTs' ? (
           <>
