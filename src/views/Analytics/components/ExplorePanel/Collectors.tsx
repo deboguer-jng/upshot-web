@@ -108,6 +108,13 @@ export default function Collectors({
               address={addresses?.[0].address}
               firstAcquisition={firstAssetPurchaseTime}
               collectionName={name}
+              nftCollection={assets.map(({ id, previewImageUrl }) => ({
+                imageUrl: previewImageUrl,
+                url: `/analytics/nft/${id}`,
+                pixelated: PIXELATED_CONTRACTS.includes(
+                  id.toString().split('/')[0]
+                ),
+              }))}
               extraCollections={collectionAssetCounts.map(
                 ({ collection: { imageUrl, id } }) => ({
                   id,
