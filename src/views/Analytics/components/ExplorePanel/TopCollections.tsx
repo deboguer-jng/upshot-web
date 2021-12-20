@@ -151,6 +151,7 @@ export default function ExploreNFTs({
               imageSrc={imageUrl!}
               key={idx}
               onClick={() => handleShowCollection(id)}
+              defaultOpen={idx === 0 ? true : false}
               totalVolume={isMobile ? weiToEth(totalVolume, 0) : null}
             >
               {isMobile ? (

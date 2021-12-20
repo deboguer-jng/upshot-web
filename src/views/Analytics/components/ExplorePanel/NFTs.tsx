@@ -43,24 +43,27 @@ function NFTTableHead() {
   const isMobile = breakpointIndex <= 1
 
   return (
-    <TableHead>
-      <TableRow>
-        <TableCell></TableCell>
-        <TableCell color="grey-500">NFT</TableCell>
-        {isMobile ? (
-          // Mobile only shows the first and last columns
-          <TableCell color="grey-500">Details</TableCell>
-        ) : (
-          <>
-            {columns.map((col, key) => (
-              <TableCell key={key} color="grey-500">
-                {col}
-              </TableCell>
-            ))}
-          </>
-        )}
-      </TableRow>
-    </TableHead>
+    <>
+      {isMobile ? (
+        <Box sx={{ paddingLeft: '67px', paddingY: '8px' }}>
+          <Text sx={{ color: 'grey' }}> NFT </Text>
+        </Box>
+      ) : (
+        <>
+          <TableHead>
+            <TableRow>
+              <TableCell></TableCell>
+              <TableCell color="grey-500">NFT</TableCell>
+              {columns.map((col, key) => (
+                <TableCell key={key} color="grey-500">
+                  {col}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+        </>
+      )}
+    </>
   )
 }
 
@@ -167,6 +170,7 @@ export default function ExploreNFTs({
               title={name}
               imageSrc={previewImageUrl ?? mediaUrl}
               key={idx}
+              defaultOpen={idx === 0 ? true : false}
               onClick={() => handleShowNFT(id)}
             >
               {isMobile ? (
