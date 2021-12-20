@@ -358,7 +358,7 @@ export type GetTopCollectorsData = {
     count: number
     owners: {
       username: string
-      addresses: string[]
+      addresses: { address: string; ens: string }[]
       ownedAssets: {
         assets: {
           id: string
@@ -431,7 +431,7 @@ export type GetCollectorsData = {
     count: number
     owners: {
       username: string
-      addresses: string[]
+      addresses: { address: string; ens: string }[]
       firstAssetPurchaseTime: number
       avgHoldTime: number
       ownedAssets: {
@@ -512,7 +512,7 @@ export type GetPreviousOwnersData = {
     count: number
     owners: {
       username: string
-      addresses: string[]
+      addresses: { address: string; ens: string }[]
       firstAssetPurchaseTime: number
       avgHoldTime: number
       ownedAssets: {
