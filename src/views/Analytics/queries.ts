@@ -389,7 +389,10 @@ export const GET_TOP_COLLECTORS = gql`
       count
       owners {
         username
-        addresses
+        addresses {
+          address
+          ens
+        }
         ownedAssets(notable: true, limit: 10, offset: 0) {
           assets {
             id
@@ -471,7 +474,10 @@ export const GET_COLLECTORS = gql`
       count
       owners {
         username
-        addresses
+        addresses {
+          address
+          ens
+        }
         firstAssetPurchaseTime
         avgHoldTime
         ownedAssets(collectionId: $id, notable: true, limit: 10) {
@@ -547,7 +553,10 @@ export const GET_PREVIOUS_OWNERS = gql`
       count
       owners {
         username
-        addresses
+        addresses {
+          address
+          ens
+        }
         firstAssetPurchaseTime(collectionId: $id)
         avgHoldTime(collectionId: $id)
         ownedAssets(collectionId: $id, notable: true, limit: 10) {
