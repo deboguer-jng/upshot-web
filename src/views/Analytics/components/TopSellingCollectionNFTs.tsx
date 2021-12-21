@@ -208,9 +208,7 @@ export default function TopSellingCollectionNFTs({
           .div(BN.from(state.pastWeekWeiAverage))
           .toNumber()}`
       case '1 month':
-        return `${BN.from(state.pastMonthWeiVolume)
-          .div(BN.from(state.pastMonthWeiAverage))
-          .toNumber()}`
+        return `${state.pastMonthNumTxs}`
     }
   }
 
