@@ -9,6 +9,7 @@ import {
   useBreakpointIndex,
 } from '@upshot-tech/upshot-ui'
 import { PIXELATED_CONTRACTS } from 'constants/'
+import { BigNumber as BN } from 'ethers'
 import { formatDistance } from 'date-fns'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -196,6 +197,23 @@ export default function TopSellingCollectionNFTs({
       </Flex>
     )
 
+  const getSalesNumber = (state) => {
+    switch (period) {
+      case '1 day':
+        return `${BN.from(state.pastDayWeiVolume)
+          .div(BN.from(state.pastDayWeiAverage))
+          .toNumber()}`
+      case '1 week':
+        return `${BN.from(state.pastWeekWeiVolume)
+          .div(BN.from(state.pastWeekWeiAverage))
+          .toNumber()}`
+      case '1 month':
+        return `${BN.from(state.pastMonthWeiVolume)
+          .div(BN.from(state.pastMonthWeiAverage))
+          .toNumber()}`
+    }
+  }
+
   return (
     <>
       <TopSellingCollectionNFTsHeader
@@ -269,7 +287,7 @@ export default function TopSellingCollectionNFTs({
                           ? weiToEth(latestStats.floor)
                           : undefined
                       }
-                      sales={'130'}
+                      sales={getSalesNumber(latestStats)}
                       link={`/analytics/collection/${id}`}
                     />
                   </a>

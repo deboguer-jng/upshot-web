@@ -147,6 +147,10 @@ export type GetCollectionAvgPriceData = {
         floor: string
         pastDayWeiAverage: string
         pastDayWeiVolume: string
+        pastWeekWeiAverage: string
+        pastWeekWeiVolume: string
+        pastMonthWeiAverage: string
+        pastMonthWeiVolume: string
       }
     }[]
   }
@@ -171,6 +175,10 @@ export const GET_COLLECTION_AVG_PRICE = gql`
           floor
           pastDayWeiAverage
           pastDayWeiVolume
+          pastWeekWeiAverage
+          pastWeekWeiVolume
+          pastMonthWeiAverage
+          pastMonthWeiVolume
         }
       }
     }
