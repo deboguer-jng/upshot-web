@@ -797,34 +797,72 @@ export default function UserView() {
                     flexGrow: 1,
                     display: 'flex',
                     flexDirection: 'column',
-                    maxHeight: 340,
+                    maxHeight: 380,
                   }}
                 >
-                  <Box
-                    sx={{ overflowY: 'auto', flexGrow: 1 }}
-                    css={theme.scroll.thin}
-                  >
+                  <Flex sx={{ flexDirection: 'column', gap: 4 }}>
                     <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-                      <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-                        <Text variant="h3Secondary">Transaction History</Text>
-
-                        {!!data?.getUser?.txHistory?.count ? (
-                          <Table sx={{ borderSpacing: '0 10px' }}>
+                      <Text variant="h3Secondary">Transaction History</Text>
+                      {!!data?.getUser?.txHistory?.count ? (
+                        <Box
+                          css={theme.scroll.thin.styles}
+                          sx={{ overflow: 'auto', height: '270px' }}
+                        >
+                          <Table
+                            sx={{
+                              position: 'relative',
+                              borderSpacing: '0 10px',
+                            }}
+                          >
                             <TableHead>
                               <TableRow>
-                                <TableCell color="grey-500">Date</TableCell>
+                                <TableCell
+                                  sx={{
+                                    position: 'sticky',
+                                    top: 0,
+                                    zIndex: 2,
+                                  }}
+                                  color="grey-500"
+                                  backgroundColor="grey-800"
+                                >
+                                  Date
+                                </TableCell>
                                 {!isMobile && (
                                   <>
-                                    <TableCell color="grey-500">
+                                    <TableCell
+                                      sx={{
+                                        position: 'sticky',
+                                        top: 0,
+                                        zIndex: 2,
+                                      }}
+                                      color="grey-500"
+                                      backgroundColor="grey-800"
+                                    >
                                       Sender
                                     </TableCell>
-                                    <TableCell color="grey-500">
+                                    <TableCell
+                                      sx={{
+                                        position: 'sticky',
+                                        top: 0,
+                                        zIndex: 2,
+                                      }}
+                                      color="grey-500"
+                                      backgroundColor="grey-800"
+                                    >
                                       Recipient
                                     </TableCell>
                                   </>
                                 )}
 
-                                <TableCell color="grey-500">
+                                <TableCell
+                                  sx={{
+                                    position: 'sticky',
+                                    top: 0,
+                                    zIndex: 2,
+                                  }}
+                                  color="grey-500"
+                                  backgroundColor="grey-800"
+                                >
                                   Sale Price
                                 </TableCell>
                               </TableRow>
@@ -962,29 +1000,29 @@ export default function UserView() {
                               )}
                             </TableBody>
                           </Table>
-                        ) : (
-                          <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-                            {isLoading ? (
-                              [...new Array(3)].map((_, idx) => (
-                                <Skeleton
-                                  sx={{
-                                    height: 24,
-                                    width: '100%',
-                                    borderRadius: 'sm',
-                                  }}
-                                  key={idx}
-                                />
-                              ))
-                            ) : (
-                              <Text color="grey-600">
-                                No transaction history available.
-                              </Text>
-                            )}
-                          </Flex>
-                        )}
-                      </Flex>
+                        </Box>
+                      ) : (
+                        <Flex sx={{ flexDirection: 'column', gap: 4 }}>
+                          {isLoading ? (
+                            [...new Array(3)].map((_, idx) => (
+                              <Skeleton
+                                sx={{
+                                  height: 24,
+                                  width: '100%',
+                                  borderRadius: 'sm',
+                                }}
+                                key={idx}
+                              />
+                            ))
+                          ) : (
+                            <Text color="grey-600">
+                              No transaction history available.
+                            </Text>
+                          )}
+                        </Flex>
+                      )}
                     </Flex>
-                  </Box>
+                  </Flex>
                 </Panel>
               </Flex>
               <>
@@ -1059,10 +1097,13 @@ export default function UserView() {
                       }}
                     >
                       <p>
-                        This wallet does not hold any NFTs that have been appraised by Upshot.
+                        This wallet does not hold any NFTs that have been
+                        appraised by Upshot.
                       </p>
                       <p>
-                        We&apos;re working hard to expand our list of supported NFT collections, and we&apos;re adding more all the time.
+                        We&apos;re working hard to expand our list of supported
+                        NFT collections, and we&apos;re adding more all the
+                        time.
                       </p>
                       <p>Please check back soon!</p>
                     </Text>

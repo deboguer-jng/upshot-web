@@ -701,140 +701,204 @@ export default function NFTView() {
                   >
                     <Text variant="h3Secondary">Transaction History</Text>
                   </Flex>
-                  {txHistory.length > 0 && (
-                    <Table sx={{ borderSpacing: '0 10px' }}>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell color="grey-500">Date</TableCell>
-                          {!isMobile && (
-                            <>
-                              <TableCell color="grey-500">Sender</TableCell>
-                              <TableCell color="grey-500">Recipient</TableCell>
-                            </>
-                          )}
-
-                          <TableCell color="grey-500">Sale Price</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {txHistory.map(
-                          (
-                            {
-                              type,
-                              txAt,
-                              txFromAddress,
-                              txToAddress,
-                              txHash,
-                              price,
-                              currency: { symbol, decimals },
-                            },
-                            idx
-                          ) => (
-                            <TableRow key={idx}>
-                              <TableCell sx={{ minWidth: 140 }}>
-                                {format(txAt * 1000, 'M/d/yyyy')}
-                              </TableCell>
-                              {!isMobile && (
-                                <>
-                                  <TableCell sx={{ minWidth: 140 }}>
-                                    <Flex sx={{ alignItems: 'center', gap: 2 }}>
-                                      <Box
-                                        sx={{
-                                          borderRadius: 'circle',
-                                          bg: 'yellow',
-                                          width: 3,
-                                          height: 3,
-                                        }}
-                                      />
-                                      <Link
-                                        href={`/analytics/user/${txFromAddress}`}
-                                      >
-                                        <a
-                                          sx={{
-                                            cursor: 'pointer',
-                                            '&:hover': {
-                                              textDecoration: 'underline',
-                                            },
-                                          }}
-                                        >
-                                          <FormattedENS
-                                            address={txFromAddress}
-                                          />
-                                        </a>
-                                      </Link>
-                                    </Flex>
-                                  </TableCell>
-                                  <TableCell sx={{ minWidth: 140 }}>
-                                    <Flex sx={{ alignItems: 'center', gap: 2 }}>
-                                      <Box
-                                        sx={{
-                                          borderRadius: 'circle',
-                                          bg: 'purple',
-                                          width: 3,
-                                          height: 3,
-                                        }}
-                                      />
-                                      <Link
-                                        href={`/analytics/user/${txToAddress}`}
-                                      >
-                                        <a
-                                          sx={{
-                                            cursor: 'pointer',
-                                            '&:hover': {
-                                              textDecoration: 'underline',
-                                            },
-                                          }}
-                                        >
-                                          <FormattedENS address={txToAddress} />
-                                        </a>
-                                      </Link>
-                                    </Flex>
-                                  </TableCell>
-                                </>
-                              )}
-                              <TableCell sx={{ minWidth: 100, color: 'pink' }}>
-                                {'SALE' === type &&
-                                  price &&
-                                  `${formatCurrencyUnits(price, decimals)} ${
-                                    symbol ?? 'ETH'
-                                  }`}
-                                {'TRANSFER' === type && (
-                                  <Text color="blue">Transfer</Text>
-                                )}
-                                {'MINT' === type && (
-                                  <Text color="green">Mint</Text>
-                                )}
-                                <a
-                                  href={`https://etherscan.io/tx/${txHash}`}
-                                  target="_blank"
-                                  title="Open transaction on Etherscan"
-                                  rel="noopener noreferrer nofollow"
+                  <Box
+                    css={theme.scroll.thin.styles}
+                    sx={{
+                      overflow: 'auto',
+                      height: '300px',
+                    }}
+                  >
+                    {txHistory.length > 0 && (
+                      <Table
+                        sx={{
+                          position: 'relative',
+                          borderSpacing: '0 10px',
+                        }}
+                      >
+                        <TableHead>
+                          <TableRow>
+                            <TableCell
+                              sx={{
+                                position: 'sticky',
+                                top: 0,
+                                zIndex: 2,
+                              }}
+                              backgroundColor="grey-800"
+                              color="grey-500"
+                            >
+                              Date
+                            </TableCell>
+                            {!isMobile && (
+                              <>
+                                <TableCell
+                                  sx={{
+                                    position: 'sticky',
+                                    top: 0,
+                                    zIndex: 2,
+                                  }}
+                                  backgroundColor="grey-800"
+                                  color="grey-500"
                                 >
-                                  <IconButton
-                                    sx={{
-                                      marginLeft: '6px;',
-                                      verticalAlign: 'middle',
-                                      opacity: 0.3,
-                                      '&:hover': {
-                                        opacity: 1,
-                                      },
-                                    }}
+                                  Sender
+                                </TableCell>
+                                <TableCell
+                                  sx={{
+                                    position: 'sticky',
+                                    top: 0,
+                                    zIndex: 2,
+                                  }}
+                                  backgroundColor="grey-800"
+                                  color="grey-500"
+                                >
+                                  Recipient
+                                </TableCell>
+                              </>
+                            )}
+
+                            <TableCell
+                              sx={{
+                                position: 'sticky',
+                                top: 0,
+                                zIndex: 2,
+                              }}
+                              backgroundColor="grey-800"
+                              color="grey-500"
+                            >
+                              Sale Price
+                            </TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {txHistory.map(
+                            (
+                              {
+                                type,
+                                txAt,
+                                txFromAddress,
+                                txToAddress,
+                                txHash,
+                                price,
+                                currency: { symbol, decimals },
+                              },
+                              idx
+                            ) => (
+                              <TableRow key={idx}>
+                                <TableCell sx={{ minWidth: 140 }}>
+                                  {format(txAt * 1000, 'M/d/yyyy')}
+                                </TableCell>
+                                {!isMobile && (
+                                  <>
+                                    <TableCell sx={{ minWidth: 140 }}>
+                                      <Flex
+                                        sx={{ alignItems: 'center', gap: 2 }}
+                                      >
+                                        <Box
+                                          sx={{
+                                            borderRadius: 'circle',
+                                            bg: 'yellow',
+                                            width: 3,
+                                            height: 3,
+                                          }}
+                                        />
+                                        <Link
+                                          href={`/analytics/user/${txFromAddress}`}
+                                        >
+                                          <a
+                                            sx={{
+                                              cursor: 'pointer',
+                                              '&:hover': {
+                                                textDecoration: 'underline',
+                                              },
+                                            }}
+                                          >
+                                            <FormattedENS
+                                              address={txFromAddress}
+                                            />
+                                          </a>
+                                        </Link>
+                                      </Flex>
+                                    </TableCell>
+                                    <TableCell sx={{ minWidth: 140 }}>
+                                      <Flex
+                                        sx={{ alignItems: 'center', gap: 2 }}
+                                      >
+                                        <Box
+                                          sx={{
+                                            borderRadius: 'circle',
+                                            bg: 'purple',
+                                            width: 3,
+                                            height: 3,
+                                          }}
+                                        />
+                                        <Link
+                                          href={`/analytics/user/${txToAddress}`}
+                                        >
+                                          <a
+                                            sx={{
+                                              cursor: 'pointer',
+                                              '&:hover': {
+                                                textDecoration: 'underline',
+                                              },
+                                            }}
+                                          >
+                                            <FormattedENS
+                                              address={txToAddress}
+                                            />
+                                          </a>
+                                        </Link>
+                                      </Flex>
+                                    </TableCell>
+                                  </>
+                                )}
+                                <TableCell
+                                  sx={{ minWidth: 100, color: 'pink' }}
+                                >
+                                  {'SALE' === type &&
+                                    price &&
+                                    `${formatCurrencyUnits(price, decimals)} ${
+                                      symbol ?? 'ETH'
+                                    }`}
+                                  {'TRANSFER' === type && (
+                                    <Text color="blue">Transfer</Text>
+                                  )}
+                                  {'MINT' === type && (
+                                    <Text color="green">Mint</Text>
+                                  )}
+                                  <a
+                                    href={`https://etherscan.io/tx/${txHash}`}
+                                    target="_blank"
+                                    title="Open transaction on Etherscan"
+                                    rel="noopener noreferrer nofollow"
                                   >
-                                    <Icon icon="disconnect" color="grey-500" />
-                                  </IconButton>
-                                </a>
-                              </TableCell>
-                            </TableRow>
-                          )
-                        )}
-                      </TableBody>
-                    </Table>
-                  )}
-                  {txHistory.length == 0 && (
-                    <Text sx={{ color: 'grey-500' }}>
-                      This asset hasn’t been sold or transferred yet.
-                    </Text>
-                  )}
+                                    <IconButton
+                                      sx={{
+                                        marginLeft: '6px;',
+                                        verticalAlign: 'middle',
+                                        opacity: 0.3,
+                                        '&:hover': {
+                                          opacity: 1,
+                                        },
+                                      }}
+                                    >
+                                      <Icon
+                                        icon="disconnect"
+                                        color="grey-500"
+                                      />
+                                    </IconButton>
+                                  </a>
+                                </TableCell>
+                              </TableRow>
+                            )
+                          )}
+                        </TableBody>
+                      </Table>
+                    )}
+                    {txHistory.length == 0 && (
+                      <Text sx={{ color: 'grey-500' }}>
+                        This asset hasn’t been sold or transferred yet.
+                      </Text>
+                    )}
+                  </Box>
                 </Flex>
               </Flex>
             </Panel>
