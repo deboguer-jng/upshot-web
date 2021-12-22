@@ -17,6 +17,22 @@ export default class MyDocument extends Document {
     return { ...initialProps }
   }
   render() {
+    const mouseFlow = (
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+    window._mfq = window._mfq || [];
+    (function() {
+      var mf = document.createElement("script");
+      mf.type = "text/javascript"; mf.defer = true;
+      mf.src = "//cdn.mouseflow.com/projects/${process.env.NEXT_PUBLIC_MOUSEFLOW_ID}.js";
+      document.getElementsByTagName("head")[0].appendChild(mf);
+    })();
+    `,
+        }}
+      />
+    )
+
     return (
       <Html lang="en">
         <Head />
@@ -24,6 +40,7 @@ export default class MyDocument extends Document {
           <InitializeColorMode />
           <Main />
           <NextScript />
+          {process.env.NODE_ENV !== 'development' && mouseFlow}
         </body>
       </Html>
     )
