@@ -1,13 +1,13 @@
 import { useQuery } from '@apollo/client'
-import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import { useBreakpointIndex, CollectorAccordion } from '@upshot-tech/upshot-ui'
 import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
-import { InputRoundedSearch, Pagination } from '@upshot-tech/upshot-ui'
+import { Pagination } from '@upshot-tech/upshot-ui'
 import {
   Box,
   Flex,
-  Panel,
+  Grid,
   Skeleton,
-  SwitchDropdown,
+  Text,
 } from '@upshot-tech/upshot-ui'
 import {
   TableBody,
@@ -19,7 +19,7 @@ import { PIXELATED_CONTRACTS } from 'constants/'
 import { PAGE_SIZE } from 'constants/'
 import { format } from 'date-fns'
 import router from 'next/router'
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
 import { getPriceChangeLabel, weiToEth } from 'utils/number'
 
@@ -41,24 +41,27 @@ function NFTTableHead() {
   const isMobile = breakpointIndex <= 1
 
   return (
-    <TableHead>
-      <TableRow>
-        <TableCell></TableCell>
-        <TableCell color="grey-500">NFT</TableCell>
-        {isMobile ? (
-          // Mobile only shows the first and last columns
-          <TableCell color="grey-500">Details</TableCell>
-        ) : (
-          <>
-            {columns.map((col, key) => (
-              <TableCell key={key} color="grey-500">
-                {col}
-              </TableCell>
-            ))}
-          </>
-        )}
-      </TableRow>
-    </TableHead>
+    <>
+      {isMobile ? (
+        <Box sx={{ paddingLeft: '67px', paddingY: '8px' }}>
+          <Text sx={{ color: 'grey' }}> NFT </Text>
+        </Box>
+      ) : (
+        <>
+          <TableHead>
+            <TableRow>
+              <TableCell></TableCell>
+              <TableCell color="grey-500">NFT</TableCell>
+              {columns.map((col, key) => (
+                <TableCell key={key} color="grey-500">
+                  {col}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+        </>
+      )}
+    </>
   )
 }
 
@@ -80,6 +83,26 @@ export function ExplorePanelSkeleton() {
         ))}
       </TableBody>
     </CollectionTable>
+  )
+}
+
+const NFTItemsWrapper = ({ children }) => {
+  const breakpointIndex = useBreakpointIndex()
+  const isMobile = breakpointIndex <= 1
+  return (
+    <>
+      {isMobile ? (
+        <>
+          <NFTTableHead />
+          <CollectorAccordion> {children} </CollectorAccordion>
+        </>
+      ) : (
+        <CollectionTable>
+          <NFTTableHead />
+          <TableBody>{children}</TableBody>
+        </CollectionTable>
+      )}
+    </>
   )
 }
 
@@ -125,96 +148,131 @@ export default function ExploreNFTs({
 
   return (
     <>
-      <CollectionTable>
-        <NFTTableHead />
-        <TableBody>
-          {data.assetGlobalSearch.assets.map(
-            (
-              {
-                id,
-                name,
-                contractAddress,
-                previewImageUrl,
-                mediaUrl,
-                totalSaleCount,
-                lastSale,
-                lastAppraisalWeiPrice,
-                lastSaleAppraisalRelativeDiff,
-              },
-              idx
-            ) => (
-              <CollectionRow
-                variant="black"
-                title={name}
-                imageSrc={previewImageUrl ?? mediaUrl}
-                key={idx}
-                onClick={() => handleShowNFT(id)}
-                pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
-              >
-                {isMobile ? (
-                  <TableCell sx={{ maxWidth: 100 }}>
-                    <Flex
-                      sx={{
-                        flexDirection: 'column',
-                        alignItems: 'flex-end',
-                      }}
-                    >
-                      <Flex>
-                        {lastSale?.ethSalePrice
-                          ? weiToEth(lastSale.ethSalePrice)
-                          : '-'}
-                      </Flex>
-                      <Flex>
-                        {lastAppraisalWeiPrice
-                          ? weiToEth(lastAppraisalWeiPrice)
-                          : '-'}
-                      </Flex>
-                      <Flex
-                        sx={{
-                          maxWidth: 100,
-                          color: getPriceChangeColor(
-                            lastSaleAppraisalRelativeDiff
-                          ),
-                        }}
-                      >
-                        {getPriceChangeLabel(lastSaleAppraisalRelativeDiff)}
-                      </Flex>
-                    </Flex>
-                  </TableCell>
-                ) : (
-                  <>
-                    <TableCell sx={{ maxWidth: 100 }}>
+      <NFTItemsWrapper>
+        {data.assetGlobalSearch.assets.map(
+          (
+            {
+              id,
+              name,
+              previewImageUrl,
+              mediaUrl,
+              totalSaleCount,
+              lastSale,
+              lastAppraisalWeiPrice,
+              lastSaleAppraisalRelativeDiff,
+            },
+            idx
+          ) => (
+            <CollectionRow
+              variant="black"
+              title={name}
+              imageSrc={previewImageUrl ?? mediaUrl}
+              key={idx}
+              defaultOpen={idx === 0 ? true : false}
+              onClick={() => handleShowNFT(id)}
+            >
+              {isMobile ? (
+                <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>
+                  <Flex
+                    sx={{
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
+                      Last Sale Date
+                    </Text>
+                    <Text>
                       {lastSale?.timestamp
                         ? format(lastSale.timestamp * 1000, 'M/d/yyyy')
                         : '-'}
-                    </TableCell>
-                    <TableCell sx={{ maxWidth: 100 }}>
+                    </Text>
+                  </Flex>
+                  <Flex
+                    sx={{
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
+                      Last Sale Price
+                    </Text>
+                    <Text>
                       {lastSale?.ethSalePrice
                         ? weiToEth(lastSale.ethSalePrice)
                         : '-'}
-                    </TableCell>
-                    <TableCell sx={{ maxWidth: 100 }}>
+                    </Text>
+                  </Flex>
+                  <Flex
+                    sx={{
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
+                      Latest Appraised Value
+                    </Text>
+                    <Text>
                       {lastAppraisalWeiPrice
                         ? weiToEth(lastAppraisalWeiPrice)
                         : '-'}
-                    </TableCell>
-                    <TableCell
+                    </Text>
+                  </Flex>
+                  <Flex
+                    sx={{
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
+                      Last Sale/Latest Appraisal
+                    </Text>
+                    <Text
                       sx={{
-                        maxWidth: 100,
                         color: getPriceChangeColor(
                           lastSaleAppraisalRelativeDiff
                         ),
                       }}
                     >
                       {getPriceChangeLabel(lastSaleAppraisalRelativeDiff)}
-                    </TableCell>
-                  </>
-                )}
-              </CollectionRow>
-            )
-          )}
-        </TableBody>
-      </CollectionTable>
+                    </Text>
+                  </Flex>
+                </Grid>
+              ) : (
+                <>
+                  <TableCell sx={{ maxWidth: 100 }}>
+                    {lastSale?.timestamp
+                      ? format(lastSale.timestamp * 1000, 'M/d/yyyy')
+                      : '-'}
+                  </TableCell>
+                  <TableCell sx={{ maxWidth: 100 }}>
+                    {lastSale?.ethSalePrice
+                      ? weiToEth(lastSale.ethSalePrice)
+                      : '-'}
+                  </TableCell>
+                  <TableCell sx={{ maxWidth: 100 }}>
+                    {lastAppraisalWeiPrice
+                      ? weiToEth(lastAppraisalWeiPrice)
+                      : '-'}
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      maxWidth: 100,
+                      color: getPriceChangeColor(lastSaleAppraisalRelativeDiff),
+                    }}
+                  >
+                    {getPriceChangeLabel(lastSaleAppraisalRelativeDiff)}
+                  </TableCell>
+                </>
+              )}
+            </CollectionRow>
+          )
+        )}
+      </NFTItemsWrapper>
       <Flex sx={{ justifyContent: 'center', marginTop: '10px' }}>
         <Pagination
           forcePage={page}

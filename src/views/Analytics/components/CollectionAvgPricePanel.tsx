@@ -119,7 +119,7 @@ export default function CollectionAvgPricePanel({
       {...{ title, subtitle }}
     >
       {data.orderedCollectionsByMetricSearch.assetSets.map(
-        ({ id, name, imageUrl, average, floor, volume }, index) => (
+        ({ id, name, imageUrl, latestStats }, index) => (
           <Flex
             key={index}
             sx={{ alignItems: 'center', color: 'disabled', gap: 5 }}
@@ -140,7 +140,7 @@ export default function CollectionAvgPricePanel({
                         display: 'block',
                       },
                     }}
-                    onClick={e => e.stopPropagation()}
+                    onClick={(e) => e.stopPropagation()}
                   >
                     <Image
                       alt={`${name} Cover Artwork`}
@@ -177,7 +177,11 @@ export default function CollectionAvgPricePanel({
                   : undefined
               }
               text={name ?? 'Unknown'}
-              subText={printMetricData(metric, { average, floor, volume })}
+              subText={printMetricData(metric, {
+                average: latestStats.pastDayWeiAverage,
+                floor: latestStats.floor,
+                volume: latestStats.pastDayWeiVolume,
+              })}
             />
           </Flex>
         )

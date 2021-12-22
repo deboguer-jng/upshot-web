@@ -917,9 +917,7 @@ export default function UserView() {
                                         </TableCell>
                                       </>
                                     )}
-                                    <TableCell
-                                      sx={{ minWidth: 100, color: 'pink' }}
-                                    >
+                                    <TableCell sx={{ minWidth: 100, color: 'pink' }}>
                                       {'SALE' === type &&
                                         price &&
                                         `${formatCurrencyUnits(
@@ -942,18 +940,13 @@ export default function UserView() {
                                           sx={{
                                             marginLeft: '6px;',
                                             verticalAlign: 'middle',
+                                            opacity: 0.3,
+                                            '&:hover': {
+                                              opacity: 1,
+                                            },
                                           }}
                                         >
-                                          <Icon
-                                            icon="disconnect"
-                                            color={
-                                              'SALE' === type
-                                                ? 'pink'
-                                                : 'TRANSFER' === type
-                                                ? 'blue'
-                                                : 'green'
-                                            }
-                                          />
+                                          <Icon icon="disconnect" color="grey-500" />
                                         </IconButton>
                                       </a>
                                     </TableCell>

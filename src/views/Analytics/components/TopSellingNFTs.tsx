@@ -67,8 +67,8 @@ function TopSellingNFTsHeader({
       Top Selling NFTs in
       {!!setPeriod ? (
         <SwitchDropdown
-          onChange={(val) => setPeriod?.(val)}
-          onStatusChange={(status) => {
+          onValueChange={(val) => setPeriod?.(val)}
+          onToggle={(status) => {
             setOpen(status)
           }}
           value={period ?? ''}

@@ -200,7 +200,8 @@ export const Nav = () => {
           flexDirection: 'column',
           position: 'sticky',
           top: 0,
-          background: `linear-gradient(180deg, rgba(0,0,0,1) 90%, rgba(0,0,0,0) 100%)`,
+          background: 'rgba(0,0,0,0.7)',
+          backdropFilter: 'blur(8px)',
           zIndex: theme.zIndex.nav + 1,
         }}
       >
@@ -221,8 +222,8 @@ export const Nav = () => {
           onMenuClick={handleToggleMenu}
           searchSuggestions={suggestions}
           sx={{
-            marginBottom: 4,
-            paddingY: 6,
+            marginBottom: 2,
+            paddingY: 3,
             paddingX: ['24px', '24px', '80px'],
             width: '100%',
           }}
