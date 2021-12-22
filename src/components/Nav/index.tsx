@@ -222,7 +222,8 @@ export const Nav = () => {
           onMenuClick={handleToggleMenu}
           searchSuggestions={suggestions}
           sx={{
-            paddingY: 5,
+            marginBottom: 2,
+            paddingY: 3,
             paddingX: ['24px', '24px', '80px'],
             width: '100%',
           }}
