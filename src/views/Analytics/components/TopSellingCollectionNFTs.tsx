@@ -72,8 +72,8 @@ function TopSellingCollectionNFTsHeader({
       Top Selling
       {!!setTopSellingType ? (
         <SwitchDropdown
-          onChange={(val) => setTopSellingType?.(val)}
-          onStatusChange={(status) => {
+          onValueChange={(val) => setTopSellingType?.(val)}
+          onToggle={(status) => {
             setCollectionOpen(status)
           }}
           value={topSellingType ?? ''}
@@ -85,8 +85,8 @@ function TopSellingCollectionNFTsHeader({
       in
       {!!setPeriod ? (
         <SwitchDropdown
-          onChange={(val) => setPeriod?.(val)}
-          onStatusChange={(status) => {
+          onValueChange={(val) => setPeriod?.(val)}
+          onToggle={(status) => {
             setOpen(status)
           }}
           value={period ?? ''}
