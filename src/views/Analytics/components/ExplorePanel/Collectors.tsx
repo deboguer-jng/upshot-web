@@ -116,13 +116,14 @@ export default function Collectors({
                 ),
               }))}
               extraCollections={collectionAssetCounts.map(
-                ({ collection: { imageUrl, id } }) => ({
+                ({ collection: { imageUrl, id }, count }) => ({
                   id,
                   imageUrl,
                   url: `/analytics/nft/${id}`,
                   pixelated: PIXELATED_CONTRACTS.includes(
                     id.toString().split('/')[0]
                   ),
+                  count,
                 })
               )}
               key={idx}
