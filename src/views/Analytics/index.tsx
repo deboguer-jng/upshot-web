@@ -13,7 +13,7 @@ import TopSellingCollectionNFTs from './components/TopSellingCollectionNFTs'
 import TreeMapMarketCap from './components/TreeMapMarketCap'
 
 export default function AnalyticsView() {
-  const [chartMetric, setChartMetric] = useState<METRIC>('FLOOR')
+  const [chartMetric, setChartMetric] = useState<METRIC>('VOLUME')
   const [selectedCollections, setSelectedCollections] = useState<number[]>([])
 
   const handleChange = (updatedChartMetric: METRIC) => {

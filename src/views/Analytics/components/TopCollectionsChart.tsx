@@ -124,8 +124,8 @@ export default function TopCollectionsCharts({
         /* priceUsd: 10, */
         // priceChange,
         volume:
-          metric === 'VOLUME' && latestStats?.volume
-            ? parseFloat(weiToEth(latestStats.volume, 2, false))
+          metric === 'VOLUME' && latestStats?.pastWeekWeiVolume
+            ? parseFloat(weiToEth(latestStats.pastWeekWeiVolume, 2, false))
             : 0,
         data: data.map((val, i) =>
           i === 0
