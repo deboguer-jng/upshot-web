@@ -9,6 +9,7 @@ import {
   useBreakpointIndex,
 } from '@upshot-tech/upshot-ui'
 import { PIXELATED_CONTRACTS } from 'constants/'
+import { BigNumber as BN } from 'ethers'
 import { formatDistance } from 'date-fns'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -196,6 +197,21 @@ export default function TopSellingCollectionNFTs({
       </Flex>
     )
 
+  const getSalesNumber = (state) => {
+    switch (period) {
+      case '1 day':
+        return `${BN.from(state.pastDayWeiVolume)
+          .div(BN.from(state.pastDayWeiAverage))
+          .toNumber()}`
+      case '1 week':
+        return `${BN.from(state.pastWeekWeiVolume)
+          .div(BN.from(state.pastWeekWeiAverage))
+          .toNumber()}`
+      case '1 month':
+        return `${state.pastMonthNumTxs}`
+    }
+  }
+
   return (
     <>
       <TopSellingCollectionNFTsHeader
@@ -251,17 +267,25 @@ export default function TopSellingCollectionNFTs({
         ) : (
           <>
             {collectionData?.orderedCollectionsByMetricSearch.assetSets.map(
-              ({ id, name, imageUrl, average, floor, volume }) => (
+              ({ id, name, imageUrl, latestStats }) => (
                 <Link key={id} href={`/analytics/collection/${id}`}>
                   <a style={{ textDecoration: 'none' }}>
                     <MiniNftCard
                       tooltip={`volume / ${period}`}
-                      price={volume ? weiToEth(volume) : undefined}
+                      price={
+                        latestStats?.pastDayWeiVolume
+                          ? weiToEth(latestStats.pastDayWeiVolume)
+                          : undefined
+                      }
                       name={name}
                       type="collection"
                       image={imageUrl}
-                      floorPrice={floor ? weiToEth(floor) : undefined}
-                      sales={'130'}
+                      floorPrice={
+                        latestStats?.floor
+                          ? weiToEth(latestStats.floor)
+                          : undefined
+                      }
+                      sales={getSalesNumber(latestStats)}
                       link={`/analytics/collection/${id}`}
                     />
                   </a>

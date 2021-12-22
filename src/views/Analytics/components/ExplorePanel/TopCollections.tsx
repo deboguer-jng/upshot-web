@@ -18,7 +18,7 @@ import { PAGE_SIZE } from 'constants/'
 import router from 'next/router'
 import React, { useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
-import { getPriceChangeLabel,weiToEth } from 'utils/number'
+import { getPriceChangeLabel, weiToEth } from 'utils/number'
 
 import {
   GET_EXPLORE_COLLECTIONS,
@@ -125,6 +125,12 @@ export default function ExploreNFTs({
   if (!data?.orderedCollectionsByMetricSearch.assetSets.length)
     return <div>No results available.</div>
 
+  const dataCheck = data => {
+    return data
+      ? data
+      : '-'
+  }
+
   return (
     <>
       <CollectionItemsWrapper>
@@ -134,10 +140,8 @@ export default function ExploreNFTs({
               id,
               name,
               imageUrl,
-              average,
-              floor,
-              totalVolume,
               sevenDayFloorChange,
+              latestStats,
             },
             idx
           ) => (
@@ -148,7 +152,7 @@ export default function ExploreNFTs({
               key={idx}
               onClick={() => handleShowCollection(id)}
               defaultOpen={idx === 0 ? true : false}
-              totalVolume={isMobile ? weiToEth(totalVolume, 0) : null}
+              totalVolume={isMobile ? weiToEth(latestStats.totalWeiVolume, 0) : null}
             >
               {isMobile ? (
                 <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>
@@ -160,7 +164,7 @@ export default function ExploreNFTs({
                     }}
                   >
                     <Text sx={{ marginBottom: 1 }}>Average Price</Text>
-                    <Text>{weiToEth(average, 2)}</Text>
+                    <Text>{dataCheck(weiToEth(latestStats.pastDayWeiAverage, 2))}</Text>
                   </Flex>
                   <Flex
                     sx={{
@@ -170,7 +174,7 @@ export default function ExploreNFTs({
                     }}
                   >
                     <Text sx={{ marginBottom: 1 }}>Floor Price</Text>
-                    <Text>{weiToEth(floor, 2)}</Text>
+                    <Text>{dataCheck(weiToEth(latestStats.floor, 2))}</Text>
                   </Flex>
                   <Flex
                     sx={{
@@ -193,13 +197,13 @@ export default function ExploreNFTs({
               ) : (
                 <>
                   <TableCell sx={{ maxWidth: 100 }}>
-                    {weiToEth(totalVolume, 0)}
+                    {dataCheck(weiToEth(latestStats.totalWeiVolume, 0))}
                   </TableCell>
                   <TableCell sx={{ maxWidth: 100 }}>
-                    {weiToEth(average, 2)}
+                    {dataCheck(weiToEth(latestStats.pastDayWeiAverage, 2))}
                   </TableCell>
                   <TableCell sx={{ maxWidth: 100 }}>
-                    {weiToEth(floor, 2)}
+                    {dataCheck(weiToEth(latestStats.floor, 2))}
                   </TableCell>
                   <TableCell
                     sx={{

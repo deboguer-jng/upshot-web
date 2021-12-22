@@ -18,10 +18,28 @@ export type GetTopCollectionsData = {
     assetSets: {
       name: string
       id: number
-      athAverage: {
+      athAverageDailyWei: {
         value: string
       }
-      atlAverage: {
+      atlAverageDailyWei: {
+        value: string
+      }
+      athAverageWeeklyWei: {
+        value: string
+      }
+      atlAverageWeeklyWei: {
+        value: string
+      }
+      athVolumeDailyWei: {
+        value: string
+      }
+      atlVolumeDailyWei: {
+        value: string
+      }
+      athVolumeWeeklyWei: {
+        value: string
+      }
+      atlVolumeWeeklyWei: {
         value: string
       }
       athFloor: {
@@ -30,15 +48,11 @@ export type GetTopCollectionsData = {
       atlFloor: {
         value: string
       }
-      athVolume: {
-        value: string
-      }
-      atlVolume: {
-        value: string
+      latestStats: {
+        volume: string
+        sevenDayChange: number
       }
       timeSeries?: TimeSeries[]
-      sevenDayMCChange: number
-      volume: string
     }[]
   }
 }
@@ -58,11 +72,31 @@ export const GET_TOP_COLLECTIONS = gql`
       assetSets {
         name
         id
-        volume(windowSize: WEEK)
-        athAverage {
+        latestStats {
+          volume
+        }
+        athAverageDailyWei {
           value
         }
-        atlAverage {
+        atlAverageDailyWei {
+          value
+        }
+        athAverageWeeklyWei {
+          value
+        }
+        atlAverageWeeklyWei {
+          value
+        }
+        athVolumeDailyWei {
+          value
+        }
+        atlVolumeDailyWei {
+          value
+        }
+        athVolumeWeeklyWei {
+          value
+        }
+        atlVolumeWeeklyWei {
           value
         }
         athFloor {
@@ -71,10 +105,10 @@ export const GET_TOP_COLLECTIONS = gql`
         atlFloor {
           value
         }
-        athVolume {
+        athFloor {
           value
         }
-        atlVolume {
+        atlFloor {
           value
         }
         timeSeries(minTimestamp: $minTimestamp, windowSize: WEEK) {
@@ -83,7 +117,10 @@ export const GET_TOP_COLLECTIONS = gql`
           volume
           floor
         }
-        sevenDayMCChange
+        latestStats {
+          volume
+          sevenDayChange
+        }
       }
     }
   }
@@ -106,9 +143,14 @@ export type GetCollectionAvgPriceData = {
       id: number
       name?: string
       imageUrl?: string
-      average?: string
-      floor?: string
-      volume?: string
+      latestStats: {
+        floor: string
+        pastDayWeiAverage: string
+        pastDayWeiVolume: string
+        pastWeekWeiAverage: string
+        pastWeekWeiVolume: string
+        pastMonthNumTxs: number
+      }
     }[]
   }
 }
@@ -118,21 +160,24 @@ export const GET_COLLECTION_AVG_PRICE = gql`
     $metric: EOrderedAssetSetMetric!
     $limit: OneToHundredInt!
     $name: String
-    $windowSize: ETimeWindow
   ) {
     orderedCollectionsByMetricSearch(
       metric: $metric
       limit: $limit
       name: $name
-      windowSize: $windowSize
     ) {
       assetSets {
         id
         name
         imageUrl
-        average
-        floor
-        volume(windowSize: $windowSize)
+        latestStats {
+          floor
+          pastDayWeiAverage
+          pastDayWeiVolume
+          pastWeekWeiAverage
+          pastWeekWeiVolume
+          pastMonthNumTxs
+        }
       }
     }
   }
@@ -250,10 +295,12 @@ export type GetExploreCollectionsData = {
       id: number
       name: string
       imageUrl?: string
-      average: string
-      floor: string
-      totalVolume: string
       sevenDayFloorChange: number
+      latestStats: {
+        floor: string
+        pastDayWeiAverage: string
+        totalWeiVolume: string
+      }
     }[]
   }
 }
@@ -274,10 +321,12 @@ export const GET_EXPLORE_COLLECTIONS = gql`
         id
         name
         imageUrl
-        average
-        floor
-        totalVolume
         sevenDayFloorChange
+        latestStats {
+          floor
+          pastDayWeiAverage
+          totalWeiVolume
+        }
       }
     }
   }
@@ -325,8 +374,10 @@ export type GetSevenDayMCChangeData = {
     assetSets: {
       id: number
       name: string
-      sevenDayMCChange: number
-      totalVolume: string
+      latestStats: {
+        totalWeiVolume: string
+        sevenDayChange: number
+      }
     }[]
   }
 }
@@ -337,8 +388,10 @@ export const GET_SEVEN_DAY_MC_CHANGE = gql`
       assetSets {
         id
         name
-        sevenDayMCChange
-        totalVolume
+        latestStats {
+          totalWeiVolume
+          sevenDayChange
+        }
       }
     }
   }
