@@ -200,7 +200,8 @@ export const Nav = () => {
           flexDirection: 'column',
           position: 'sticky',
           top: 0,
-          background: `linear-gradient(180deg, rgba(0,0,0,1) 90%, rgba(0,0,0,0) 100%)`,
+          background: 'rgba(0,0,0,0.7)',
+          backdropFilter: 'blur(8px)',
           zIndex: theme.zIndex.nav + 1,
         }}
       >

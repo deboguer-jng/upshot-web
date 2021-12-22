@@ -71,14 +71,14 @@ export default function TopCollectors() {
         {data.getOwnersByWhaleness['owners'].map(
           ({ username, addresses, ownedAssets }, idx) => (
             <CollectorAccordionRow
-              address={addresses?.[0]}
+              address={addresses?.[0].address}
               key={idx}
               defaultOpen={idx === 0 ? true : false}
               {...{ username }}
             >
               <div style={{ display: 'grid' }}>
                 <a
-                  href={`/analytics/user/${addresses[0]}`}
+                  href={`/analytics/user/${addresses[0].address}`}
                   style={{ textDecoration: 'none' }}
                 >
                   <Text
