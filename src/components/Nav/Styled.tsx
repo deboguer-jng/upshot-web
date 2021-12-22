@@ -52,7 +52,7 @@ export const Sidebar = styled.div`
 export const SideLink = styled(Link)<{ $isActive?: boolean }>`
   color: ${({ theme, $isActive }) =>
     theme.colors[$isActive ? 'primary' : 'grey-400']};
-  text-decoration: none;
+  text-decoration: none !important;
   transition: ${({ theme }) => theme.transitions.default};
 
   &:hover {

@@ -29,7 +29,7 @@ const splitArray = (arr) => {
   let j
   let temporary = []
   const array = new Array<Array<HTMLElement>>()
-  let chunk = 4
+  let chunk = 5
   for (i = 0, j = arr.length; i < j; i += chunk) {
     temporary = arr.slice(i, i + chunk)
     array.push(temporary)

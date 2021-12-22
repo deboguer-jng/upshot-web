@@ -688,41 +688,6 @@ export default function UserView() {
                           display: 'flex',
                           borderRadius: '20px',
                           flexDirection: 'column',
-                          justifyContent: 'center',
-                          height: 80,
-                        }}
-                      >
-                        <Text
-                          sx={{
-                            fontWeight: 'bold',
-                            fontSize: 4,
-                            color: 'grey-500',
-                            textAlign: 'center',
-                          }}
-                        >
-                          {data?.getUser?.mostRecentSell?.txAt
-                            ? format(
-                                data.getUser.mostRecentSell.txAt * 1000,
-                                'M/d/yyyy'
-                              )
-                            : '-'}
-                        </Text>
-                        <Text
-                          color="grey-500"
-                          sx={{
-                            fontSize: 2,
-                            fontWeight: 'heading',
-                            textAlign: 'center',
-                          }}
-                        >
-                          Most Recent Sale
-                        </Text>
-                      </Panel>
-                      <Panel
-                        sx={{
-                          display: 'flex',
-                          borderRadius: '20px',
-                          flexDirection: 'column',
                           textAlign: 'center',
                           justifyContent: 'center',
                           height: 80,
@@ -917,9 +882,7 @@ export default function UserView() {
                                         </TableCell>
                                       </>
                                     )}
-                                    <TableCell
-                                      sx={{ minWidth: 100, color: 'pink' }}
-                                    >
+                                    <TableCell sx={{ minWidth: 100, color: 'pink' }}>
                                       {'SALE' === type &&
                                         price &&
                                         `${formatCurrencyUnits(
@@ -942,18 +905,13 @@ export default function UserView() {
                                           sx={{
                                             marginLeft: '6px;',
                                             verticalAlign: 'middle',
+                                            opacity: 0.3,
+                                            '&:hover': {
+                                              opacity: 1,
+                                            },
                                           }}
                                         >
-                                          <Icon
-                                            icon="disconnect"
-                                            color={
-                                              'SALE' === type
-                                                ? 'pink'
-                                                : 'TRANSFER' === type
-                                                ? 'blue'
-                                                : 'green'
-                                            }
-                                          />
+                                          <Icon icon="disconnect" color="grey-500" />
                                         </IconButton>
                                       </a>
                                     </TableCell>

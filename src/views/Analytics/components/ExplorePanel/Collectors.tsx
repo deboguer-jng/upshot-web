@@ -1,18 +1,18 @@
 import { useQuery } from '@apollo/client'
-import { useState } from 'react'
 import {
   Box,
   CollectorAccordion,
   CollectorAccordionHead,
   CollectorAccordionRow,
+  Flex,
   Pagination,
   Skeleton,
-  Flex,
   TableCell,
   Text,
   useBreakpointIndex,
 } from '@upshot-tech/upshot-ui'
-import { PIXELATED_CONTRACTS, PAGE_SIZE } from 'constants/'
+import { PAGE_SIZE, PIXELATED_CONTRACTS } from 'constants/'
+import { useState } from 'react'
 
 import {
   GET_COLLECTORS,
@@ -105,22 +105,33 @@ export default function Collectors({
             idx
           ) => (
             <CollectorAccordionRow
-              address={addresses?.[0]}
+              address={addresses?.[0].address}
               firstAcquisition={firstAssetPurchaseTime}
               collectionName={name}
+              nftCollection={assets.map(({ id, previewImageUrl }) => ({
+                imageUrl: previewImageUrl,
+                url: `/analytics/nft/${id}`,
+                pixelated: PIXELATED_CONTRACTS.includes(
+                  id.toString().split('/')[0]
+                ),
+              }))}
               extraCollections={collectionAssetCounts.map(
-                ({ collection: { imageUrl, id } }) => ({
+                ({ collection: { imageUrl, id }, count }) => ({
                   id,
                   imageUrl,
                   url: `/analytics/nft/${id}`,
-                  pixelated: PIXELATED_CONTRACTS.includes(id.toString().split('/')[0]),
-                }))}
-                key={idx}
-                defaultOpen={idx === 0 ? true : false}
-                {...{ username, count, avgHoldTime }}
-              />
-            )
-          )}
+                  pixelated: PIXELATED_CONTRACTS.includes(
+                    id.toString().split('/')[0]
+                  ),
+                  count,
+                })
+              )}
+              key={idx}
+              defaultOpen={idx === 0 ? true : false}
+              {...{ username, count, avgHoldTime }}
+            />
+          )
+        )}
       </CollectorAccordion>
       <Flex sx={{ justifyContent: 'center', marginTop: '18px' }}>
         <Pagination
