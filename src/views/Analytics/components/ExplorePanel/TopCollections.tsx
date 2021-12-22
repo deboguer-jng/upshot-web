@@ -1,15 +1,12 @@
 import { useQuery } from '@apollo/client'
 import { CollectorAccordion, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
-import { InputRoundedSearch, Pagination } from '@upshot-tech/upshot-ui'
+import { Pagination } from '@upshot-tech/upshot-ui'
 import {
-  Box,
   Flex,
   Grid,
   Text,
-  Panel,
-  Skeleton,
-  SwitchDropdown,
+  Box,
 } from '@upshot-tech/upshot-ui'
 import {
   TableBody,
@@ -18,11 +15,10 @@ import {
   TableRow,
 } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE } from 'constants/'
-import { format } from 'date-fns'
 import router from 'next/router'
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
-import { weiToEth, getPriceChangeLabel } from 'utils/number'
+import { getPriceChangeLabel,weiToEth } from 'utils/number'
 
 import {
   GET_EXPLORE_COLLECTIONS,
