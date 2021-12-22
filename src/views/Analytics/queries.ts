@@ -411,7 +411,7 @@ export type GetTopCollectorsData = {
     count: number
     owners: {
       username: string
-      addresses: string[]
+      addresses: { address: string; ens: string }[]
       ownedAssets: {
         assets: {
           id: string
@@ -442,7 +442,10 @@ export const GET_TOP_COLLECTORS = gql`
       count
       owners {
         username
-        addresses
+        addresses {
+          address
+          ens
+        }
         ownedAssets(notable: true, limit: 10, offset: 0) {
           assets {
             id
@@ -484,7 +487,7 @@ export type GetCollectorsData = {
     count: number
     owners: {
       username: string
-      addresses: string[]
+      addresses: { address: string; ens: string }[]
       firstAssetPurchaseTime: number
       avgHoldTime: number
       ownedAssets: {
@@ -524,7 +527,10 @@ export const GET_COLLECTORS = gql`
       count
       owners {
         username
-        addresses
+        addresses {
+          address
+          ens
+        }
         firstAssetPurchaseTime
         avgHoldTime
         ownedAssets(collectionId: $id, notable: true, limit: 10) {
@@ -565,7 +571,7 @@ export type GetPreviousOwnersData = {
     count: number
     owners: {
       username: string
-      addresses: string[]
+      addresses: { address: string; ens: string }[]
       firstAssetPurchaseTime: number
       avgHoldTime: number
       ownedAssets: {
@@ -600,7 +606,10 @@ export const GET_PREVIOUS_OWNERS = gql`
       count
       owners {
         username
-        addresses
+        addresses {
+          address
+          ens
+        }
         firstAssetPurchaseTime(collectionId: $id)
         avgHoldTime(collectionId: $id)
         ownedAssets(collectionId: $id, notable: true, limit: 10) {

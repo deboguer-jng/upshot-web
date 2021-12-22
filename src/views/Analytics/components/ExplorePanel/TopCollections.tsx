@@ -1,13 +1,12 @@
 import { useQuery } from '@apollo/client'
-import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import { CollectorAccordion, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
-import { InputRoundedSearch, Pagination } from '@upshot-tech/upshot-ui'
+import { Pagination } from '@upshot-tech/upshot-ui'
 import {
-  Box,
   Flex,
-  Panel,
-  Skeleton,
-  SwitchDropdown,
+  Grid,
+  Text,
+  Box,
 } from '@upshot-tech/upshot-ui'
 import {
   TableBody,
@@ -16,9 +15,8 @@ import {
   TableRow,
 } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE } from 'constants/'
-import { format } from 'date-fns'
 import router from 'next/router'
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
 import { getPriceChangeLabel, weiToEth } from 'utils/number'
 
@@ -41,29 +39,53 @@ function CollectionTableHead() {
   const isMobile = breakpointIndex <= 1
 
   return (
-    <TableHead>
-      <TableRow>
-        <TableCell></TableCell>
-        <TableCell color="grey-500">Collection</TableCell>
-        {isMobile ? (
-          // Mobile only shows the first and last columns
-          <TableCell color="grey-500">Details</TableCell>
-        ) : (
-          <>
+    <>
+      {isMobile ? (
+        <Box>
+          <Flex sx={{ justifyContent: 'space-between', padding: 2 }}>
+            <Text> Collection Title </Text>
+            <Text> Total Volume </Text>
+          </Flex>
+        </Box>
+      ) : (
+        <TableHead>
+          <TableRow>
+            <TableCell></TableCell>
+            <TableCell color="grey-500">Collection</TableCell>
             {columns.map((col, key) => (
               <TableCell key={key} color="grey-500">
                 {col}
               </TableCell>
             ))}
-          </>
-        )}
-      </TableRow>
-    </TableHead>
+          </TableRow>
+        </TableHead>
+      )}
+    </>
   )
 }
 
 const handleShowCollection = (id: number) => {
   router.push('/analytics/collection/' + id)
+}
+
+const CollectionItemsWrapper = ({ children }) => {
+  const breakpointIndex = useBreakpointIndex()
+  const isMobile = breakpointIndex <= 1
+  return (
+    <>
+      {isMobile ? (
+        <>
+          <CollectionTableHead />
+          <CollectorAccordion>{children}</CollectorAccordion>
+        </>
+      ) : (
+        <CollectionTable>
+          <CollectionTableHead />
+          <TableBody>{children}</TableBody>
+        </CollectionTable>
+      )}
+    </>
+  )
 }
 
 /**
@@ -103,74 +125,101 @@ export default function ExploreNFTs({
   if (!data?.orderedCollectionsByMetricSearch.assetSets.length)
     return <div>No results available.</div>
 
+  const dataCheck = data => {
+    return data
+      ? data
+      : '-'
+  }
+
   return (
     <>
-      <CollectionTable>
-        <CollectionTableHead />
-        <TableBody>
-          {data.orderedCollectionsByMetricSearch.assetSets.map(
-            ({ id, name, imageUrl, sevenDayFloorChange, latestStats }, idx) => (
-              <CollectionRow
-                variant="black"
-                title={name}
-                imageSrc={imageUrl!}
-                key={idx}
-                onClick={() => handleShowCollection(id)}
-              >
-                {isMobile ? (
-                  <TableCell sx={{ maxWidth: 100 }}>
-                    <Flex
-                      sx={{
-                        flexDirection: 'column',
-                        alignItems: 'flex-end',
-                      }}
-                    >
-                      <Flex>
-                        Avg:{' '}
-                        {latestStats?.pastDayWeiAverage
-                          ? weiToEth(latestStats.pastDayWeiAverage)
-                          : '-'}
-                      </Flex>
-                      <Flex>
-                        Vol:{' '}
-                        {latestStats?.totalWeiVolume
-                          ? weiToEth(latestStats.totalWeiVolume, 0)
-                          : '-'}
-                      </Flex>
-                    </Flex>
-                  </TableCell>
-                ) : (
-                  <>
-                    <TableCell sx={{ maxWidth: 100 }}>
-                      {latestStats?.totalWeiVolume
-                        ? weiToEth(latestStats.totalWeiVolume, 0)
-                        : '-'}
-                    </TableCell>
-                    <TableCell sx={{ maxWidth: 100 }}>
-                      {latestStats?.pastDayWeiAverage
-                        ? weiToEth(latestStats.pastDayWeiAverage, 2)
-                        : '-'}
-                    </TableCell>
-                    <TableCell sx={{ maxWidth: 100 }}>
-                      {latestStats?.floor
-                        ? weiToEth(latestStats.floor, 2)
-                        : '-'}
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        maxWidth: 100,
-                        color: getPriceChangeColor(sevenDayFloorChange),
-                      }}
+      <CollectionItemsWrapper>
+        {data.orderedCollectionsByMetricSearch.assetSets.map(
+          (
+            {
+              id,
+              name,
+              imageUrl,
+              sevenDayFloorChange,
+              latestStats,
+            },
+            idx
+          ) => (
+            <CollectionRow
+              variant="black"
+              title={name}
+              imageSrc={imageUrl!}
+              key={idx}
+              onClick={() => handleShowCollection(id)}
+              defaultOpen={idx === 0 ? true : false}
+              totalVolume={isMobile ? weiToEth(latestStats.totalWeiVolume, 0) : null}
+            >
+              {isMobile ? (
+                <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>
+                  <Flex
+                    sx={{
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text sx={{ marginBottom: 1 }}>Average Price</Text>
+                    <Text>{dataCheck(weiToEth(latestStats.pastDayWeiAverage, 2))}</Text>
+                  </Flex>
+                  <Flex
+                    sx={{
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text sx={{ marginBottom: 1 }}>Floor Price</Text>
+                    <Text>{dataCheck(weiToEth(latestStats.floor, 2))}</Text>
+                  </Flex>
+                  <Flex
+                    sx={{
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text sx={{ textAlign: 'center', marginBottom: 1 }}>
+                      Floor Change
+                      <br /> (7 Days)
+                    </Text>
+                    <Text
+                      sx={{ color: getPriceChangeColor(sevenDayFloorChange) }}
                     >
                       {getPriceChangeLabel(sevenDayFloorChange)}
-                    </TableCell>
-                  </>
-                )}
-              </CollectionRow>
-            )
-          )}
-        </TableBody>
-      </CollectionTable>
+                    </Text>
+                  </Flex>
+                </Grid>
+              ) : (
+                <>
+                  <TableCell sx={{ maxWidth: 100 }}>
+                    {dataCheck(weiToEth(latestStats.totalWeiVolume, 0))}
+                  </TableCell>
+                  <TableCell sx={{ maxWidth: 100 }}>
+                    {dataCheck(weiToEth(latestStats.pastDayWeiAverage, 2))}
+                  </TableCell>
+                  <TableCell sx={{ maxWidth: 100 }}>
+                    {dataCheck(weiToEth(latestStats.floor, 2))}
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      maxWidth: 100,
+                      color: getPriceChangeColor(sevenDayFloorChange),
+                    }}
+                  >
+                    {getPriceChangeLabel(sevenDayFloorChange)}
+                  </TableCell>
+                </>
+              )}
+            </CollectionRow>
+          )
+        )}
+      </CollectionItemsWrapper>
+
       <Flex sx={{ justifyContent: 'center', marginTop: '10px' }}>
         <Pagination
           forcePage={page}

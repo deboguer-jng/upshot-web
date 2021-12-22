@@ -105,22 +105,32 @@ export default function Collectors({
             idx
           ) => (
             <CollectorAccordionRow
-              address={addresses?.[0]}
+              address={addresses?.[0].address}
               firstAcquisition={firstAssetPurchaseTime}
               collectionName={name}
+              nftCollection={assets.map(({ id, previewImageUrl }) => ({
+                imageUrl: previewImageUrl,
+                url: `/analytics/nft/${id}`,
+                pixelated: PIXELATED_CONTRACTS.includes(
+                  id.toString().split('/')[0]
+                ),
+              }))}
               extraCollections={collectionAssetCounts.map(
                 ({ collection: { imageUrl, id } }) => ({
                   id,
                   imageUrl,
                   url: `/analytics/nft/${id}`,
-                  pixelated: PIXELATED_CONTRACTS.includes(id.toString().split('/')[0]),
-                }))}
-                key={idx}
-                defaultOpen={idx === 0 ? true : false}
-                {...{ username, count, avgHoldTime }}
-              />
-            )
-          )}
+                  pixelated: PIXELATED_CONTRACTS.includes(
+                    id.toString().split('/')[0]
+                  ),
+                })
+              )}
+              key={idx}
+              defaultOpen={idx === 0 ? true : false}
+              {...{ username, count, avgHoldTime }}
+            />
+          )
+        )}
       </CollectorAccordion>
       <Flex sx={{ justifyContent: 'center', marginTop: '18px' }}>
         <Pagination

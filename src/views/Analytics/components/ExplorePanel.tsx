@@ -1,32 +1,14 @@
-import { useQuery } from '@apollo/client'
 import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
-import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
-import { InputRoundedSearch, Pagination } from '@upshot-tech/upshot-ui'
+import { InputRoundedSearch } from '@upshot-tech/upshot-ui'
 import {
   Box,
   Flex,
   Panel,
-  Skeleton,
   SwitchDropdown,
 } from '@upshot-tech/upshot-ui'
-import {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-} from '@upshot-tech/upshot-ui'
-import { PAGE_SIZE } from 'constants/'
-import { format } from 'date-fns'
 import router from 'next/router'
-import React, { useMemo, useRef, useState } from 'react'
-import { getPriceChangeColor } from 'utils/color'
-import { weiToEth } from 'utils/number'
+import React, { useRef, useState } from 'react'
 
-import {
-  GET_EXPLORE_NFTS,
-  GetExploreNFTsData,
-  GetExploreNFTsVars,
-} from '../queries'
 import Collectors from './ExplorePanel/Collectors'
 import ExploreNFTs from './ExplorePanel/NFTs'
 import TopCollections from './ExplorePanel/TopCollections'
@@ -131,10 +113,10 @@ function ExplorePanelHead({
           >
             Explore
             <SwitchDropdown
-              onChange={(val) => onChangeTab?.(val)}
+              onValueChange={(val) => onChangeTab?.(val)}
               value={tab ?? ''}
               options={dropdownOptions}
-              onStatusChange={(status) => setOpen(status)}
+              onToggle={(status) => setOpen(status)}
             />
           </Flex>
         </Flex>
