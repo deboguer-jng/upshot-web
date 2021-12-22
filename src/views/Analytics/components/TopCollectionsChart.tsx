@@ -122,7 +122,7 @@ export default function TopCollectionsCharts({
         ath: ath && metric !== 'FLOOR' ? weiToEth(ath, 2) : null,
         atl: atl && metric !== 'FLOOR' ? weiToEth(atl, 2) : null,
         /* priceUsd: 10, */
-        priceChange,
+        // priceChange,
         volume:
           metric === 'VOLUME' && latestStats?.volume
             ? parseFloat(weiToEth(latestStats.volume, 2, false))
