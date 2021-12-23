@@ -766,7 +766,14 @@ export default function UserView() {
                   }}
                 >
                   <Box
-                    sx={{ overflowY: 'auto', flexGrow: 1 }}
+                    sx={{
+                      overflowY: 'auto',
+                      flexGrow: 1,
+                      resize: 'none',
+                      '&::-webkit-scrollbar-corner': {
+                        backgroundColor: 'transparent',
+                      },
+                    }}
                     css={theme.scroll.thin}
                   >
                     <Flex sx={{ flexDirection: 'column', gap: 4 }}>
@@ -780,6 +787,7 @@ export default function UserView() {
                                 <TableCell color="grey-500">Date</TableCell>
                                 {!isMobile && (
                                   <>
+                                    <TableCell color="grey-500">NFT</TableCell>
                                     <TableCell color="grey-500">
                                       Sender
                                     </TableCell>
@@ -804,6 +812,7 @@ export default function UserView() {
                                     txToAddress,
                                     txHash,
                                     price,
+                                    asset,
                                     currency: { symbol, decimals },
                                   },
                                   idx
@@ -814,6 +823,34 @@ export default function UserView() {
                                     </TableCell>
                                     {!isMobile && (
                                       <>
+                                        <TableCell sx={{ minWidth: 140 }}>
+                                          <Flex
+                                            sx={{
+                                              alignItems: 'center',
+                                              gap: 2,
+                                            }}
+                                          >
+                                            <Link
+                                              href={`/analytics/nft/${asset?.id}`}
+                                            >
+                                              <a
+                                                sx={{
+                                                  cursor: 'pointer',
+                                                  textOverflow: 'ellipsis',
+                                                  whiteSpace: 'nowrap',
+                                                  display: 'inline-block',
+                                                  overflow: 'hidden',
+                                                  width: '160px',
+                                                  '&:hover': {
+                                                    textDecoration: 'underline',
+                                                  },
+                                                }}
+                                              >
+                                                {asset?.name}
+                                              </a>
+                                            </Link>
+                                          </Flex>
+                                        </TableCell>
                                         <TableCell sx={{ minWidth: 140 }}>
                                           <Flex
                                             sx={{
@@ -882,7 +919,9 @@ export default function UserView() {
                                         </TableCell>
                                       </>
                                     )}
-                                    <TableCell sx={{ minWidth: 100, color: 'pink' }}>
+                                    <TableCell
+                                      sx={{ minWidth: 100, color: 'pink' }}
+                                    >
                                       {'SALE' === type &&
                                         price &&
                                         `${formatCurrencyUnits(
@@ -911,7 +950,10 @@ export default function UserView() {
                                             },
                                           }}
                                         >
-                                          <Icon icon="disconnect" color="grey-500" />
+                                          <Icon
+                                            icon="disconnect"
+                                            color="grey-500"
+                                          />
                                         </IconButton>
                                       </a>
                                     </TableCell>
@@ -1017,10 +1059,13 @@ export default function UserView() {
                       }}
                     >
                       <p>
-                        This wallet does not hold any NFTs that have been appraised by Upshot.
+                        This wallet does not hold any NFTs that have been
+                        appraised by Upshot.
                       </p>
                       <p>
-                        We&apos;re working hard to expand our list of supported NFT collections, and we&apos;re adding more all the time.
+                        We&apos;re working hard to expand our list of supported
+                        NFT collections, and we&apos;re adding more all the
+                        time.
                       </p>
                       <p>Please check back soon!</p>
                     </Text>
