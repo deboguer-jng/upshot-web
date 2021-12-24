@@ -420,6 +420,7 @@ export default function SearchView() {
       <Flex sx={{ minHeight: '100vh', flexDirection: 'column' }}>
         <Nav />
         <Container
+          constrain={1}
           sx={{
             flexDirection: 'column',
             width: '100%',
@@ -445,6 +446,7 @@ export default function SearchView() {
           searchResults()
         )}
         <Container
+          constrain={1}
           sx={{
             flexDirection: 'column',
             maxWidth: theme.breakpointsNamed.lg + '!important',

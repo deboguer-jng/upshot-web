@@ -117,6 +117,7 @@ function Layout({ children }: { children: React.ReactNode }) {
       </Head>
       <Nav />
       <Container
+        constrain={1}
         sx={{
           flexDirection: 'column',
           width: '100%',
