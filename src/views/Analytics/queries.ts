@@ -407,6 +407,7 @@ export const GET_SEVEN_DAY_MC_CHANGE = gql`
 export type GetTopCollectorsVars = {
   limit: number
   offset: number
+  searchTerm: string
 }
 
 export type GetTopCollectorsData = {
@@ -440,8 +441,8 @@ export type GetTopCollectorsData = {
 }
 
 export const GET_TOP_COLLECTORS = gql`
-  query GetTopCollectors($limit: OneToHundredInt!, $offset: Int) {
-    getOwnersByWhaleness(limit: $limit, offset: $offset) {
+  query GetTopCollectors($limit: OneToHundredInt!, $offset: Int, $searchTerm: String) {
+    getOwnersByWhaleness(limit: $limit, offset: $offset, searchTerm: $searchTerm) {
       count
       owners {
         username

@@ -89,7 +89,7 @@ function ExplorePanelHead({
           width: '100%',
           height: open ? '170px' : 'auto',
           zIndex: 2,
-          background: 'rgba(35, 31, 32, 0.8)',
+          background: 'rgba(35, 31, 32, 0.8)', 
         }}
       >
         {breakpointIndex <= 1 && !open && (
@@ -156,11 +156,11 @@ export default function ExplorePanel({
           onSearch={handleSearch}
           {...{ searchTerm, tab }}
         />
-        <Box sx={{ paddingTop: isMobile && tab === 'NFTs' ? '110px' : '70px' }}>
+        <Box sx={{ paddingTop: isMobile ? '110px' : '70px' }}>
           {tab === 'NFTs' && (
             <ExploreNFTs searchTerm={searchTerm} collectionId={collectionId} />
           )}
-          {tab === 'Collectors' && !collectionId && <TopCollectors />}
+          {tab === 'Collectors' && !collectionId && <TopCollectors searchTerm={searchTerm} />}
           {tab === 'Collectors' && !!collectionId && (
             <Collectors id={collectionId} name={collectionName} />
           )}

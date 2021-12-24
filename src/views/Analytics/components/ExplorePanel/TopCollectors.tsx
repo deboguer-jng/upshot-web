@@ -29,7 +29,7 @@ import {
 import { MiniNFTContainer } from '.././Styled'
 import { ExplorePanelSkeleton } from './NFTs'
 
-export default function TopCollectors() {
+export default function TopCollectors({ searchTerm }: { searchTerm: string }) {
   const router = useRouter()
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
@@ -48,7 +48,7 @@ export default function TopCollectors() {
     GetTopCollectorsVars
   >(GET_TOP_COLLECTORS, {
     errorPolicy: 'all',
-    variables: { limit: PAGE_SIZE, offset: page * PAGE_SIZE },
+    variables: { limit: PAGE_SIZE, offset: page * PAGE_SIZE, searchTerm },
   })
 
   /* Load state. */
@@ -64,7 +64,6 @@ export default function TopCollectors() {
   return (
     <>
       <CollectorAccordionHead>
-        <Text>Collector</Text>
         {/* <Text sx={{ whiteSpace: 'nowrap' }}>Total Appraised Value</Text> */}
       </CollectorAccordionHead>
       <CollectorAccordion>
