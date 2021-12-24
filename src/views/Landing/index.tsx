@@ -203,7 +203,7 @@ export default function LandingView() {
         <Text variant="xLarge" color="grey-500">
           Start using our suite of tools for exploring the metaverse.
         </Text>
-        <Grid gap={5} columns={[1, 1, 1, 2]}>
+        <Grid gap={5} columns={[1, 1, 1, 1, 1, 2]}>
           <Link
             href="/analytics"
             rel="noopener noreferrer"
