@@ -241,7 +241,7 @@ export default function CollectionView() {
 
   return (
     <Layout>
-      <Grid columns={isMobile ? '1fr' : '1fr 1fr'} sx={{ gap: '40px' }}>
+      <Grid columns={['1fr', '1fr', '1fr 1fr']} sx={{ gap: '40px' }}>
         <Flex sx={{ flexDirection: 'column', gap: '16px' }}>
           <Flex sx={{ gap: 6, height: 100, alignItems: 'center' }}>
             <Avatar size="xl" src={imageUrl} />
@@ -267,7 +267,7 @@ export default function CollectionView() {
           >
             General Stats
           </Text>
-          <Grid columns="repeat(auto-fit, minmax(140px, 1fr))" sx={{ gap: 4 }}>
+          <Grid columns="repeat(auto-fit, minmax(120px, 1fr))" sx={{ gap: 4 }}>
             <CollectionStat
               color="blue"
               value={average ? weiToEth(average, 4, false) : '-'}
