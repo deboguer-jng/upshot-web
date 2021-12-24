@@ -49,7 +49,7 @@ export default function ButtonTabs({ onChange }: ButtonTabsProps) {
             sx={{
               gap: 4,
               width: 'fit-content',
-              justifyContent: ['center', 'center', 'flex-start'],
+              justifyContent: ['center', 'flex-start'],
               padding: '0.25rem',
             }}
           >
@@ -61,7 +61,7 @@ export default function ButtonTabs({ onChange }: ButtonTabsProps) {
           sx={{
             gap: 4,
             flexWrap: 'wrap',
-            justifyContent: ['center', 'center', 'flex-start'],
+            justifyContent: ['center', 'flex-start'],
           }}
         >
           {renderButtons()}

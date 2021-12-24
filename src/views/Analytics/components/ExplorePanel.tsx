@@ -1,11 +1,6 @@
 import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { InputRoundedSearch } from '@upshot-tech/upshot-ui'
-import {
-  Box,
-  Flex,
-  Panel,
-  SwitchDropdown,
-} from '@upshot-tech/upshot-ui'
+import { Box, Flex, Panel, SwitchDropdown } from '@upshot-tech/upshot-ui'
 import router from 'next/router'
 import React, { useRef, useState } from 'react'
 
@@ -82,7 +77,7 @@ function ExplorePanelHead({
       <Flex
         sx={{
           justifyContent: 'space-between',
-          flexDirection: ['column', 'column', 'row'],
+          flexDirection: ['column', 'row'],
           paddingBottom: '1rem',
           gap: 1,
           position: 'absolute',

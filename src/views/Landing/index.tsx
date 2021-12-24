@@ -103,6 +103,7 @@ export default function LandingView() {
           display: 'flex',
           flexDirection: 'column',
           minHeight: '100vh',
+          maxWidth: theme.breakpointsNamed.lg + '!important',
           gap: 4,
         }}
       >
@@ -316,7 +317,9 @@ export default function LandingView() {
                     alt="Upshot One"
                   ></Image>
                   <div style={{ position: 'relative' }}>
-                    <Text variant="h1Secondary">Upshot API</Text>
+                    <Text variant="h1Secondary" sx={{ whiteSpace: 'nowrap' }}>
+                      Upshot API
+                    </Text>
                     <Text variant="large" sx={{ display: 'block' }}>
                       Integrate Upshot data into your project.
                     </Text>

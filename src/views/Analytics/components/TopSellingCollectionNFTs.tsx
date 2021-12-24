@@ -9,8 +9,8 @@ import {
   useBreakpointIndex,
 } from '@upshot-tech/upshot-ui'
 import { PIXELATED_CONTRACTS } from 'constants/'
-import { BigNumber as BN } from 'ethers'
 import { formatDistance } from 'date-fns'
+import { BigNumber as BN } from 'ethers'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -160,9 +160,7 @@ export default function TopSellingCollectionNFTs({
           topSellingType={topSellingType}
           setTopSellingType={(val) => setTopSellingType(val)}
         />
-        <MiniNFTContainer
-          sx={{ paddingTop: '80px' }}
-        >
+        <MiniNFTContainer sx={{ paddingTop: '80px' }}>
           {[...new Array(10)].map((_, idx) => (
             <BlurrySquareTemplate key={idx} />
           ))}
@@ -200,9 +198,7 @@ export default function TopSellingCollectionNFTs({
           topSellingType={topSellingType}
           setTopSellingType={(val) => setTopSellingType(val)}
         />
-        <text sx={{ paddingTop: '80px' }}>
-          No results available.{' '}
-        </text>
+        <text sx={{ paddingTop: '80px' }}>No results available. </text>
       </Flex>
     )
 
@@ -229,9 +225,7 @@ export default function TopSellingCollectionNFTs({
         topSellingType={topSellingType}
         setTopSellingType={(val) => setTopSellingType(val)}
       />
-      <MiniNFTContainer
-        sx={{ paddingTop: '80px' }}
-      >
+      <MiniNFTContainer sx={{ paddingTop: '80px' }}>
         {topSellingType === 'NFTs' ? (
           <>
             {data.topSales.map(

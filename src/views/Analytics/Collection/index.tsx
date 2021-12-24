@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client'
-import { theme,useBreakpointIndex  } from '@upshot-tech/upshot-ui'
-import { Chart, Container, Flex, Grid, Label  } from '@upshot-tech/upshot-ui'
+import { theme, useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import { Chart, Container, Flex, Grid, Label } from '@upshot-tech/upshot-ui'
 import { Avatar, Text } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
@@ -56,7 +56,7 @@ function CollectionStat({
         </Label>
       )}
       {currencySymbol === '' && value}
-      
+
       <Text variant="small">{label}</Text>
     </Flex>
   )
@@ -122,6 +122,7 @@ function Layout({ children }: { children: React.ReactNode }) {
           display: 'flex',
           flexDirection: 'column',
           width: '100%',
+          maxWidth: theme.breakpointsNamed.lg + '!important',
           minHeight: '100vh',
           gap: 4,
         }}
@@ -181,7 +182,12 @@ export default function CollectionView() {
   if (loading)
     return (
       <Layout>
-        <Container sx={{ justifyContent: 'center', flexGrow: 1 }}>
+        <Container
+          sx={{
+            justifyContent: 'center',
+            flexGrow: 1,
+          }}
+        >
           Loading...
         </Container>
       </Layout>

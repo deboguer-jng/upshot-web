@@ -53,6 +53,7 @@ type Collection = {
 }
 
 function Layout({ children }: { children: React.ReactNode }) {
+  const { theme } = useTheme()
   const storage = globalThis?.sessionStorage
   const prevPath = storage.getItem('prevPath')
 
@@ -110,6 +111,7 @@ function Layout({ children }: { children: React.ReactNode }) {
           display: 'flex',
           flexDirection: 'column',
           width: '100%',
+          maxWidth: theme.breakpointsNamed.lg + '!important',
           minHeight: '100vh',
           gap: 4,
         }}

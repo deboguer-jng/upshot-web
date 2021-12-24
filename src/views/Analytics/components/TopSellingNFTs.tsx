@@ -127,9 +127,7 @@ export default function TopSellingNFTs({
           period={period}
           setPeriod={(val) => setPeriod(val)}
         />
-        <MiniNFTContainer
-          sx={{ paddingTop: '80px' }}
-        >
+        <MiniNFTContainer sx={{ paddingTop: '80px' }}>
           {[...new Array(10)].map((_, idx) => (
             <BlurrySquareTemplate key={idx} />
           ))}
@@ -160,9 +158,7 @@ export default function TopSellingNFTs({
           period={period}
           setPeriod={(val) => setPeriod(val)}
         />
-        <text sx={{ paddingTop: '80px' }}>
-          No results available.{' '}
-        </text>
+        <text sx={{ paddingTop: '80px' }}>No results available. </text>
       </Flex>
     )
 
@@ -172,9 +168,7 @@ export default function TopSellingNFTs({
         period={period}
         setPeriod={(val) => setPeriod(val)}
       />
-      <MiniNFTContainer
-        sx={{ paddingTop: '80px' }}
-      >
+      <MiniNFTContainer sx={{ paddingTop: '80px' }}>
         {data.topSales.map(
           (
             {

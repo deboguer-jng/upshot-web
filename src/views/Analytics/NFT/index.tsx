@@ -41,6 +41,7 @@ import Collectors from '../components/ExplorePanel/Collectors'
 import { GET_ASSET, GetAssetData, GetAssetVars } from './queries'
 
 function Layout({ children }: { children: React.ReactNode }) {
+  const { theme } = useTheme()
   const storage = globalThis?.sessionStorage
   const prevPath = storage.getItem('prevPath')
 
@@ -88,6 +89,7 @@ function Layout({ children }: { children: React.ReactNode }) {
           display: 'flex',
           flexDirection: 'column',
           width: '100%',
+          maxWidth: theme.breakpointsNamed.lg + '!important',
           minHeight: '100vh',
           gap: 4,
         }}
@@ -159,7 +161,12 @@ export default function NFTView() {
   if (loading)
     return (
       <Layout>
-        <Container sx={{ justifyContent: 'center', flexGrow: 1 }}>
+        <Container
+          sx={{
+            justifyContent: 'center',
+            flexGrow: 1,
+          }}
+        >
           Loading...
         </Container>
       </Layout>
@@ -179,7 +186,12 @@ export default function NFTView() {
   if (!data?.assetById)
     return (
       <Layout>
-        <Container sx={{ justifyContent: 'center', flexGrow: 1 }}>
+        <Container
+          sx={{
+            justifyContent: 'center',
+            flexGrow: 1,
+          }}
+        >
           Unable to load asset.
         </Container>
       </Layout>
@@ -242,9 +254,9 @@ export default function NFTView() {
       </Head>
       <Layout>
         <Grid
-          columns={[1, 1, 1, 3]}
+          columns={[1, 1, 3]}
           sx={{
-            gridTemplateColumns: ['1fr', '1fr', '1fr 3fr'],
+            gridTemplateColumns: ['1fr', '1fr 3fr'],
             flexGrow: 1,
           }}
         >
@@ -326,7 +338,7 @@ export default function NFTView() {
             <Flex
               sx={{
                 gap: 4,
-                flexDirection: ['column', 'column', 'column', 'row'],
+                flexDirection: ['column', 'row'],
               }}
             >
               <Flex sx={{ flexDirection: 'column', gap: 4 }}>
@@ -335,7 +347,7 @@ export default function NFTView() {
                     <Text variant="h3Secondary">General Info</Text>
 
                     <Flex sx={{ gap: 4 }}>
-                      <Flex sx={{ gap: [1, 1, 4], alignItems: 'center' }}>
+                      <Flex sx={{ gap: [1, 4], alignItems: 'center' }}>
                         <Link
                           href={`/analytics/collection/${collection?.id}`}
                           passHref
@@ -379,7 +391,7 @@ export default function NFTView() {
                               sx={{
                                 fontWeight: 'bold',
                                 lineHeight: 1.25,
-                                fontSize: [3, 3, 4],
+                                fontSize: [3, 4],
                                 textDecoration: 'none',
                                 '&:hover': {
                                   textDecoration: 'underline',
@@ -392,7 +404,7 @@ export default function NFTView() {
                         </Flex>
                       </Flex>
 
-                      <Flex sx={{ gap: [1, 1, 4], alignItems: 'center' }}>
+                      <Flex sx={{ gap: [1, 4], alignItems: 'center' }}>
                         <Image
                           src={
                             txHistory[0]?.txToAddress
@@ -435,7 +447,7 @@ export default function NFTView() {
                                 sx={{
                                   fontWeight: 'bold',
                                   lineHeight: 1.25,
-                                  fontSize: [3, 3, 4],
+                                  fontSize: [3, 4],
                                 }}
                               >
                                 {displayName}

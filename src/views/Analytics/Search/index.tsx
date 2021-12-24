@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import { useBreakpointIndex, useTheme } from '@upshot-tech/upshot-ui'
 import { Button, Container } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Grid, MiniNftCard, Text } from '@upshot-tech/upshot-ui'
 import {
@@ -28,6 +28,7 @@ import {
 } from './queries'
 
 export default function SearchView() {
+  const { theme } = useTheme()
   const router = useRouter()
   const [page, setPage] = useState(0)
   const collectionParam = (router.query.collection as string) ?? ''
@@ -143,7 +144,7 @@ export default function SearchView() {
       <>
         <Box>
           <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-            <Text sx={{ paddingTop: [4, 4, 0] }} color="grey-500">
+            <Text sx={{ paddingTop: [4, 0] }} color="grey-500">
               Price Range
             </Text>
             <Flex sx={{ gap: 4 }}>
@@ -165,7 +166,7 @@ export default function SearchView() {
 
         <Box>
           <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-            <Text sx={{ paddingTop: [4, 4, 0] }} color="grey-500">
+            <Text sx={{ paddingTop: [4, 0] }} color="grey-500">
               Keywords
             </Text>
             <InputRounded
@@ -178,7 +179,7 @@ export default function SearchView() {
 
         <Box>
           <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-            <Text sx={{ paddingTop: [4, 4, 0] }} color="grey-500">
+            <Text sx={{ paddingTop: [4, 0] }} color="grey-500">
               Collection
             </Text>
             <InputRounded
@@ -191,7 +192,7 @@ export default function SearchView() {
 
         <Box>
           <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-            <Text sx={{ paddingTop: [4, 4, 0] }} color="grey-500">
+            <Text sx={{ paddingTop: [4, 0] }} color="grey-500">
               Token ID
             </Text>
             <InputRounded
@@ -204,7 +205,7 @@ export default function SearchView() {
 
         <Box>
           <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-            <Text sx={{ paddingTop: [4, 4, 0] }} color="grey-500">
+            <Text sx={{ paddingTop: [4, 0] }} color="grey-500">
               Attributes
             </Text>
             <InputRounded
@@ -215,7 +216,7 @@ export default function SearchView() {
           </Flex>
         </Box>
 
-        <Box sx={{ paddingTop: [5, 5, 0] }}>
+        <Box sx={{ paddingTop: [5, 0] }}>
           <Button capitalize onClick={handleApplyFilters}>
             Apply Filters
           </Button>
@@ -425,15 +426,16 @@ export default function SearchView() {
             flexDirection: 'column',
             gap: 4,
             width: '100%',
+            maxWidth: theme.breakpointsNamed.lg + '!important',
           }}
         >
           <Breadcrumbs crumbs={breadcrumbs} />
         </Container>
         {!isMobile ? (
           <Grid
-            columns={[1, 1, 1, 3]}
+            columns={[1, 1, 3]}
             sx={{
-              gridTemplateColumns: ['1fr', '1fr', '1fr 3fr', '1fr 3fr 1fr'],
+              gridTemplateColumns: ['1fr', '1fr 3fr', '1fr 3fr 1fr'],
               flexGrow: 1,
               gap: [8, 5, 0],
             }}
@@ -449,6 +451,7 @@ export default function SearchView() {
             display: 'flex',
             flexDirection: 'column',
             gap: 4,
+            maxWidth: theme.breakpointsNamed.lg + '!important',
           }}
         >
           <Footer />
