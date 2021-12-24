@@ -14,9 +14,9 @@ import ExploreNFTs from './ExplorePanel/NFTs'
 import TopCollections from './ExplorePanel/TopCollections'
 import TopCollectors from './ExplorePanel/TopCollectors'
 
-function searchForm(handleSearch, searchTerm, searchTermRef, handleChange) {
+function searchForm(handleSearch, searchTerm, searchTermRef, handleChange, isMobile) {
   return (
-    <form onSubmit={handleSearch}>
+    <form style={isMobile ? { width: '100%' } : {}} onSubmit={handleSearch}>
       <InputRoundedSearch
         dark
         fullWidth
@@ -101,9 +101,10 @@ function ExplorePanelHead({
               zIndex: 0,
               top: 60,
               right: 0,
+              width: '100%',
             }}
           >
-            {searchForm(handleSearch, searchTerm, searchTermRef, handleChange)}
+            {searchForm(handleSearch, searchTerm, searchTermRef, handleChange, true)}
           </Flex>
         )}
         <Flex sx={{ flexDirection: 'column' }}>
@@ -123,7 +124,7 @@ function ExplorePanelHead({
 
         {tab === 'NFTs' && breakpointIndex > 1 ? (
           <Flex sx={{ justifyContent: 'flex-end', alignItems: 'stretch' }}>
-            {searchForm(handleSearch, searchTerm, searchTermRef, handleChange)}
+            {searchForm(handleSearch, searchTerm, searchTermRef, handleChange, false)}
           </Flex>
         ) : null}
       </Flex>
