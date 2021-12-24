@@ -9,8 +9,6 @@ export type GetCollectorVars = {
   collectionOffset: number
   assetLimit: number
   assetOffset: number
-  txLimit: number
-  txOffset: number
   userId?: number
   address?: string
 }
@@ -51,21 +49,6 @@ export type GetCollectorData = {
       txAt: number
     }
     avgHoldTime: number
-    txHistory: {
-      count: number
-      events: {
-        type: string
-        txAt: number
-        txFromAddress: string
-        txToAddress: string
-        txHash: string
-        price: string
-        currency: {
-          symbol: string
-          decimals: number
-        }
-      }[]
-    }
   }
 }
 
@@ -77,8 +60,6 @@ export const GET_COLLECTOR = gql`
     $collectionOffset: Int!
     $assetLimit: OneToHundredInt!
     $assetOffset: Int!
-    $txLimit: OneToHundredInt!
-    $txOffset: Int!
   ) {
     getUser(userId: $userId, address: $address) {
       totalAssetAppraisedValueUsd
@@ -119,6 +100,45 @@ export const GET_COLLECTOR = gql`
         txAt
       }
       avgHoldTime
+    }
+  }
+`
+
+export type GetCollectorTxHistoryVars = {
+  txLimit: number
+  txOffset: number
+  userId?: number
+  address?: string
+}
+
+export type GetCollectorTxHistoryData = {
+  getUser: {
+    txHistory: {
+      count: number
+      events: {
+        type: string
+        txAt: number
+        txFromAddress: string
+        txToAddress: string
+        txHash: string
+        price: string
+        currency: {
+          symbol: string
+          decimals: number
+        }
+      }[]
+    }
+  }
+}
+
+export const GET_COLLECTOR_TX_HISTORY = gql`
+  query GetCollector(
+    $userId: Int
+    $address: String
+    $txLimit: OneToHundredInt!
+    $txOffset: Int!
+  ) {
+    getUser(userId: $userId, address: $address) {
       txHistory(limit: $txLimit, offset: $txOffset) {
         count
         events {
