@@ -92,7 +92,7 @@ function ExplorePanelHead({
           background: 'rgba(35, 31, 32, 0.8)',
         }}
       >
-        {breakpointIndex <= 1 && tab === 'NFTs' && !open && (
+        {breakpointIndex <= 1 && !open && (
           <Flex
             sx={{
               justifyContent: 'flex-end',
@@ -122,7 +122,7 @@ function ExplorePanelHead({
           </Flex>
         </Flex>
 
-        {tab === 'NFTs' && breakpointIndex > 1 ? (
+        {breakpointIndex > 1 && !open ? (
           <Flex sx={{ justifyContent: 'flex-end', alignItems: 'stretch' }}>
             {searchForm(handleSearch, searchTerm, searchTermRef, handleChange, false)}
           </Flex>
@@ -164,7 +164,7 @@ export default function ExplorePanel({
           {tab === 'Collectors' && !!collectionId && (
             <Collectors id={collectionId} name={collectionName} />
           )}
-          {tab === 'Collections' && <TopCollections />}
+          {tab === 'Collections' && <TopCollections searchTerm={searchTerm} />}
         </Box>
       </Flex>
     </Panel>

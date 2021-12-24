@@ -42,12 +42,7 @@ function NFTTableHead() {
 
   return (
     <>
-      {isMobile ? (
-        <Box sx={{ paddingLeft: '67px', paddingY: '8px' }}>
-          <Text sx={{ color: 'grey' }}> NFT </Text>
-        </Box>
-      ) : (
-        <>
+      {!isMobile && (
           <TableHead>
             <TableRow>
               <TableCell></TableCell>
@@ -59,7 +54,6 @@ function NFTTableHead() {
               ))}
             </TableRow>
           </TableHead>
-        </>
       )}
     </>
   )

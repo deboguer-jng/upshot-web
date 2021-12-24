@@ -286,6 +286,7 @@ export type GetExploreCollectionsVars = {
   metric: string
   limit: number
   offset: number
+  name?: string
 }
 
 export type GetExploreCollectionsData = {
@@ -310,11 +311,13 @@ export const GET_EXPLORE_COLLECTIONS = gql`
     $metric: EOrderedAssetSetMetric!
     $limit: OneToHundredInt!
     $offset: Int!
+    $name: String
   ) {
     orderedCollectionsByMetricSearch(
       metric: $metric
       limit: $limit
       offset: $offset
+      name: $name
     ) {
       count
       assetSets {
