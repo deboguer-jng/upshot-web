@@ -148,6 +148,7 @@ export default function ExploreNFTs({
             {
               id,
               name,
+              contractAddress,
               previewImageUrl,
               mediaUrl,
               totalSaleCount,
@@ -164,6 +165,7 @@ export default function ExploreNFTs({
               key={idx}
               defaultOpen={idx === 0 ? true : false}
               onClick={() => handleShowNFT(id)}
+              pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
             >
               {isMobile ? (
                 <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>
