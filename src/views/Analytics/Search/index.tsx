@@ -420,13 +420,12 @@ export default function SearchView() {
       <Flex sx={{ minHeight: '100vh', flexDirection: 'column' }}>
         <Nav />
         <Container
-          p={4}
           sx={{
-            display: 'flex',
             flexDirection: 'column',
-            gap: 4,
             width: '100%',
             maxWidth: theme.breakpointsNamed.lg + '!important',
+            gap: 4,
+            padding: 4,
           }}
         >
           <Breadcrumbs crumbs={breadcrumbs} />
@@ -446,12 +445,11 @@ export default function SearchView() {
           searchResults()
         )}
         <Container
-          p={4}
           sx={{
-            display: 'flex',
             flexDirection: 'column',
-            gap: 4,
             maxWidth: theme.breakpointsNamed.lg + '!important',
+            gap: 4,
+            padding: 4,
           }}
         >
           <Footer />

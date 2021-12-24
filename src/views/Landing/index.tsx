@@ -98,13 +98,12 @@ export default function LandingView() {
         />
       </Head>
       <Container
-        p={4}
+        constrain={1}
         sx={{
-          display: 'flex',
           flexDirection: 'column',
           minHeight: '100vh',
-          maxWidth: theme.breakpointsNamed.lg + '!important',
           gap: 4,
+          padding: 4,
         }}
       >
         <Box sx={{ display: 'flex' }}>

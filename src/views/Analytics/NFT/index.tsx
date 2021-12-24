@@ -84,14 +84,13 @@ function Layout({ children }: { children: React.ReactNode }) {
     <>
       <Nav />
       <Container
-        p={4}
         sx={{
-          display: 'flex',
           flexDirection: 'column',
           width: '100%',
           maxWidth: theme.breakpointsNamed.lg + '!important',
           minHeight: '100vh',
           gap: 4,
+          padding: 4,
         }}
       >
         <Breadcrumbs crumbs={breadcrumbs} />
