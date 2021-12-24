@@ -482,8 +482,9 @@ export const GET_TOP_COLLECTORS = gql`
 export type GetCollectorsVars = {
   id?: number
   limit: number
-  assetId?: String
+  assetId?: string
   offset: number
+  searchTerm?: string
 }
 
 export type GetCollectorsData = {
@@ -521,12 +522,14 @@ export const GET_COLLECTORS = gql`
     $limit: OneToHundredInt!
     $offset: Int!
     $assetId: String
+    $searchTerm: String
   ) {
     getOwnersByWhaleness(
       collectionId: $id
       limit: $limit
       offset: $offset
       assetId: $assetId
+      searchTerm: $searchTerm
     ) {
       count
       owners {
@@ -566,7 +569,7 @@ export const GET_COLLECTORS = gql`
 export type GetPreviousOwnersVars = {
   id?: number
   limit: number
-  assetId?: String
+  assetId?: string
   offset: number
 }
 

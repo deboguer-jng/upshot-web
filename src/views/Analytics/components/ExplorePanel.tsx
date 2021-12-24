@@ -162,7 +162,7 @@ export default function ExplorePanel({
           )}
           {tab === 'Collectors' && !collectionId && <TopCollectors searchTerm={searchTerm} />}
           {tab === 'Collectors' && !!collectionId && (
-            <Collectors id={collectionId} name={collectionName} />
+            <Collectors id={collectionId} name={collectionName} searchTerm={searchTerm}/>
           )}
           {tab === 'Collections' && <TopCollections searchTerm={searchTerm} />}
         </Box>
