@@ -87,8 +87,6 @@ function Layout({ children }: { children: React.ReactNode }) {
         constrain={1}
         sx={{
           flexDirection: 'column',
-          width: '100%',
-          maxWidth: theme.breakpointsNamed.lg + '!important',
           minHeight: '100vh',
           gap: 4,
           padding: 4,

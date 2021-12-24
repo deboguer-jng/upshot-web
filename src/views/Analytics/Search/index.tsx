@@ -423,8 +423,6 @@ export default function SearchView() {
           constrain={1}
           sx={{
             flexDirection: 'column',
-            width: '100%',
-            maxWidth: theme.breakpointsNamed.lg + '!important',
             gap: 4,
             padding: 4,
           }}
@@ -449,7 +447,6 @@ export default function SearchView() {
           constrain={1}
           sx={{
             flexDirection: 'column',
-            maxWidth: theme.breakpointsNamed.lg + '!important',
             gap: 4,
             padding: 4,
           }}
