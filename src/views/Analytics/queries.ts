@@ -51,6 +51,8 @@ export type GetTopCollectionsData = {
       latestStats: {
         volume: string
         sevenDayChange: number
+        floor: number
+        pastDayWeiAverage: number
       }
       timeSeries?: TimeSeries[]
     }[]
@@ -120,6 +122,8 @@ export const GET_TOP_COLLECTIONS = gql`
         latestStats {
           volume
           sevenDayChange
+          floor
+          pastDayWeiAverage
         }
       }
     }
