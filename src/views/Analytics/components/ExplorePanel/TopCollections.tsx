@@ -108,6 +108,7 @@ export default function ExploreNFTs({
       metric: 'VOLUME',
       limit: PAGE_SIZE,
       offset: page * PAGE_SIZE,
+      name: searchTerm
     },
   })
 

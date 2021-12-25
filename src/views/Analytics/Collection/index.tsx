@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client'
 import { theme, useBreakpointIndex } from '@upshot-tech/upshot-ui'
-import { Chart, Container, Flex, Grid, Label } from '@upshot-tech/upshot-ui'
+import { Container, Flex, Grid, Label } from '@upshot-tech/upshot-ui'
 import { Avatar, Text } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'

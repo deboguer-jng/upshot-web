@@ -27,10 +27,12 @@ export default function Collectors({
   id,
   name,
   assetId,
+  searchTerm = '',
 }: {
   id?: number
   name?: string
   assetId?: string
+  searchTerm?: string
 }) {
   const [page, setPage] = useState(0)
   const handlePageChange = ({ selected }: { selected: number }) => {
@@ -53,7 +55,7 @@ export default function Collectors({
       )
     : useQuery<GetCollectorsData, GetCollectorsVars>(GET_COLLECTORS, {
         errorPolicy: 'all',
-        variables: { id, limit: PAGE_SIZE, offset: page * PAGE_SIZE },
+        variables: { id, limit: PAGE_SIZE, offset: page * PAGE_SIZE, searchTerm },
         skip: !id,
       })
 

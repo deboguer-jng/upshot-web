@@ -36,12 +36,7 @@ function NFTTableHead() {
 
   return (
     <>
-      {isMobile ? (
-        <Box sx={{ paddingLeft: '67px', paddingY: '8px' }}>
-          <Text sx={{ color: 'grey' }}> NFT </Text>
-        </Box>
-      ) : (
-        <>
+      {!isMobile && (
           <TableHead>
             <TableRow>
               <TableCell></TableCell>
@@ -53,7 +48,6 @@ function NFTTableHead() {
               ))}
             </TableRow>
           </TableHead>
-        </>
       )}
     </>
   )
@@ -148,6 +142,7 @@ export default function ExploreNFTs({
             {
               id,
               name,
+              contractAddress,
               previewImageUrl,
               mediaUrl,
               totalSaleCount,
@@ -164,6 +159,7 @@ export default function ExploreNFTs({
               key={idx}
               defaultOpen={idx === 0 ? true : false}
               onClick={() => handleShowNFT(id)}
+              pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
             >
               {isMobile ? (
                 <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>
