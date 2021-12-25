@@ -54,7 +54,7 @@ export default function AnalyticsView() {
       </Head>
       <Nav />
       <Container
-        constrain={1}
+        maxBreakpoint="lg"
         sx={{
           flexDirection: 'column',
           minHeight: '100vh',

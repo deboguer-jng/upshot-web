@@ -76,7 +76,7 @@ export default forwardRef(function CollectionPanel(
         <Flex
           sx={{
             justifyContent: 'space-between',
-            flexDirection: ['column', 'row'],
+            flexDirection: ['column', 'column', 'row'],
             gap: 2,
           }}
         >

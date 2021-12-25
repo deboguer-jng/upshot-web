@@ -420,7 +420,7 @@ export default function SearchView() {
       <Flex sx={{ minHeight: '100vh', flexDirection: 'column' }}>
         <Nav />
         <Container
-          constrain={1}
+          maxBreakpoint="lg"
           sx={{
             flexDirection: 'column',
             gap: 4,
@@ -444,7 +444,7 @@ export default function SearchView() {
           searchResults()
         )}
         <Container
-          constrain={1}
+          maxBreakpoint="lg"
           sx={{
             flexDirection: 'column',
             gap: 4,

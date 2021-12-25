@@ -98,7 +98,7 @@ export default function LandingView() {
         />
       </Head>
       <Container
-        constrain={1}
+        maxBreakpoint="lg"
         sx={{
           flexDirection: 'column',
           minHeight: '100vh',
