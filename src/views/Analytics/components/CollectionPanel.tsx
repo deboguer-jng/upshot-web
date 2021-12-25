@@ -1,5 +1,5 @@
 import { useTheme } from '@emotion/react'
-import { InputRoundedSearch } from '@upshot-tech/upshot-ui'
+import { InputRoundedSearch, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Flex, Grid, Panel, Text } from '@upshot-tech/upshot-ui'
 import React, { forwardRef, useState } from 'react'
 
@@ -29,7 +29,7 @@ const splitArray = (arr) => {
   let j
   let temporary = []
   const array = new Array<Array<HTMLElement>>()
-  let chunk = 4
+  let chunk = 5
   for (i = 0, j = arr.length; i < j; i += chunk) {
     temporary = arr.slice(i, i + chunk)
     array.push(temporary)
@@ -54,6 +54,8 @@ export default forwardRef(function CollectionPanel(
    */
   const [autoFilter, setAutoFilter] = useState<any>()
   const theme = useTheme()
+  const breakpointIndex = useBreakpointIndex()
+  const isMobile = breakpointIndex <= 1
 
   const handleChange = (e: React.ChangeEvent) => {
     if (autoFilter) {
@@ -69,6 +71,12 @@ export default forwardRef(function CollectionPanel(
   }
 
   const childrenArray = React.Children.toArray(children)
+
+  const searchStyle = (
+    isMobile
+      ? {}
+      : { justifyContent: 'flex-end', alignItems: 'stretch' }
+  )
 
   return (
     <Panel {...{ ref, ...props }}>
@@ -94,8 +102,8 @@ export default forwardRef(function CollectionPanel(
               {subtitle}
             </Text>
           </Flex>
-          <Flex sx={{ justifyContent: 'flex-end', alignItems: 'stretch' }}>
-            <form onSubmit={onSearch}>
+          <Flex sx={searchStyle}>
+            <form style={isMobile ? { width: '100%' } : {}} onSubmit={onSearch}>
               <InputRoundedSearch
                 dark
                 fullWidth

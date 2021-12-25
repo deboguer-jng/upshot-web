@@ -60,6 +60,10 @@ export type GetCollectorData = {
         txToAddress: string
         txHash: string
         price: string
+        asset: {
+          id: string
+          name: string
+        }
         currency: {
           symbol: string
           decimals: number
@@ -128,6 +132,10 @@ export const GET_COLLECTOR = gql`
           txToAddress
           txHash
           price
+          asset {
+            id
+            name
+          }
           currency {
             symbol
             decimals

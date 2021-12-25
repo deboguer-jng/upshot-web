@@ -691,7 +691,18 @@ export default function NFTView() {
               </Flex>
             </Flex>
             <Panel>
-              <Flex sx={{ flexDirection: 'column', gap: 4 }}>
+              <Box
+                sx={{
+                  overflow: 'auto',
+                  flexGrow: 1,
+                  resize: 'none',
+                  maxHeight: 300,
+                  '&::-webkit-scrollbar-corner': {
+                    backgroundColor: 'transparent',
+                  },
+                }}
+                css={theme.scroll.thin}
+              >
                 <Flex sx={{ flexDirection: 'column', gap: 4 }}>
                   <Flex
                     sx={{
@@ -836,7 +847,7 @@ export default function NFTView() {
                     </Text>
                   )}
                 </Flex>
-              </Flex>
+              </Box>
             </Panel>
             <Panel>
               <Flex sx={{ flexDirection: 'column', gap: 16 }}>

@@ -52,6 +52,9 @@ export type GetTopCollectionsData = {
         volume: string
         sevenDayChange: number
         pastWeekWeiVolume: string
+        floor: number
+        pastDayWeiAverage: string
+        pastDayWeiVolume: string
       }
       timeSeries?: TimeSeries[]
     }[]
@@ -122,6 +125,9 @@ export const GET_TOP_COLLECTIONS = gql`
           volume
           sevenDayChange
           pastWeekWeiVolume
+          floor
+          pastDayWeiAverage
+          pastDayWeiVolume
         }
       }
     }
@@ -288,6 +294,7 @@ export type GetExploreCollectionsVars = {
   metric: string
   limit: number
   offset: number
+  name?: string
 }
 
 export type GetExploreCollectionsData = {
@@ -312,11 +319,13 @@ export const GET_EXPLORE_COLLECTIONS = gql`
     $metric: EOrderedAssetSetMetric!
     $limit: OneToHundredInt!
     $offset: Int!
+    $name: String
   ) {
     orderedCollectionsByMetricSearch(
       metric: $metric
       limit: $limit
       offset: $offset
+      name: $name
     ) {
       count
       assetSets {
@@ -406,6 +415,7 @@ export const GET_SEVEN_DAY_MC_CHANGE = gql`
 export type GetTopCollectorsVars = {
   limit: number
   offset: number
+  searchTerm: string
 }
 
 export type GetTopCollectorsData = {
@@ -439,8 +449,8 @@ export type GetTopCollectorsData = {
 }
 
 export const GET_TOP_COLLECTORS = gql`
-  query GetTopCollectors($limit: OneToHundredInt!, $offset: Int) {
-    getOwnersByWhaleness(limit: $limit, offset: $offset) {
+  query GetTopCollectors($limit: OneToHundredInt!, $offset: Int, $searchTerm: String) {
+    getOwnersByWhaleness(limit: $limit, offset: $offset, searchTerm: $searchTerm) {
       count
       owners {
         username
@@ -480,8 +490,9 @@ export const GET_TOP_COLLECTORS = gql`
 export type GetCollectorsVars = {
   id?: number
   limit: number
-  assetId?: String
+  assetId?: string
   offset: number
+  searchTerm?: string
 }
 
 export type GetCollectorsData = {
@@ -519,12 +530,14 @@ export const GET_COLLECTORS = gql`
     $limit: OneToHundredInt!
     $offset: Int!
     $assetId: String
+    $searchTerm: String
   ) {
     getOwnersByWhaleness(
       collectionId: $id
       limit: $limit
       offset: $offset
       assetId: $assetId
+      searchTerm: $searchTerm
     ) {
       count
       owners {
@@ -564,7 +577,7 @@ export const GET_COLLECTORS = gql`
 export type GetPreviousOwnersVars = {
   id?: number
   limit: number
-  assetId?: String
+  assetId?: string
   offset: number
 }
 
