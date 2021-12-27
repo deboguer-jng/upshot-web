@@ -13,7 +13,7 @@ import { formatDistance } from 'date-fns'
 import { BigNumber as BN } from 'ethers'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { shortenAddress } from 'utils/address'
 import { weiToEth } from 'utils/number'
 
@@ -49,8 +49,8 @@ function TopSellingCollectionNFTsHeader({
   setTopSellingType?: (val: string) => void
 }) {
   const breakpointIndex = useBreakpointIndex()
-  const [timeframeOpen, setTimeframeOpen] = useState(false)
   const [assetTypeOpen, setAssetTypeOpen] = useState(false)
+  const [timeframeOpen, setTimeframeOpen] = useState(false)
 
   return (
     <Box
@@ -61,7 +61,7 @@ function TopSellingCollectionNFTsHeader({
         paddingBottom: '1rem',
         position: 'absolute',
         width: '100%',
-        height: timeframeOpen || assetTypeOpen ? '100%' : 'auto',
+        height: assetTypeOpen || timeframeOpen ? '100%' : 'auto',
         background: 'rgba(0, 0, 0, 0.8)',
         zIndex: 2,
         '&,& *': breakpointIndex <= 1 && {
@@ -75,9 +75,11 @@ function TopSellingCollectionNFTsHeader({
           onValueChange={(val) => setTopSellingType?.(val)}
           onToggle={(status) => {
             setAssetTypeOpen(status)
+            setTimeframeOpen(false)
           }}
           value={topSellingType ?? ''}
           options={['NFTs', 'Collections']}
+          defaultOpen={assetTypeOpen}
           sx={{
             display: 'inline-block',
             marginLeft: '0.3rem',
@@ -93,9 +95,11 @@ function TopSellingCollectionNFTsHeader({
           onValueChange={(val) => setPeriod?.(val)}
           onToggle={(status) => {
             setTimeframeOpen(status)
+            setAssetTypeOpen(false)
           }}
           value={period ?? ''}
           options={['1 day', '1 week', '1 month']}
+          defaultOpen={timeframeOpen}
           sx={{
             display: 'inline-block',
             marginLeft: '0.3rem',
