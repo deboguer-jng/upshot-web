@@ -49,8 +49,8 @@ function TopSellingCollectionNFTsHeader({
   setTopSellingType?: (val: string) => void
 }) {
   const breakpointIndex = useBreakpointIndex()
-  const [open, setOpen] = useState(false)
-  const [collectionOpen, setCollectionOpen] = useState(false)
+  const [timeframeOpen, setTimeframeOpen] = useState(false)
+  const [assetTypeOpen, setAssetTypeOpen] = useState(false)
 
   return (
     <Box
@@ -61,7 +61,7 @@ function TopSellingCollectionNFTsHeader({
         paddingBottom: '1rem',
         position: 'absolute',
         width: '100%',
-        height: open || collectionOpen ? '100%' : 'auto',
+        height: timeframeOpen || assetTypeOpen ? '100%' : 'auto',
         background: 'rgba(0, 0, 0, 0.8)',
         zIndex: 2,
         '&,& *': breakpointIndex <= 1 && {
@@ -74,7 +74,7 @@ function TopSellingCollectionNFTsHeader({
         <SwitchDropdown
           onValueChange={(val) => setTopSellingType?.(val)}
           onToggle={(status) => {
-            setCollectionOpen(status)
+            setAssetTypeOpen(status)
           }}
           value={topSellingType ?? ''}
           options={['NFTs', 'Collections']}
@@ -92,7 +92,7 @@ function TopSellingCollectionNFTsHeader({
         <SwitchDropdown
           onValueChange={(val) => setPeriod?.(val)}
           onToggle={(status) => {
-            setOpen(status)
+            setTimeframeOpen(status)
           }}
           value={period ?? ''}
           options={['1 day', '1 week', '1 month']}
