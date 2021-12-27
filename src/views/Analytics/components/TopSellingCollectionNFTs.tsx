@@ -9,8 +9,8 @@ import {
   useBreakpointIndex,
 } from '@upshot-tech/upshot-ui'
 import { PIXELATED_CONTRACTS } from 'constants/'
-import { BigNumber as BN } from 'ethers'
 import { formatDistance } from 'date-fns'
+import { BigNumber as BN } from 'ethers'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
