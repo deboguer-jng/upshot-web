@@ -864,6 +864,7 @@ export default function UserView() {
                                                 bg: 'yellow',
                                                 width: 3,
                                                 height: 3,
+                                                marginLeft: '4px',
                                               }}
                                             />
                                             <Link
