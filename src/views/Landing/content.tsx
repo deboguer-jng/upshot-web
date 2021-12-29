@@ -24,10 +24,9 @@ let projects = [
     projectType: 'Protocol',
   },
   {
-    title: 'Pawn.fi',
+    title: 'Arcade.xyz',
     description: 'Lend and borrow non-fungible assets on-chain',
-    url: 'https://www.pawn.fi',
-    image: PawnfiPNG,
+    url: 'https://www.arcade.xyz',
     projectType: 'Protocol',
   },
   {
