@@ -151,7 +151,8 @@ export default function CollectionAvgPricePanel({
                         objectPosition: 'center',
                       }}
                       src={imageUrl}
-                      height={theme.buttons.collection.height}
+                      height={theme.buttons.collection.iconHeight}
+                      width={theme.buttons.collection.iconHeight}
                     />
                     <Icon
                       icon="arrowStylizedRight"
