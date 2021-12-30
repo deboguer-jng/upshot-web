@@ -87,6 +87,7 @@ export default function TopCollectors({ searchTerm }: { searchTerm: string }) {
                       paddingBottom: '12px',
                       fontSize: 4,
                     }}
+                    onClick={(e) => e.stopPropagation()}
                   >
                     View Portfolio
                   </Text>
@@ -95,7 +96,7 @@ export default function TopCollectors({ searchTerm }: { searchTerm: string }) {
                   Most Notable NFTs
                 </Text>
               </div>
-              <MiniNFTContainer>
+              <MiniNFTContainer onClick={(e) => e.stopPropagation()} >
                 {ownedAssets?.assets?.map(
                   (
                     {
