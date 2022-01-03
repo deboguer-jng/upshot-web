@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { useBreakpointIndex, CollectorAccordion } from '@upshot-tech/upshot-ui'
+import { CollectorAccordion,useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { Pagination } from '@upshot-tech/upshot-ui'
 import {
