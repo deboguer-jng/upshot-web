@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { theme, useBreakpointIndex  } from '@upshot-tech/upshot-ui'
+import { imageOptimizer,theme, useBreakpointIndex  } from '@upshot-tech/upshot-ui'
 import { Chart, Container, Flex, Grid, Label  } from '@upshot-tech/upshot-ui'
 import { Avatar, Text } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
@@ -240,7 +240,10 @@ export default function CollectionView() {
       <Grid columns={isMobile ? '1fr' : '1fr 1fr'} sx={{ gap: '40px' }}>
         <Flex sx={{ flexDirection: 'column', gap: '16px' }}>
           <Flex sx={{ gap: 6, height: 100, alignItems: 'center' }}>
-            <Avatar size="xl" src={imageUrl} />
+            <Avatar size="xl" src={imageOptimizer(imageUrl, {
+                        width: parseInt(theme.images.avatar.xl.size),
+                        height: parseInt(theme.images.avatar.xl.size)
+                      }) ?? imageUrl} />
             <Flex sx={{ flexDirection: 'column' }}>
               <Text variant="h1Secondary" sx={{ lineHeight: '2rem' }}>
                 {name}

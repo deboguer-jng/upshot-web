@@ -1,6 +1,5 @@
 /** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
-import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Flex, Image, Text } from '@upshot-tech/upshot-ui'
 import {
   Box,
@@ -152,6 +151,8 @@ export default function CollectionAvgPricePanel({
                         objectPosition: 'center',
                       }}
                       src={imageUrl}
+                      height={theme.buttons.collection.iconHeight}
+                      width={theme.buttons.collection.iconHeight}
                     />
                     <Icon
                       icon="arrowStylizedRight"
