@@ -7,8 +7,15 @@ export const MiniNFTContainer = styled(Box)`
   gap: ${({ theme }) => theme.sizes[7] + 'px'};
   padding-bottom: ${({ theme }) => theme.sizes[5] + 'px'};
   overflow: hidden;
-  
-  &:hover {
+
+  @media (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    &:hover {
+      overflow-x: auto;
+      ${({ theme: { scroll } }) => scroll.thin}
+    }
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints[1]}) {
     overflow-x: auto;
     ${({ theme: { scroll } }) => scroll.thin}
   }

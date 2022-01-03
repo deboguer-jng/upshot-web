@@ -58,7 +58,8 @@ function TopSellingCollectionNFTsHeader({
       sx={{
         gap: 2,
         alignItems: 'flex-start',
-        paddingBottom: '1rem',
+        paddingBottom: breakpointIndex <= 1 ? '0rem' : '1rem',
+        marginTop: breakpointIndex <= 1 ? '1rem' : '0rem',
         position: 'absolute',
         width: '100%',
         height: assetTypeOpen || timeframeOpen ? '100%' : 'auto',
@@ -66,6 +67,7 @@ function TopSellingCollectionNFTsHeader({
         zIndex: 2,
         '&,& *': breakpointIndex <= 1 && {
           lineHeight: '2rem !important',
+          fontSize: '1.25rem !important',
         },
       }}
     >
