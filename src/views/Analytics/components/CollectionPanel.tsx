@@ -72,11 +72,9 @@ export default forwardRef(function CollectionPanel(
 
   const childrenArray = React.Children.toArray(children)
 
-  const searchStyle = (
-    isMobile
-      ? {}
-      : { justifyContent: 'flex-end', alignItems: 'stretch' }
-  )
+  const searchStyle = isMobile
+    ? {}
+    : { justifyContent: 'flex-end', alignItems: 'stretch' }
 
   return (
     <Panel {...{ ref, ...props }}>
@@ -107,7 +105,6 @@ export default forwardRef(function CollectionPanel(
               <InputRoundedSearch
                 dark
                 fullWidth
-                hasButton
                 variant="search"
                 onChange={handleChange}
                 buttonProps={{

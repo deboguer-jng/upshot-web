@@ -1,11 +1,6 @@
 import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { InputRoundedSearch } from '@upshot-tech/upshot-ui'
-import {
-  Box,
-  Flex,
-  Panel,
-  SwitchDropdown,
-} from '@upshot-tech/upshot-ui'
+import { Box, Flex, Panel, SwitchDropdown } from '@upshot-tech/upshot-ui'
 import router from 'next/router'
 import React, { useRef, useState } from 'react'
 
@@ -14,13 +9,18 @@ import ExploreNFTs from './ExplorePanel/NFTs'
 import TopCollections from './ExplorePanel/TopCollections'
 import TopCollectors from './ExplorePanel/TopCollectors'
 
-function searchForm(handleSearch, searchTerm, searchTermRef, handleChange, isMobile) {
+function searchForm(
+  handleSearch,
+  searchTerm,
+  searchTermRef,
+  handleChange,
+  isMobile
+) {
   return (
     <form style={isMobile ? { width: '100%' } : {}} onSubmit={handleSearch}>
       <InputRoundedSearch
         dark
         fullWidth
-        hasButton
         defaultValue={searchTerm}
         ref={searchTermRef}
         onChange={handleChange}
@@ -89,7 +89,7 @@ function ExplorePanelHead({
           width: '100%',
           height: open ? '170px' : 'auto',
           zIndex: 2,
-          background: 'rgba(35, 31, 32, 0.8)', 
+          background: 'rgba(35, 31, 32, 0.8)',
         }}
       >
         {breakpointIndex <= 1 && !open && (
@@ -104,7 +104,13 @@ function ExplorePanelHead({
               width: '100%',
             }}
           >
-            {searchForm(handleSearch, searchTerm, searchTermRef, handleChange, true)}
+            {searchForm(
+              handleSearch,
+              searchTerm,
+              searchTermRef,
+              handleChange,
+              true
+            )}
           </Flex>
         )}
         <Flex sx={{ flexDirection: 'column' }}>
@@ -124,7 +130,13 @@ function ExplorePanelHead({
 
         {breakpointIndex > 1 && !open ? (
           <Flex sx={{ justifyContent: 'flex-end', alignItems: 'stretch' }}>
-            {searchForm(handleSearch, searchTerm, searchTermRef, handleChange, false)}
+            {searchForm(
+              handleSearch,
+              searchTerm,
+              searchTermRef,
+              handleChange,
+              false
+            )}
           </Flex>
         ) : null}
       </Flex>
@@ -160,9 +172,15 @@ export default function ExplorePanel({
           {tab === 'NFTs' && (
             <ExploreNFTs searchTerm={searchTerm} collectionId={collectionId} />
           )}
-          {tab === 'Collectors' && !collectionId && <TopCollectors searchTerm={searchTerm} />}
+          {tab === 'Collectors' && !collectionId && (
+            <TopCollectors searchTerm={searchTerm} />
+          )}
           {tab === 'Collectors' && !!collectionId && (
-            <Collectors id={collectionId} name={collectionName} searchTerm={searchTerm}/>
+            <Collectors
+              id={collectionId}
+              name={collectionName}
+              searchTerm={searchTerm}
+            />
           )}
           {tab === 'Collections' && <TopCollections searchTerm={searchTerm} />}
         </Box>
