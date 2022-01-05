@@ -59,7 +59,7 @@ function TopSellingCollectionNFTsHeader({
         gap: 2,
         alignItems: 'flex-start',
         paddingBottom: breakpointIndex <= 1 ? '0rem' : '1rem',
-        marginTop: breakpointIndex <= 1 ? '1rem' : '0rem',
+        marginTop: '0rem',
         position: 'absolute',
         width: '100%',
         height: assetTypeOpen || timeframeOpen ? '100%' : 'auto',
@@ -67,7 +67,6 @@ function TopSellingCollectionNFTsHeader({
         zIndex: 2,
         '&,& *': breakpointIndex <= 1 && {
           lineHeight: '2rem !important',
-          fontSize: '1.25rem !important',
         },
       }}
     >
@@ -240,8 +239,9 @@ export default function TopSellingCollectionNFTs({
             width: '100%',
             background: 'black',
             height: 'calc(100% - 80px)',
-            WebkitMaskImage:
-              'linear-gradient(to right, rgba(0, 0, 0, 0) 85%, rgba(0,0,0,1) 100%);',
+            WebkitMaskImage: `linear-gradient(to right, rgba(0, 0, 0, 0) ${
+              breakpointIndex <= 1 ? 65 : 85
+            }%, rgba(0,0,0,1) 100%);`,
             zIndex: 2,
             pointerEvents: 'none',
           }}
