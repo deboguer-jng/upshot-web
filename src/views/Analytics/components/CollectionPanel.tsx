@@ -72,11 +72,9 @@ export default forwardRef(function CollectionPanel(
 
   const childrenArray = React.Children.toArray(children)
 
-  const searchStyle = (
-    isMobile
-      ? {}
-      : { justifyContent: 'flex-end', alignItems: 'stretch' }
-  )
+  const searchStyle = isMobile
+    ? {}
+    : { justifyContent: 'flex-end', alignItems: 'stretch' }
 
   return (
     <Panel {...{ ref, ...props }}>
@@ -127,6 +125,7 @@ export default forwardRef(function CollectionPanel(
             overflowY: 'hidden',
             gridTemplateRows: '1fr',
             paddingBottom: '12px',
+            gap: '20px',
           }}
           css={theme.scroll.thin}
         >
