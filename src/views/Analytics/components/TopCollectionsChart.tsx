@@ -134,6 +134,9 @@ export default function TopCollectionsCharts({
             ? [maxDate * 1000, val[1]] // Align window end
             : val
         ),
+        metric,
+        currentFloor: weiToEth((latestStats?.floor).toString(), 4, false),
+        currentAvg: weiToEth((latestStats?.pastDayWeiAverage).toString(), 4, false),
       }
     })
 

@@ -29,7 +29,7 @@ type PanelData = {
   projectType: string
   title: string
   description: string
-  image: any
+  image?: any
   url: string
 }
 
@@ -52,7 +52,7 @@ function renderLandingPanel(data: PanelData) {
         projectType={data.projectType}
         title={data.title}
         description={data.description}
-        image={data.image.src}
+        image={data.image?.src}
       />
     </Link>
   )

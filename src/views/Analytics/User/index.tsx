@@ -21,7 +21,7 @@ import {
   TableRow,
   useTheme,
 } from '@upshot-tech/upshot-ui'
-import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import { imageOptimizer, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import { FormattedENS } from 'components/FormattedENS'
 import { Nav } from 'components/Nav'
@@ -346,7 +346,10 @@ export default function UserView() {
                     content: "''",
                     display: 'block',
                     paddingTop: '100%',
-                    backgroundImage: `url(${previewImageUrl})`,
+                    backgroundImage: `url(${imageOptimizer(previewImageUrl, {
+                        width: 180,
+                        height: 180
+                      }) ?? previewImageUrl})`,
                     backgroundSize: 'cover',
                     backgroundRepeat: 'no-repeat',
                     backgroundPosition: 'center',
@@ -864,6 +867,7 @@ export default function UserView() {
                                                 bg: 'yellow',
                                                 width: 3,
                                                 height: 3,
+                                                marginLeft: '4px',
                                               }}
                                             />
                                             <Link
