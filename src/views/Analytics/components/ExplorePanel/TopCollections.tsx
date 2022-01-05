@@ -60,7 +60,6 @@ function CollectionTableHead() {
 }
 
 const handleShowCollection = (id: number) => {
-  console.log('this is handle show collection')
   router.push('/analytics/collection/' + id)
 }
 
