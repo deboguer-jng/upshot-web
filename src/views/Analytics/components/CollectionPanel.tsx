@@ -119,7 +119,7 @@ export default forwardRef(function CollectionPanel(
         </Flex>
         <Grid
           sx={{
-            gridAutoColumns: 293,
+            gridAutoColumns: 282,
             gridAutoFlow: 'column',
             overflowX: 'auto',
             overflowY: 'hidden',
