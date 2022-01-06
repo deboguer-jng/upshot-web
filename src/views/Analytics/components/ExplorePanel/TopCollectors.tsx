@@ -61,6 +61,10 @@ export default function TopCollectors({ searchTerm }: { searchTerm: string }) {
   if (!data?.getOwnersByWhaleness?.['owners']?.length)
     return <div>No results available.</div>
 
+  const handleShowCollector = (address: string) => {
+    router.push('/analytics/user/' + address)
+  }
+
   return (
     <>
       <CollectorAccordionHead>
@@ -72,6 +76,7 @@ export default function TopCollectors({ searchTerm }: { searchTerm: string }) {
             <CollectorAccordionRow
               address={addresses?.[0].address}
               key={idx}
+              onClick={() => handleShowCollector(addresses?.[0].address)}
               defaultOpen={idx === 0 ? true : false}
               {...{ username }}
             >
@@ -96,7 +101,7 @@ export default function TopCollectors({ searchTerm }: { searchTerm: string }) {
                   Most Notable NFTs
                 </Text>
               </div>
-              <MiniNFTContainer onClick={(e) => e.stopPropagation()} >
+              <MiniNFTContainer onClick={(e) => e.stopPropagation()}>
                 {ownedAssets?.assets?.map(
                   (
                     {
