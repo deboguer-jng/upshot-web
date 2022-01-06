@@ -248,13 +248,18 @@ export default function CollectionView() {
             <Box
               sx={{
                 backgroundColor: '#231F20',
-                padding: '8px',
+                minWidth: '63px',
+                padding: isMobile ? '4px' : '8px',
                 borderRadius: '50%',
               }}
             >
               <Avatar
                 size="xl"
-                sx={{ width: '100px', height: '100px' }}
+                sx={{
+                  width: isMobile ? '55px' : '100px',
+                  height: isMobile ? '55px' : '100px',
+                  minWidth: 'unset',
+                }}
                 src={
                   imageOptimizer(imageUrl, {
                     width: parseInt(theme.images.avatar.xl.size),
