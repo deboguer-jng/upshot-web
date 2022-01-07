@@ -20,8 +20,7 @@ import {
   TableRow,
   useTheme,
 } from '@upshot-tech/upshot-ui'
-import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
-import InfiniteScroll from 'react-infinite-scroll-component'
+import { imageOptimizer, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import { FormattedENS } from 'components/FormattedENS'
 import { Nav } from 'components/Nav'
@@ -394,7 +393,12 @@ export default function UserView() {
                     content: "''",
                     display: 'block',
                     paddingTop: '100%',
-                    backgroundImage: `url(${previewImageUrl})`,
+                    backgroundImage: `url(${
+                      imageOptimizer(previewImageUrl, {
+                        width: 180,
+                        height: 180,
+                      }) ?? previewImageUrl
+                    })`,
                     backgroundSize: 'cover',
                     backgroundRepeat: 'no-repeat',
                     backgroundPosition: 'center',
@@ -750,41 +754,6 @@ export default function UserView() {
                           }}
                         >
                           Unique Collections
-                        </Text>
-                      </Panel>
-                      <Panel
-                        sx={{
-                          display: 'flex',
-                          borderRadius: '20px',
-                          flexDirection: 'column',
-                          justifyContent: 'center',
-                          height: 80,
-                        }}
-                      >
-                        <Text
-                          sx={{
-                            fontWeight: 'bold',
-                            fontSize: 4,
-                            color: 'grey-500',
-                            textAlign: 'center',
-                          }}
-                        >
-                          {data?.getUser?.mostRecentSell?.txAt
-                            ? format(
-                                data.getUser.mostRecentSell.txAt * 1000,
-                                'M/d/yyyy'
-                              )
-                            : '-'}
-                        </Text>
-                        <Text
-                          color="grey-500"
-                          sx={{
-                            fontSize: 2,
-                            fontWeight: 'heading',
-                            textAlign: 'center',
-                          }}
-                        >
-                          Most Recent Sale
                         </Text>
                       </Panel>
                       <Panel

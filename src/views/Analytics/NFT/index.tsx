@@ -1,6 +1,6 @@
 /** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
-import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import { imageOptimizer, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Container } from '@upshot-tech/upshot-ui'
 import { Flex, Grid, Image, Text } from '@upshot-tech/upshot-ui'
 import {
@@ -221,7 +221,10 @@ export default function NFTView() {
     creatorUsername ??
     shortenAddress(txHistory[0]?.txToAddress) ??
     'Unknown'
-
+  
+  const image = previewImageUrl ?? mediaUrl
+  const optimizedSrc = imageOptimizer(image, {width: 340}) ?? image
+  const finalImageSrc = PIXELATED_CONTRACTS.includes(contractAddress) ? image : optimizedSrc
   return (
     <>
       <Head>
@@ -250,7 +253,7 @@ export default function NFTView() {
         >
           <Flex sx={{ flexDirection: 'column', gap: 4 }}>
             <Image
-              src={previewImageUrl ?? mediaUrl}
+              src={finalImageSrc}
               alt={`Featured image for ${assetName}`}
               sx={{
                 borderRadius: '10px',
@@ -691,7 +694,18 @@ export default function NFTView() {
               </Flex>
             </Flex>
             <Panel>
-              <Flex sx={{ flexDirection: 'column', gap: 4 }}>
+              <Box
+                sx={{
+                  overflow: 'auto',
+                  flexGrow: 1,
+                  resize: 'none',
+                  maxHeight: 300,
+                  '&::-webkit-scrollbar-corner': {
+                    backgroundColor: 'transparent',
+                  },
+                }}
+                css={theme.scroll.thin}
+              >
                 <Flex sx={{ flexDirection: 'column', gap: 4 }}>
                   <Flex
                     sx={{
@@ -900,7 +914,7 @@ export default function NFTView() {
                     )}
                   </Box>
                 </Flex>
-              </Flex>
+              </Box>
             </Panel>
             <Panel>
               <Flex sx={{ flexDirection: 'column', gap: 16 }}>

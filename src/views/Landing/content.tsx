@@ -11,6 +11,7 @@ import PolymarketPNG from './projectLogos/polymarket.png'
 import PwnPNG from './projectLogos/pwn-finance.png'
 import SolvPNG from './projectLogos/solv.png'
 import UniclyPNG from './projectLogos/unicly.png'
+import ArcadePNG from './projectLogos/arcade.png'
 
 /* This array contains the content of the landing page panels under the "Discover" section */
 
@@ -24,10 +25,10 @@ let projects = [
     projectType: 'Protocol',
   },
   {
-    title: 'Pawn.fi',
+    title: 'Arcade.xyz',
     description: 'Lend and borrow non-fungible assets on-chain',
-    url: 'https://www.pawn.fi',
-    image: PawnfiPNG,
+    url: 'https://www.arcade.xyz',
+    image: ArcadePNG,
     projectType: 'Protocol',
   },
   {

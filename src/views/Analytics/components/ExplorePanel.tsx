@@ -1,40 +1,22 @@
-import { useQuery } from '@apollo/client'
 import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
-import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
-import { InputRoundedSearch, Pagination } from '@upshot-tech/upshot-ui'
+import { InputRoundedSearch } from '@upshot-tech/upshot-ui'
 import {
   Box,
   Flex,
   Panel,
-  Skeleton,
   SwitchDropdown,
 } from '@upshot-tech/upshot-ui'
-import {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-} from '@upshot-tech/upshot-ui'
-import { PAGE_SIZE } from 'constants/'
-import { format } from 'date-fns'
 import router from 'next/router'
-import React, { useMemo, useRef, useState } from 'react'
-import { getPriceChangeColor } from 'utils/color'
-import { weiToEth } from 'utils/number'
+import React, { useRef, useState } from 'react'
 
-import {
-  GET_EXPLORE_NFTS,
-  GetExploreNFTsData,
-  GetExploreNFTsVars,
-} from '../queries'
 import Collectors from './ExplorePanel/Collectors'
 import ExploreNFTs from './ExplorePanel/NFTs'
 import TopCollections from './ExplorePanel/TopCollections'
 import TopCollectors from './ExplorePanel/TopCollectors'
 
-function searchForm(handleSearch, searchTerm, searchTermRef, handleChange) {
+function searchForm(handleSearch, searchTerm, searchTermRef, handleChange, isMobile) {
   return (
-    <form onSubmit={handleSearch}>
+    <form style={isMobile ? { width: '100%' } : {}} onSubmit={handleSearch}>
       <InputRoundedSearch
         dark
         fullWidth
@@ -107,10 +89,10 @@ function ExplorePanelHead({
           width: '100%',
           height: open ? '170px' : 'auto',
           zIndex: 2,
-          background: 'rgba(35, 31, 32, 0.8)',
+          background: 'rgba(35, 31, 32, 0.8)', 
         }}
       >
-        {breakpointIndex <= 1 && tab === 'NFTs' && !open && (
+        {breakpointIndex <= 1 && !open && (
           <Flex
             sx={{
               justifyContent: 'flex-end',
@@ -119,9 +101,10 @@ function ExplorePanelHead({
               zIndex: 0,
               top: 60,
               right: 0,
+              width: '100%',
             }}
           >
-            {searchForm(handleSearch, searchTerm, searchTermRef, handleChange)}
+            {searchForm(handleSearch, searchTerm, searchTermRef, handleChange, true)}
           </Flex>
         )}
         <Flex sx={{ flexDirection: 'column' }}>
@@ -131,17 +114,17 @@ function ExplorePanelHead({
           >
             Explore
             <SwitchDropdown
-              onChange={(val) => onChangeTab?.(val)}
+              onValueChange={(val) => onChangeTab?.(val)}
               value={tab ?? ''}
               options={dropdownOptions}
-              onStatusChange={(status) => setOpen(status)}
+              onToggle={(status) => setOpen(status)}
             />
           </Flex>
         </Flex>
 
-        {tab === 'NFTs' && breakpointIndex > 1 ? (
+        {breakpointIndex > 1 && !open ? (
           <Flex sx={{ justifyContent: 'flex-end', alignItems: 'stretch' }}>
-            {searchForm(handleSearch, searchTerm, searchTermRef, handleChange)}
+            {searchForm(handleSearch, searchTerm, searchTermRef, handleChange, false)}
           </Flex>
         ) : null}
       </Flex>
@@ -173,15 +156,15 @@ export default function ExplorePanel({
           onSearch={handleSearch}
           {...{ searchTerm, tab }}
         />
-        <Box sx={{ paddingTop: isMobile && tab === 'NFTs' ? '110px' : '70px' }}>
+        <Box sx={{ paddingTop: isMobile ? '110px' : '70px' }}>
           {tab === 'NFTs' && (
             <ExploreNFTs searchTerm={searchTerm} collectionId={collectionId} />
           )}
-          {tab === 'Collectors' && !collectionId && <TopCollectors />}
+          {tab === 'Collectors' && !collectionId && <TopCollectors searchTerm={searchTerm} />}
           {tab === 'Collectors' && !!collectionId && (
-            <Collectors id={collectionId} name={collectionName} />
+            <Collectors id={collectionId} name={collectionName} searchTerm={searchTerm}/>
           )}
-          {tab === 'Collections' && <TopCollections />}
+          {tab === 'Collections' && <TopCollections searchTerm={searchTerm} />}
         </Box>
       </Flex>
     </Panel>

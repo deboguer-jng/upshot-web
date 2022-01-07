@@ -2,17 +2,18 @@
 import { useQuery } from '@apollo/client'
 import {
   BlurrySquareTemplate,
+  Box,
   Flex,
-  Icon,
   MiniNftCard,
   SwitchDropdown,
   useBreakpointIndex,
 } from '@upshot-tech/upshot-ui'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { formatDistance } from 'date-fns'
+import { BigNumber as BN } from 'ethers'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { shortenAddress } from 'utils/address'
 import { weiToEth } from 'utils/number'
 
@@ -48,11 +49,11 @@ function TopSellingCollectionNFTsHeader({
   setTopSellingType?: (val: string) => void
 }) {
   const breakpointIndex = useBreakpointIndex()
-  const [open, setOpen] = useState(false)
-  const [collectionOpen, setCollectionOpen] = useState(false)
+  const [assetTypeOpen, setAssetTypeOpen] = useState(false)
+  const [timeframeOpen, setTimeframeOpen] = useState(false)
 
   return (
-    <Flex
+    <Box
       variant="text.h1Secondary"
       sx={{
         gap: 2,
@@ -60,24 +61,30 @@ function TopSellingCollectionNFTsHeader({
         paddingBottom: '1rem',
         position: 'absolute',
         width: '100%',
-        height: open || collectionOpen ? '100%' : 'auto',
+        height: assetTypeOpen || timeframeOpen ? '100%' : 'auto',
         background: 'rgba(0, 0, 0, 0.8)',
         zIndex: 2,
         '&,& *': breakpointIndex <= 1 && {
-          fontSize: '1rem!important',
-          lineHeight: '1.5rem!important',
+          lineHeight: '2rem !important',
         },
       }}
     >
       Top Selling
       {!!setTopSellingType ? (
         <SwitchDropdown
-          onChange={(val) => setTopSellingType?.(val)}
-          onStatusChange={(status) => {
-            setCollectionOpen(status)
+          onValueChange={(val) => setTopSellingType?.(val)}
+          onToggle={(status) => {
+            setAssetTypeOpen(status)
+            setTimeframeOpen(false)
           }}
           value={topSellingType ?? ''}
           options={['NFTs', 'Collections']}
+          defaultOpen={assetTypeOpen}
+          sx={{
+            display: 'inline-block',
+            marginLeft: '0.3rem',
+            marginRight: '0.3rem',
+          }}
         />
       ) : (
         ' '
@@ -85,17 +92,24 @@ function TopSellingCollectionNFTsHeader({
       in
       {!!setPeriod ? (
         <SwitchDropdown
-          onChange={(val) => setPeriod?.(val)}
-          onStatusChange={(status) => {
-            setOpen(status)
+          onValueChange={(val) => setPeriod?.(val)}
+          onToggle={(status) => {
+            setTimeframeOpen(status)
+            setAssetTypeOpen(false)
           }}
           value={period ?? ''}
           options={['1 day', '1 week', '1 month']}
+          defaultOpen={timeframeOpen}
+          sx={{
+            display: 'inline-block',
+            marginLeft: '0.3rem',
+            marginRight: '0.3rem',
+          }}
         />
       ) : (
         <></>
       )}
-    </Flex>
+    </Box>
   )
 }
 
@@ -151,7 +165,7 @@ export default function TopSellingCollectionNFTs({
           setTopSellingType={(val) => setTopSellingType(val)}
         />
         <MiniNFTContainer
-          sx={{ paddingTop: breakpointIndex <= 1 ? '50px' : '80px' }}
+          sx={{ paddingTop: '80px' }}
         >
           {[...new Array(10)].map((_, idx) => (
             <BlurrySquareTemplate key={idx} />
@@ -190,11 +204,26 @@ export default function TopSellingCollectionNFTs({
           topSellingType={topSellingType}
           setTopSellingType={(val) => setTopSellingType(val)}
         />
-        <text sx={{ paddingTop: breakpointIndex <= 1 ? '50px' : '80px' }}>
+        <text sx={{ paddingTop: '80px' }}>
           No results available.{' '}
         </text>
       </Flex>
     )
+
+  const getSalesNumber = (state) => {
+    switch (period) {
+      case '1 day':
+        return `${BN.from(state.pastDayWeiVolume)
+          .div(BN.from(state.pastDayWeiAverage))
+          .toNumber()}`
+      case '1 week':
+        return `${BN.from(state.pastWeekWeiVolume)
+          .div(BN.from(state.pastWeekWeiAverage))
+          .toNumber()}`
+      case '1 month':
+        return `${state.pastMonthNumTxs}`
+    }
+  }
 
   return (
     <>
@@ -205,7 +234,7 @@ export default function TopSellingCollectionNFTs({
         setTopSellingType={(val) => setTopSellingType(val)}
       />
       <MiniNFTContainer
-        sx={{ paddingTop: breakpointIndex <= 1 ? '50px' : '80px' }}
+        sx={{ paddingTop: '80px' }}
       >
         {topSellingType === 'NFTs' ? (
           <>
@@ -251,17 +280,25 @@ export default function TopSellingCollectionNFTs({
         ) : (
           <>
             {collectionData?.orderedCollectionsByMetricSearch.assetSets.map(
-              ({ id, name, imageUrl, average, floor, volume }) => (
+              ({ id, name, imageUrl, latestStats }) => (
                 <Link key={id} href={`/analytics/collection/${id}`}>
                   <a style={{ textDecoration: 'none' }}>
                     <MiniNftCard
                       tooltip={`volume / ${period}`}
-                      price={volume ? weiToEth(volume) : undefined}
+                      price={
+                        latestStats?.pastDayWeiVolume
+                          ? weiToEth(latestStats.pastDayWeiVolume)
+                          : undefined
+                      }
                       name={name}
                       type="collection"
                       image={imageUrl}
-                      floorPrice={floor ? weiToEth(floor) : undefined}
-                      sales={'130'}
+                      floorPrice={
+                        latestStats?.floor
+                          ? weiToEth(latestStats.floor)
+                          : undefined
+                      }
+                      sales={getSalesNumber(latestStats)}
                       link={`/analytics/collection/${id}`}
                     />
                   </a>

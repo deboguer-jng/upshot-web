@@ -148,6 +148,10 @@ export const GET_COLLECTOR_TX_HISTORY = gql`
           txToAddress
           txHash
           price
+          asset {
+            id
+            name
+          }
           currency {
             symbol
             decimals
