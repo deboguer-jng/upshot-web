@@ -58,7 +58,8 @@ function TopSellingCollectionNFTsHeader({
       sx={{
         gap: 2,
         alignItems: 'flex-start',
-        paddingBottom: '1rem',
+        paddingBottom: breakpointIndex <= 1 ? '0rem' : '1rem',
+        marginTop: '0rem',
         position: 'absolute',
         width: '100%',
         height: assetTypeOpen || timeframeOpen ? '100%' : 'auto',
@@ -164,9 +165,7 @@ export default function TopSellingCollectionNFTs({
           topSellingType={topSellingType}
           setTopSellingType={(val) => setTopSellingType(val)}
         />
-        <MiniNFTContainer
-          sx={{ paddingTop: '80px' }}
-        >
+        <MiniNFTContainer sx={{ paddingTop: '80px' }}>
           {[...new Array(10)].map((_, idx) => (
             <BlurrySquareTemplate key={idx} />
           ))}
@@ -204,9 +203,7 @@ export default function TopSellingCollectionNFTs({
           topSellingType={topSellingType}
           setTopSellingType={(val) => setTopSellingType(val)}
         />
-        <text sx={{ paddingTop: '80px' }}>
-          No results available.{' '}
-        </text>
+        <text sx={{ paddingTop: '80px' }}>No results available. </text>
       </Flex>
     )
 
@@ -233,81 +230,94 @@ export default function TopSellingCollectionNFTs({
         topSellingType={topSellingType}
         setTopSellingType={(val) => setTopSellingType(val)}
       />
-      <MiniNFTContainer
-        sx={{ paddingTop: '80px' }}
-      >
-        {topSellingType === 'NFTs' ? (
-          <>
-            {data.topSales.map(
-              (
-                {
-                  txAt,
-                  txFromAddress,
-                  txToAddress,
-                  price,
-                  asset: {
-                    id,
-                    contractAddress,
-                    previewImageUrl,
-                    mediaUrl,
-                    rarity,
-                    collection,
+      <Box sx={{ position: 'relative' }}>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '80px',
+            left: 0,
+            width: '100%',
+            background: 'black',
+            height: 'calc(100% - 80px)',
+            WebkitMaskImage: `linear-gradient(to right, rgba(0, 0, 0, 0) 65%, rgba(0,0,0,1) 100%);`,
+            zIndex: 2,
+            pointerEvents: 'none',
+          }}
+        ></Box>
+        <MiniNFTContainer sx={{ paddingTop: '80px' }}>
+          {topSellingType === 'NFTs' ? (
+            <>
+              {data.topSales.map(
+                (
+                  {
+                    txAt,
+                    txFromAddress,
+                    txToAddress,
+                    price,
+                    asset: {
+                      id,
+                      contractAddress,
+                      previewImageUrl,
+                      mediaUrl,
+                      rarity,
+                      collection,
+                    },
                   },
-                },
-                key
-              ) => (
-                <a
-                  key={key}
-                  onClick={() => handleClickNFT(id)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <MiniNftCard
-                    price={price ? weiToEth(price) : undefined}
-                    to={shortenAddress(txToAddress, 2, 4)}
-                    toLink={`/analytics/user/${txToAddress}`}
-                    from={shortenAddress(txFromAddress, 2, 4)}
-                    fromLink={`/analytics/user/${txFromAddress}`}
-                    rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
-                    image={previewImageUrl ?? mediaUrl}
-                    date={formatDistance(txAt * 1000, new Date())}
-                    pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
-                    link={`/analytics/collection/${collection?.id}`}
-                  />
-                </a>
-              )
-            )}
-          </>
-        ) : (
-          <>
-            {collectionData?.orderedCollectionsByMetricSearch.assetSets.map(
-              ({ id, name, imageUrl, latestStats }) => (
-                <Link key={id} href={`/analytics/collection/${id}`}>
-                  <a style={{ textDecoration: 'none' }}>
+                  key
+                ) => (
+                  <a
+                    key={key}
+                    onClick={() => handleClickNFT(id)}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <MiniNftCard
-                      tooltip={`volume / ${period}`}
-                      price={
-                        latestStats?.pastDayWeiVolume
-                          ? weiToEth(latestStats.pastDayWeiVolume)
-                          : undefined
-                      }
-                      name={name}
-                      type="collection"
-                      image={imageUrl}
-                      floorPrice={
-                        latestStats?.floor
-                          ? weiToEth(latestStats.floor)
-                          : undefined
-                      }
-                      sales={getSalesNumber(latestStats)}
-                      link={`/analytics/collection/${id}`}
+                      price={price ? weiToEth(price) : undefined}
+                      to={shortenAddress(txToAddress, 2, 4)}
+                      toLink={`/analytics/user/${txToAddress}`}
+                      from={shortenAddress(txFromAddress, 2, 4)}
+                      fromLink={`/analytics/user/${txFromAddress}`}
+                      rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
+                      image={previewImageUrl ?? mediaUrl}
+                      date={formatDistance(txAt * 1000, new Date())}
+                      pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
+                      link={`/analytics/collection/${collection?.id}`}
                     />
                   </a>
-                </Link>
-              )
-            )}
-          </>
-        )}
-      </MiniNFTContainer>
+                )
+              )}
+            </>
+          ) : (
+            <>
+              {collectionData?.orderedCollectionsByMetricSearch.assetSets.map(
+                ({ id, name, imageUrl, latestStats }) => (
+                  <Link key={id} href={`/analytics/collection/${id}`}>
+                    <a style={{ textDecoration: 'none' }}>
+                      <MiniNftCard
+                        tooltip={`volume / ${period}`}
+                        price={
+                          latestStats?.pastDayWeiVolume
+                            ? weiToEth(latestStats.pastDayWeiVolume)
+                            : undefined
+                        }
+                        name={name}
+                        type="collection"
+                        image={imageUrl}
+                        floorPrice={
+                          latestStats?.floor
+                            ? weiToEth(latestStats.floor)
+                            : undefined
+                        }
+                        sales={getSalesNumber(latestStats)}
+                        link={`/analytics/collection/${id}`}
+                      />
+                    </a>
+                  </Link>
+                )
+              )}
+            </>
+          )}
+        </MiniNFTContainer>
+      </Box>
     </>
   )
 }
