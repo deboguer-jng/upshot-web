@@ -118,75 +118,85 @@ export default function CollectionAvgPricePanel({
       {...{ title, subtitle }}
     >
       {data.orderedCollectionsByMetricSearch.assetSets.map(
-        ({ id, name, imageUrl, latestStats }, index) => (
-          <Flex
-            key={index}
-            sx={{ alignItems: 'center', color: 'disabled', gap: 5 }}
-          >
-            <Text>{index + 1}</Text>
-            <CollectionButton
-              icon={
-                <Link passHref href={`/analytics/collection/${id}`}>
-                  <Box
-                    sx={{
-                      width: '100%',
-                      height: '100%',
-                      position: 'relative',
-                      '&:hover img': {
-                        display: 'none',
-                      },
-                      '&:hover svg': {
-                        display: 'block',
-                      },
-                    }}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <Image
-                      alt={`${name} Cover Artwork`}
+        ({ id, name, imageUrl, latestStats }, index) => {
+          const underglow = selectedCollections.includes(id)
+            ? (selectedCollectionsColors[
+                selectedCollections.indexOf(id)
+              ] as keyof typeof theme.colors)
+            : undefined
+
+          const hoverUnderglow = (selectedCollectionsColors[
+            selectedCollections.length
+          ] ??
+            selectedCollectionsColors[
+              selectedCollectionsColors.length - 1
+            ]) as keyof typeof theme.colors
+
+          return (
+            <Flex
+              key={index}
+              sx={{ alignItems: 'center', color: 'disabled', gap: 5 }}
+            >
+              <Text>{index + 1}</Text>
+              <CollectionButton
+                icon={
+                  <Link passHref href={`/analytics/collection/${id}`}>
+                    <Box
                       sx={{
-                        borderRadius: 'circle',
-                        height: '100%',
                         width: '100%',
-                        objectFit: 'cover',
-                        objectPosition: 'center',
+                        height: '100%',
+                        position: 'relative',
+                        '&:hover img': {
+                          display: 'none',
+                        },
+                        '&:hover svg': {
+                          display: 'block',
+                        },
                       }}
-                      src={imageUrl}
-                      height={theme.buttons.collection.iconHeight}
-                      width={theme.buttons.collection.iconHeight}
-                    />
-                    <Icon
-                      icon="arrowStylizedRight"
-                      sx={{
-                        display: 'none',
-                        position: 'absolute',
-                        top: '0',
-                        width: '40% !important',
-                        height: '40% !important',
-                        margin: '30%',
-                      }}
-                      size="40%"
-                    ></Icon>
-                  </Box>
-                </Link>
-              }
-              onClick={() => onCollectionSelected(id)}
-              underglow={
-                selectedCollections.includes(id)
-                  ? (selectedCollectionsColors[
-                      selectedCollections.indexOf(id)
-                    ] as keyof typeof theme.colors)
-                  : undefined
-              }
-              text={name ?? 'Unknown'}
-              subText={printMetricData(metric, {
-                average: latestStats.pastDayWeiAverage,
-                floor: latestStats.floor,
-                volume: latestStats.pastDayWeiVolume,
-              })}
-            />
-          </Flex>
-        )
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Image
+                        alt={`${name} Cover Artwork`}
+                        sx={{
+                          borderRadius: 'circle',
+                          height: '100%',
+                          width: '100%',
+                          objectFit: 'cover',
+                          objectPosition: 'center',
+                        }}
+                        src={imageUrl}
+                        height={theme.buttons.collection.iconHeight}
+                        width={theme.buttons.collection.iconHeight}
+                      />
+                      <Icon
+                        icon="arrowStylizedRight"
+                        sx={{
+                          display: 'none',
+                          position: 'absolute',
+                          top: '0',
+                          width: '40% !important',
+                          height: '40% !important',
+                          margin: '30%',
+                        }}
+                        size="40%"
+                      ></Icon>
+                    </Box>
+                  </Link>
+                }
+                onClick={() => onCollectionSelected(id)}
+                text={name ?? 'Unknown'}
+                subText={printMetricData(metric, {
+                  average: latestStats.pastDayWeiAverage,
+                  floor: latestStats.floor,
+                  volume: latestStats.pastDayWeiVolume,
+                })}
+                {...{ underglow, hoverUnderglow }}
+              />
+            </Flex>
+          )
+        }
       )}
+      )
     </CollectionPanel>
   )
 }
