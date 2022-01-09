@@ -1132,9 +1132,9 @@ export default function UserView() {
                     avatarImage:
                       showCollection?.imageUrl ?? '/img/defaultAvatar.png',
                     imageSrc: previewImageUrl ?? '/img/defaultAvatar.png',
-                    name: name ?? '',
+                    collection: name ?? '',
                     isPixelated: PIXELATED_CONTRACTS.includes(contractAddress),
-                    description:
+                    name:
                       `Latest Appraised Value: ${weiToEth(
                         lastAppraisalWeiPrice
                       )}` ?? '',
