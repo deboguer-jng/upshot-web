@@ -1124,6 +1124,7 @@ export default function UserView() {
                     id,
                     name,
                     lastAppraisalWeiPrice,
+                    lastAppraisalUsdPrice,
                     previewImageUrl,
                     contractAddress,
                   }) => ({
@@ -1132,12 +1133,11 @@ export default function UserView() {
                     avatarImage:
                       showCollection?.imageUrl ?? '/img/defaultAvatar.png',
                     imageSrc: previewImageUrl ?? '/img/defaultAvatar.png',
-                    name: name ?? '',
+                    collection: showCollection?.name ?? '',
                     isPixelated: PIXELATED_CONTRACTS.includes(contractAddress),
-                    description:
-                      `Latest Appraised Value: ${weiToEth(
-                        lastAppraisalWeiPrice
-                      )}` ?? '',
+                    appraisalPriceETH: lastAppraisalWeiPrice ? weiToEth(lastAppraisalWeiPrice, 4, false) : null,
+                    appraisalPriceUSD: lastAppraisalUsdPrice ? Math.round(parseInt(lastAppraisalUsdPrice)/1000000) : null,
+                    name: name ? (showCollection ? name.replace(showCollection.name, ''): name) : '', // remove collection name from NFT name
                   })
                 ) ?? []
               }
