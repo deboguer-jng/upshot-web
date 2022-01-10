@@ -39,11 +39,16 @@ import { fetchEns, shortenAddress } from 'utils/address'
 import { formatCurrencyUnits, formatLargeNumber, weiToEth } from 'utils/number'
 
 import Breadcrumbs from '../components/Breadcrumbs'
-import { GET_COLLECTOR, GetCollectorData, GetCollectorVars } from './queries'
 import {
+  GET_COLLECTOR,
+  GetCollectorData,
+  GetCollectorVars,
   GET_COLLECTION_ASSETS,
   GetCollectionAssetsData,
   GetCollectionAssetsVars,
+  GET_UNSUPPORTED_ASSETS,
+  GetUnsupportedAssetsData,
+  GetUnsupportedAssetsVars,
 } from './queries'
 
 type Collection = {
@@ -240,6 +245,27 @@ export default function UserView() {
       skip: !showCollection?.id || !addressFormatted,
     }
   )
+
+  const {
+    data: dataUnsupported,
+    error: errorUnsupported,
+  } = useQuery<GetUnsupportedAssetsData, GetUnsupportedAssetsVars>(
+    GET_UNSUPPORTED_ASSETS,
+    {
+      errorPolicy: 'all',
+      variables: { address: addressFormatted }
+    }
+  )
+
+  console.log('dataUnsupported: ', dataUnsupported)
+
+  // we need a single array of normal collections and unsupported ones
+  // unsupported will need to be shoveled into here
+  // then we need to conditionally render CollectionCards and CollectionCardItems as the appropriate variant
+  let collections = []
+  if (data) {
+    collections.push(...data.getUser.extraCollections.collectionAssetCounts)
+  }
 
   const handleFetchMoreAssets = useCallback(
     (startIndex: number) => {

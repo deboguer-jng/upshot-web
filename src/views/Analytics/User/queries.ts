@@ -201,3 +201,42 @@ export const GET_COLLECTION_ASSETS = gql`
     }
   }
 `
+
+/**
+ * Get unsupported assets
+ */
+export type GetUnsupportedAssetsVars = {
+  address?: string
+}
+
+export type GetUnsupportedAssetsData = {
+  unsupported: {
+    name: string
+    imageUrl: string
+    floorEth: string
+    floorUsd: string
+    ownedAssets: {
+      tokenId: string
+      image512: string
+    }
+  }
+}
+
+export const GET_UNSUPPORTED_ASSETS = gql`
+  query GetUnsupportedAssets(
+    $address: String
+  ) {
+    getUser(address: $address) {
+      unsupported {
+        name
+        imageUrl
+        floorEth
+        floorUsd
+        ownedAssets {
+          tokenId
+          image512
+        }
+      }
+    }
+  }
+`
