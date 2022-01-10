@@ -322,6 +322,7 @@ export const GET_EXPLORE_COLLECTIONS = gql`
       limit: $limit
       offset: $offset
       name: $name
+      windowSize: WEEK
     ) {
       count
       assetSets {
