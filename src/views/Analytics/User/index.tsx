@@ -336,34 +336,38 @@ export default function UserView() {
       >
         {collection.ownerAssetsInCollection.assets
           .slice(0, 5)
-          .map(({ id, previewImageUrl, contractAddress }, idx) => (
-            <Link passHref href={`/analytics/nft/${id}`} key={idx}>
-              <Box
-                sx={{
-                  width: '100%',
-                  cursor: 'pointer',
-                  '&::after': {
-                    content: "''",
-                    display: 'block',
-                    paddingTop: '100%',
-                    backgroundImage: `url(${imageOptimizer(previewImageUrl, {
-                        width: 180,
-                        height: 180
-                      }) ?? previewImageUrl})`,
-                    backgroundSize: 'cover',
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'center',
-                    borderRadius: 'sm',
-                    imageRendering: PIXELATED_CONTRACTS.includes(
-                      contractAddress
-                    )
-                      ? 'pixelated'
-                      : 'auto',
-                  },
-                }}
-              />
-            </Link>
-          ))}
+          .map(({ id, previewImageUrl, mediaUrl, contractAddress }, idx) => {
+            const image = previewImageUrl ?? mediaUrl
+            return (
+              <Link passHref href={`/analytics/nft/${id}`} key={idx}>
+                <Box
+                  sx={{
+                    width: '100%',
+                    cursor: 'pointer',
+                    '&::after': {
+                      content: "''",
+                      display: 'block',
+                      paddingTop: '100%',
+                      backgroundImage: image
+                        ? `url(${imageOptimizer(image, {
+                          width: 180,
+                          height: 180
+                        }) ?? image})`
+                        : null,
+                      backgroundSize: 'cover',
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: 'center',
+                      borderRadius: 'sm',
+                      imageRendering: PIXELATED_CONTRACTS.includes(
+                        contractAddress
+                      )
+                        ? 'pixelated'
+                        : 'auto',
+                    },
+                  }}
+                />
+              </Link>
+          )})}
       </CollectionCard>
     )
   }
@@ -447,7 +451,9 @@ export default function UserView() {
                   data: data?.getUser?.extraCollections?.collectionAssetCounts
                     ?.slice(0, 6)
                     ?.map(({ ownedAppraisedValue }) =>
-                      parseFloat(ethers.utils.formatEther(ownedAppraisedValue))
+                      ownedAppraisedValue
+                        ? parseFloat(ethers.utils.formatEther(ownedAppraisedValue))
+                        : 0
                     ) ?? [0, 0, 0, 0, 0, 0],
                 },
               ],
@@ -1126,13 +1132,14 @@ export default function UserView() {
                     lastAppraisalWeiPrice,
                     lastAppraisalUsdPrice,
                     previewImageUrl,
+                    mediaUrl,
                     contractAddress,
                   }) => ({
                     id,
                     expanded: isMobile,
                     avatarImage:
                       showCollection?.imageUrl ?? '/img/defaultAvatar.png',
-                    imageSrc: previewImageUrl ?? '/img/defaultAvatar.png',
+                    imageSrc: previewImageUrl ?? mediaUrl,
                     collection: showCollection?.name ?? '',
                     isPixelated: PIXELATED_CONTRACTS.includes(contractAddress),
                     appraisalPriceETH: lastAppraisalWeiPrice ? weiToEth(lastAppraisalWeiPrice, 4, false) : null,
