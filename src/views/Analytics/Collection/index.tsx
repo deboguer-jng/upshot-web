@@ -338,9 +338,12 @@ export default function CollectionView() {
           </Grid>
         </Flex>
         <Flex sx={{ flexDirection: 'column', paddingTop: isMobile ? 0 : 116 }}>
-          <Text variant="large" sx={{ textTransform: 'uppercase' }}>
-            About
-          </Text>
+          {
+            description &&
+              <Text variant="large" sx={{ textTransform: 'uppercase' }}>
+                About
+              </Text>
+          }
           <Text
             color="grey-300"
             onClick={() => {
