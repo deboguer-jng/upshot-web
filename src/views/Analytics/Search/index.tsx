@@ -163,7 +163,7 @@ export default function SearchView() {
           </Flex>
         </Box>
 
-        <Box>
+        {/* <Box>
           <Flex sx={{ flexDirection: 'column', gap: 2 }}>
             <Text sx={{ paddingTop: [4, 4, 0] }} color="grey-500">
               Keywords
@@ -174,7 +174,7 @@ export default function SearchView() {
               onChange={(e) => setSearchTerm(e.currentTarget.value)}
             />
           </Flex>
-        </Box>
+        </Box> */}
 
         <Box>
           <Flex sx={{ flexDirection: 'column', gap: 2 }}>
