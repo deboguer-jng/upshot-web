@@ -35,6 +35,7 @@ export type GetCollectorData = {
               id: string
               contractAddress: string
               previewImageUrl?: string
+              mediaUrl?: string
               name?: string
               description?: string
             }[]
@@ -86,6 +87,7 @@ export const GET_COLLECTOR = gql`
                 id
                 contractAddress
                 previewImageUrl
+                mediaUrl
                 name
                 description
               }
@@ -182,7 +184,9 @@ export type GetCollectionAssetsData = {
         name?: string
         description?: string
         previewImageUrl?: string
-        lastAppraisalWeiPrice: string
+        mediaUrl?: string
+        lastAppraisalWeiPrice?: string
+        lastAppraisalUsdPrice?: string
         contractAddress: string
       }[]
     }
@@ -208,7 +212,9 @@ export const GET_COLLECTION_ASSETS = gql`
           name
           description
           previewImageUrl
+          mediaUrl
           lastAppraisalWeiPrice
+          lastAppraisalUsdPrice
           contractAddress
         }
       }
