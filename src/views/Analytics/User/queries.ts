@@ -217,9 +217,9 @@ export type GetUnsupportedAssetsData = {
       floorEth: string
       floorUsd: string
       ownedAssets: {
-        tokenId: string
+        name: string
         previewImage: string
-      }
+      }[]
     }[]
   }
 }
@@ -233,7 +233,7 @@ export const GET_UNSUPPORTED_ASSETS = gql`
         floorEth
         floorUsd
         ownedAssets {
-          tokenId
+          name
           previewImage
         }
       }

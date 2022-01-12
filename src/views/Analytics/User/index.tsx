@@ -52,9 +52,9 @@ import {
 } from './queries'
 
 type Collection = {
-  id: number
+  id: number | null
   name: string
-  imageUrl: string
+  imageUrl?: string
 }
 
 function Layout({ children }: { children: React.ReactNode }) {
@@ -254,6 +254,12 @@ export default function UserView() {
     variables: { address: addressFormatted },
   })
 
+  const unsupportedAssets = dataUnsupported?.getUser?.unsupported
+    ?.map(({ ownedAssets, ...collection }) =>
+      ownedAssets.map((asset) => ({ ...asset, collection }))
+    )
+    .flat()
+
   const handleFetchMoreAssets = useCallback(
     (startIndex: number) => {
       if (loadingAssets || assetOffset === startIndex) return
@@ -379,6 +385,48 @@ export default function UserView() {
               />
             </Link>
           ))}
+      </CollectionCard>
+    )
+  }
+
+  const RenderMasonryUnsupported = ({ index, data }) => {
+    return (
+      <CollectionCard
+        hasSeeAll={data.length > 5}
+        seeAllImageSrc={data.slice(-1)[0].previewImage}
+        total={unsupportedAssets?.length ?? 0}
+        name="Unappraised NFTs"
+        onExpand={() =>
+          setShowCollection({
+            id: null,
+            name: 'Unappraised NFTs',
+          })
+        }
+      >
+        {data.slice(0, 5).map(({ previewImage }, idx) => (
+          <Box
+            key={idx}
+            sx={{
+              width: '100%',
+              cursor: 'pointer',
+              '&::after': {
+                content: "''",
+                display: 'block',
+                paddingTop: '100%',
+                backgroundImage: `url(${
+                  imageOptimizer(previewImage, {
+                    width: 180,
+                    height: 180,
+                  }) ?? previewImage
+                })`,
+                backgroundSize: 'cover',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+                borderRadius: 'sm',
+              },
+            }}
+          />
+        ))}
       </CollectionCard>
     )
   }
@@ -1106,6 +1154,14 @@ export default function UserView() {
             onRender={maybeLoadMore}
             key={data?.getUser?.extraCollections?.count}
           />
+          <Masonry
+            columnWidth={300}
+            columnGutter={16}
+            rowGutter={16}
+            items={unsupportedAssets ? [unsupportedAssets] : []}
+            render={RenderMasonryUnsupported}
+            key={unsupportedAssets?.length}
+          />
         </Flex>
       </Layout>
       <Modal
@@ -1113,7 +1169,7 @@ export default function UserView() {
         onClose={() => setShowCollection(undefined)}
         open={showCollection?.id !== undefined}
       >
-        {loadingAssets ? (
+        {loadingAssets && showCollection?.id ? (
           <Flex
             sx={{
               width: '100vw',
@@ -1131,38 +1187,60 @@ export default function UserView() {
               avatarImage={showCollection?.imageUrl ?? '/img/defaultAvatar.png'}
               name={showCollection?.name ?? ''}
               total={
-                dataAssets?.collectionById?.ownerAssetsInCollection?.count ?? 0
+                (showCollection?.id
+                  ? dataAssets?.collectionById?.ownerAssetsInCollection?.count
+                  : unsupportedAssets?.length) ?? 0
               }
               items={
-                dataAssets?.collectionById?.ownerAssetsInCollection?.assets?.map(
-                  ({
-                    id,
-                    name,
-                    lastAppraisalWeiPrice,
-                    lastAppraisalUsdPrice,
-                    previewImageUrl,
-                    contractAddress,
-                  }) => ({
-                    id,
-                    expanded: isMobile,
-                    avatarImage:
-                      showCollection?.imageUrl ?? '/img/defaultAvatar.png',
-                    imageSrc: previewImageUrl ?? '/img/defaultAvatar.png',
-                    collection: showCollection?.name ?? '',
-                    isPixelated: PIXELATED_CONTRACTS.includes(contractAddress),
-                    appraisalPriceETH: lastAppraisalWeiPrice
-                      ? weiToEth(lastAppraisalWeiPrice, 4, false)
-                      : null,
-                    appraisalPriceUSD: lastAppraisalUsdPrice
-                      ? Math.round(parseInt(lastAppraisalUsdPrice) / 1000000)
-                      : null,
-                    name: name
-                      ? showCollection
-                        ? name.replace(showCollection.name, '')
-                        : name
-                      : '', // remove collection name from NFT name
-                  })
-                ) ?? []
+                (showCollection?.id
+                  ? dataAssets?.collectionById?.ownerAssetsInCollection?.assets?.map(
+                      ({
+                        id,
+                        name,
+                        lastAppraisalWeiPrice,
+                        lastAppraisalUsdPrice,
+                        previewImageUrl,
+                        contractAddress,
+                      }) => ({
+                        id,
+                        expanded: isMobile,
+                        avatarImage:
+                          showCollection?.imageUrl ?? '/img/defaultAvatar.png',
+                        imageSrc: previewImageUrl ?? '/img/defaultAvatar.png',
+                        collection: showCollection?.name ?? '',
+                        isPixelated:
+                          PIXELATED_CONTRACTS.includes(contractAddress),
+                        appraisalPriceETH: lastAppraisalWeiPrice
+                          ? weiToEth(lastAppraisalWeiPrice, 4, false)
+                          : null,
+                        appraisalPriceUSD: lastAppraisalUsdPrice
+                          ? Math.round(
+                              parseInt(lastAppraisalUsdPrice) / 1000000
+                            )
+                          : null,
+                        name: name
+                          ? showCollection
+                            ? name.replace(showCollection.name, '')
+                            : name
+                          : '', // remove collection name from NFT name
+                      })
+                    )
+                  : unsupportedAssets?.map(
+                      ({ name, previewImage, collection }) => ({
+                        id: '',
+                        expanded: isMobile,
+                        avatarImage:
+                          collection.imageUrl ?? '/img/defaultAvatar.png',
+                        imageSrc: previewImage ?? '/img/defaultAvatar.png',
+                        collection: collection?.name ?? '',
+                        isPixelated: false,
+                        appraisalPriceETH: null,
+                        appraisalPriceUSD: null,
+                        floorPriceETH: collection.floorEth,
+                        floorPriceUSD: collection.floorUsd,
+                        name,
+                      })
+                    )) ?? []
               }
               onClose={() => modalRef?.current?.click()}
               onFetchMore={handleFetchMoreAssets}
