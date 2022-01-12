@@ -12,25 +12,44 @@ import TopCollectionsChart from './components/TopCollectionsChart'
 import TopSellingCollectionNFTs from './components/TopSellingCollectionNFTs'
 import TreeMapMarketCap from './components/TreeMapMarketCap'
 
+const selectedCollectionsColors = ['blue', 'pink', 'purple']
+
 export default function AnalyticsView() {
   const [chartMetric, setChartMetric] = useState<METRIC>('FLOOR')
   const [selectedCollections, setSelectedCollections] = useState<number[]>([])
+  const [colorCycleIndex, setColorCycleIndex] = useState(
+    selectedCollections.length % selectedCollectionsColors.length
+  )
 
   const handleChange = (updatedChartMetric: METRIC) => {
     setChartMetric(updatedChartMetric)
   }
 
   const handleCollectionSelected = (id: number) => {
+    // Removing an existing item
     if (selectedCollections.includes(id)) {
-      return setSelectedCollections(
-        selectedCollections.filter((_id) => _id !== id)
-      )
+      const updatedCollections = selectedCollections.filter((_id) => _id !== id)
+
+      setColorCycleIndex(updatedCollections.length)
+
+      return setSelectedCollections(updatedCollections)
     }
-    if (selectedCollections.length === 3) {
-      setSelectedCollections([...selectedCollections.slice(1, 3), id])
-    } else {
-      setSelectedCollections([...selectedCollections, id])
-    }
+
+    // Appending a new item
+    const updatedCollections =
+      selectedCollections.length < selectedCollectionsColors.length
+        ? [...selectedCollections, id]
+        : [
+            ...selectedCollections.slice(0, colorCycleIndex),
+            id,
+            ...selectedCollections.slice(
+              colorCycleIndex + 1,
+              selectedCollections.length
+            ),
+          ]
+
+    setSelectedCollections(updatedCollections)
+    setColorCycleIndex((curr) => (curr + 1) % selectedCollectionsColors.length)
   }
 
   return (
@@ -116,10 +135,14 @@ export default function AnalyticsView() {
             {...{ selectedCollections }}
           />
           <CollectionAvgPricePanel
-            {...{ selectedCollections }}
             metric={chartMetric}
             onCollectionSelected={handleCollectionSelected}
-            setSelectedCollections={setSelectedCollections}
+            {...{
+              colorCycleIndex,
+              selectedCollections,
+              setSelectedCollections,
+              selectedCollectionsColors,
+            }}
           />
           <Box sx={{ position: 'relative' }}>
             <TopSellingCollectionNFTs />

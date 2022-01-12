@@ -25,6 +25,8 @@ interface CollectionAvgPricePanelProps {
   onCollectionSelected: (id: number) => void
   metric: METRIC
   setSelectedCollections: (collections: number[]) => void
+  selectedCollectionsColors: string[]
+  colorCycleIndex: number
 }
 
 export default function CollectionAvgPricePanel({
@@ -32,11 +34,12 @@ export default function CollectionAvgPricePanel({
   selectedCollections,
   metric,
   setSelectedCollections,
+  selectedCollectionsColors,
+  colorCycleIndex,
 }: CollectionAvgPricePanelProps) {
   const { theme } = useTheme()
   const searchTermRef = useRef<HTMLInputElement | null>(null)
   const [searchTermApplied, setSearchTermApplied] = useState('')
-  const selectedCollectionsColors = ['blue', 'pink', 'purple']
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -125,12 +128,9 @@ export default function CollectionAvgPricePanel({
               ] as keyof typeof theme.colors)
             : undefined
 
-          const hoverUnderglow = (selectedCollectionsColors[
-            selectedCollections.length
-          ] ??
-            selectedCollectionsColors[
-              selectedCollectionsColors.length - 1
-            ]) as keyof typeof theme.colors
+          const hoverUnderglow = selectedCollectionsColors[
+            colorCycleIndex
+          ] as keyof typeof theme.colors
 
           return (
             <Flex
