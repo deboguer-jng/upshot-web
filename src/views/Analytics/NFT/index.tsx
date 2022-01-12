@@ -1,8 +1,8 @@
 /** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
-import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import { imageOptimizer, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Container } from '@upshot-tech/upshot-ui'
-import { Flex, Footer, Grid, Image, Text } from '@upshot-tech/upshot-ui'
+import { Flex, Grid, Image, Text } from '@upshot-tech/upshot-ui'
 import {
   Box,
   Chart,
@@ -20,10 +20,12 @@ import {
   TableHead,
   TableRow,
 } from '@upshot-tech/upshot-ui'
+import { Footer } from 'components/Footer'
 import { FormattedENS } from 'components/FormattedENS'
 import { Nav } from 'components/Nav'
-import { ART_BLOCKS_CONTRACTS, PIXELATED_CONTRACTS } from 'constants/'
+import { PIXELATED_CONTRACTS } from 'constants/'
 import { format } from 'date-fns'
+import makeBlockie from 'ethereum-blockies-base64'
 import { ethers } from 'ethers'
 import Head from 'next/head'
 import Link from 'next/link'
@@ -34,25 +36,67 @@ import { getAssetName } from 'utils/asset'
 import { getPriceChangeColor } from 'utils/color'
 import { formatCurrencyUnits, weiToEth } from 'utils/number'
 
+import Breadcrumbs from '../components/Breadcrumbs'
 import Collectors from '../components/ExplorePanel/Collectors'
 import { GET_ASSET, GetAssetData, GetAssetVars } from './queries'
 
 function Layout({ children }: { children: React.ReactNode }) {
+  const storage = globalThis?.sessionStorage
+  const prevPath = storage.getItem('prevPath')
+
+  const breadcrumbs = prevPath?.includes('user')
+    ? [
+        {
+          text: 'Analytics Home',
+          link: '/analytics',
+        },
+        {
+          text: `${
+            decodeURI(prevPath as string).split('?userWallet=')[1]
+          }'s Collection`,
+          link: prevPath,
+        },
+      ]
+    : prevPath?.includes('search') || prevPath?.includes('collection')
+    ? [
+        {
+          text: 'Analytics Home',
+          link: '/analytics',
+        },
+        {
+          text: prevPath?.includes('search')
+            ? 'Search'
+            : prevPath?.includes('collection')
+            ? decodeURI(prevPath as string).split('?collectionName=')[1]
+            : '',
+          link: prevPath,
+        },
+      ]
+    : [
+        {
+          text: 'Analytics Home',
+          link: '/analytics',
+        },
+      ]
+
   return (
-    <Container
-      p={4}
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        width: '100%',
-        minHeight: '100vh',
-        gap: 4,
-      }}
-    >
+    <>
       <Nav />
-      {children}
-      <Footer />
-    </Container>
+      <Container
+        p={4}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          width: '100%',
+          minHeight: '100vh',
+          gap: 4,
+        }}
+      >
+        <Breadcrumbs crumbs={breadcrumbs} />
+        {children}
+        <Footer />
+      </Container>
+    </>
   )
 }
 
@@ -91,7 +135,7 @@ export default function NFTView() {
     const updateEnsName = async () => {
       try {
         const { name } = await fetchEns(
-          data.assetById.creatorAddress,
+          txHistory[0].txToAddress,
           ethers.getDefaultProvider()
         )
         setEnsName(name)
@@ -99,6 +143,14 @@ export default function NFTView() {
         console.error(err)
       }
     }
+
+    const storage = globalThis?.sessionStorage
+    const curPath = storage.getItem('currentPath')
+    if (curPath?.indexOf('nftName=') === -1)
+      storage.setItem(
+        'currentPath',
+        `${curPath}?nftName=${data?.assetById.name}`
+      )
 
     updateEnsName()
   }, [data])
@@ -165,11 +217,14 @@ export default function NFTView() {
 
   const assetName = getAssetName(name, collection?.name, tokenId)
   const displayName =
-    ensName ?? creatorUsername ?? shortenAddress(creatorAddress) ?? 'Unknown'
-  const creatorLabel = ART_BLOCKS_CONTRACTS.includes(contractAddress)
-    ? 'Created'
-    : 'Minted'
-
+    ensName ??
+    creatorUsername ??
+    shortenAddress(txHistory[0]?.txToAddress) ??
+    'Unknown'
+  
+  const image = previewImageUrl ?? mediaUrl
+  const optimizedSrc = imageOptimizer(image, {width: 340}) ?? image
+  const finalImageSrc = PIXELATED_CONTRACTS.includes(contractAddress) ? image : optimizedSrc
   return (
     <>
       <Head>
@@ -198,7 +253,7 @@ export default function NFTView() {
         >
           <Flex sx={{ flexDirection: 'column', gap: 4 }}>
             <Image
-              src={previewImageUrl ?? mediaUrl}
+              src={finalImageSrc}
               alt={`Featured image for ${assetName}`}
               sx={{
                 borderRadius: '10px',
@@ -342,7 +397,11 @@ export default function NFTView() {
 
                       <Flex sx={{ gap: [1, 1, 4], alignItems: 'center' }}>
                         <Image
-                          src={creatorAvatar ?? '/img/defaultAvatar.png'}
+                          src={
+                            txHistory[0]?.txToAddress
+                              ? makeBlockie(txHistory[0].txToAddress)
+                              : '/img/defaultAvatar.png'
+                          }
                           alt="Creator avatar"
                           sx={{
                             borderRadius: 'circle',
@@ -361,18 +420,31 @@ export default function NFTView() {
                             color="grey-500"
                             sx={{ lineHeight: 1.25, fontSize: 2 }}
                           >
-                            {creatorLabel} By
+                            Owned By
                           </Text>
-                          <Text
-                            color="grey-300"
-                            sx={{
-                              fontWeight: 'bold',
-                              lineHeight: 1.25,
-                              fontSize: [3, 3, 4],
-                            }}
+                          <Link
+                            href={`/analytics/user/${txHistory[0]?.txToAddress}`}
                           >
-                            {displayName}
-                          </Text>
+                            <a
+                              sx={{
+                                cursor: 'pointer',
+                                '&:hover': {
+                                  textDecoration: 'underline',
+                                },
+                              }}
+                            >
+                              <Text
+                                color="grey-300"
+                                sx={{
+                                  fontWeight: 'bold',
+                                  lineHeight: 1.25,
+                                  fontSize: [3, 3, 4],
+                                }}
+                              >
+                                {displayName}
+                              </Text>
+                            </a>
+                          </Link>
                         </Flex>
                       </Flex>
                     </Flex>
@@ -567,31 +639,32 @@ export default function NFTView() {
                               >
                                 Last Appraisal
                               </Text>
-
-                              {/* Confidence score
-                                <Label color="primary">
-                                  {latestAppraisal.confidence
-                                    ? (latestAppraisal.confidence * 100).toFixed(
-                                        2
-                                      ) + '%'
-                                    : '-'}
-                                </Label>
-                              */}
                             </Flex>
-                            <Label
-                              color="primary"
-                              currencySymbol={lastSale ? 'Ξ' : undefined}
-                              variant="currency"
-                              size="md"
-                            >
-                              {latestAppraisal?.ethSalePrice
-                                ? weiToEth(
-                                    latestAppraisal.ethSalePrice,
-                                    3,
-                                    false
-                                  )
-                                : '-'}
-                            </Label>
+                            <Flex sx={{ gap: 2 }}>
+                              <Label
+                                color="primary"
+                                currencySymbol={lastSale ? 'Ξ' : undefined}
+                                variant="currency"
+                                size="md"
+                              >
+                                {latestAppraisal?.ethSalePrice
+                                  ? weiToEth(
+                                      latestAppraisal.ethSalePrice,
+                                      3,
+                                      false
+                                    )
+                                  : '-'}
+                              </Label>
+                              <Label color="primary">
+                                {latestAppraisal?.medianRelativeError
+                                  ? '± ' +
+                                    (
+                                      latestAppraisal.medianRelativeError * 100
+                                    ).toFixed(2) +
+                                    '%'
+                                  : ''}
+                              </Label>
+                            </Flex>
                             <Text
                               color="primary"
                               sx={{ fontSize: 2, textTransform: 'uppercase' }}
@@ -621,7 +694,18 @@ export default function NFTView() {
               </Flex>
             </Flex>
             <Panel>
-              <Flex sx={{ flexDirection: 'column', gap: 4 }}>
+              <Box
+                sx={{
+                  overflow: 'auto',
+                  flexGrow: 1,
+                  resize: 'none',
+                  maxHeight: 300,
+                  '&::-webkit-scrollbar-corner': {
+                    backgroundColor: 'transparent',
+                  },
+                }}
+                css={theme.scroll.thin}
+              >
                 <Flex sx={{ flexDirection: 'column', gap: 4 }}>
                   <Flex
                     sx={{
@@ -676,7 +760,22 @@ export default function NFTView() {
                                           height: 3,
                                         }}
                                       />
-                                      <FormattedENS address={txFromAddress} />
+                                      <Link
+                                        href={`/analytics/user/${txFromAddress}`}
+                                      >
+                                        <a
+                                          sx={{
+                                            cursor: 'pointer',
+                                            '&:hover': {
+                                              textDecoration: 'underline',
+                                            },
+                                          }}
+                                        >
+                                          <FormattedENS
+                                            address={txFromAddress}
+                                          />
+                                        </a>
+                                      </Link>
                                     </Flex>
                                   </TableCell>
                                   <TableCell sx={{ minWidth: 140 }}>
@@ -689,7 +788,20 @@ export default function NFTView() {
                                           height: 3,
                                         }}
                                       />
-                                      <FormattedENS address={txToAddress} />
+                                      <Link
+                                        href={`/analytics/user/${txToAddress}`}
+                                      >
+                                        <a
+                                          sx={{
+                                            cursor: 'pointer',
+                                            '&:hover': {
+                                              textDecoration: 'underline',
+                                            },
+                                          }}
+                                        >
+                                          <FormattedENS address={txToAddress} />
+                                        </a>
+                                      </Link>
                                     </Flex>
                                   </TableCell>
                                 </>
@@ -716,18 +828,13 @@ export default function NFTView() {
                                     sx={{
                                       marginLeft: '6px;',
                                       verticalAlign: 'middle',
+                                      opacity: 0.3,
+                                      '&:hover': {
+                                        opacity: 1,
+                                      },
                                     }}
                                   >
-                                    <Icon
-                                      icon="disconnect"
-                                      color={
-                                        'SALE' === type
-                                          ? 'pink'
-                                          : 'TRANSFER' === type
-                                          ? 'blue'
-                                          : 'green'
-                                      }
-                                    />
+                                    <Icon icon="disconnect" color="grey-500" />
                                   </IconButton>
                                 </a>
                               </TableCell>
@@ -743,7 +850,7 @@ export default function NFTView() {
                     </Text>
                   )}
                 </Flex>
-              </Flex>
+              </Box>
             </Panel>
             <Panel>
               <Flex sx={{ flexDirection: 'column', gap: 16 }}>

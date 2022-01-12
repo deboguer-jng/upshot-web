@@ -1,29 +1,39 @@
 import { useQuery } from '@apollo/client'
-import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
-import { Chart, Container, Flex, Grid } from '@upshot-tech/upshot-ui'
-import { Avatar, Footer, Text } from '@upshot-tech/upshot-ui'
+import {
+  imageOptimizer,
+  theme,
+  useBreakpointIndex,
+} from '@upshot-tech/upshot-ui'
+import { Chart, Container, Flex, Grid, Label } from '@upshot-tech/upshot-ui'
+import { Avatar, Text } from '@upshot-tech/upshot-ui'
+import { Box } from 'theme-ui'
+import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import { ethers } from 'ethers'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
+import ReactMarkdown from 'react-markdown'
 import { weiToEth } from 'utils/number'
 import CollectionScatterChart from 'views/Analytics/components/CollectionScatterChart'
 import ExplorePanel from 'views/Analytics/components/ExplorePanel'
 import TopSellingNFTs from 'views/Analytics/components/TopSellingNFTs'
 
+import Breadcrumbs from '../components/Breadcrumbs'
 import { GET_COLLECTION, GetCollectionData, GetCollectionVars } from './queries'
 
 interface CollectionStatProps {
   value: string
   label: string
-  color?: string
+  color?: keyof typeof theme.colors
+  currencySymbol?: string
 }
 
 function CollectionStat({
   value,
   label,
   color = 'grey-300',
+  currencySymbol = '',
 }: CollectionStatProps) {
   return (
     <Flex
@@ -38,20 +48,60 @@ function CollectionStat({
         color,
       }}
     >
-      <Text
-        sx={{
-          fontWeight: 700,
-          fontSize: ['0.85rem', '0.85rem', '1rem', '1rem'],
-        }}
-      >
-        {value}
-      </Text>
+      {currencySymbol !== '' && (
+        <Label
+          currencySymbol={currencySymbol}
+          variant="currency"
+          color={color}
+          style={{
+            fontWeight: 700,
+          }}
+        >
+          {value}
+        </Label>
+      )}
+      {currencySymbol === '' && value}
+
       <Text variant="small">{label}</Text>
     </Flex>
   )
 }
 
 function Layout({ children }: { children: React.ReactNode }) {
+  const storage = globalThis?.sessionStorage
+  const prevPath = storage.getItem('prevPath')
+
+  const breadcrumbs = prevPath?.includes('user')
+    ? [
+        {
+          text: 'Analytics Home',
+          link: '/analytics',
+        },
+        {
+          text: `${
+            decodeURI(prevPath as string).split('?userWallet=')[1]
+          }'s Collection`,
+          link: prevPath,
+        },
+      ]
+    : !prevPath?.includes('/nft/')
+    ? [
+        {
+          text: 'Analytics Home',
+          link: '/analytics',
+        },
+      ]
+    : [
+        {
+          text: 'Analytics Home',
+          link: '/analytics',
+        },
+        {
+          text: decodeURI(prevPath as string).split('nftName=')[1],
+          link: prevPath,
+        },
+      ]
+
   return (
     <>
       <Head>
@@ -70,6 +120,7 @@ function Layout({ children }: { children: React.ReactNode }) {
           content="https://upshot.io/img/opengraph/opengraph_collection.jpg"
         />
       </Head>
+      <Nav />
       <Container
         p={4}
         sx={{
@@ -80,7 +131,7 @@ function Layout({ children }: { children: React.ReactNode }) {
           gap: 4,
         }}
       >
-        <Nav />
+        <Breadcrumbs crumbs={breadcrumbs} />
         {children}
         <Footer />
       </Container>
@@ -110,6 +161,18 @@ export default function CollectionView() {
       skip: !id,
     }
   )
+
+  useEffect(() => {
+    if (data?.collectionById && data?.collectionById.name) {
+      const storage = globalThis?.sessionStorage
+      const curPath = storage.getItem('currentPath')
+      if (curPath?.indexOf('collectionName=') === -1)
+        storage.setItem(
+          'currentPath',
+          `${curPath}?collectionName=${data?.collectionById.name}`
+        )
+    }
+  }, [data?.collectionById])
 
   /* Memoize scatter chart to avoid unnecessary updates. */
   const scatterChart = useMemo(
@@ -153,10 +216,14 @@ export default function CollectionView() {
     name,
     description,
     imageUrl,
-    ceil,
+    floor,
     size,
     average,
     totalVolume,
+    volume,
+    marketCap,
+    sevenDayFloorChange,
+    numCollectors,
     timeSeries,
   } = data.collectionById
 
@@ -178,7 +245,29 @@ export default function CollectionView() {
       <Grid columns={isMobile ? '1fr' : '1fr 1fr'} sx={{ gap: '40px' }}>
         <Flex sx={{ flexDirection: 'column', gap: '16px' }}>
           <Flex sx={{ gap: 6, height: 100, alignItems: 'center' }}>
-            <Avatar size="xl" src={imageUrl} />
+            <Box
+              sx={{
+                backgroundColor: '#231F20',
+                minWidth: '63px',
+                padding: isMobile ? '4px' : '8px',
+                borderRadius: '50%',
+              }}
+            >
+              <Avatar
+                size="xl"
+                sx={{
+                  width: isMobile ? '55px' : '100px',
+                  height: isMobile ? '55px' : '100px',
+                  minWidth: 'unset',
+                }}
+                src={
+                  imageOptimizer(imageUrl, {
+                    width: parseInt(theme.images.avatar.xl.size),
+                    height: parseInt(theme.images.avatar.xl.size),
+                  }) ?? imageUrl
+                }
+              />
+            </Box>
             <Flex sx={{ flexDirection: 'column' }}>
               <Text variant="h1Secondary" sx={{ lineHeight: '2rem' }}>
                 {name}
@@ -201,28 +290,60 @@ export default function CollectionView() {
           >
             General Stats
           </Text>
-          <Grid columns="repeat(auto-fit, minmax(100px, 1fr))" sx={{ gap: 4 }}>
+          <Grid columns="repeat(auto-fit, minmax(140px, 1fr))" sx={{ gap: 4 }}>
             <CollectionStat
               color="blue"
-              value={average ? weiToEth(average) : '-'}
-              label="Avg. NFT Value"
+              value={average ? weiToEth(average, 4, false) : '-'}
+              currencySymbol="Ξ"
+              label="Average Price"
             />
             <CollectionStat
               color="pink"
-              value={ceil ? weiToEth(ceil) : '-'}
-              label="Highest Listing"
+              value={floor ? weiToEth(floor, 4, false) : '-'}
+              currencySymbol="Ξ"
+              label="Floor Price"
             />
             <CollectionStat
-              value={totalVolume ? weiToEth(totalVolume) : '-'}
-              label="Total Volume"
+              color={
+                sevenDayFloorChange
+                  ? sevenDayFloorChange > 0
+                    ? 'green'
+                    : 'red'
+                  : 'white'
+              }
+              value={
+                sevenDayFloorChange
+                  ? sevenDayFloorChange > 0
+                    ? '+' + sevenDayFloorChange.toFixed(2) + '%'
+                    : sevenDayFloorChange.toFixed(2) + '%'
+                  : '-'
+              }
+              label="7 Day Floor Change"
+            />
+            <CollectionStat
+              value={marketCap ? weiToEth(marketCap, 4, false) : '-'}
+              currencySymbol="Ξ"
+              label="Market Cap"
+            />
+            <CollectionStat
+              value={volume ? weiToEth(volume, 4, false) : '-'}
+              currencySymbol="Ξ"
+              label="Wkly Volume"
             />
             <CollectionStat value={size} label="NFTs in Collection" />
+            {/* <CollectionStat
+              value={numCollectors ? numCollectors.toString() : '-'}
+              label="Collectors"
+            /> */}
           </Grid>
         </Flex>
         <Flex sx={{ flexDirection: 'column', paddingTop: isMobile ? 0 : 116 }}>
-          <Text variant="large" sx={{ textTransform: 'uppercase' }}>
-            About
-          </Text>
+          {
+            description &&
+              <Text variant="large" sx={{ textTransform: 'uppercase' }}>
+                About
+              </Text>
+          }
           <Text
             color="grey-300"
             onClick={() => {
@@ -233,12 +354,18 @@ export default function CollectionView() {
               cursor: 'pointer',
               textOverflow: 'ellipsis',
               overflow: 'hidden',
-              WebkitLineClamp: descriptionOpen ? 'unset' : 6,
+              height: descriptionOpen ? 'auto' : '150px',
+              WebkitLineClamp: !descriptionOpen ? 6 : 'none',
               display: '-webkit-box',
               WebkitBoxOrient: 'vertical',
+              '& a': { color: 'white' },
             }}
           >
-            {description ?? 'No information.'}
+            {(
+              <ReactMarkdown allowedElements={['a', 'p']}>
+                {description}
+              </ReactMarkdown>
+            ) ?? 'No information.'}
           </Text>
         </Flex>
       </Grid>
@@ -256,7 +383,14 @@ export default function CollectionView() {
       </Text>
       {scatterChart}
 
-      <Flex sx={{ flexDirection: 'column', flexGrow: 1, gap: 5 }}>
+      <Flex
+        sx={{
+          position: 'relative',
+          flexDirection: 'column',
+          flexGrow: 1,
+          gap: 5,
+        }}
+      >
         <TopSellingNFTs collectionId={id} />
       </Flex>
 

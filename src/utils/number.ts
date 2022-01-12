@@ -57,3 +57,34 @@ export const formatCurrencyUnits = (
 
   return (val / 10 ** precision).toFixed(precision)
 }
+
+/**
+ * Formats a large number into a smaller unit.
+ */
+export const formatLargeNumber = (num: number, digits = 2) => {
+  const lookup = [
+    { value: 1, symbol: '' },
+    { value: 1e3, symbol: 'k' },
+    { value: 1e6, symbol: 'M' },
+    { value: 1e9, symbol: 'B' },
+  ]
+  const item = lookup
+    .slice()
+    .reverse()
+    .find((item) => num >= item.value)
+  return item
+    ? (num / item.value).toFixed(2) + item.symbol
+    : Number(0).toFixed(digits)
+}
+
+/**
+ * Get price change label.
+ *
+ * @returns + prefixed percent if positive, - prefixed percent if negative.
+ */
+export const getPriceChangeLabel = (val: number | null) => {
+  if (val === null) return '-'
+
+  const percentChange = val.toFixed(2) + '%'
+  return val > 0 ? '+' + percentChange : percentChange
+}

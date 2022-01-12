@@ -13,19 +13,19 @@ import { METRIC } from './ButtonTabs'
 
 const timeSeriesKeys = {
   AVERAGE: 'average',
-  VOLUME: 'marketCap',
+  VOLUME: 'volume',
   FLOOR: 'floor',
 }
 
 const athKeys = {
-  AVERAGE: 'athAverage',
-  VOLUME: 'athVolume',
+  AVERAGE: 'athAverageWeeklyWei',
+  VOLUME: 'athVolumeWeeklyWei',
   FLOOR: 'athFloor',
 }
 
 const atlKeys = {
-  AVERAGE: 'atlAverage',
-  VOLUME: 'atlVolume',
+  AVERAGE: 'atlAverageWeeklyWei',
+  VOLUME: 'atlVolumeWeeklyWei',
   FLOOR: 'atlFloor',
 }
 
@@ -40,6 +40,11 @@ export default function TopCollectionsCharts({
   metric: METRIC
   selectedCollections: number[]
 }) {
+  const currentDate = Date.now()
+  const before7Daysdate = currentDate - 1000 * 60 * 60 * 24 * 7 // extract 7 days in millisec
+  const minTimestamp =
+    metric === 'VOLUME' ? Math.floor(before7Daysdate / 1000) : 0
+
   const { loading, error, data } = useQuery<
     GetTopCollectionsData,
     GetTopCollectionsVars
@@ -50,6 +55,7 @@ export default function TopCollectionsCharts({
       stringifiedCollectionIds: selectedCollections.length
         ? `[${selectedCollections.join(',')}]`
         : undefined,
+      minTimestamp: minTimestamp,
     },
   })
   /* Load state. */
@@ -59,7 +65,8 @@ export default function TopCollectionsCharts({
   // if (error) return <Chart error />
 
   /* No results state. */
-  if (!data?.orderedCollectionsByMetricSearch?.assetSets?.length) return <Chart noData />
+  if (!data?.orderedCollectionsByMetricSearch?.assetSets?.length)
+    return <Chart noData />
 
   /* No selected state. */
   if (!selectedCollections.length) return <Chart noSelected />
@@ -100,15 +107,14 @@ export default function TopCollectionsCharts({
       (a, b) =>
         selectedCollections.indexOf(a.id) - selectedCollections.indexOf(b.id)
     )
-    .map(({ data, name, id, sevenDayMCChange, ...rest }) => {
+    .map(({ data, name, id, latestStats, ...rest }) => {
       const ath = rest[athKeys[metric]]?.value
       const atl = rest[atlKeys[metric]]?.value
-      const priceChange =
-        sevenDayMCChange === null
-          ? null
-          : sevenDayMCChange >= 0
-          ? '+' + sevenDayMCChange + '%'
-          : sevenDayMCChange + '%'
+      const priceChange = !latestStats?.sevenDayChange
+        ? null
+        : latestStats.sevenDayChange >= 0
+        ? '+' + latestStats.sevenDayChange + '%'
+        : latestStats.sevenDayChange + '%'
 
       return {
         name,
@@ -116,7 +122,11 @@ export default function TopCollectionsCharts({
         ath: ath && metric !== 'FLOOR' ? weiToEth(ath, 2) : null,
         atl: atl && metric !== 'FLOOR' ? weiToEth(atl, 2) : null,
         /* priceUsd: 10, */
-        priceChange,
+        // priceChange,
+        volume:
+          metric === 'VOLUME' && latestStats?.volume
+            ? parseFloat(weiToEth(latestStats.volume, 2, false))
+            : 0,
         data: data.map((val, i) =>
           i === 0
             ? [minDate * 1000, val[1]] // Align window start
@@ -124,6 +134,9 @@ export default function TopCollectionsCharts({
             ? [maxDate * 1000, val[1]] // Align window end
             : val
         ),
+        metric,
+        currentFloor: weiToEth((latestStats?.floor).toString(), 4, false),
+        currentAvg: weiToEth((latestStats?.pastDayWeiAverage).toString(), 4, false),
       }
     })
 

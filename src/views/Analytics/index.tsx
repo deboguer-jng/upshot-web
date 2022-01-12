@@ -1,5 +1,6 @@
 import { Box, Container } from '@upshot-tech/upshot-ui'
-import { Flex, Footer, Text } from '@upshot-tech/upshot-ui'
+import { Flex, Text } from '@upshot-tech/upshot-ui'
+import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import Head from 'next/head'
 import { useState } from 'react'
@@ -8,11 +9,11 @@ import ButtonTabs, { METRIC } from './components/ButtonTabs'
 import CollectionAvgPricePanel from './components/CollectionAvgPricePanel'
 import ExplorePanel from './components/ExplorePanel'
 import TopCollectionsChart from './components/TopCollectionsChart'
-import TopSellingNFTs from './components/TopSellingNFTs'
+import TopSellingCollectionNFTs from './components/TopSellingCollectionNFTs'
 import TreeMapMarketCap from './components/TreeMapMarketCap'
 
 export default function AnalyticsView() {
-  const [chartMetric, setChartMetric] = useState<METRIC>('VOLUME')
+  const [chartMetric, setChartMetric] = useState<METRIC>('FLOOR')
   const [selectedCollections, setSelectedCollections] = useState<number[]>([])
 
   const handleChange = (updatedChartMetric: METRIC) => {
@@ -50,6 +51,7 @@ export default function AnalyticsView() {
           content="https://upshot.io/img/opengraph/opengraph_analytics.jpg"
         />
       </Head>
+      <Nav />
       <Container
         p={4}
         sx={{
@@ -59,11 +61,55 @@ export default function AnalyticsView() {
           gap: 4,
         }}
       >
-        <Nav />
-        <Flex sx={{ flex: '1 1 auto', flexDirection: 'column', gap: 5 }}>
-          <Text variant="h1Secondary" sx={{ lineHeight: '2.25rem' }}>
-            Top Collections
+        <Flex
+          sx={{
+            flexDirection: ['column', 'row', 'row'],
+            paddingBottom: ['0px', '0px', '10px'],
+            marginTop: ['-20px', '-20px', '-10px'],
+          }}
+        >
+          <Text
+            variant="h0Secondary"
+            sx={{
+              lineHeight: '2.25rem',
+              color: 'blue',
+              fontWeight: '700',
+              fontSize: ['42px', '42px', 8],
+              textTransform: 'uppercase',
+            }}
+          >
+            Upshot
           </Text>
+          <Flex>
+            <Text
+              variant="h0Secondary"
+              sx={{
+                lineHeight: '2.25rem',
+                fontWeight: '500',
+                fontSize: ['42px', '42px', 8],
+              }}
+            >
+              Analytics
+            </Text>
+            <Box sx={{ p: [1, 1, 2] }}>
+              <Text
+                sx={{
+                  textTransform: 'uppercase',
+                  color: 'black',
+                  backgroundColor: 'blue',
+                  borderRadius: 'xs',
+                  padding: '2px 4px',
+                  fontSize: ['9px', '9px', 2],
+                  fontWeight: 'bold',
+                  lineHeight: 1,
+                }}
+              >
+                Beta
+              </Text>
+            </Box>
+          </Flex>
+        </Flex>
+        <Flex sx={{ flex: '1 1 auto', flexDirection: 'column', gap: 5 }}>
           <ButtonTabs onChange={handleChange} />
           <TopCollectionsChart
             metric={chartMetric}
@@ -76,7 +122,7 @@ export default function AnalyticsView() {
             setSelectedCollections={setSelectedCollections}
           />
           <Box sx={{ position: 'relative' }}>
-            <TopSellingNFTs />
+            <TopSellingCollectionNFTs />
           </Box>
           <Text variant="text.h1Secondary" sx={{ lineHeight: '2.25rem' }}>
             Market Cap (Change Over 7 Days)

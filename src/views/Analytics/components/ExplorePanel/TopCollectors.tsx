@@ -29,7 +29,7 @@ import {
 import { MiniNFTContainer } from '.././Styled'
 import { ExplorePanelSkeleton } from './NFTs'
 
-export default function TopCollectors() {
+export default function TopCollectors({ searchTerm }: { searchTerm: string }) {
   const router = useRouter()
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
@@ -48,7 +48,7 @@ export default function TopCollectors() {
     GetTopCollectorsVars
   >(GET_TOP_COLLECTORS, {
     errorPolicy: 'all',
-    variables: { limit: PAGE_SIZE, offset: page * PAGE_SIZE },
+    variables: { limit: PAGE_SIZE, offset: page * PAGE_SIZE, searchTerm },
   })
 
   /* Load state. */
@@ -64,35 +64,39 @@ export default function TopCollectors() {
   return (
     <>
       <CollectorAccordionHead>
-        <Text>Collector</Text>
         {/* <Text sx={{ whiteSpace: 'nowrap' }}>Total Appraised Value</Text> */}
       </CollectorAccordionHead>
       <CollectorAccordion>
         {data.getOwnersByWhaleness['owners'].map(
           ({ username, addresses, ownedAssets }, idx) => (
             <CollectorAccordionRow
-              address={addresses?.[0]}
+              address={addresses?.[0].address}
               key={idx}
+              defaultOpen={idx === 0 ? true : false}
               {...{ username }}
             >
               <div style={{ display: 'grid' }}>
+                <a
+                  href={`/analytics/user/${addresses[0].address}`}
+                  style={{ textDecoration: 'none' }}
+                >
+                  <Text
+                    variant="h3Primary"
+                    sx={{
+                      color: 'primary',
+                      paddingBottom: '12px',
+                      fontSize: 4,
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    View Portfolio
+                  </Text>
+                </a>
                 <Text sx={{ fontSize: 4, fontWeight: 'heading' }}>
                   Most Notable NFTs
                 </Text>
-                {!isMobile && (
-                  <Text
-                    sx={{
-                      fontWeight: 'heading',
-                      color: theme.colors.blue,
-                      paddingBottom: '12px',
-                      fontSize: 2,
-                    }}
-                  >
-                    {addresses[0]}
-                  </Text>
-                )}
               </div>
-              <MiniNFTContainer>
+              <MiniNFTContainer onClick={(e) => e.stopPropagation()} >
                 {ownedAssets?.assets?.map(
                   (
                     {
@@ -132,7 +136,7 @@ export default function TopCollectors() {
                         )}
                         type="search"
                         name={getAssetName(name, collection?.name, tokenId)}
-                        link={`https://app.upshot.io/analytics/collection/${collection?.id}`}
+                        link={`/analytics/collection/${collection?.id}`}
                       />
                     </a>
                   )

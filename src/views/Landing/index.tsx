@@ -1,27 +1,35 @@
 import {
   Box,
+  Button,
   Container,
   Flex,
-  Footer,
   Grid,
   Icon,
+  IconButton,
   LandingPanel,
   Panel,
   Text,
+  theme,
 } from '@upshot-tech/upshot-ui'
-import { Nav } from 'components/Nav'
+import { Footer } from 'components/Footer'
 import Head from 'next/head'
+import { useState } from 'react'
 import { Image, Link } from 'theme-ui'
 
 import { projects } from './content'
 import AnalyticsSVG from './panelBackgrounds/Analytics.svg'
-import UpshotOneSVG from './panelBackgrounds/UpshotOne.svg'
+import AnalyticsHoverSVG from './panelBackgrounds/AnalyticsHover.svg'
+import ApiSVG from './panelBackgrounds/Api.svg'
+import ApiHoverSVG from './panelBackgrounds/ApiHover.svg'
+import BlogSVG from './panelBackgrounds/Blog.svg'
+import BlogHoverSVG from './panelBackgrounds/BlogHover.svg'
+import UpshotArtworkSVG from './panelBackgrounds/UpshotArtwork.svg'
 
 type PanelData = {
   projectType: string
   title: string
   description: string
-  image: any
+  image?: any
   url: string
 }
 
@@ -44,13 +52,33 @@ function renderLandingPanel(data: PanelData) {
         projectType={data.projectType}
         title={data.title}
         description={data.description}
-        image={data.image.src}
+        image={data.image?.src}
       />
     </Link>
   )
 }
 
 export default function LandingView() {
+  const images = {
+    analytics: {
+      original: AnalyticsSVG,
+      hover: AnalyticsHoverSVG,
+    },
+    api: {
+      original: ApiSVG,
+      hover: ApiHoverSVG,
+    },
+    blog: {
+      original: BlogSVG,
+      hover: BlogHoverSVG,
+    },
+  }
+  const [analyticsImage, setAnalyticsImage] = useState(
+    images.analytics.original.src
+  )
+  const [apiImage, setApiImage] = useState(images.api.original.src)
+  const [blogImage, setBlogImage] = useState(images.blog.original.src)
+
   return (
     <>
       <Head>
@@ -78,43 +106,104 @@ export default function LandingView() {
           gap: 4,
         }}
       >
-        <Nav />
-        <Box sx={{ display: ['none', 'none', 'none', 'flex'] }}>
+        <Box sx={{ display: 'flex' }}>
           {' '}
           {/* Display only on Desktop */}
-          <Flex sx={{ gap: 15, marginTop: '5%', marginBottom: '5%' }}>
-            <Icon color="primary" icon="bubblegum" size={240} />
+          <Grid
+            columns={[1, null, '3fr 2fr']}
+            sx={{ marginTop: '5%', marginBottom: '2%' }}
+          >
             <Box>
               <Box>
-                <Box>
-                  <Text variant="h0Primary" sx={{ fontSize: '50px' }}>
-                    Upshot: Where NFTs meet DeFi
-                  </Text>
-                </Box>
-                <Box sx={{ marginTop: '30px' }}>
-                  <Text
-                    variant="h3Primary"
-                    sx={{ fontWeight: 'normal', lineHeight: '1.3em' }}
-                  >
-                    NFTs offer us a vehicle for tokenizing anything, while the
-                    explosive growth of DeFi has demonstrated the power of
-                    permissionless financial primitives. Upshot is building
-                    scalable NFT pricing infrastructure at the intersection of
-                    DeFi x NFTs. Through a combination of crowdsourced
-                    appraisals and proprietary machine learning algorithms,
-                    Upshot provides deep insight into NFT markets and unlocks a
-                    wave of exotic new DeFi possibilities.
-                  </Text>
-                </Box>
+                <Text
+                  variant="h0Primary"
+                  sx={{
+                    fontSize: ['3rem', null, '5rem', '8rem'],
+                    textTransform: 'uppercase',
+                    fontFamily: 'degular-display',
+                  }}
+                >
+                  Upshot
+                </Text>
               </Box>
+              <Box sx={{ marginTop: ['0', null, '0', '1rem'] }}>
+                <Text
+                  variant="h1Primary"
+                  sx={{ fontSize: ['1.6rem', null, '1.8rem', '2.8rem'] }}
+                >
+                  Where NFTs meet DeFi
+                </Text>
+              </Box>
+              <Box sx={{ marginTop: ['0.4rem', null, '0.6rem', '1rem'] }}>
+                <Text
+                  variant="h3Primary"
+                  sx={{
+                    fontWeight: 'normal',
+                    lineHeight: ['1.25rem', null, '1.375em', '1.75rem'],
+                    fontSize: ['1.1rem', null, '1.3rem', '1.438rem'],
+                  }}
+                >
+                  Upshot provides deep insight into NFT markets and unlocks a
+                  wave of exotic new DeFi possibilities.
+                </Text>
+              </Box>
+              <Flex sx={{ gridGap: '14px', marginTop: '20px' }}>
+                <Box>
+                  <Link href="https://discord.gg/upshot" target="_blank">
+                    <IconButton>
+                      <Icon color="purple" icon="discord" size={32} />
+                    </IconButton>
+                  </Link>
+                </Box>
+                <Box>
+                  <Link href="https://twitter.com/upshothq" target="_blank">
+                    <IconButton>
+                      <Icon color="blue" icon="twitterCircle" size={32} />
+                    </IconButton>
+                  </Link>
+                </Box>
+                <Box>
+                  <Link
+                    href="https://jobs.lever.co/upshot.io"
+                    target="_blank"
+                    sx={{
+                      textDecoration: 'none',
+                      '&:hover': {
+                        textDecoration: 'none',
+                      },
+                    }}
+                  >
+                    <Button
+                      capitalize={true}
+                      style={{
+                        borderRadius: '8px',
+                        height: '32px',
+                        padding: '8px 12px',
+                      }}
+                    >
+                      Join our team
+                    </Button>
+                  </Link>
+                </Box>
+              </Flex>
             </Box>
-          </Flex>
+
+            <Box sx={{ marginTop: ['-20px', null, '-40px', '-80px'] }}>
+              <Image
+                src={UpshotArtworkSVG.src}
+                sx={{
+                  width: '100%',
+                }}
+                alt="Upshot"
+              />
+            </Box>
+          </Grid>
         </Box>
         <Text variant="h2Primary">Get started</Text>
         <Text variant="xLarge" color="grey-500">
-          Gain insight into NFT markets with our suite of tools.
+          Start using our suite of tools for exploring the metaverse.
         </Text>
-        <Grid gap={5} columns={[1, 1, 2, 3]}>
+        <Grid gap={5} columns={[1, 1, 1, 2]}>
           <Link
             href="/analytics"
             rel="noopener noreferrer"
@@ -129,186 +218,171 @@ export default function LandingView() {
           >
             <Panel
               hoverUnderglow="pink"
+              hoverBorder="pink"
               sx={{
+                height: ['225px', null, null, '250px'],
                 position: 'relative',
-                padding: '32px !important',
+                padding: '22px !important',
                 paddingRight: '88px !important',
-                background:
-                  'linear-gradient(229.88deg, rgba(236, 91, 148, 0.18) 14.66%, rgba(236, 91, 148, 0.18) 14.66%, rgba(236, 91, 148, 0) 100.35%), #231F20',
+                paddingTop: '10px !important',
+                backgroundColor: theme.colors['grey-900'] + ' !important',
                 '&:hover img': {
                   opacity: '1',
                 },
+                '&:hover span:first-of-type': {
+                  color: theme.colors.pink,
+                },
+                '&:hover': {
+                  backgroundColor: theme.colors.black + ' !important',
+                },
               }}
+              onMouseEnter={() => setAnalyticsImage(images.analytics.hover.src)}
+              onMouseLeave={() =>
+                setAnalyticsImage(images.analytics.original.src)
+              }
             >
               <Image
-                src={AnalyticsSVG.src}
+                src={analyticsImage}
                 sx={{
-                  opacity: '0.3',
+                  opacity: '0.7',
                   position: 'absolute',
-                  left: '0',
-                  top: '0',
-                  width: '100%',
-                  height: 'auto',
-                  objectFit: 'cover',
+                  right: '5%',
+                  bottom: '0',
+                  width: '70%',
+                  maxHeight: '95%',
                 }}
+                alt="Analytics"
               ></Image>
               <div style={{ position: 'relative' }}>
                 <Text variant="h1Secondary">Analytics</Text>
                 <Text
                   variant="large"
-                  sx={{ paddingTop: '60px', display: 'block' }}
+                  sx={{ display: 'block', width: ['100%', null, null, '50%'] }}
                 >
-                  Discover the world of NFTs using powerful data.
+                  Explore the world of NFTs using powerful data.
                 </Text>
               </div>
             </Panel>
           </Link>
-          <Link
-            href="https://upshot.gitbook.io/upshot-api/"
-            rel="noopener noreferrer"
-            sx={{
-              color: 'text',
-              textDecoration: 'none',
-              display: 'grid',
-              '&:hover': {
-                textDecoration: 'none',
-              },
-            }}
-          >
-            <Panel
-              hoverUnderglow="blue"
-              sx={{
-                position: 'relative',
-                padding: '32px !important',
-                paddingRight: '88px !important',
-                background:
-                  'linear-gradient(229.88deg, rgba(0, 145, 255, 0.3) 14.66%, rgba(0, 145, 255, 0) 100.35%), #231F20',
-                '&:hover img': {
-                  opacity: '1',
-                },
-              }}
-            >
-              <Image
-                src={UpshotOneSVG.src}
+          <Box>
+            <Grid gap={5} columns={[1, 1, 2, 2]}>
+              <Link
+                href="https://docs.upshot.xyz/"
+                rel="noopener noreferrer"
                 sx={{
-                  opacity: '0.3',
-                  position: 'absolute',
-                  right: '0',
-                  top: '0',
-                  width: 'auto',
-                  height: '50%',
-                  objectFit: 'cover',
+                  color: 'text',
+                  textDecoration: 'none',
+                  display: 'grid',
+                  '&:hover': {
+                    textDecoration: 'none',
+                  },
                 }}
-              ></Image>
-              <div style={{ position: 'relative' }}>
-                <Text variant="h1Secondary">Upshot API</Text>
-                <Text
-                  variant="large"
-                  sx={{ paddingTop: '60px', display: 'block' }}
+              >
+                <Panel
+                  hoverUnderglow="blue"
+                  hoverBorder="blue"
+                  sx={{
+                    height: ['225px', null, null, '250px'],
+                    position: 'relative',
+                    padding: '22px !important',
+                    paddingRight: '88px !important',
+                    paddingTop: '10px !important',
+                    backgroundColor: theme.colors['grey-900'] + ' !important',
+                    '&:hover img': {
+                      opacity: '1',
+                    },
+                    '&:hover span:first-of-type': {
+                      color: theme.colors.blue,
+                    },
+                    '&:hover': {
+                      backgroundColor: theme.colors.black + ' !important',
+                    },
+                  }}
+                  onMouseEnter={() => setApiImage(images.api.hover.src)}
+                  onMouseLeave={() => setApiImage(images.api.original.src)}
                 >
-                  Integrate Upshot data into your project.
-                </Text>
-              </div>
-            </Panel>
-          </Link>
-          <Grid
-            gap={2}
-            columns={[1, 1, 2]}
-            sx={{
-              padding: '18px',
-              border: '1px solid #545454',
-              borderRadius: '24px',
-            }}
-          >
-            <Text
-              color="grey-600"
-              sx={{
-                position: 'absolute',
-                transform: 'translate(0%, -150%)',
-                bg: 'black',
-                paddingLeft: '10px',
-                paddingRight: '10px',
-              }}
-            >
-              Additional Resources
-            </Text>
-            <Link
-              href={'https://blog.upshot.io'}
-              target="_blank"
-              sx={{
-                color: 'initial',
-                textDecoration: 'none',
-                display: 'grid',
-                '&:hover': {
+                  <Image
+                    src={apiImage}
+                    sx={{
+                      opacity: '0.7',
+                      position: 'absolute',
+                      bottom: '5%',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      width: 'auto',
+                      height: '60%',
+                      objectFit: 'cover',
+                    }}
+                    alt="Upshot One"
+                  ></Image>
+                  <div style={{ position: 'relative' }}>
+                    <Text variant="h1Secondary">Upshot API</Text>
+                    <Text variant="large" sx={{ display: 'block' }}>
+                      Integrate Upshot data into your project.
+                    </Text>
+                  </div>
+                </Panel>
+              </Link>
+              <Link
+                href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
+                rel="noopener noreferrer"
+                sx={{
+                  color: 'text',
                   textDecoration: 'none',
-                },
-              }}
-            >
-              <LandingPanel
-                title="Blog"
-                description="Check out our blog"
-                showLinkIcon={true}
-                hoverUnderglow="blue"
-              />
-            </Link>
-            <Link
-              href={'https://jobs.lever.co/upshot.io'}
-              target="_blank"
-              sx={{
-                color: 'initial',
-                textDecoration: 'none',
-                display: 'grid',
-                '&:hover': {
-                  textDecoration: 'none',
-                },
-              }}
-            >
-              <LandingPanel
-                title="Careers"
-                description="Join our team"
-                showLinkIcon={true}
-                hoverUnderglow="blue"
-              />
-            </Link>
-            <Link
-              href={'https://discord.gg/upshot'}
-              target="_blank"
-              sx={{
-                color: 'initial',
-                textDecoration: 'none',
-                display: 'grid',
-                '&:hover': {
-                  textDecoration: 'none',
-                },
-              }}
-            >
-              <LandingPanel
-                title="Discord"
-                description="Become a part of the community"
-                showLinkIcon={true}
-                hoverUnderglow="blue"
-              />
-            </Link>
-            <Link
-              href={'https://twitter.com/UpshotHQ'}
-              target="_blank"
-              sx={{
-                color: 'initial',
-                textDecoration: 'none',
-                display: 'grid',
-                '&:hover': {
-                  textDecoration: 'none',
-                },
-              }}
-            >
-              <LandingPanel
-                title="Twitter"
-                description="Follow us on Twitter"
-                showLinkIcon={true}
-                hoverUnderglow="blue"
-              />
-            </Link>
-          </Grid>
+                  display: 'grid',
+                  '&:hover': {
+                    textDecoration: 'none',
+                  },
+                }}
+              >
+                <Panel
+                  hoverUnderglow="red"
+                  hoverBorder="red"
+                  sx={{
+                    height: ['225px', null, null, '250px'],
+                    position: 'relative',
+                    padding: '22px !important',
+                    paddingRight: '88px !important',
+                    paddingTop: '10px !important',
+                    backgroundColor: theme.colors['grey-900'] + ' !important',
+                    '&:hover img': {
+                      opacity: '1',
+                    },
+                    '&:hover span:first-of-type': {
+                      color: theme.colors.red,
+                    },
+                    '&:hover': {
+                      backgroundColor: theme.colors.black + ' !important',
+                    },
+                  }}
+                  onMouseEnter={() => setBlogImage(images.blog.hover.src)}
+                  onMouseLeave={() => setBlogImage(images.blog.original.src)}
+                >
+                  <Image
+                    src={blogImage}
+                    sx={{
+                      opacity: '0.7',
+                      position: 'absolute',
+                      bottom: '5%',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      margin: 'auto',
+                      width: 'auto',
+                      height: '50%',
+                      objectFit: 'cover',
+                    }}
+                    alt="Upshot One"
+                  ></Image>
+                  <div style={{ position: 'relative' }}>
+                    <Text variant="h1Secondary">Blog</Text>
+                    <Text variant="large" sx={{ display: 'block' }}>
+                      Learn more about NFTxDeFI
+                    </Text>
+                  </div>
+                </Panel>
+              </Link>
+            </Grid>
+          </Box>
         </Grid>
 
         <Text variant="h2Primary">Discover</Text>

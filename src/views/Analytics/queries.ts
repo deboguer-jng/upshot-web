@@ -18,10 +18,28 @@ export type GetTopCollectionsData = {
     assetSets: {
       name: string
       id: number
-      athAverage: {
+      athAverageDailyWei: {
         value: string
       }
-      atlAverage: {
+      atlAverageDailyWei: {
+        value: string
+      }
+      athAverageWeeklyWei: {
+        value: string
+      }
+      atlAverageWeeklyWei: {
+        value: string
+      }
+      athVolumeDailyWei: {
+        value: string
+      }
+      atlVolumeDailyWei: {
+        value: string
+      }
+      athVolumeWeeklyWei: {
+        value: string
+      }
+      atlVolumeWeeklyWei: {
         value: string
       }
       athFloor: {
@@ -30,14 +48,13 @@ export type GetTopCollectionsData = {
       atlFloor: {
         value: string
       }
-      athVolume: {
-        value: string
-      }
-      atlVolume: {
-        value: string
+      latestStats: {
+        volume: string
+        sevenDayChange: number
+        floor: number
+        pastDayWeiAverage: number
       }
       timeSeries?: TimeSeries[]
-      sevenDayMCChange: number
     }[]
   }
 }
@@ -46,19 +63,42 @@ export const GET_TOP_COLLECTIONS = gql`
   query GetTopCollections(
     $metric: EOrderedAssetSetMetric!
     $stringifiedCollectionIds: String
+    $minTimestamp: Int!
   ) {
     orderedCollectionsByMetricSearch(
       metric: $metric
       stringifiedCollectionIds: $stringifiedCollectionIds
       limit: 3
+      windowSize: WEEK
     ) {
       assetSets {
         name
         id
-        athAverage {
+        latestStats {
+          volume
+        }
+        athAverageDailyWei {
           value
         }
-        atlAverage {
+        atlAverageDailyWei {
+          value
+        }
+        athAverageWeeklyWei {
+          value
+        }
+        atlAverageWeeklyWei {
+          value
+        }
+        athVolumeDailyWei {
+          value
+        }
+        atlVolumeDailyWei {
+          value
+        }
+        athVolumeWeeklyWei {
+          value
+        }
+        atlVolumeWeeklyWei {
           value
         }
         athFloor {
@@ -67,19 +107,24 @@ export const GET_TOP_COLLECTIONS = gql`
         atlFloor {
           value
         }
-        athVolume {
+        athFloor {
           value
         }
-        atlVolume {
+        atlFloor {
           value
         }
-        timeSeries {
+        timeSeries(minTimestamp: $minTimestamp, windowSize: WEEK) {
           timestamp
           average
-          marketCap
+          volume
           floor
         }
-        sevenDayMCChange
+        latestStats {
+          volume
+          sevenDayChange
+          floor
+          pastDayWeiAverage
+        }
       }
     }
   }
@@ -93,6 +138,7 @@ export type GetCollectionAvgPriceVars = {
   metric: string
   limit: number
   name?: string
+  windowSize?: string
 }
 
 export type GetCollectionAvgPriceData = {
@@ -101,9 +147,14 @@ export type GetCollectionAvgPriceData = {
       id: number
       name?: string
       imageUrl?: string
-      average?: string
-      floor?: string
-      volume?: string
+      latestStats: {
+        floor: string
+        pastDayWeiAverage: string
+        pastDayWeiVolume: string
+        pastWeekWeiAverage: string
+        pastWeekWeiVolume: string
+        pastMonthNumTxs: number
+      }
     }[]
   }
 }
@@ -123,9 +174,14 @@ export const GET_COLLECTION_AVG_PRICE = gql`
         id
         name
         imageUrl
-        average
-        floor
-        volume
+        latestStats {
+          floor
+          pastDayWeiAverage
+          pastDayWeiVolume
+          pastWeekWeiAverage
+          pastWeekWeiVolume
+          pastMonthNumTxs
+        }
       }
     }
   }
@@ -148,6 +204,7 @@ export type GetExploreNFTsData = {
     assets: {
       id: string
       name: string
+      contractAddress: string
       previewImageUrl?: string
       mediaUrl: string
       totalSaleCount: number
@@ -156,6 +213,8 @@ export type GetExploreNFTsData = {
         timestamp: number
         ethSalePrice: string
       }
+      lastAppraisalWeiPrice: string
+      lastSaleAppraisalRelativeDiff: number
     }[]
   }
 }
@@ -177,6 +236,7 @@ export const GET_EXPLORE_NFTS = gql`
       assets {
         id
         name
+        contractAddress
         previewImageUrl
         mediaUrl
         totalSaleCount
@@ -185,6 +245,8 @@ export const GET_EXPLORE_NFTS = gql`
           timestamp
           ethSalePrice
         }
+        lastAppraisalWeiPrice
+        lastSaleAppraisalRelativeDiff
       }
     }
   }
@@ -219,7 +281,6 @@ export type GetTopSalesData = {
   }[]
 }
 
-
 /**
  * Get top collections for explore panel
  * @see TopCollectionsChart
@@ -229,8 +290,9 @@ export type GetExploreCollectionsVars = {
   metric: string
   limit: number
   offset: number
+  name?: string
 }
- 
+
 export type GetExploreCollectionsData = {
   orderedCollectionsByMetricSearch: {
     count: number
@@ -238,41 +300,50 @@ export type GetExploreCollectionsData = {
       id: number
       name: string
       imageUrl?: string
-      average: string
-      floor: string
-      totalVolume: string
+      sevenDayFloorChange: number
+      latestStats: {
+        floor: string
+        pastDayWeiAverage: string
+        totalWeiVolume: string
+      }
     }[]
   }
 }
- 
+
 export const GET_EXPLORE_COLLECTIONS = gql`
   query GetTopCollections(
     $metric: EOrderedAssetSetMetric!
     $limit: OneToHundredInt!
     $offset: Int!
+    $name: String
   ) {
     orderedCollectionsByMetricSearch(
       metric: $metric
       limit: $limit
       offset: $offset
+      name: $name
+      windowSize: WEEK
     ) {
       count
       assetSets {
         id
         name
         imageUrl
-        average
-        floor
-        totalVolume
+        sevenDayFloorChange
+        latestStats {
+          floor
+          pastDayWeiAverage
+          totalWeiVolume
+        }
       }
-     }
-   }
- ` 
+    }
+  }
+`
 
 export const GET_TOP_SALES = gql`
   query TopSales(
     $windowSize: ETimeWindow!
-    $limit: OneToHundredInt
+    $limit: OneToHundredInt!
     $collectionId: Int
   ) {
     topSales(
@@ -311,8 +382,10 @@ export type GetSevenDayMCChangeData = {
     assetSets: {
       id: number
       name: string
-      sevenDayMCChange: number
-      totalVolume: string
+      latestStats: {
+        totalWeiVolume: string
+        sevenDayChange: number
+      }
     }[]
   }
 }
@@ -323,8 +396,10 @@ export const GET_SEVEN_DAY_MC_CHANGE = gql`
       assetSets {
         id
         name
-        sevenDayMCChange
-        totalVolume
+        latestStats {
+          totalWeiVolume
+          sevenDayChange
+        }
       }
     }
   }
@@ -337,6 +412,7 @@ export const GET_SEVEN_DAY_MC_CHANGE = gql`
 export type GetTopCollectorsVars = {
   limit: number
   offset: number
+  searchTerm: string
 }
 
 export type GetTopCollectorsData = {
@@ -344,7 +420,7 @@ export type GetTopCollectorsData = {
     count: number
     owners: {
       username: string
-      addresses: string[]
+      addresses: { address: string; ens: string }[]
       ownedAssets: {
         assets: {
           id: string
@@ -370,12 +446,15 @@ export type GetTopCollectorsData = {
 }
 
 export const GET_TOP_COLLECTORS = gql`
-  query GetTopCollectors($limit: OneToHundredInt!, $offset: Int) {
-    getOwnersByWhaleness(limit: $limit, offset: $offset) {
+  query GetTopCollectors($limit: OneToHundredInt!, $offset: Int, $searchTerm: String) {
+    getOwnersByWhaleness(limit: $limit, offset: $offset, searchTerm: $searchTerm) {
       count
       owners {
         username
-        addresses
+        addresses {
+          address
+          ens
+        }
         ownedAssets(notable: true, limit: 10, offset: 0) {
           assets {
             id
@@ -408,7 +487,9 @@ export const GET_TOP_COLLECTORS = gql`
 export type GetCollectorsVars = {
   id?: number
   limit: number
-  assetId?: String
+  assetId?: string
+  offset: number
+  searchTerm?: string
 }
 
 export type GetCollectorsData = {
@@ -416,7 +497,7 @@ export type GetCollectorsData = {
     count: number
     owners: {
       username: string
-      addresses: string[]
+      addresses: { address: string; ens: string }[]
       firstAssetPurchaseTime: number
       avgHoldTime: number
       ownedAssets: {
@@ -441,17 +522,27 @@ export type GetCollectorsData = {
 }
 
 export const GET_COLLECTORS = gql`
-  query GetCollectors($id: Int, $limit: OneToHundredInt!, $assetId: String) {
+  query GetCollectors(
+    $id: Int
+    $limit: OneToHundredInt!
+    $offset: Int!
+    $assetId: String
+    $searchTerm: String
+  ) {
     getOwnersByWhaleness(
       collectionId: $id
       limit: $limit
-      offset: 0
+      offset: $offset
       assetId: $assetId
+      searchTerm: $searchTerm
     ) {
       count
       owners {
         username
-        addresses
+        addresses {
+          address
+          ens
+        }
         firstAssetPurchaseTime
         avgHoldTime
         ownedAssets(collectionId: $id, notable: true, limit: 10) {
@@ -483,7 +574,8 @@ export const GET_COLLECTORS = gql`
 export type GetPreviousOwnersVars = {
   id?: number
   limit: number
-  assetId?: String
+  assetId?: string
+  offset: number
 }
 
 export type GetPreviousOwnersData = {
@@ -491,7 +583,7 @@ export type GetPreviousOwnersData = {
     count: number
     owners: {
       username: string
-      addresses: string[]
+      addresses: { address: string; ens: string }[]
       firstAssetPurchaseTime: number
       avgHoldTime: number
       ownedAssets: {
@@ -524,12 +616,16 @@ export const GET_PREVIOUS_OWNERS = gql`
     $id: Int
     $limit: OneToHundredInt!
     $assetId: String
+    $offset: Int!
   ) {
-    getOwnersByWhaleness(limit: $limit, offset: 0, assetId: $assetId) {
+    getOwnersByWhaleness(limit: $limit, offset: $offset, assetId: $assetId) {
       count
       owners {
         username
-        addresses
+        addresses {
+          address
+          ens
+        }
         firstAssetPurchaseTime(collectionId: $id)
         avgHoldTime(collectionId: $id)
         ownedAssets(collectionId: $id, notable: true, limit: 10) {

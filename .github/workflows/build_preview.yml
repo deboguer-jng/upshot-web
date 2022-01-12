@@ -1,0 +1,47 @@
+name: Deployment workflow
+
+on:
+  pull_request:
+    types: ['opened', 'edited', 'synchronize']
+
+jobs:
+  deploy:
+    name: 'Deploy Preview'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+
+      # Sets the branch name as environment variable
+      - uses: nelonoel/branch-name@v1.0.1
+
+      - name: Deploy to Netlify
+        id: netlify-deploy
+        uses: jsmrcaga/action-netlify-deploy@master
+        with:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          build_directory: "out"
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      
+      # Creates a status check with link to preview
+      - name: Status check
+        uses: Sibz/github-status-action@v1.1.1
+        with:
+          authToken: ${{ secrets.GITHUB_TOKEN }}
+          context: Netlify preview
+          state: success
+          target_url: ${{ steps.netlify-deploy.outputs.NETLIFY_PREVIEW_URL }}
+      
+      - name: PR comment
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '👋 You can check the preview app at ${{ steps.netlify-deploy.outputs.NETLIFY_PREVIEW_URL }}'
+            })

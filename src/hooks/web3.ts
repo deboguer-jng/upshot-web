@@ -9,8 +9,10 @@ export function useEagerConnect(address?: string) {
   const [tried, setTried] = useState(false)
 
   useEffect(() => {
+    if (!address) return // Only use eager connect when auth address exists in redux.
+
     Injected.isAuthorized().then((isAuthorized: boolean) => {
-      if (isAuthorized && address) {
+      if (isAuthorized) {
         activate(Injected, undefined, true).catch(() => {
           setTried(true)
         })
