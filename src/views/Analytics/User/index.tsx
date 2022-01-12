@@ -1184,7 +1184,7 @@ export default function UserView() {
         ) : (
           <Box sx={{ width: '95vw' }}>
             <CollectionCardExpanded
-              avatarImage={showCollection?.imageUrl ?? '/img/defaultAvatar.png'}
+              avatarImage={showCollection?.imageUrl}
               name={showCollection?.name ?? ''}
               total={
                 (showCollection?.id
