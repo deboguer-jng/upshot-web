@@ -40,13 +40,13 @@ import { formatCurrencyUnits, formatLargeNumber, weiToEth } from 'utils/number'
 
 import Breadcrumbs from '../components/Breadcrumbs'
 import {
-  GET_COLLECTOR,
-  GetCollectorData,
-  GetCollectorVars,
   GET_COLLECTION_ASSETS,
+  GET_COLLECTOR,
+  GET_UNSUPPORTED_ASSETS,
   GetCollectionAssetsData,
   GetCollectionAssetsVars,
-  GET_UNSUPPORTED_ASSETS,
+  GetCollectorData,
+  GetCollectorVars,
   GetUnsupportedAssetsData,
   GetUnsupportedAssetsVars,
 } from './queries'
@@ -246,26 +246,13 @@ export default function UserView() {
     }
   )
 
-  const {
-    data: dataUnsupported,
-    error: errorUnsupported,
-  } = useQuery<GetUnsupportedAssetsData, GetUnsupportedAssetsVars>(
-    GET_UNSUPPORTED_ASSETS,
-    {
-      errorPolicy: 'all',
-      variables: { address: addressFormatted }
-    }
-  )
-
-  console.log('dataUnsupported: ', dataUnsupported)
-
-  // we need a single array of normal collections and unsupported ones
-  // unsupported will need to be shoveled into here
-  // then we need to conditionally render CollectionCards and CollectionCardItems as the appropriate variant
-  let collections = []
-  if (data) {
-    collections.push(...data.getUser.extraCollections.collectionAssetCounts)
-  }
+  const { data: dataUnsupported, error: errorUnsupported } = useQuery<
+    GetUnsupportedAssetsData,
+    GetUnsupportedAssetsVars
+  >(GET_UNSUPPORTED_ASSETS, {
+    errorPolicy: 'all',
+    variables: { address: addressFormatted },
+  })
 
   const handleFetchMoreAssets = useCallback(
     (startIndex: number) => {
@@ -372,10 +359,12 @@ export default function UserView() {
                     content: "''",
                     display: 'block',
                     paddingTop: '100%',
-                    backgroundImage: `url(${imageOptimizer(previewImageUrl, {
+                    backgroundImage: `url(${
+                      imageOptimizer(previewImageUrl, {
                         width: 180,
-                        height: 180
-                      }) ?? previewImageUrl})`,
+                        height: 180,
+                      }) ?? previewImageUrl
+                    })`,
                     backgroundSize: 'cover',
                     backgroundRepeat: 'no-repeat',
                     backgroundPosition: 'center',
@@ -1161,9 +1150,17 @@ export default function UserView() {
                     imageSrc: previewImageUrl ?? '/img/defaultAvatar.png',
                     collection: showCollection?.name ?? '',
                     isPixelated: PIXELATED_CONTRACTS.includes(contractAddress),
-                    appraisalPriceETH: lastAppraisalWeiPrice ? weiToEth(lastAppraisalWeiPrice, 4, false) : null,
-                    appraisalPriceUSD: lastAppraisalUsdPrice ? Math.round(parseInt(lastAppraisalUsdPrice)/1000000) : null,
-                    name: name ? (showCollection ? name.replace(showCollection.name, ''): name) : '', // remove collection name from NFT name
+                    appraisalPriceETH: lastAppraisalWeiPrice
+                      ? weiToEth(lastAppraisalWeiPrice, 4, false)
+                      : null,
+                    appraisalPriceUSD: lastAppraisalUsdPrice
+                      ? Math.round(parseInt(lastAppraisalUsdPrice) / 1000000)
+                      : null,
+                    name: name
+                      ? showCollection
+                        ? name.replace(showCollection.name, '')
+                        : name
+                      : '', // remove collection name from NFT name
                   })
                 ) ?? []
               }

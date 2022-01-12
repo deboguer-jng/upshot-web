@@ -210,22 +210,22 @@ export type GetUnsupportedAssetsVars = {
 }
 
 export type GetUnsupportedAssetsData = {
-  unsupported: {
-    name: string
-    imageUrl: string
-    floorEth: string
-    floorUsd: string
-    ownedAssets: {
-      tokenId: string
-      image512: string
-    }
+  getUser: {
+    unsupported: {
+      name: string
+      imageUrl: string
+      floorEth: string
+      floorUsd: string
+      ownedAssets: {
+        tokenId: string
+        previewImage: string
+      }
+    }[]
   }
 }
 
 export const GET_UNSUPPORTED_ASSETS = gql`
-  query GetUnsupportedAssets(
-    $address: String
-  ) {
+  query GetUnsupportedAssets($address: String) {
     getUser(address: $address) {
       unsupported {
         name
@@ -234,7 +234,7 @@ export const GET_UNSUPPORTED_ASSETS = gql`
         floorUsd
         ownedAssets {
           tokenId
-          image512
+          previewImage
         }
       }
     }
