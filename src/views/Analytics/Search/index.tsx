@@ -233,7 +233,7 @@ export default function SearchView() {
           top: 0,
           alignSelf: 'flex-start',
           flexDirection: 'column',
-          gap: 8,
+          gap: 5,
           width: '100%',
         }}
       >
@@ -248,9 +248,9 @@ export default function SearchView() {
         ) : (
           <>
             <Box>
-              <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+              <Flex sx={{ flexDirection: 'column', gap: 1 }}>
                 <Flex sx={{ flexDirection: 'column', gap: 1 }}>
-                  <Text variant="h3Secondary" color="grey-500">
+                  <Text variant="h2Secondary" color="grey-500">
                     Search Filters
                   </Text>
                 </Flex>
