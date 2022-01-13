@@ -61,10 +61,6 @@ export default function CollectionAvgPricePanel({
 
   useEffect(() => {
     if (data && !selectedCollections.length) {
-      const defaultSelected = data.orderedCollectionsByMetricSearch.assetSets
-        .slice(0, 3)
-        .map((val) => val.id)
-
       // FIXME: the selected collections should default to the top three
       // as before, but needs logic to filter out brand new collections that will
       // make the chart look bad (mostly relevant on Art Blocks drop days)
