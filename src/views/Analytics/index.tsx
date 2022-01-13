@@ -12,14 +12,12 @@ import TopCollectionsChart from './components/TopCollectionsChart'
 import TopSellingCollectionNFTs from './components/TopSellingCollectionNFTs'
 import TreeMapMarketCap from './components/TreeMapMarketCap'
 
-const selectedCollectionsColors = ['blue', 'pink', 'purple']
+const selectedCollectionsColors = ['blue', 'pink', 'purple', 'green', 'orange']
 
 export default function AnalyticsView() {
   const [chartMetric, setChartMetric] = useState<METRIC>('FLOOR')
   const [selectedCollections, setSelectedCollections] = useState<number[]>([])
-  const [colorCycleIndex, setColorCycleIndex] = useState(
-    selectedCollections.length % selectedCollectionsColors.length
-  )
+  const [colorCycleIndex, setColorCycleIndex] = useState(3)
 
   const handleChange = (updatedChartMetric: METRIC) => {
     setChartMetric(updatedChartMetric)

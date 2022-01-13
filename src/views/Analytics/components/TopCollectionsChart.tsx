@@ -136,9 +136,15 @@ export default function TopCollectionsCharts({
         ),
         metric,
         currentFloor: weiToEth((latestStats?.floor).toString(), 4, false),
-        currentAvg: weiToEth((latestStats?.pastDayWeiAverage).toString(), 4, false),
+        currentAvg: weiToEth(
+          (latestStats?.pastDayWeiAverage).toString(),
+          4,
+          false
+        ),
       }
     })
+
+  console.log({ chartData })
 
   return <Chart data={chartData} />
 }
