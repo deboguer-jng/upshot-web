@@ -1,7 +1,12 @@
 import { useQuery } from '@apollo/client'
-import { imageOptimizer,theme, useBreakpointIndex  } from '@upshot-tech/upshot-ui'
-import { Chart, Container, Flex, Grid, Label  } from '@upshot-tech/upshot-ui'
+import {
+  imageOptimizer,
+  theme,
+  useBreakpointIndex,
+} from '@upshot-tech/upshot-ui'
+import { Chart, Container, Flex, Grid, Label } from '@upshot-tech/upshot-ui'
 import { Avatar, Text } from '@upshot-tech/upshot-ui'
+import { Box } from 'theme-ui'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import { ethers } from 'ethers'
@@ -56,7 +61,7 @@ function CollectionStat({
         </Label>
       )}
       {currencySymbol === '' && value}
-      
+
       <Text variant="small">{label}</Text>
     </Flex>
   )
@@ -240,10 +245,29 @@ export default function CollectionView() {
       <Grid columns={isMobile ? '1fr' : '1fr 1fr'} sx={{ gap: '40px' }}>
         <Flex sx={{ flexDirection: 'column', gap: '16px' }}>
           <Flex sx={{ gap: 6, height: 100, alignItems: 'center' }}>
-            <Avatar size="xl" src={imageOptimizer(imageUrl, {
-                        width: parseInt(theme.images.avatar.xl.size),
-                        height: parseInt(theme.images.avatar.xl.size)
-                      }) ?? imageUrl} />
+            <Box
+              sx={{
+                backgroundColor: '#231F20',
+                minWidth: '63px',
+                padding: isMobile ? '4px' : '8px',
+                borderRadius: '50%',
+              }}
+            >
+              <Avatar
+                size="xl"
+                sx={{
+                  width: isMobile ? '55px' : '100px',
+                  height: isMobile ? '55px' : '100px',
+                  minWidth: 'unset',
+                }}
+                src={
+                  imageOptimizer(imageUrl, {
+                    width: parseInt(theme.images.avatar.xl.size),
+                    height: parseInt(theme.images.avatar.xl.size),
+                  }) ?? imageUrl
+                }
+              />
+            </Box>
             <Flex sx={{ flexDirection: 'column' }}>
               <Text variant="h1Secondary" sx={{ lineHeight: '2rem' }}>
                 {name}
@@ -314,9 +338,12 @@ export default function CollectionView() {
           </Grid>
         </Flex>
         <Flex sx={{ flexDirection: 'column', paddingTop: isMobile ? 0 : 116 }}>
-          <Text variant="large" sx={{ textTransform: 'uppercase' }}>
-            About
-          </Text>
+          {
+            description &&
+              <Text variant="large" sx={{ textTransform: 'uppercase' }}>
+                About
+              </Text>
+          }
           <Text
             color="grey-300"
             onClick={() => {

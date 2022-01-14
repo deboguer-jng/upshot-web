@@ -55,7 +55,12 @@ export default function Collectors({
       )
     : useQuery<GetCollectorsData, GetCollectorsVars>(GET_COLLECTORS, {
         errorPolicy: 'all',
-        variables: { id, limit: PAGE_SIZE, offset: page * PAGE_SIZE, searchTerm },
+        variables: {
+          id,
+          limit: PAGE_SIZE,
+          offset: page * PAGE_SIZE,
+          searchTerm,
+        },
         skip: !id,
       })
 
@@ -112,7 +117,7 @@ export default function Collectors({
               collectionName={name}
               nftCollection={assets.map(({ id, previewImageUrl }) => ({
                 imageUrl: previewImageUrl,
-                url: `/analytics/nft/${id}`,
+                url: `/analytics/collection/${id}`,
                 pixelated: PIXELATED_CONTRACTS.includes(
                   id.toString().split('/')[0]
                 ),
@@ -121,7 +126,7 @@ export default function Collectors({
                 ({ collection: { imageUrl, id }, count }) => ({
                   id,
                   imageUrl,
-                  url: `/analytics/nft/${id}`,
+                  url: `/analytics/collection/${id}`,
                   pixelated: PIXELATED_CONTRACTS.includes(
                     id.toString().split('/')[0]
                   ),
