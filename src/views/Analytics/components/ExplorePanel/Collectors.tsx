@@ -34,7 +34,7 @@ export default function Collectors({
   assetId?: string
   searchTerm?: string
 }) {
-  const [selectedExtraCollection, setSelectedExtraCollection] = useState(null)
+  const [selectedExtraCollection, setSelectedExtraCollection] = useState({})
   const [page, setPage] = useState(0)
   const handlePageChange = ({ selected }: { selected: number }) => {
     setPage(selected)
@@ -116,7 +116,7 @@ export default function Collectors({
               idx
             ) => (
               <CollectorAccordionRow
-                address={addresses?.[0]}
+                address={addresses?.[0].address}
                 firstAcquisition={firstAssetPurchaseTime}
                 collectionName={name}
                 extraCollections={collectionAssetCounts.map(
@@ -125,14 +125,20 @@ export default function Collectors({
                     imageUrl,
                     name,
                     count,
+                    pixelated: true,
                     url: `/analytics/collection/${id}`,
                   })
                 )}
                 extraCollectionChanged={(collectionId) => {
-                  const selected = collectionAssetCounts.find(({collection}) => collection.id === collectionId);
-                  setSelectedExtraCollection(selected?.collection?.ownerAssetsInCollection);
+                  const selected = (collectionAssetCounts as any).find(
+                    ({ collection }) => collection.id === collectionId
+                  );
+                  setSelectedExtraCollection({
+                    ...selectedExtraCollection,
+                    [idx]: selected?.collection?.ownerAssetsInCollection?.assets
+                  });
                 }}
-                nftCollection={(selectedExtraCollection || assets).map(({ previewImageUrl, id }) => ({
+                nftCollection={(selectedExtraCollection[idx] || (collectionAssetCounts[0] || {}).collection?.ownerAssetsInCollection?.assets || assets).map(({ previewImageUrl, id }) => ({
                   id,
                   imageUrl: previewImageUrl,
                   url: `/analytics/nft/${id}`,

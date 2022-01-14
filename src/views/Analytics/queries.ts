@@ -514,6 +514,13 @@ export type GetCollectorsData = {
             id: number
             name: string
             imageUrl: string
+            ownerAssetsInCollection: {
+              count: number
+              assets: {
+                id: string
+                previewImageUrl: string
+              }
+            }
           }
         }[]
       }
@@ -559,6 +566,13 @@ export const GET_COLLECTORS = gql`
               id
               name
               imageUrl
+              ownerAssetsInCollection(limit: 20) {
+                count
+                assets {
+                  id
+                  previewImageUrl
+                }
+              }
             }
           }
         }
@@ -601,8 +615,11 @@ export type GetPreviousOwnersData = {
             name: string
             imageUrl: string
             ownerAssetsInCollection: {
-              id: string
-              previewImageUrl: string
+              count: number
+              assets: {
+                id: string
+                previewImageUrl: string
+              }[]
             }
           }
         }[]
@@ -641,10 +658,13 @@ export const GET_PREVIOUS_OWNERS = gql`
             collection {
               id
               name
-              imageUrl,
-              ownerAssetsInCollection {
-                id
-                previewImageUrl
+              imageUrl
+              ownerAssetsInCollection(limit: 20) {
+                count
+                assets {
+                  id
+                  previewImageUrl
+                }
               }
             }
           }
