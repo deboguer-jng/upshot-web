@@ -178,7 +178,7 @@ export default function TopSellingNFTs({
             background: 'black',
             height: 'calc(100% - 80px)',
             WebkitMaskImage:
-              'linear-gradient(to right, rgba(0, 0, 0, 0) 70%, rgba(0,0,0,1) 100%);',
+              'linear-gradient(to right, rgba(0, 0, 0, 0) 65%, rgba(0,0,0,1) 100%);',
             zIndex: 2,
             pointerEvents: 'none',
           }}
