@@ -13,6 +13,7 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE, PIXELATED_CONTRACTS } from 'constants/'
 import { useState } from 'react'
+import { useRouter } from 'next/router'
 
 import {
   GET_COLLECTORS,
@@ -35,9 +36,13 @@ export default function Collectors({
   searchTerm?: string
 }) {
   const [selectedExtraCollection, setSelectedExtraCollection] = useState({})
+  const router = useRouter()
   const [page, setPage] = useState(0)
   const handlePageChange = ({ selected }: { selected: number }) => {
     setPage(selected)
+  }
+  const handleShowCollector = (address: string) => {
+    router.push('/analytics/user/' + address)
   }
 
   const { loading, error, data } = assetId
@@ -56,7 +61,12 @@ export default function Collectors({
       )
     : useQuery<GetCollectorsData, GetCollectorsVars>(GET_COLLECTORS, {
         errorPolicy: 'all',
-        variables: { id, limit: PAGE_SIZE, offset: page * PAGE_SIZE, searchTerm },
+        variables: {
+          id,
+          limit: PAGE_SIZE,
+          offset: page * PAGE_SIZE,
+          searchTerm,
+        },
         skip: !id,
       })
 
