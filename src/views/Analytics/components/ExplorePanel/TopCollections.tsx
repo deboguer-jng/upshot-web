@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client'
 import { CollectorAccordion, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { Pagination } from '@upshot-tech/upshot-ui'
-import { Box,Flex, Grid, Text } from '@upshot-tech/upshot-ui'
+import { Flex, Grid, Text, Box } from '@upshot-tech/upshot-ui'
 import {
   TableBody,
   TableCell,
@@ -38,7 +38,7 @@ function CollectionTableHead() {
       {isMobile ? (
         <Box>
           <Flex sx={{ justifyContent: 'space-between', padding: 2 }}>
-            <Text> Collection Title </Text>
+            <Text> Collection </Text>
             <Text> Total Volume </Text>
           </Flex>
         </Box>
@@ -108,7 +108,7 @@ export default function ExploreNFTs({
       metric: 'VOLUME',
       limit: PAGE_SIZE,
       offset: page * PAGE_SIZE,
-      name: searchTerm
+      name: searchTerm,
     },
   })
 

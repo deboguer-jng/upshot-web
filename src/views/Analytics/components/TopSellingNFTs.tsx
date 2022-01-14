@@ -168,46 +168,62 @@ export default function TopSellingNFTs({
         period={period}
         setPeriod={(val) => setPeriod(val)}
       />
-      <MiniNFTContainer sx={{ paddingTop: '80px' }}>
-        {data.topSales.map(
-          (
-            {
-              txAt,
-              txFromAddress,
-              txToAddress,
-              price,
-              asset: {
-                id,
-                contractAddress,
-                previewImageUrl,
-                mediaUrl,
-                rarity,
-                collection,
+      <Box sx={{ position: 'relative' }}>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '80px',
+            left: 0,
+            width: '100%',
+            background: 'black',
+            height: 'calc(100% - 80px)',
+            WebkitMaskImage:
+              'linear-gradient(to right, rgba(0, 0, 0, 0) 85%, rgba(0,0,0,1) 100%);',
+            zIndex: 2,
+            pointerEvents: 'none',
+          }}
+        ></Box>
+        <MiniNFTContainer sx={{ paddingTop: '80px' }}>
+          {data.topSales.map(
+            (
+              {
+                txAt,
+                txFromAddress,
+                txToAddress,
+                price,
+                asset: {
+                  id,
+                  contractAddress,
+                  previewImageUrl,
+                  mediaUrl,
+                  rarity,
+                  collection,
+                },
               },
-            },
-            key
-          ) => (
-            <a
-              key={key}
-              onClick={() => handleClickNFT(id)}
-              style={{ cursor: 'pointer' }}
-            >
-              <MiniNftCard
-                price={price ? weiToEth(price) : undefined}
-                to={shortenAddress(txToAddress, 2, 4)}
-                toLink={`/analytics/user/${txToAddress}`}
-                from={shortenAddress(txFromAddress, 2, 4)}
-                fromLink={`/analytics/user/${txFromAddress}`}
-                rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
-                image={previewImageUrl ?? mediaUrl}
-                date={formatDistance(txAt * 1000, new Date())}
-                pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
-                link={`/analytics/collection/${collection?.id}`}
-              />
-            </a>
-          )
-        )}
-      </MiniNFTContainer>
+              key
+            ) => (
+              <a
+                key={key}
+                onClick={() => handleClickNFT(id)}
+                style={{ cursor: 'pointer' }}
+              >
+                <MiniNftCard
+                  price={price ? weiToEth(price) : undefined}
+                  to={shortenAddress(txToAddress, 2, 4)}
+                  toLink={`/analytics/user/${txToAddress}`}
+                  from={shortenAddress(txFromAddress, 2, 4)}
+                  fromLink={`/analytics/user/${txFromAddress}`}
+                  rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
+                  image={previewImageUrl ?? mediaUrl}
+                  date={formatDistance(txAt * 1000, new Date())}
+                  pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
+                  link={`/analytics/collection/${collection?.id}`}
+                />
+              </a>
+            )
+          )}
+        </MiniNFTContainer>
+      </Box>
     </>
   )
 }
