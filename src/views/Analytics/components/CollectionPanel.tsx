@@ -105,7 +105,6 @@ export default forwardRef(function CollectionPanel(
               <InputRoundedSearch
                 dark
                 fullWidth
-                hasButton
                 variant="search"
                 onChange={handleChange}
                 buttonProps={{
