@@ -38,7 +38,7 @@ function CollectionTableHead() {
       {isMobile ? (
         <Box>
           <Flex sx={{ justifyContent: 'space-between', padding: 2 }}>
-            <Text> Collection Title </Text>
+            <Text> Collection </Text>
             <Text> Total Volume </Text>
           </Flex>
         </Box>

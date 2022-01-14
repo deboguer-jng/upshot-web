@@ -81,22 +81,6 @@ export default function TopCollectors({ searchTerm }: { searchTerm: string }) {
               {...{ username }}
             >
               <div style={{ display: 'grid' }}>
-                <a
-                  href={`/analytics/user/${addresses[0].address}`}
-                  style={{ textDecoration: 'none' }}
-                >
-                  <Text
-                    variant="h3Primary"
-                    sx={{
-                      color: 'primary',
-                      paddingBottom: '12px',
-                      fontSize: 4,
-                    }}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    View Portfolio
-                  </Text>
-                </a>
                 <Text sx={{ fontSize: 4, fontWeight: 'heading' }}>
                   Most Notable NFTs
                 </Text>
