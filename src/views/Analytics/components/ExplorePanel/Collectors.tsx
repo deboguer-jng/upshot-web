@@ -127,6 +127,7 @@ export default function Collectors({
             ) => (
               <CollectorAccordionRow
                 address={addresses?.[0].address}
+                onClick={() => handleShowCollector(addresses?.[0].address)}
                 firstAcquisition={firstAssetPurchaseTime}
                 collectionName={name}
                 extraCollections={collectionAssetCounts.map(
