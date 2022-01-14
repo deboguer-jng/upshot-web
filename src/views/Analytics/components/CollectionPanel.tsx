@@ -127,7 +127,7 @@ export default forwardRef(function CollectionPanel(
             paddingBottom: '12px',
             paddingRight: [2, 2, null],
             gap: '20px',
-            height: [490, 490, 'auto'],
+            height: [300, 300, 'auto'],
           }}
           css={theme.scroll.thin}
         >
