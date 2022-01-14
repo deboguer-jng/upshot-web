@@ -118,13 +118,15 @@ export default forwardRef(function CollectionPanel(
         </Flex>
         <Grid
           sx={{
-            gridAutoColumns: 282,
-            gridAutoFlow: 'column',
-            overflowX: 'auto',
-            overflowY: 'hidden',
-            gridTemplateRows: '1fr',
+            gridAutoColumns: [null, null, 282],
+            gridAutoFlow: [null, null, 'column'],
+            overflowX: ['hidden', 'hidden', 'auto'],
+            overflowY: ['auto', 'auto', 'hidden'],
+            gridTemplateRows: [null, null, '1fr'],
             paddingBottom: '12px',
+            paddingRight: [2, 2, null],
             gap: '20px',
+            height: [300, 300, 'auto'],
           }}
           css={theme.scroll.thin}
         >
