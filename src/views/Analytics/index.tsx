@@ -71,9 +71,14 @@ export default function AnalyticsView() {
       >
         <Flex
           sx={{
-            flexDirection: ['column', 'column', 'row'],
-            paddingBottom: ['0px', '10px'],
-            marginTop: ['-20px', '-10px'],
+            flexDirection: 'column',
+            paddingBottom: 0,
+            marginTop: '-20px',
+            '@media screen and (min-width: 320px)': {
+              flexDirection: 'row',
+              paddingDirection: '10px',
+              marginTop: '-10px',
+            },
           }}
         >
           <Text
