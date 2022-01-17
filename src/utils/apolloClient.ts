@@ -8,6 +8,6 @@ const client = new ApolloClient({
   uri: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT,
 })
 
-console.log(process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT)
+console.log(process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT, 'NEXT_PUBLIC_GRAPHQL_ENDPOINT')
 
 export default client
