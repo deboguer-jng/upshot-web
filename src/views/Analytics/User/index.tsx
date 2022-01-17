@@ -198,6 +198,8 @@ export default function UserView() {
     }
   }, [address])
 
+  const collectionLimit = 8
+
   const {
     loading: loadingCollector,
     error,
@@ -207,7 +209,7 @@ export default function UserView() {
     errorPolicy: 'all',
     variables: {
       address: addressFormatted,
-      collectionLimit: 8,
+      collectionLimit,
       collectionOffset: 0,
       assetLimit: 6,
       assetOffset: 0,
@@ -255,7 +257,12 @@ export default function UserView() {
 
   const handleFetchMoreCollections = useCallback(
     (startIndex: number) => {
-      if (loadingCollector || collectionOffset === startIndex) return
+      if (
+        loadingCollector ||
+        collectionOffset === startIndex ||
+        startIndex < collectionLimit
+      )
+        return
       setCollectionOffset(startIndex)
     },
     [loadingCollector, collectionOffset]
