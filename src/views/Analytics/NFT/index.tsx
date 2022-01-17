@@ -34,7 +34,7 @@ import { useEffect, useState } from 'react'
 import { fetchEns, shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
 import { getPriceChangeColor } from 'utils/color'
-import { formatCurrencyUnits, weiToEth } from 'utils/number'
+import { formatCommas, formatCurrencyUnits, weiToEth } from 'utils/number'
 
 import Breadcrumbs from '../components/Breadcrumbs'
 import Collectors from '../components/ExplorePanel/Collectors'
@@ -221,10 +221,12 @@ export default function NFTView() {
     creatorUsername ??
     shortenAddress(txHistory[0]?.txToAddress) ??
     'Unknown'
-  
+
   const image = previewImageUrl ?? mediaUrl
-  const optimizedSrc = imageOptimizer(image, {width: 340}) ?? image
-  const finalImageSrc = PIXELATED_CONTRACTS.includes(contractAddress) ? image : optimizedSrc
+  const optimizedSrc = imageOptimizer(image, { width: 340 }) ?? image
+  const finalImageSrc = PIXELATED_CONTRACTS.includes(contractAddress)
+    ? image
+    : optimizedSrc
   return (
     <>
       <Head>
@@ -643,9 +645,14 @@ export default function NFTView() {
                             <Flex sx={{ gap: 2 }}>
                               <Label
                                 color="primary"
-                                currencySymbol={lastSale ? 'Ξ' : undefined}
+                                currencySymbol={
+                                  latestAppraisal?.ethSalePrice
+                                    ? 'Ξ'
+                                    : undefined
+                                }
                                 variant="currency"
-                                size="md"
+                                size="lg"
+                                sx={{ lineHeight: 1 }}
                               >
                                 {latestAppraisal?.ethSalePrice
                                   ? weiToEth(
@@ -655,7 +662,11 @@ export default function NFTView() {
                                     )
                                   : '-'}
                               </Label>
-                              <Label color="primary">
+
+                              <Label
+                                color="primary"
+                                sx={{ marginTop: '.5rem' }}
+                              >
                                 {latestAppraisal?.medianRelativeError
                                   ? '± ' +
                                     (
@@ -665,6 +676,21 @@ export default function NFTView() {
                                   : ''}
                               </Label>
                             </Flex>
+                            {!!latestAppraisal?.usdSalePrice && (
+                              <Label
+                                color="white"
+                                currencySymbol="$"
+                                variant="currency"
+                                size="md"
+                                sx={{
+                                  marginTop: '-.5rem',
+                                }}
+                              >
+                                {formatCommas(
+                                  Number(latestAppraisal.usdSalePrice) / 1e6
+                                )}
+                              </Label>
+                            )}
                             <Text
                               color="primary"
                               sx={{ fontSize: 2, textTransform: 'uppercase' }}
