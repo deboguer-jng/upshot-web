@@ -83,13 +83,12 @@ function Layout({ children }: { children: React.ReactNode }) {
     <>
       <Nav />
       <Container
-        p={4}
+        maxBreakpoint="lg"
         sx={{
-          display: 'flex',
           flexDirection: 'column',
-          width: '100%',
           minHeight: '100vh',
           gap: 4,
+          padding: 4,
         }}
       >
         <Breadcrumbs crumbs={breadcrumbs} />
@@ -245,9 +244,9 @@ export default function NFTView() {
       </Head>
       <Layout>
         <Grid
-          columns={[1, 1, 1, 3]}
+          columns={[1, 1, 1, 2]}
           sx={{
-            gridTemplateColumns: ['1fr', '1fr', '1fr 3fr'],
+            gridTemplateColumns: ['1fr', '1fr', '1fr 3fr', '1fr 3fr'],
             flexGrow: 1,
           }}
         >
@@ -329,7 +328,7 @@ export default function NFTView() {
             <Flex
               sx={{
                 gap: 4,
-                flexDirection: ['column', 'column', 'column', 'row'],
+                flexDirection: ['column', 'column', 'column', 'column', 'row'],
               }}
             >
               <Flex sx={{ flexDirection: 'column', gap: 4 }}>

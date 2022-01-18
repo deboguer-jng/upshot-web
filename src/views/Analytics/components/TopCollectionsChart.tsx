@@ -11,6 +11,12 @@ import {
 } from '../queries'
 import { METRIC } from './ButtonTabs'
 
+interface TopCollectionsChartsProps {
+  metric: METRIC
+  selectedCollections: number[]
+  onClose?: (index: number) => void
+}
+
 const timeSeriesKeys = {
   AVERAGE: 'average',
   VOLUME: 'volume',
@@ -36,10 +42,8 @@ const floorCheck = (val) => {
 export default function TopCollectionsCharts({
   metric,
   selectedCollections,
-}: {
-  metric: METRIC
-  selectedCollections: number[]
-}) {
+  onClose,
+}: TopCollectionsChartsProps) {
   const currentDate = Date.now()
   const before7Daysdate = currentDate - 1000 * 60 * 60 * 24 * 7 // extract 7 days in millisec
   const minTimestamp =
@@ -136,9 +140,15 @@ export default function TopCollectionsCharts({
         ),
         metric,
         currentFloor: weiToEth((latestStats?.floor).toString(), 4, false),
-        currentAvg: weiToEth((latestStats?.pastDayWeiAverage).toString(), 4, false),
+        currentAvg: weiToEth(
+          (latestStats?.pastDayWeiAverage ?? '-').toString(),
+          4,
+          false
+        ),
       }
     })
 
-  return <Chart data={chartData} />
+  const handleClose = (index: number) => {}
+
+  return <Chart data={chartData} {...{ onClose }} />
 }
