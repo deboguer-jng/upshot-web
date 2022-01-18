@@ -13,6 +13,7 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE, PIXELATED_CONTRACTS } from 'constants/'
 import { useState } from 'react'
+import { useRouter } from 'next/router'
 
 import {
   GET_COLLECTORS,
@@ -34,9 +35,13 @@ export default function Collectors({
   assetId?: string
   searchTerm?: string
 }) {
+  const router = useRouter()
   const [page, setPage] = useState(0)
   const handlePageChange = ({ selected }: { selected: number }) => {
     setPage(selected)
+  }
+  const handleShowCollector = (address: string) => {
+    router.push('/analytics/user/' + address)
   }
 
   const { loading, error, data } = assetId
@@ -55,7 +60,12 @@ export default function Collectors({
       )
     : useQuery<GetCollectorsData, GetCollectorsVars>(GET_COLLECTORS, {
         errorPolicy: 'all',
-        variables: { id, limit: PAGE_SIZE, offset: page * PAGE_SIZE, searchTerm },
+        variables: {
+          id,
+          limit: PAGE_SIZE,
+          offset: page * PAGE_SIZE,
+          searchTerm,
+        },
         skip: !id,
       })
 
@@ -108,11 +118,12 @@ export default function Collectors({
           ) => (
             <CollectorAccordionRow
               address={addresses?.[0].address}
+              onClick={() => handleShowCollector(addresses?.[0].address)}
               firstAcquisition={firstAssetPurchaseTime}
               collectionName={name}
               nftCollection={assets.map(({ id, previewImageUrl }) => ({
                 imageUrl: previewImageUrl,
-                url: `/analytics/nft/${id}`,
+                url: `/analytics/collection/${id}`,
                 pixelated: PIXELATED_CONTRACTS.includes(
                   id.toString().split('/')[0]
                 ),
@@ -121,7 +132,7 @@ export default function Collectors({
                 ({ collection: { imageUrl, id }, count }) => ({
                   id,
                   imageUrl,
-                  url: `/analytics/nft/${id}`,
+                  url: `/analytics/collection/${id}`,
                   pixelated: PIXELATED_CONTRACTS.includes(
                     id.toString().split('/')[0]
                   ),

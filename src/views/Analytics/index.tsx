@@ -50,6 +50,13 @@ export default function AnalyticsView() {
     setColorCycleIndex((curr) => (curr + 1) % selectedCollectionsColors.length)
   }
 
+  const handleClose = (index: number) => {
+    setSelectedCollections([
+      ...selectedCollections.slice(0, index),
+      ...selectedCollections.slice(index + 1, selectedCollections.length),
+    ])
+  }
+
   return (
     <>
       <Head>
@@ -130,6 +137,7 @@ export default function AnalyticsView() {
           <ButtonTabs onChange={handleChange} />
           <TopCollectionsChart
             metric={chartMetric}
+            onClose={handleClose}
             {...{ selectedCollections }}
           />
           <CollectionAvgPricePanel
