@@ -149,7 +149,7 @@ export default function Collectors({
                     [idx]: selected?.collection?.ownerAssetsInCollection?.assets
                   });
                 }}
-                nftCollection={(selectedExtraCollection[idx] || (collectionAssetCounts[0] || {}).collection?.ownerAssetsInCollection?.assets || assets).map(({ previewImageUrl, id }) => ({
+                nftCollection={(selectedExtraCollection[idx] || assets).map(({ previewImageUrl, id }) => ({
                   id,
                   imageUrl: previewImageUrl,
                   url: `/analytics/nft/${id}`,
