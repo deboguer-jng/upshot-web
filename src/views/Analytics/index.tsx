@@ -1,4 +1,4 @@
-import { Box, Container } from '@upshot-tech/upshot-ui'
+import { Box, Container, useTheme } from '@upshot-tech/upshot-ui'
 import { Flex, Text } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
@@ -15,6 +15,7 @@ import TreeMapMarketCap from './components/TreeMapMarketCap'
 const selectedCollectionsColors = ['blue', 'pink', 'purple', 'green', 'orange']
 
 export default function AnalyticsView() {
+  const { theme } = useTheme()
   const [chartMetric, setChartMetric] = useState<METRIC>('FLOOR')
   const [selectedCollections, setSelectedCollections] = useState<number[]>([])
   const [colorCycleIndex, setColorCycleIndex] = useState(3)
@@ -77,19 +78,24 @@ export default function AnalyticsView() {
       </Head>
       <Nav />
       <Container
-        p={4}
+        maxBreakpoint="lg"
         sx={{
-          display: 'flex',
           flexDirection: 'column',
           minHeight: '100vh',
           gap: 4,
+          padding: 4,
         }}
       >
         <Flex
           sx={{
-            flexDirection: ['column', 'row', 'row'],
-            paddingBottom: ['0px', '0px', '10px'],
-            marginTop: ['-20px', '-20px', '-10px'],
+            flexDirection: 'column',
+            paddingBottom: 0,
+            marginTop: '-20px',
+            '@media screen and (min-width: 320px)': {
+              flexDirection: 'row',
+              paddingDirection: '10px',
+              marginTop: '-10px',
+            },
           }}
         >
           <Text
@@ -98,7 +104,7 @@ export default function AnalyticsView() {
               lineHeight: '2.25rem',
               color: 'blue',
               fontWeight: '700',
-              fontSize: ['42px', '42px', 8],
+              fontSize: ['42px', 8],
               textTransform: 'uppercase',
             }}
           >
@@ -110,12 +116,12 @@ export default function AnalyticsView() {
               sx={{
                 lineHeight: '2.25rem',
                 fontWeight: '500',
-                fontSize: ['42px', '42px', 8],
+                fontSize: ['42px', 8],
               }}
             >
               Analytics
             </Text>
-            <Box sx={{ p: [1, 1, 2] }}>
+            <Box sx={{ p: [1, 2] }}>
               <Text
                 sx={{
                   textTransform: 'uppercase',
@@ -123,7 +129,7 @@ export default function AnalyticsView() {
                   backgroundColor: 'blue',
                   borderRadius: 'xs',
                   padding: '2px 4px',
-                  fontSize: ['9px', '9px', 2],
+                  fontSize: ['9px', 2],
                   fontWeight: 'bold',
                   lineHeight: 1,
                 }}

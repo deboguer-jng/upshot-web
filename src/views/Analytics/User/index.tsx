@@ -53,6 +53,7 @@ type Collection = {
 }
 
 function Layout({ children }: { children: React.ReactNode }) {
+  const { theme } = useTheme()
   const storage = globalThis?.sessionStorage
   const prevPath = storage.getItem('prevPath')
 
@@ -105,13 +106,12 @@ function Layout({ children }: { children: React.ReactNode }) {
       </Head>
       <Nav />
       <Container
-        p={4}
+        maxBreakpoint="lg"
         sx={{
-          display: 'flex',
           flexDirection: 'column',
-          width: '100%',
           minHeight: '100vh',
           gap: 4,
+          padding: 4,
         }}
       >
         <Breadcrumbs crumbs={breadcrumbs} />

@@ -82,7 +82,7 @@ function ExplorePanelHead({
       <Flex
         sx={{
           justifyContent: 'space-between',
-          flexDirection: ['column', 'column', 'row'],
+          flexDirection: ['column', 'row'],
           paddingBottom: '1rem',
           gap: 1,
           position: 'absolute',
