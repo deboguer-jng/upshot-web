@@ -68,7 +68,7 @@ export const GET_TOP_COLLECTIONS = gql`
     orderedCollectionsByMetricSearch(
       metric: $metric
       stringifiedCollectionIds: $stringifiedCollectionIds
-      limit: 3
+      limit: 5
       windowSize: WEEK
     ) {
       assetSets {
@@ -446,8 +446,16 @@ export type GetTopCollectorsData = {
 }
 
 export const GET_TOP_COLLECTORS = gql`
-  query GetTopCollectors($limit: OneToHundredInt!, $offset: Int, $searchTerm: String) {
-    getOwnersByWhaleness(limit: $limit, offset: $offset, searchTerm: $searchTerm) {
+  query GetTopCollectors(
+    $limit: OneToHundredInt!
+    $offset: Int
+    $searchTerm: String
+  ) {
+    getOwnersByWhaleness(
+      limit: $limit
+      offset: $offset
+      searchTerm: $searchTerm
+    ) {
       count
       owners {
         username
@@ -514,6 +522,13 @@ export type GetCollectorsData = {
             id: number
             name: string
             imageUrl: string
+            ownerAssetsInCollection: {
+              count: number
+              assets: {
+                id: string
+                previewImageUrl: string
+              }
+            }
           }
         }[]
       }
@@ -559,6 +574,13 @@ export const GET_COLLECTORS = gql`
               id
               name
               imageUrl
+              ownerAssetsInCollection(limit: 20) {
+                count
+                assets {
+                  id
+                  previewImageUrl
+                }
+              }
             }
           }
         }
@@ -600,6 +622,13 @@ export type GetPreviousOwnersData = {
             id: number
             name: string
             imageUrl: string
+            ownerAssetsInCollection: {
+              count: number
+              assets: {
+                id: string
+                previewImageUrl: string
+              }[]
+            }
           }
         }[]
       }
@@ -638,6 +667,13 @@ export const GET_PREVIOUS_OWNERS = gql`
               id
               name
               imageUrl
+              ownerAssetsInCollection(limit: 20) {
+                count
+                assets {
+                  id
+                  previewImageUrl
+                }
+              }
             }
           }
         }
