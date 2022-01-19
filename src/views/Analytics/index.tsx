@@ -7,10 +7,10 @@ import { useState } from 'react'
 
 import ButtonTabs, { METRIC } from './components/ButtonTabs'
 import CollectionAvgPricePanel from './components/CollectionAvgPricePanel'
+import CollectionsTreeMap from './components/CollectionsTreeMap'
 import ExplorePanel from './components/ExplorePanel'
 import TopCollectionsChart from './components/TopCollectionsChart'
 import TopSellingCollectionNFTs from './components/TopSellingCollectionNFTs'
-import TreeMapMarketCap from './components/TreeMapMarketCap'
 
 const selectedCollectionsColors = ['blue', 'pink', 'purple', 'green', 'orange']
 
@@ -162,7 +162,7 @@ export default function AnalyticsView() {
           <Text variant="text.h1Secondary" sx={{ lineHeight: '2.25rem' }}>
             Market Cap (Change Over 7 Days)
           </Text>
-          <TreeMapMarketCap />
+          <CollectionsTreeMap />
           <ExplorePanel />
         </Flex>
         <Footer />
