@@ -240,12 +240,10 @@ export type GetUnsupportedFloorsVars = {
 
 export type GetUnsupportedFloorsData = {
   getUnsupportedFloors: {
-    assets: {
-      address: string
-      floorEth: string
-      floorUsd: string
-    }[]
-  }
+    address: string
+    floorEth: string
+    floorUsd: string
+  }[]
 }
 
 export const GET_UNSUPPORTED_FLOORS = gql`

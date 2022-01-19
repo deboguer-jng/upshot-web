@@ -45,12 +45,15 @@ import {
   GET_COLLECTION_ASSETS,
   GET_COLLECTOR,
   GET_UNSUPPORTED_ASSETS,
+  GET_UNSUPPORTED_FLOORS,
   GetCollectionAssetsData,
   GetCollectionAssetsVars,
   GetCollectorData,
   GetCollectorVars,
   GetUnsupportedAssetsData,
   GetUnsupportedAssetsVars,
+  GetUnsupportedFloorsData,
+  GetUnsupportedFloorsVars,
 } from './queries'
 
 type Collection = {
@@ -287,6 +290,7 @@ export default function UserView() {
     }
   )
 
+  /* Request unsupported assets */
   const { data: dataUnsupported, error: errorUnsupported } = useQuery<
     GetUnsupportedAssetsData,
     GetUnsupportedAssetsVars
@@ -296,9 +300,27 @@ export default function UserView() {
   })
 
   const unsupportedAssets = dataUnsupported?.getUnsupportedAssetPage?.assets
-  const unsupportedAddresses = Array.from(
-    new Set(unsupportedAssets?.map(({ address }) => address))
-  )
+  const unsupportedAddresses = [
+    ...new Set(unsupportedAssets?.map(({ address }) => address)),
+  ]
+
+  /* Request unsupported floors (dependent on unique contracts from asset query) */
+  const { data: dataFloors, error: errorFloors } = useQuery<
+    GetUnsupportedFloorsData,
+    GetUnsupportedFloorsVars
+  >(GET_UNSUPPORTED_FLOORS, {
+    errorPolicy: 'all',
+    variables: { collectionAddresses: JSON.stringify(unsupportedAddresses) },
+    skip: !unsupportedAddresses.length,
+  })
+
+  const assetFloors = dataFloors?.getUnsupportedFloors
+    ? Object.fromEntries(
+        dataFloors.getUnsupportedFloors.map(
+          ({ address, floorEth, floorUsd }) => [address, { floorEth, floorUsd }]
+        )
+      )
+    : {}
 
   const handleFetchMoreAssets = useCallback(
     (startIndex: number) => {
