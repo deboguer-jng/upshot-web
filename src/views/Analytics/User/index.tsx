@@ -4,6 +4,7 @@ import { Container } from '@upshot-tech/upshot-ui'
 import { Avatar, Flex, Grid, Panel, Text } from '@upshot-tech/upshot-ui'
 import {
   Box,
+  Checkbox,
   CollectionCard,
   CollectionCardExpanded,
   CollectionRow,
@@ -35,6 +36,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { transparentize } from 'polished'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Label as LabelUI } from 'theme-ui'
 import { fetchEns, shortenAddress } from 'utils/address'
 import { formatCurrencyUnits, formatLargeNumber, weiToEth } from 'utils/number'
 
@@ -168,9 +170,48 @@ function Header({ address }: { address: string }) {
   )
 }
 
+function IncludeUnsupportedCheckbox({
+  defaultChecked,
+  onChange,
+}: {
+  defaultChecked: boolean
+  onChange: (checked: boolean) => void
+}) {
+  const { theme } = useTheme()
+  return (
+    <Panel
+      sx={{
+        backgroundColor: 'grey-900',
+        borderRadius: '20px',
+        marginBottom: '20px',
+        border: 'solid 1px ' + theme.colors.blue,
+        transition: 'all .125s ease-in-out',
+        '&:hover': {
+          boxShadow: '0px 0px 0px 1px ' + theme.colors.blue,
+        },
+      }}
+    >
+      <LabelUI sx={{ alignItems: 'center', marginBottom: 2 }}>
+        <Checkbox
+          defaultChecked={defaultChecked}
+          onChange={(e) => {
+            onChange(e.target.checked)
+          }}
+        />
+        <Text color="blue">Include unappraised assets</Text>
+      </LabelUI>
+      <Text color="grey-500">
+        We are in the process of supporting more and more collections and NFT
+        appraisals. See the full list of currently supported collections here.
+      </Text>
+    </Panel>
+  )
+}
+
 export default function UserView() {
   const router = useRouter()
   const { theme } = useTheme()
+  const [includeUnsupportedAssets, setIncludeUnsupportedAssets] = useState(true)
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
   const modalRef = useRef<HTMLDivElement>(null)
@@ -254,11 +295,7 @@ export default function UserView() {
     variables: { address: addressFormatted },
   })
 
-  const unsupportedAssets = dataUnsupported?.getUser?.unsupported
-    ?.map(({ ownedAssets, ...collection }) =>
-      ownedAssets.map((asset) => ({ ...asset, collection }))
-    )
-    .flat()
+  const unsupportedAssets = dataUnsupported?.getUnsupportedAssetPage?.assets
 
   const handleFetchMoreAssets = useCallback(
     (startIndex: number) => {
@@ -335,57 +372,66 @@ export default function UserView() {
 
   const RenderMasonry = ({ index, data: { count, collection } }) => {
     return (
-      <CollectionCard
-        hasSeeAll={count > 5}
-        seeAllImageSrc={
-          collection.ownerAssetsInCollection.assets.slice(-1)[0].previewImageUrl
-        }
-        avatarImage={collection.imageUrl}
-        link={`/analytics/collection/${collection.id}`}
-        total={collection?.ownerAssetsInCollection?.count ?? 0}
-        name={collection.name}
-        key={index}
-        onExpand={() =>
-          setShowCollection({
-            id: collection.id,
-            name: collection.name,
-            imageUrl: collection.imageUrl,
-          })
-        }
-      >
-        {collection.ownerAssetsInCollection.assets
-          .slice(0, 5)
-          .map(({ id, previewImageUrl, contractAddress }, idx) => (
-            <Link passHref href={`/analytics/nft/${id}`} key={idx}>
-              <Box
-                sx={{
-                  width: '100%',
-                  cursor: 'pointer',
-                  '&::after': {
-                    content: "''",
-                    display: 'block',
-                    paddingTop: '100%',
-                    backgroundImage: `url(${
-                      imageOptimizer(previewImageUrl, {
-                        width: 180,
-                        height: 180,
-                      }) ?? previewImageUrl
-                    })`,
-                    backgroundSize: 'cover',
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'center',
-                    borderRadius: 'sm',
-                    imageRendering: PIXELATED_CONTRACTS.includes(
-                      contractAddress
-                    )
-                      ? 'pixelated'
-                      : 'auto',
-                  },
-                }}
-              />
-            </Link>
-          ))}
-      </CollectionCard>
+      <>
+        {index === 0 && ( // append Supported/Unsupported checkbox before the first card
+          <IncludeUnsupportedCheckbox
+            defaultChecked={includeUnsupportedAssets}
+            onChange={(checked) => setIncludeUnsupportedAssets(checked)}
+          />
+        )}
+        <CollectionCard
+          hasSeeAll={count > 5}
+          seeAllImageSrc={
+            collection.ownerAssetsInCollection.assets.slice(-1)[0]
+              .previewImageUrl
+          }
+          avatarImage={collection.imageUrl}
+          link={`/analytics/collection/${collection.id}`}
+          total={collection?.ownerAssetsInCollection?.count ?? 0}
+          name={collection.name}
+          key={index}
+          onExpand={() =>
+            setShowCollection({
+              id: collection.id,
+              name: collection.name,
+              imageUrl: collection.imageUrl,
+            })
+          }
+        >
+          {collection.ownerAssetsInCollection.assets
+            .slice(0, 5)
+            .map(({ id, previewImageUrl, contractAddress }, idx) => (
+              <Link passHref href={`/analytics/nft/${id}`} key={idx}>
+                <Box
+                  sx={{
+                    width: '100%',
+                    cursor: 'pointer',
+                    '&::after': {
+                      content: "''",
+                      display: 'block',
+                      paddingTop: '100%',
+                      backgroundImage: `url(${
+                        imageOptimizer(previewImageUrl, {
+                          width: 180,
+                          height: 180,
+                        }) ?? previewImageUrl
+                      })`,
+                      backgroundSize: 'cover',
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: 'center',
+                      borderRadius: 'sm',
+                      imageRendering: PIXELATED_CONTRACTS.includes(
+                        contractAddress
+                      )
+                        ? 'pixelated'
+                        : 'auto',
+                    },
+                  }}
+                />
+              </Link>
+            ))}
+        </CollectionCard>
+      </>
     )
   }
 
@@ -393,8 +439,8 @@ export default function UserView() {
     return (
       <CollectionCard
         hasSeeAll={data.length > 5}
-        seeAllImageSrc={data.slice(-1)[0].previewImage}
-        total={unsupportedAssets?.length ?? 0}
+        seeAllImageSrc={data.slice(-1)[0].imageUrl}
+        total={data.length ?? 0}
         name="Unappraised NFTs"
         onExpand={() =>
           setShowCollection({
@@ -1154,14 +1200,16 @@ export default function UserView() {
             onRender={maybeLoadMore}
             key={data?.getUser?.extraCollections?.count}
           />
-          <Masonry
-            columnWidth={300}
-            columnGutter={16}
-            rowGutter={16}
-            items={unsupportedAssets ? [unsupportedAssets] : []}
-            render={RenderMasonryUnsupported}
-            key={unsupportedAssets?.length}
-          />
+          {includeUnsupportedAssets && (
+            <Masonry
+              columnWidth={300}
+              columnGutter={16}
+              rowGutter={16}
+              items={unsupportedAssets ? [unsupportedAssets] : []}
+              render={RenderMasonryUnsupported}
+              key={unsupportedAssets?.length}
+            />
+          )}
         </Flex>
       </Layout>
       <Modal
@@ -1225,22 +1273,17 @@ export default function UserView() {
                           : '', // remove collection name from NFT name
                       })
                     )
-                  : unsupportedAssets?.map(
-                      ({ name, previewImage, collection }) => ({
-                        id: '',
-                        expanded: isMobile,
-                        avatarImage:
-                          collection.imageUrl ?? '/img/defaultAvatar.png',
-                        imageSrc: previewImage ?? '/img/defaultAvatar.png',
-                        collection: collection?.name ?? '',
-                        isPixelated: false,
-                        appraisalPriceETH: null,
-                        appraisalPriceUSD: null,
-                        floorPriceETH: collection.floorEth,
-                        floorPriceUSD: collection.floorUsd,
-                        name,
-                      })
-                    )) ?? []
+                  : unsupportedAssets?.map(({ name, imageUrl }) => ({
+                      id: '',
+                      expanded: isMobile,
+                      avatarImage: '/img/defaultAvatar.png',
+                      imageSrc: imageUrl ?? '/img/defaultAvatar.png',
+                      collection: '',
+                      isPixelated: false,
+                      appraisalPriceETH: null,
+                      appraisalPriceUSD: null,
+                      name,
+                    }))) ?? []
               }
               onClose={() => modalRef?.current?.click()}
               onFetchMore={handleFetchMoreAssets}
