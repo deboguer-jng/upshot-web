@@ -213,6 +213,7 @@ export type GetUnsupportedAssetsData = {
   getUnsupportedAssetPage: {
     assets: {
       name: string
+      address: string
       imageUrl: string
     }[]
   }
@@ -223,8 +224,36 @@ export const GET_UNSUPPORTED_ASSETS = gql`
     getUnsupportedAssetPage(userAddress: $address) {
       assets {
         name
+        address
         imageUrl
       }
+    }
+  }
+`
+
+/**
+ * Get unsupported floors
+ */
+export type GetUnsupportedFloorsVars = {
+  collectionAddresses?: string
+}
+
+export type GetUnsupportedFloorsData = {
+  getUnsupportedFloors: {
+    assets: {
+      address: string
+      floorEth: string
+      floorUsd: string
+    }[]
+  }
+}
+
+export const GET_UNSUPPORTED_FLOORS = gql`
+  query GetUnsupportedFloors($collectionAddresses: String!) {
+    getUnsupportedFloors(collectionAddresses: $collectionAddresses) {
+      address
+      floorEth
+      floorUsd
     }
   }
 `

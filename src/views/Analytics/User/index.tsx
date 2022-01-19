@@ -296,6 +296,9 @@ export default function UserView() {
   })
 
   const unsupportedAssets = dataUnsupported?.getUnsupportedAssetPage?.assets
+  const unsupportedAddresses = Array.from(
+    new Set(unsupportedAssets?.map(({ address }) => address))
+  )
 
   const handleFetchMoreAssets = useCallback(
     (startIndex: number) => {
