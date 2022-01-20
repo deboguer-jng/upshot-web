@@ -122,13 +122,12 @@ function Layout({ children }: { children: React.ReactNode }) {
       </Head>
       <Nav />
       <Container
-        p={4}
+        maxBreakpoint="lg"
         sx={{
-          display: 'flex',
           flexDirection: 'column',
-          width: '100%',
           minHeight: '100vh',
           gap: 4,
+          padding: 4,
         }}
       >
         <Breadcrumbs crumbs={breadcrumbs} />
@@ -187,7 +186,12 @@ export default function CollectionView() {
   if (loading)
     return (
       <Layout>
-        <Container sx={{ justifyContent: 'center', flexGrow: 1 }}>
+        <Container
+          sx={{
+            justifyContent: 'center',
+            flexGrow: 1,
+          }}
+        >
           Loading...
         </Container>
       </Layout>
@@ -243,7 +247,7 @@ export default function CollectionView() {
 
   return (
     <Layout>
-      <Grid columns={isMobile ? '1fr' : '1fr 1fr'} sx={{ gap: '40px' }}>
+      <Grid columns={['1fr', '1fr', '1fr 1fr']} sx={{ gap: '40px' }}>
         <Flex sx={{ flexDirection: 'column', gap: '16px' }}>
           <Flex sx={{ gap: 6, height: 100, alignItems: 'center' }}>
             <Box
@@ -291,7 +295,7 @@ export default function CollectionView() {
           >
             General Stats
           </Text>
-          <Grid columns="repeat(auto-fit, minmax(140px, 1fr))" sx={{ gap: 4 }}>
+          <Grid columns="repeat(auto-fit, minmax(120px, 1fr))" sx={{ gap: 4 }}>
             <CollectionStat
               color="blue"
               value={average ? weiToEth(average, 4, false) : '-'}
