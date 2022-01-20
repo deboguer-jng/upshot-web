@@ -88,3 +88,14 @@ export const getPriceChangeLabel = (val: number | null) => {
   const percentChange = val.toFixed(2) + '%'
   return val > 0 ? '+' + percentChange : percentChange
 }
+
+/**
+ * Format commas
+ *
+ * @param value
+ * @returns Formatted currency
+ */
+export const formatCommas = (value: number) =>
+  Math.round(value)
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ',')

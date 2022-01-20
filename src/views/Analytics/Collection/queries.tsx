@@ -5,7 +5,7 @@ import { gql } from '@apollo/client'
  */
 
 export type GetCollectionVars = {
-  id: number
+  id?: number
 }
 
 export type GetCollectionData = {
@@ -57,7 +57,7 @@ export const GET_COLLECTION = gql`
  */
 
 export type GetAllCollectionSalesVars = {
-  id: number
+  id?: number
 }
 
 export type GetAllCollectionSalesData = {

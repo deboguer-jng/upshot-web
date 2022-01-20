@@ -5,18 +5,18 @@ import { ethers } from 'ethers'
 import { useRouter } from 'next/router'
 
 import {
-  GET_SEVEN_DAY_MC_CHANGE,
-  GetSevenDayMCChangeData,
-  GetSevenDayMCChangeVars,
+  GET_TREEMAP_COLLECTIONS,
+  GetTreemapCollectionsData,
+  GetTreemapCollectionsVars,
 } from '../queries'
 
-export default function TreeMapMarketCap() {
+export default function CollectionsTreeMap() {
   const isMobile = useBreakpointIndex() <= 1
   const router = useRouter()
   const { loading, error, data } = useQuery<
-    GetSevenDayMCChangeData,
-    GetSevenDayMCChangeVars
-  >(GET_SEVEN_DAY_MC_CHANGE, {
+    GetTreemapCollectionsData,
+    GetTreemapCollectionsVars
+  >(GET_TREEMAP_COLLECTIONS, {
     errorPolicy: 'all',
     variables: { limit: 100 },
   })
@@ -28,9 +28,10 @@ export default function TreeMapMarketCap() {
   // if (error) return <TreeMap error data={[]} />
 
   /* No results state. */
-  if (!data?.collections?.assetSets?.length) return <TreeMap noData data={[]} />
+  if (!data?.orderedCollectionsByMetricSearch?.assetSets?.length)
+    return <TreeMap noData data={[]} />
 
-  const chartData = data?.collections?.assetSets
+  const chartData = data?.orderedCollectionsByMetricSearch?.assetSets
     ?.filter(({ latestStats }) => latestStats?.sevenDayChange)
     .map(({ id, name, latestStats }) => ({
       id,

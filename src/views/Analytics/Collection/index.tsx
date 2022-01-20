@@ -1,6 +1,10 @@
 import { useQuery } from '@apollo/client'
-import { theme, useBreakpointIndex  } from '@upshot-tech/upshot-ui'
-import { Chart, Container, Flex, Grid, Label  } from '@upshot-tech/upshot-ui'
+import {
+  imageOptimizer,
+  theme,
+  useBreakpointIndex,
+} from '@upshot-tech/upshot-ui'
+import { Chart, Container, Flex, Grid, Label } from '@upshot-tech/upshot-ui'
 import { Avatar, Text } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
@@ -9,6 +13,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
+import { Box } from 'theme-ui'
 import { weiToEth } from 'utils/number'
 import CollectionScatterChart from 'views/Analytics/components/CollectionScatterChart'
 import ExplorePanel from 'views/Analytics/components/ExplorePanel'
@@ -56,7 +61,7 @@ function CollectionStat({
         </Label>
       )}
       {currencySymbol === '' && value}
-      
+
       <Text variant="small">{label}</Text>
     </Flex>
   )
@@ -117,13 +122,12 @@ function Layout({ children }: { children: React.ReactNode }) {
       </Head>
       <Nav />
       <Container
-        p={4}
+        maxBreakpoint="lg"
         sx={{
-          display: 'flex',
           flexDirection: 'column',
-          width: '100%',
           minHeight: '100vh',
           gap: 4,
+          padding: 4,
         }}
       >
         <Breadcrumbs crumbs={breadcrumbs} />
@@ -144,6 +148,7 @@ export default function CollectionView() {
   useEffect(() => {
     /* Parse assetId from router */
     const id = router.query.id
+    if (!id) return
 
     setId(Number(id))
   }, [router.query])
@@ -152,7 +157,7 @@ export default function CollectionView() {
     GET_COLLECTION,
     {
       errorPolicy: 'all',
-      variables: { id: Number(id) },
+      variables: { id },
       skip: !id,
     }
   )
@@ -181,7 +186,12 @@ export default function CollectionView() {
   if (loading)
     return (
       <Layout>
-        <Container sx={{ justifyContent: 'center', flexGrow: 1 }}>
+        <Container
+          sx={{
+            justifyContent: 'center',
+            flexGrow: 1,
+          }}
+        >
           Loading...
         </Container>
       </Layout>
@@ -237,10 +247,32 @@ export default function CollectionView() {
 
   return (
     <Layout>
-      <Grid columns={isMobile ? '1fr' : '1fr 1fr'} sx={{ gap: '40px' }}>
+      <Grid columns={['1fr', '1fr', '1fr 1fr']} sx={{ gap: '40px' }}>
         <Flex sx={{ flexDirection: 'column', gap: '16px' }}>
           <Flex sx={{ gap: 6, height: 100, alignItems: 'center' }}>
-            <Avatar size="xl" src={imageUrl} />
+            <Box
+              sx={{
+                backgroundColor: '#231F20',
+                minWidth: '63px',
+                padding: isMobile ? '4px' : '8px',
+                borderRadius: '50%',
+              }}
+            >
+              <Avatar
+                size="xl"
+                sx={{
+                  width: isMobile ? '55px' : '100px',
+                  height: isMobile ? '55px' : '100px',
+                  minWidth: 'unset',
+                }}
+                src={
+                  imageOptimizer(imageUrl, {
+                    width: parseInt(theme.images.avatar.xl.size),
+                    height: parseInt(theme.images.avatar.xl.size),
+                  }) ?? imageUrl
+                }
+              />
+            </Box>
             <Flex sx={{ flexDirection: 'column' }}>
               <Text variant="h1Secondary" sx={{ lineHeight: '2rem' }}>
                 {name}
@@ -263,7 +295,7 @@ export default function CollectionView() {
           >
             General Stats
           </Text>
-          <Grid columns="repeat(auto-fit, minmax(140px, 1fr))" sx={{ gap: 4 }}>
+          <Grid columns="repeat(auto-fit, minmax(120px, 1fr))" sx={{ gap: 4 }}>
             <CollectionStat
               color="blue"
               value={average ? weiToEth(average, 4, false) : '-'}
@@ -311,9 +343,11 @@ export default function CollectionView() {
           </Grid>
         </Flex>
         <Flex sx={{ flexDirection: 'column', paddingTop: isMobile ? 0 : 116 }}>
-          <Text variant="large" sx={{ textTransform: 'uppercase' }}>
-            About
-          </Text>
+          {description && (
+            <Text variant="large" sx={{ textTransform: 'uppercase' }}>
+              About
+            </Text>
+          )}
           <Text
             color="grey-300"
             onClick={() => {

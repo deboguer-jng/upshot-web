@@ -70,7 +70,7 @@ export const GET_TOP_COLLECTIONS = gql`
     orderedCollectionsByMetricSearch(
       metric: $metric
       stringifiedCollectionIds: $stringifiedCollectionIds
-      limit: 3
+      limit: 5
       windowSize: WEEK
     ) {
       assetSets {
@@ -326,6 +326,7 @@ export const GET_EXPLORE_COLLECTIONS = gql`
       limit: $limit
       offset: $offset
       name: $name
+      windowSize: WEEK
     ) {
       count
       assetSets {
@@ -373,15 +374,15 @@ export const GET_TOP_SALES = gql`
 `
 
 /**
- * Get 7-day Market Cap Change
- * @see TreeMapMarketCap
+ * Gets top collections for the treemap
+ * @see TreeMap
  */
-export type GetSevenDayMCChangeVars = {
+export type GetTreemapCollectionsVars = {
   limit: number
 }
 
-export type GetSevenDayMCChangeData = {
-  collections: {
+export type GetTreemapCollectionsData = {
+  orderedCollectionsByMetricSearch: {
     assetSets: {
       id: number
       name: string
@@ -393,9 +394,13 @@ export type GetSevenDayMCChangeData = {
   }
 }
 
-export const GET_SEVEN_DAY_MC_CHANGE = gql`
-  query SevenDayMCChange($limit: Int) {
-    collections(limit: $limit) {
+export const GET_TREEMAP_COLLECTIONS = gql`
+  query GetTreeMapCollections($limit: OneToHundredInt!) {
+    orderedCollectionsByMetricSearch(
+      limit: $limit
+      metric: VOLUME
+      windowSize: WEEK
+    ) {
       assetSets {
         id
         name
@@ -449,8 +454,16 @@ export type GetTopCollectorsData = {
 }
 
 export const GET_TOP_COLLECTORS = gql`
-  query GetTopCollectors($limit: OneToHundredInt!, $offset: Int, $searchTerm: String) {
-    getOwnersByWhaleness(limit: $limit, offset: $offset, searchTerm: $searchTerm) {
+  query GetTopCollectors(
+    $limit: OneToHundredInt!
+    $offset: Int
+    $searchTerm: String
+  ) {
+    getOwnersByWhaleness(
+      limit: $limit
+      offset: $offset
+      searchTerm: $searchTerm
+    ) {
       count
       owners {
         username
@@ -517,6 +530,13 @@ export type GetCollectorsData = {
             id: number
             name: string
             imageUrl: string
+            ownerAssetsInCollection: {
+              count: number
+              assets: {
+                id: string
+                previewImageUrl: string
+              }
+            }
           }
         }[]
       }
@@ -562,6 +582,13 @@ export const GET_COLLECTORS = gql`
               id
               name
               imageUrl
+              ownerAssetsInCollection(limit: 20) {
+                count
+                assets {
+                  id
+                  previewImageUrl
+                }
+              }
             }
           }
         }
@@ -603,6 +630,13 @@ export type GetPreviousOwnersData = {
             id: number
             name: string
             imageUrl: string
+            ownerAssetsInCollection: {
+              count: number
+              assets: {
+                id: string
+                previewImageUrl: string
+              }[]
+            }
           }
         }[]
       }
@@ -641,6 +675,13 @@ export const GET_PREVIOUS_OWNERS = gql`
               id
               name
               imageUrl
+              ownerAssetsInCollection(limit: 20) {
+                count
+                assets {
+                  id
+                  previewImageUrl
+                }
+              }
             }
           }
         }
