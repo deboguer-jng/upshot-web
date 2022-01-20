@@ -370,15 +370,15 @@ export const GET_TOP_SALES = gql`
 `
 
 /**
- * Get 7-day Market Cap Change
- * @see TreeMapMarketCap
+ * Gets top collections for the treemap
+ * @see TreeMap
  */
-export type GetSevenDayMCChangeVars = {
+export type GetTreemapCollectionsVars = {
   limit: number
 }
 
-export type GetSevenDayMCChangeData = {
-  collections: {
+export type GetTreemapCollectionsData = {
+  orderedCollectionsByMetricSearch: {
     assetSets: {
       id: number
       name: string
@@ -390,9 +390,13 @@ export type GetSevenDayMCChangeData = {
   }
 }
 
-export const GET_SEVEN_DAY_MC_CHANGE = gql`
-  query SevenDayMCChange($limit: Int) {
-    collections(limit: $limit) {
+export const GET_TREEMAP_COLLECTIONS = gql`
+  query GetTreeMapCollections($limit: OneToHundredInt!) {
+    orderedCollectionsByMetricSearch(
+      limit: $limit
+      metric: VOLUME
+      windowSize: WEEK
+    ) {
       assetSets {
         id
         name
