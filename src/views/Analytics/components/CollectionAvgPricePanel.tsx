@@ -192,7 +192,6 @@ export default function CollectionAvgPricePanel({
           )
         }
       )}
-      )
     </CollectionPanel>
   )
 }
