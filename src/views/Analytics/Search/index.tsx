@@ -131,8 +131,11 @@ export default function SearchView() {
   const chunks = {
     0: 2,
     1: 2,
-    2: 3,
-    3: 4,
+    2: 2,
+    3: 3,
+    4: 4,
+    5: 5,
+    6: 5
   }
 
   const chunkSize = chunks[breakpointIndex]
@@ -228,7 +231,6 @@ export default function SearchView() {
   const searchResults = () => (
     <>
       <Flex
-        paddingX={8}
         sx={{
           position: ['static', 'static', 'static', 'sticky'],
           top: 0,
@@ -262,7 +264,6 @@ export default function SearchView() {
         )}
       </Flex>
       <Flex
-        paddingX={[8, 8, 0]}
         sx={{
           flex: '1 auto auto',
           flexDirection: 'column',
@@ -420,29 +421,30 @@ export default function SearchView() {
       <Flex sx={{ minHeight: '100vh', flexDirection: 'column' }}>
         <Nav />
         <Container
-          maxBreakpoint="lg"
+          maxBreakpoint="xl"
           sx={{
             flexDirection: 'column',
             gap: 4,
             padding: 4,
+            flexGrow: 1,
           }}
         >
           <Breadcrumbs crumbs={breadcrumbs} />
+          {!isMobile ? (
+            <Grid
+              columns={[1, 1, 3]}
+              sx={{
+                gridTemplateColumns: ['1fr', '1fr 3fr', '1fr 3fr 1fr'],
+                flexGrow: 1,
+                gap: [8, 5, 8],
+              }}
+            >
+              {searchResults()}
+            </Grid>
+          ) : (
+            searchResults()
+          )}
         </Container>
-        {!isMobile ? (
-          <Grid
-            columns={[1, 1, 3]}
-            sx={{
-              gridTemplateColumns: ['1fr', '1fr 3fr', '1fr 3fr 1fr'],
-              flexGrow: 1,
-              gap: [8, 5, 0],
-            }}
-          >
-            {searchResults()}
-          </Grid>
-        ) : (
-          searchResults()
-        )}
         <Container
           maxBreakpoint="lg"
           sx={{
