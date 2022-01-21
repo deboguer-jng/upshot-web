@@ -295,7 +295,7 @@ export default function CollectionView() {
           >
             General Stats
           </Text>
-          <Grid columns="repeat(auto-fit, minmax(120px, 1fr))" sx={{ gap: 4 }}>
+          <Grid columns="repeat(auto-fit, minmax(140px, 1fr))" sx={{ gap: 4 }}>
             <CollectionStat
               color="blue"
               value={average ? weiToEth(average, 4, false) : '-'}
