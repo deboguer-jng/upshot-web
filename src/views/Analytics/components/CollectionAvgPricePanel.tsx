@@ -84,7 +84,7 @@ export default function CollectionAvgPricePanel({
       </CollectionPanel>
     )
 
-  const skeletonCells = [...new Array(16)]
+  const skeletonCells = [...new Array(20)]
 
   if (loading)
     return (
