@@ -74,6 +74,7 @@ export default forwardRef(function CollectionPanel(
 
   const handleSearch = (e: React.FormEvent | React.MouseEvent) => {
     if (autoFilter) clearAutoFilter()
+    e.preventDefault()
 
     onSearch?.(e)
   }
