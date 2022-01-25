@@ -1,5 +1,6 @@
+/** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
-import { CollectorAccordion, useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import { CollectorAccordion, Icon, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { Pagination } from '@upshot-tech/upshot-ui'
 import { Flex, Grid, Text, Box } from '@upshot-tech/upshot-ui'
@@ -52,6 +53,7 @@ function CollectionTableHead() {
                 {col}
               </TableCell>
             ))}
+            <TableCell></TableCell>
           </TableRow>
         </TableHead>
       )}
