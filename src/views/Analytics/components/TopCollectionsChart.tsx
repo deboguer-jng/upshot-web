@@ -141,7 +141,7 @@ export default function TopCollectionsCharts({
         metric,
         currentFloor: weiToEth((latestStats?.floor).toString(), 4, false),
         currentAvg: weiToEth((latestStats?.pastDayWeiAverage).toString(), 4, false),
-        currentVolume: weiToEth((latestStats.pastWeekWeiVolume).toString(), 4, false),
+        currentVolume: latestStats?.pastDayWeiAverage ? weiToEth((latestStats.pastWeekWeiVolume).toString(), 4, false) : '-',
       }
     })
 
