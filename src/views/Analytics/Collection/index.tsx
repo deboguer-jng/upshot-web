@@ -227,9 +227,9 @@ export default function CollectionView() {
     totalVolume,
     volume,
     marketCap,
-    sevenDayFloorChange,
     numCollectors,
     timeSeries,
+    latestStats,
   } = data.collectionById
 
   const priceSeries =
@@ -310,17 +310,17 @@ export default function CollectionView() {
             />
             <CollectionStat
               color={
-                sevenDayFloorChange
-                  ? sevenDayFloorChange > 0
+                data.collectionById.latestStats.weekFloorChange
+                  ? data.collectionById.latestStats.weekFloorChange > 0
                     ? 'green'
                     : 'red'
                   : 'white'
               }
               value={
-                sevenDayFloorChange
-                  ? sevenDayFloorChange > 0
-                    ? '+' + sevenDayFloorChange.toFixed(2) + '%'
-                    : sevenDayFloorChange.toFixed(2) + '%'
+                data.collectionById.latestStats.weekFloorChange
+                  ? data.collectionById.latestStats.weekFloorChange > 0
+                    ? '+' + data.collectionById.latestStats.weekFloorChange.toFixed(2) + '%'
+                    : data.collectionById.latestStats.weekFloorChange.toFixed(2) + '%'
                   : '-'
               }
               label="7 Day Floor Change"

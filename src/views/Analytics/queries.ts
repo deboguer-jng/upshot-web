@@ -50,7 +50,7 @@ export type GetTopCollectionsData = {
       }
       latestStats: {
         volume: string
-        sevenDayMCChange: number
+        weekCapChange: number
         pastWeekWeiVolume: string
         floor: number
         pastDayWeiAverage: string
@@ -123,7 +123,7 @@ export const GET_TOP_COLLECTIONS = gql`
         }
         latestStats {
           volume
-          sevenDayMCChange
+          weekCapChange
           pastWeekWeiVolume
           floor
           pastDayWeiAverage
@@ -304,11 +304,11 @@ export type GetExploreCollectionsData = {
       id: number
       name: string
       imageUrl?: string
-      sevenDayFloorChange: number
       latestStats: {
         floor: string
         pastDayWeiAverage: string
         totalWeiVolume: string
+        weekFloorChange: number
       }
     }[]
   }
@@ -333,11 +333,11 @@ export const GET_EXPLORE_COLLECTIONS = gql`
         id
         name
         imageUrl
-        sevenDayFloorChange
         latestStats {
           floor
           pastDayWeiAverage
           totalWeiVolume
+          weekFloorChange
         }
       }
     }
@@ -388,7 +388,7 @@ export type GetTreemapCollectionsData = {
       name: string
       latestStats: {
         totalWeiVolume: string
-        sevenDayMCChange: number
+        weekCapChange: number
       }
     }[]
   }
@@ -406,7 +406,7 @@ export const GET_TREEMAP_COLLECTIONS = gql`
         name
         latestStats {
           totalWeiVolume
-          sevenDayMCChange
+          weekCapChange
         }
       }
     }

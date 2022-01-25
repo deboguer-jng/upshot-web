@@ -20,12 +20,14 @@ export type GetCollectionData = {
     volume: string
     totalVolume: string
     marketCap: string
-    sevenDayFloorChange: number
     numCollectors: number
     timeSeries?: {
       average: string
       timestamp: number
     }[]
+    latestStats: {
+      weekFloorChange: number
+    }
   }
 }
 
@@ -42,11 +44,13 @@ export const GET_COLLECTION = gql`
       volume
       totalVolume
       marketCap
-      sevenDayFloorChange
       numCollectors
       timeSeries {
         average
         timestamp
+      }
+      latestStats {
+        weekFloorChange
       }
     }
   }
