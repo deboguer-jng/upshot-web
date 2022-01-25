@@ -50,7 +50,7 @@ export type GetTopCollectionsData = {
       }
       latestStats: {
         volume: string
-        sevenDayChange: number
+        sevenDayMCChange: number
         pastWeekWeiVolume: string
         floor: number
         pastDayWeiAverage: string
@@ -123,7 +123,7 @@ export const GET_TOP_COLLECTIONS = gql`
         }
         latestStats {
           volume
-          sevenDayChange
+          sevenDayMCChange
           pastWeekWeiVolume
           floor
           pastDayWeiAverage
@@ -388,7 +388,7 @@ export type GetTreemapCollectionsData = {
       name: string
       latestStats: {
         totalWeiVolume: string
-        sevenDayChange: number
+        sevenDayMCChange: number
       }
     }[]
   }
@@ -406,7 +406,7 @@ export const GET_TREEMAP_COLLECTIONS = gql`
         name
         latestStats {
           totalWeiVolume
-          sevenDayChange
+          sevenDayMCChange
         }
       }
     }

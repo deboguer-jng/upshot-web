@@ -114,11 +114,11 @@ export default function TopCollectionsCharts({
     .map(({ data, name, id, latestStats, ...rest }) => {
       const ath = rest[athKeys[metric]]?.value
       const atl = rest[atlKeys[metric]]?.value
-      const priceChange = !latestStats?.sevenDayChange
+      const priceChange = !latestStats?.sevenDayMCChange
         ? null
-        : latestStats.sevenDayChange >= 0
-        ? '+' + latestStats.sevenDayChange + '%'
-        : latestStats.sevenDayChange + '%'
+        : latestStats.sevenDayMCChange >= 0
+        ? '+' + latestStats.sevenDayMCChange + '%'
+        : latestStats.sevenDayMCChange + '%'
 
       return {
         name,

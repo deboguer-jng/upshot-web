@@ -32,11 +32,11 @@ export default function CollectionsTreeMap() {
     return <TreeMap noData data={[]} />
 
   const chartData = data?.orderedCollectionsByMetricSearch?.assetSets
-    ?.filter(({ latestStats }) => latestStats?.sevenDayChange)
+    ?.filter(({ latestStats }) => latestStats?.sevenDayMCChange)
     .map(({ id, name, latestStats }) => ({
       id,
       name,
-      delta: latestStats?.sevenDayChange ?? 0,
+      delta: latestStats?.sevenDayMCChange ?? 0,
       marketCap: parseFloat(
         ethers.utils.formatEther(latestStats?.totalWeiVolume ?? 0)
       ),
