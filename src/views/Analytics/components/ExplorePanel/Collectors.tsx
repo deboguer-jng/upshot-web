@@ -12,7 +12,7 @@ import {
   useBreakpointIndex,
 } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE, PIXELATED_CONTRACTS } from 'constants/'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import {
@@ -22,6 +22,9 @@ import {
   GetCollectorsVars,
   GetPreviousOwnersData,
   GetPreviousOwnersVars,
+  GetUserOwnedAssetsData,
+  GetUserOwnedAssetsVars,
+  GET_USER_OWNED_ASSETS,
 } from '../../queries'
 
 export default function Collectors({
@@ -35,7 +38,9 @@ export default function Collectors({
   assetId?: string
   searchTerm?: string
 }) {
-  const [selectedExtraCollection, setSelectedExtraCollection] = useState({})
+  const [selectedExtraCollections, setSelectedExtraCollections] = useState({})
+  const [selectedExtraCollectionId, setSelectedExtraCollectionId] = useState<number | undefined>()
+  const [selectedCollectorId, setSelectedCollectorId] = useState<number | undefined>()
   const router = useRouter()
   const [page, setPage] = useState(0)
   const handlePageChange = ({ selected }: { selected: number }) => {
@@ -69,6 +74,27 @@ export default function Collectors({
         },
         skip: !id,
       })
+  
+  const { data: extraCollectionData } = useQuery<GetUserOwnedAssetsData, GetUserOwnedAssetsVars>(
+    GET_USER_OWNED_ASSETS,
+    {
+      errorPolicy: 'all',
+      variables: {
+        userId: selectedCollectorId,
+        collectionId: selectedExtraCollectionId
+      },
+      skip: !selectedCollectorId || !selectedExtraCollectionId
+    }
+  )
+
+  useEffect(() => {
+    if (extraCollectionData?.getUser?.ownedAssets?.assets && selectedCollectorId) {
+      setSelectedExtraCollections({
+        ...selectedExtraCollections,
+        [selectedCollectorId]: extraCollectionData?.getUser?.ownedAssets?.assets
+      })
+    }
+  }, [extraCollectionData])
 
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
@@ -116,6 +142,7 @@ export default function Collectors({
           .map(
             (
               {
+                id,
                 username,
                 addresses,
                 avgHoldTime,
@@ -127,7 +154,9 @@ export default function Collectors({
             ) => (
               <CollectorAccordionRow
                 address={addresses?.[0].address}
-                onClick={() => handleShowCollector(addresses?.[0].address)}
+                onClick={() => {
+                  handleShowCollector(addresses?.[0].address)
+                }}
                 firstAcquisition={firstAssetPurchaseTime}
                 collectionName={name}
                 extraCollections={collectionAssetCounts.map(
@@ -139,17 +168,12 @@ export default function Collectors({
                     pixelated: true,
                     url: `/analytics/collection/${id}`,
                   })
-                )}
-                extraCollectionChanged={(collectionId) => {
-                  const selected = (collectionAssetCounts as any).find(
-                    ({ collection }) => collection.id === collectionId
-                  );
-                  setSelectedExtraCollection({
-                    ...selectedExtraCollection,
-                    [idx]: selected?.collection?.ownerAssetsInCollection?.assets
-                  });
+                  )}
+                  extraCollectionChanged={(collectionId) => {
+                  setSelectedCollectorId(id)
+                  setSelectedExtraCollectionId(collectionId)
                 }}
-                nftCollection={(selectedExtraCollection[idx] || (collectionAssetCounts[0] || {}).collection?.ownerAssetsInCollection?.assets || assets).map(({ previewImageUrl, id }) => ({
+                nftCollection={(selectedExtraCollections[id] || assets).map(({ previewImageUrl, id }) => ({
                   id,
                   imageUrl: previewImageUrl,
                   url: `/analytics/nft/${id}`,
