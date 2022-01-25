@@ -6,7 +6,6 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { Chart, Container, Flex, Grid, Label } from '@upshot-tech/upshot-ui'
 import { Avatar, Text } from '@upshot-tech/upshot-ui'
-import { Box } from 'theme-ui'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import { ethers } from 'ethers'
@@ -14,6 +13,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
+import { Box } from 'theme-ui'
 import { weiToEth } from 'utils/number'
 import CollectionScatterChart from 'views/Analytics/components/CollectionScatterChart'
 import ExplorePanel from 'views/Analytics/components/ExplorePanel'
@@ -122,13 +122,12 @@ function Layout({ children }: { children: React.ReactNode }) {
       </Head>
       <Nav />
       <Container
-        p={4}
+        maxBreakpoint="lg"
         sx={{
-          display: 'flex',
           flexDirection: 'column',
-          width: '100%',
           minHeight: '100vh',
           gap: 4,
+          padding: 4,
         }}
       >
         <Breadcrumbs crumbs={breadcrumbs} />
@@ -149,6 +148,7 @@ export default function CollectionView() {
   useEffect(() => {
     /* Parse assetId from router */
     const id = router.query.id
+    if (!id) return
 
     setId(Number(id))
   }, [router.query])
@@ -157,7 +157,7 @@ export default function CollectionView() {
     GET_COLLECTION,
     {
       errorPolicy: 'all',
-      variables: { id: Number(id) },
+      variables: { id },
       skip: !id,
     }
   )
@@ -186,7 +186,12 @@ export default function CollectionView() {
   if (loading)
     return (
       <Layout>
-        <Container sx={{ justifyContent: 'center', flexGrow: 1 }}>
+        <Container
+          sx={{
+            justifyContent: 'center',
+            flexGrow: 1,
+          }}
+        >
           Loading...
         </Container>
       </Layout>
@@ -242,7 +247,7 @@ export default function CollectionView() {
 
   return (
     <Layout>
-      <Grid columns={isMobile ? '1fr' : '1fr 1fr'} sx={{ gap: '40px' }}>
+      <Grid columns={['1fr', '1fr', '1fr 1fr']} sx={{ gap: '40px' }}>
         <Flex sx={{ flexDirection: 'column', gap: '16px' }}>
           <Flex sx={{ gap: 6, height: 100, alignItems: 'center' }}>
             <Box
@@ -338,12 +343,11 @@ export default function CollectionView() {
           </Grid>
         </Flex>
         <Flex sx={{ flexDirection: 'column', paddingTop: isMobile ? 0 : 116 }}>
-          {
-            description &&
-              <Text variant="large" sx={{ textTransform: 'uppercase' }}>
-                About
-              </Text>
-          }
+          {description && (
+            <Text variant="large" sx={{ textTransform: 'uppercase' }}>
+              About
+            </Text>
+          )}
           <Text
             color="grey-300"
             onClick={() => {

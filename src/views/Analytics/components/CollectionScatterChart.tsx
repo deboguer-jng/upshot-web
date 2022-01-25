@@ -19,7 +19,7 @@ export default function CollectionScatterChart({
     GetAllCollectionSalesData,
     GetAllCollectionSalesVars
   >(GET_ALL_COLLECTION_SALES, {
-    variables: { id: Number(id) },
+    variables: { id },
     skip: !id,
   })
 

@@ -3,9 +3,9 @@ import { Button, Flex, SliderFade } from '@upshot-tech/upshot-ui'
 import { useState } from 'react'
 
 export const METRICS = {
+  VOLUME: 'Weekly Volume',
   FLOOR: 'Floor Price',
   AVERAGE: 'Average Price',
-  VOLUME: 'Weekly Volume',
 }
 
 export type METRIC = keyof typeof METRICS
@@ -27,7 +27,6 @@ export default function ButtonTabs({ onChange }: ButtonTabsProps) {
     return (
       <>
         {Object.values(METRICS)
-          .slice(0, 2)
           .map((children, idx) => (
             <Button
               key={idx}
@@ -49,7 +48,7 @@ export default function ButtonTabs({ onChange }: ButtonTabsProps) {
             sx={{
               gap: 4,
               width: 'fit-content',
-              justifyContent: ['center', 'center', 'flex-start'],
+              justifyContent: ['center', 'flex-start'],
               padding: '0.25rem',
             }}
           >
@@ -61,7 +60,7 @@ export default function ButtonTabs({ onChange }: ButtonTabsProps) {
           sx={{
             gap: 4,
             flexWrap: 'wrap',
-            justifyContent: ['center', 'center', 'flex-start'],
+            justifyContent: ['center', 'flex-start'],
           }}
         >
           {renderButtons()}

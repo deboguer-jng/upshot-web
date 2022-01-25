@@ -2,13 +2,7 @@ import { useQuery } from '@apollo/client'
 import { CollectorAccordion,useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { Pagination } from '@upshot-tech/upshot-ui'
-import {
-  Box,
-  Flex,
-  Grid,
-  Skeleton,
-  Text,
-} from '@upshot-tech/upshot-ui'
+import { Box, Flex, Grid, Skeleton, Text } from '@upshot-tech/upshot-ui'
 import {
   TableBody,
   TableCell,

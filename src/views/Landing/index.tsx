@@ -98,12 +98,12 @@ export default function LandingView() {
         />
       </Head>
       <Container
-        p={4}
+        maxBreakpoint="lg"
         sx={{
-          display: 'flex',
           flexDirection: 'column',
           minHeight: '100vh',
           gap: 4,
+          padding: 4,
         }}
       >
         <Box sx={{ display: 'flex' }}>
@@ -203,7 +203,7 @@ export default function LandingView() {
         <Text variant="xLarge" color="grey-500">
           Start using our suite of tools for exploring the metaverse.
         </Text>
-        <Grid gap={5} columns={[1, 1, 1, 2]}>
+        <Grid gap={5} columns={[1, 1, 1, 1, 1, 2]}>
           <Link
             href="/analytics"
             rel="noopener noreferrer"
@@ -316,7 +316,9 @@ export default function LandingView() {
                     alt="Upshot One"
                   ></Image>
                   <div style={{ position: 'relative' }}>
-                    <Text variant="h1Secondary">Upshot API</Text>
+                    <Text variant="h1Secondary" sx={{ whiteSpace: 'nowrap' }}>
+                      Upshot API
+                    </Text>
                     <Text variant="large" sx={{ display: 'block' }}>
                       Integrate Upshot data into your project.
                     </Text>

@@ -60,6 +60,7 @@ type Collection = {
 }
 
 function Layout({ children }: { children: React.ReactNode }) {
+  const { theme } = useTheme()
   const storage = globalThis?.sessionStorage
   const prevPath = storage.getItem('prevPath')
 
@@ -112,13 +113,12 @@ function Layout({ children }: { children: React.ReactNode }) {
       </Head>
       <Nav />
       <Container
-        p={4}
+        maxBreakpoint="lg"
         sx={{
-          display: 'flex',
           flexDirection: 'column',
-          width: '100%',
           minHeight: '100vh',
           gap: 4,
+          padding: 4,
         }}
       >
         <Breadcrumbs crumbs={breadcrumbs} />
@@ -206,6 +206,8 @@ export default function UserView() {
     }
   }, [address])
 
+  const collectionLimit = 8
+
   const {
     loading: loadingCollector,
     error,
@@ -215,7 +217,7 @@ export default function UserView() {
     errorPolicy: 'all',
     variables: {
       address: addressFormatted,
-      collectionLimit: 8,
+      collectionLimit,
       collectionOffset: 0,
       assetLimit: 6,
       assetOffset: 0,
@@ -280,7 +282,12 @@ export default function UserView() {
 
   const handleFetchMoreCollections = useCallback(
     (startIndex: number) => {
-      if (loadingCollector || collectionOffset === startIndex) return
+      if (
+        loadingCollector ||
+        collectionOffset === startIndex ||
+        startIndex < collectionLimit
+      )
+        return
       setCollectionOffset(startIndex)
     },
     [loadingCollector, collectionOffset]
@@ -586,7 +593,7 @@ export default function UserView() {
           <Box sx={{ position: 'relative' }}>
             <Grid gap={4} columns={[1, 1, 1, 2]}>
               <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-                <Grid gap={2} columns={[1, 2, 3]}>
+                <Grid gap={2} columns={[2, 2, 3]}>
                   {isLoading ? (
                     [...new Array(6)].map((_, idx) => (
                       <Skeleton

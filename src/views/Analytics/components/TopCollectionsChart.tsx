@@ -128,8 +128,8 @@ export default function TopCollectionsCharts({
         /* priceUsd: 10, */
         // priceChange,
         volume:
-          metric === 'VOLUME' && latestStats?.volume
-            ? parseFloat(weiToEth(latestStats.volume, 2, false))
+          metric === 'VOLUME' && latestStats?.pastWeekWeiVolume
+            ? parseFloat(weiToEth(latestStats.pastWeekWeiVolume, 2, false))
             : 0,
         data: data.map((val, i) =>
           i === 0
@@ -140,11 +140,8 @@ export default function TopCollectionsCharts({
         ),
         metric,
         currentFloor: weiToEth((latestStats?.floor).toString(), 4, false),
-        currentAvg: weiToEth(
-          (latestStats?.pastDayWeiAverage).toString(),
-          4,
-          false
-        ),
+        currentAvg: weiToEth((latestStats?.pastDayWeiAverage).toString(), 4, false),
+        currentVolume: weiToEth((latestStats.pastWeekWeiVolume).toString(), 4, false),
       }
     })
 
