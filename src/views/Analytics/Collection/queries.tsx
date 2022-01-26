@@ -13,13 +13,7 @@ export type GetCollectionData = {
     name: string
     description: string
     imageUrl: string
-    ceil: string
-    floor: string
     size: string
-    average: string
-    volume: string
-    totalVolume: string
-    marketCap: string
     numCollectors: number
     timeSeries?: {
       average: string
@@ -27,6 +21,10 @@ export type GetCollectionData = {
     }[]
     latestStats: {
       weekFloorChange: number
+      floor: string
+      marketCap: string
+      average: string
+      pastWeekWeiVolume: string
     }
   }
 }
@@ -37,13 +35,7 @@ export const GET_COLLECTION = gql`
       name
       description
       imageUrl
-      ceil
-      floor
       size
-      average
-      volume
-      totalVolume
-      marketCap
       numCollectors
       timeSeries {
         average
@@ -51,6 +43,10 @@ export const GET_COLLECTION = gql`
       }
       latestStats {
         weekFloorChange
+        floor
+        marketCap
+        average
+        pastWeekWeiVolume
       }
     }
   }

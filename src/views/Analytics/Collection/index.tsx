@@ -221,12 +221,7 @@ export default function CollectionView() {
     name,
     description,
     imageUrl,
-    floor,
     size,
-    average,
-    totalVolume,
-    volume,
-    marketCap,
     numCollectors,
     timeSeries,
     latestStats,
@@ -298,13 +293,13 @@ export default function CollectionView() {
           <Grid columns="repeat(auto-fit, minmax(140px, 1fr))" sx={{ gap: 4 }}>
             <CollectionStat
               color="blue"
-              value={average ? weiToEth(average, 4, false) : '-'}
+              value={latestStats.average ? weiToEth(latestStats.average, 4, false) : '-'}
               currencySymbol="Ξ"
               label="Average Price"
             />
             <CollectionStat
               color="pink"
-              value={floor ? weiToEth(floor, 4, false) : '-'}
+              value={latestStats.floor ? weiToEth(latestStats.floor, 4, false) : '-'}
               currencySymbol="Ξ"
               label="Floor Price"
             />
@@ -326,14 +321,14 @@ export default function CollectionView() {
               label="7 Day Floor Change"
             />
             <CollectionStat
-              value={marketCap ? weiToEth(marketCap, 4, false) : '-'}
+              value={latestStats.marketCap ? weiToEth(latestStats.marketCap, 4, false) : '-'}
               currencySymbol="Ξ"
               label="Market Cap"
             />
             <CollectionStat
-              value={volume ? weiToEth(volume, 4, false) : '-'}
+              value={latestStats.pastWeekWeiVolume ? weiToEth(latestStats.pastWeekWeiVolume, 4, false) : '-'}
               currencySymbol="Ξ"
-              label="Wkly Volume"
+              label="Weekly Volume"
             />
             <CollectionStat value={size} label="NFTs in Collection" />
             {/* <CollectionStat
