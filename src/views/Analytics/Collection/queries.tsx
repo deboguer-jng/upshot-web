@@ -5,7 +5,7 @@ import { gql } from '@apollo/client'
  */
 
 export type GetCollectionVars = {
-  id: number
+  id?: number
 }
 
 export type GetCollectionData = {
@@ -13,19 +13,19 @@ export type GetCollectionData = {
     name: string
     description: string
     imageUrl: string
-    ceil: string
-    floor: string
     size: string
-    average: string
-    volume: string
-    totalVolume: string
-    marketCap: string
-    sevenDayFloorChange: number
     numCollectors: number
     timeSeries?: {
       average: string
       timestamp: number
     }[]
+    latestStats: {
+      weekFloorChange: number
+      floor: string
+      marketCap: string
+      average: string
+      pastWeekWeiVolume: string
+    }
   }
 }
 
@@ -35,18 +35,18 @@ export const GET_COLLECTION = gql`
       name
       description
       imageUrl
-      ceil
-      floor
       size
-      average
-      volume
-      totalVolume
-      marketCap
-      sevenDayFloorChange
       numCollectors
       timeSeries {
         average
         timestamp
+      }
+      latestStats {
+        weekFloorChange
+        floor
+        marketCap
+        average
+        pastWeekWeiVolume
       }
     }
   }
@@ -57,7 +57,7 @@ export const GET_COLLECTION = gql`
  */
 
 export type GetAllCollectionSalesVars = {
-  id: number
+  id?: number
 }
 
 export type GetAllCollectionSalesData = {

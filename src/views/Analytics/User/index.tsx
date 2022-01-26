@@ -63,6 +63,7 @@ type Collection = {
 }
 
 function Layout({ children }: { children: React.ReactNode }) {
+  const { theme } = useTheme()
   const storage = globalThis?.sessionStorage
   const prevPath = storage.getItem('prevPath')
 
@@ -115,13 +116,12 @@ function Layout({ children }: { children: React.ReactNode }) {
       </Head>
       <Nav />
       <Container
-        p={4}
+        maxBreakpoint="lg"
         sx={{
-          display: 'flex',
           flexDirection: 'column',
-          width: '100%',
           minHeight: '100vh',
           gap: 4,
+          padding: 4,
         }}
       >
         <Breadcrumbs crumbs={breadcrumbs} />
@@ -247,6 +247,8 @@ export default function UserView() {
     }
   }, [address])
 
+  const collectionLimit = 8
+
   const {
     loading: loadingCollector,
     error,
@@ -256,7 +258,7 @@ export default function UserView() {
     errorPolicy: 'all',
     variables: {
       address: addressFormatted,
-      collectionLimit: 8,
+      collectionLimit,
       collectionOffset: 0,
       assetLimit: 6,
       assetOffset: 0,
@@ -265,6 +267,10 @@ export default function UserView() {
     },
     skip: !addressFormatted,
   })
+
+  const handleShowCollection = (id: number) => {
+    router.push('/analytics/collection/' + id)
+  }
 
   /* Waiting for collector data or query string address param to format. */
   const isLoading = loadingCollector || loadingAddressFormatted
@@ -332,7 +338,12 @@ export default function UserView() {
 
   const handleFetchMoreCollections = useCallback(
     (startIndex: number) => {
-      if (loadingCollector || collectionOffset === startIndex) return
+      if (
+        loadingCollector ||
+        collectionOffset === startIndex ||
+        startIndex < collectionLimit
+      )
+        return
       setCollectionOffset(startIndex)
     },
     [loadingCollector, collectionOffset]
@@ -474,30 +485,43 @@ export default function UserView() {
           })
         }
       >
-        {data.slice(0, 5).map(({ previewImage }, idx) => (
-          <Box
-            key={idx}
-            sx={{
-              width: '100%',
-              cursor: 'pointer',
-              '&::after': {
-                content: "''",
-                display: 'block',
-                paddingTop: '100%',
-                backgroundImage: `url(${
-                  imageOptimizer(previewImage, {
-                    width: 180,
-                    height: 180,
-                  }) ?? previewImage
-                })`,
-                backgroundSize: 'cover',
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'center',
-                borderRadius: 'sm',
-              },
-            }}
-          />
-        ))}
+        {collection.ownerAssetsInCollection.assets
+          .slice(0, 5)
+          .map(({ id, previewImageUrl, mediaUrl, contractAddress }, idx) => {
+            const image = previewImageUrl ?? mediaUrl
+            return (
+              <Link passHref href={`/analytics/nft/${id}`} key={idx}>
+                <Box
+                  sx={{
+                    width: '100%',
+                    cursor: 'pointer',
+                    '&::after': {
+                      content: "''",
+                      display: 'block',
+                      paddingTop: '100%',
+                      backgroundImage: image
+                        ? `url(${
+                            imageOptimizer(image, {
+                              width: 180,
+                              height: 180,
+                            }) ?? image
+                          })`
+                        : null,
+                      backgroundSize: 'cover',
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: 'center',
+                      borderRadius: 'sm',
+                      imageRendering: PIXELATED_CONTRACTS.includes(
+                        contractAddress
+                      )
+                        ? 'pixelated'
+                        : 'auto',
+                    },
+                  }}
+                />
+              </Link>
+            )
+          })}
       </CollectionCard>
     )
   }
@@ -520,16 +544,15 @@ export default function UserView() {
         ></Box>
         <Text sx={{ fontSize: 2, color: 'grey-600' }}>{shortAddress}</Text>
       </Flex>
-      <CollectionTable>
-        <TableHead>
-          <TableRow>
-            <TableCell />
-            <TableCell color="grey-500">Collection Name</TableCell>
-            <TableCell color="grey-500">NFT Count</TableCell>
-          </TableRow>
-        </TableHead>
 
-        <TableBody>
+      {isMobile ? (
+        <>
+          <Box>
+            <Flex sx={{ justifyContent: 'space-between', padding: 2 }}>
+              <Text> Collection Name </Text>
+              <Text> NFT Count </Text>
+            </Flex>
+          </Box>
           {data?.getUser?.extraCollections?.collectionAssetCounts?.map(
             ({ collection, count }, idx) => (
               <CollectionRow
@@ -537,13 +560,38 @@ export default function UserView() {
                 title={collection.name}
                 imageSrc={collection['imageUrl']}
                 key={idx}
-              >
-                <TableCell sx={{ color: 'blue' }}>{count}</TableCell>
-              </CollectionRow>
+                nftCount={count}
+                onClick={() => handleShowCollection(collection.id)}
+              />
             )
           )}
-        </TableBody>
-      </CollectionTable>
+        </>
+      ) : (
+        <CollectionTable>
+          <TableHead>
+            <TableRow>
+              <TableCell />
+              <TableCell color="grey-500">Collection Name</TableCell>
+              <TableCell color="grey-500">NFT Count</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data?.getUser?.extraCollections?.collectionAssetCounts?.map(
+              ({ collection, count }, idx) => (
+                <CollectionRow
+                  variant="dark"
+                  title={collection.name}
+                  imageSrc={collection['imageUrl']}
+                  key={idx}
+                  onClick={() => handleShowCollection(collection.id)}
+                >
+                  <TableCell sx={{ color: 'blue' }}>{count}</TableCell>
+                </CollectionRow>
+              )
+            )}
+          </TableBody>
+        </CollectionTable>
+      )}
     </Panel>
   )
 
@@ -581,7 +629,11 @@ export default function UserView() {
                   data: data?.getUser?.extraCollections?.collectionAssetCounts
                     ?.slice(0, 6)
                     ?.map(({ ownedAppraisedValue }) =>
-                      parseFloat(ethers.utils.formatEther(ownedAppraisedValue))
+                      ownedAppraisedValue
+                        ? parseFloat(
+                            ethers.utils.formatEther(ownedAppraisedValue)
+                          )
+                        : 0
                     ) ?? [0, 0, 0, 0, 0, 0],
                 },
               ],
@@ -613,7 +665,7 @@ export default function UserView() {
           <Box sx={{ position: 'relative' }}>
             <Grid gap={4} columns={[1, 1, 1, 2]}>
               <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-                <Grid gap={2} columns={[1, 2, 3]}>
+                <Grid gap={2} columns={[2, 2, 3]}>
                   {isLoading ? (
                     [...new Array(6)].map((_, idx) => (
                       <Skeleton
@@ -1265,50 +1317,36 @@ export default function UserView() {
                   : unsupportedAssets?.length) ?? 0
               }
               items={
-                (showCollection?.id
-                  ? dataAssets?.collectionById?.ownerAssetsInCollection?.assets?.map(
-                      ({
-                        id,
-                        name,
-                        lastAppraisalWeiPrice,
-                        lastAppraisalUsdPrice,
-                        previewImageUrl,
-                        contractAddress,
-                      }) => ({
-                        id,
-                        expanded: isMobile,
-                        avatarImage:
-                          showCollection?.imageUrl ?? '/img/defaultAvatar.png',
-                        imageSrc: previewImageUrl ?? '/img/defaultAvatar.png',
-                        collection: showCollection?.name ?? '',
-                        isPixelated:
-                          PIXELATED_CONTRACTS.includes(contractAddress),
-                        appraisalPriceETH: lastAppraisalWeiPrice
-                          ? weiToEth(lastAppraisalWeiPrice, 4, false)
-                          : null,
-                        appraisalPriceUSD: lastAppraisalUsdPrice
-                          ? Math.round(
-                              parseInt(lastAppraisalUsdPrice) / 1000000
-                            )
-                          : null,
-                        name: name
-                          ? showCollection
-                            ? name.replace(showCollection.name, '')
-                            : name
-                          : '', // remove collection name from NFT name
-                      })
-                    )
-                  : unsupportedAssets?.map(({ name, imageUrl }) => ({
-                      id: '',
-                      expanded: isMobile,
-                      avatarImage: '/img/defaultAvatar.png',
-                      imageSrc: imageUrl ?? '/img/defaultAvatar.png',
-                      collection: '',
-                      isPixelated: false,
-                      appraisalPriceETH: null,
-                      appraisalPriceUSD: null,
-                      name,
-                    }))) ?? []
+                dataAssets?.collectionById?.ownerAssetsInCollection?.assets?.map(
+                  ({
+                    id,
+                    name,
+                    lastAppraisalWeiPrice,
+                    lastAppraisalUsdPrice,
+                    previewImageUrl,
+                    mediaUrl,
+                    contractAddress,
+                  }) => ({
+                    id,
+                    expanded: isMobile,
+                    avatarImage:
+                      showCollection?.imageUrl ?? '/img/defaultAvatar.png',
+                    imageSrc: previewImageUrl ?? mediaUrl,
+                    collection: showCollection?.name ?? '',
+                    isPixelated: PIXELATED_CONTRACTS.includes(contractAddress),
+                    appraisalPriceETH: lastAppraisalWeiPrice
+                      ? weiToEth(lastAppraisalWeiPrice, 4, false)
+                      : null,
+                    appraisalPriceUSD: lastAppraisalUsdPrice
+                      ? Math.round(parseInt(lastAppraisalUsdPrice) / 1000000)
+                      : null,
+                    name: name
+                      ? showCollection
+                        ? name.replace(showCollection.name, '')
+                        : name
+                      : '', // remove collection name from NFT name
+                  })
+                ) ?? []
               }
               onClose={() => modalRef?.current?.click()}
               onFetchMore={handleFetchMoreAssets}

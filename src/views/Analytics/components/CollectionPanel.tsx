@@ -57,17 +57,26 @@ export default forwardRef(function CollectionPanel(
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
 
+  const clearAutoFilter = () => {
+    clearTimeout(autoFilter)
+    setAutoFilter(undefined)
+  }
+
   const handleChange = (e: React.ChangeEvent) => {
-    if (autoFilter) {
-      clearTimeout(autoFilter)
-      setAutoFilter(undefined)
-    }
+    if (autoFilter) clearAutoFilter()
 
     setAutoFilter(
       setTimeout(() => {
         onSearch?.(e)
       }, 500)
     )
+  }
+
+  const handleSearch = (e: React.FormEvent | React.MouseEvent) => {
+    if (autoFilter) clearAutoFilter()
+    e.preventDefault()
+
+    onSearch?.(e)
   }
 
   const childrenArray = React.Children.toArray(children)
@@ -101,16 +110,18 @@ export default forwardRef(function CollectionPanel(
             </Text>
           </Flex>
           <Flex sx={searchStyle}>
-            <form style={isMobile ? { width: '100%' } : {}} onSubmit={onSearch}>
+            <form
+              style={isMobile ? { width: '100%' } : {}}
+              onSubmit={handleSearch}
+            >
               <InputRoundedSearch
                 dark
                 fullWidth
-                hasButton
                 variant="search"
                 onChange={handleChange}
                 buttonProps={{
                   type: 'button',
-                  onClick: onSearch,
+                  onClick: handleSearch,
                 }}
                 {...inputProps}
               />
@@ -119,13 +130,15 @@ export default forwardRef(function CollectionPanel(
         </Flex>
         <Grid
           sx={{
-            gridAutoColumns: 282,
-            gridAutoFlow: 'column',
-            overflowX: 'auto',
-            overflowY: 'hidden',
-            gridTemplateRows: '1fr',
+            gridAutoColumns: [null, null, 282],
+            gridAutoFlow: [null, null, 'column'],
+            overflowX: ['hidden', 'hidden', 'auto'],
+            overflowY: ['auto', 'auto', 'hidden'],
+            gridTemplateRows: [null, null, '1fr'],
             paddingBottom: '12px',
+            paddingRight: [2, 2, null],
             gap: '20px',
+            height: [300, 300, 'auto'],
           }}
           css={theme.scroll.thin}
         >

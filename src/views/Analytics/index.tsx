@@ -1,4 +1,4 @@
-import { Box, Container } from '@upshot-tech/upshot-ui'
+import { Box, Container, useTheme } from '@upshot-tech/upshot-ui'
 import { Flex, Text } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
@@ -7,30 +7,54 @@ import { useState } from 'react'
 
 import ButtonTabs, { METRIC } from './components/ButtonTabs'
 import CollectionAvgPricePanel from './components/CollectionAvgPricePanel'
+import CollectionsTreeMap from './components/CollectionsTreeMap'
 import ExplorePanel from './components/ExplorePanel'
 import TopCollectionsChart from './components/TopCollectionsChart'
 import TopSellingCollectionNFTs from './components/TopSellingCollectionNFTs'
-import TreeMapMarketCap from './components/TreeMapMarketCap'
+
+const selectedCollectionsColors = ['blue', 'pink', 'orange', 'green', 'yellow']
 
 export default function AnalyticsView() {
-  const [chartMetric, setChartMetric] = useState<METRIC>('FLOOR')
+  const [chartMetric, setChartMetric] = useState<METRIC>('VOLUME')
   const [selectedCollections, setSelectedCollections] = useState<number[]>([])
+  const [colorCycleIndex, setColorCycleIndex] = useState(3)
 
   const handleChange = (updatedChartMetric: METRIC) => {
     setChartMetric(updatedChartMetric)
   }
 
   const handleCollectionSelected = (id: number) => {
+    // Removing an existing item
     if (selectedCollections.includes(id)) {
-      return setSelectedCollections(
-        selectedCollections.filter((_id) => _id !== id)
-      )
+      const updatedCollections = selectedCollections.filter((_id) => _id !== id)
+
+      setColorCycleIndex(updatedCollections.length)
+
+      return setSelectedCollections(updatedCollections)
     }
-    if (selectedCollections.length === 3) {
-      setSelectedCollections([...selectedCollections.slice(1, 3), id])
-    } else {
-      setSelectedCollections([...selectedCollections, id])
-    }
+
+    // Appending a new item
+    const updatedCollections =
+      selectedCollections.length < selectedCollectionsColors.length
+        ? [...selectedCollections, id]
+        : [
+            ...selectedCollections.slice(0, colorCycleIndex),
+            id,
+            ...selectedCollections.slice(
+              colorCycleIndex + 1,
+              selectedCollections.length
+            ),
+          ]
+
+    setSelectedCollections(updatedCollections)
+    setColorCycleIndex((curr) => (curr + 1) % selectedCollectionsColors.length)
+  }
+
+  const handleClose = (index: number) => {
+    setSelectedCollections([
+      ...selectedCollections.slice(0, index),
+      ...selectedCollections.slice(index + 1, selectedCollections.length),
+    ])
   }
 
   return (
@@ -53,19 +77,24 @@ export default function AnalyticsView() {
       </Head>
       <Nav />
       <Container
-        p={4}
+        maxBreakpoint="lg"
         sx={{
-          display: 'flex',
           flexDirection: 'column',
           minHeight: '100vh',
           gap: 4,
+          padding: 4,
         }}
       >
         <Flex
           sx={{
-            flexDirection: ['column', 'row', 'row'],
-            paddingBottom: ['0px', '0px', '10px'],
-            marginTop: ['-20px', '-20px', '-10px'],
+            flexDirection: 'column',
+            paddingBottom: 0,
+            marginTop: '-20px',
+            '@media screen and (min-width: 320px)': {
+              flexDirection: 'row',
+              paddingDirection: '10px',
+              marginTop: '-10px',
+            },
           }}
         >
           <Text
@@ -74,7 +103,7 @@ export default function AnalyticsView() {
               lineHeight: '2.25rem',
               color: 'blue',
               fontWeight: '700',
-              fontSize: ['42px', '42px', 8],
+              fontSize: ['42px', 8],
               textTransform: 'uppercase',
             }}
           >
@@ -86,12 +115,12 @@ export default function AnalyticsView() {
               sx={{
                 lineHeight: '2.25rem',
                 fontWeight: '500',
-                fontSize: ['42px', '42px', 8],
+                fontSize: ['42px', 8],
               }}
             >
               Analytics
             </Text>
-            <Box sx={{ p: [1, 1, 2] }}>
+            <Box sx={{ p: [1, 2] }}>
               <Text
                 sx={{
                   textTransform: 'uppercase',
@@ -99,7 +128,7 @@ export default function AnalyticsView() {
                   backgroundColor: 'blue',
                   borderRadius: 'xs',
                   padding: '2px 4px',
-                  fontSize: ['9px', '9px', 2],
+                  fontSize: ['9px', 2],
                   fontWeight: 'bold',
                   lineHeight: 1,
                 }}
@@ -109,17 +138,29 @@ export default function AnalyticsView() {
             </Box>
           </Flex>
         </Flex>
-        <Flex sx={{ flex: '1 1 auto', flexDirection: 'column', gap: 5 }}>
+        <Flex
+          sx={{
+            flex: '1 1 auto',
+            flexDirection: 'column',
+            gap: 5,
+            marginTop: 5,
+          }}
+        >
           <ButtonTabs onChange={handleChange} />
           <TopCollectionsChart
             metric={chartMetric}
+            onClose={handleClose}
             {...{ selectedCollections }}
           />
           <CollectionAvgPricePanel
-            {...{ selectedCollections }}
             metric={chartMetric}
             onCollectionSelected={handleCollectionSelected}
-            setSelectedCollections={setSelectedCollections}
+            {...{
+              colorCycleIndex,
+              selectedCollections,
+              setSelectedCollections,
+              selectedCollectionsColors,
+            }}
           />
           <Box sx={{ position: 'relative' }}>
             <TopSellingCollectionNFTs />
@@ -127,7 +168,7 @@ export default function AnalyticsView() {
           <Text variant="text.h1Secondary" sx={{ lineHeight: '2.25rem' }}>
             Market Cap (Change Over 7 Days)
           </Text>
-          <TreeMapMarketCap />
+          <CollectionsTreeMap />
           <ExplorePanel />
         </Flex>
         <Footer />

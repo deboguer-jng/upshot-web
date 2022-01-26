@@ -6,7 +6,6 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { Chart, Container, Flex, Grid, Label } from '@upshot-tech/upshot-ui'
 import { Avatar, Text } from '@upshot-tech/upshot-ui'
-import { Box } from 'theme-ui'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import { ethers } from 'ethers'
@@ -14,6 +13,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
+import { Box } from 'theme-ui'
 import { weiToEth } from 'utils/number'
 import CollectionScatterChart from 'views/Analytics/components/CollectionScatterChart'
 import ExplorePanel from 'views/Analytics/components/ExplorePanel'
@@ -122,13 +122,12 @@ function Layout({ children }: { children: React.ReactNode }) {
       </Head>
       <Nav />
       <Container
-        p={4}
+        maxBreakpoint="lg"
         sx={{
-          display: 'flex',
           flexDirection: 'column',
-          width: '100%',
           minHeight: '100vh',
           gap: 4,
+          padding: 4,
         }}
       >
         <Breadcrumbs crumbs={breadcrumbs} />
@@ -149,6 +148,7 @@ export default function CollectionView() {
   useEffect(() => {
     /* Parse assetId from router */
     const id = router.query.id
+    if (!id) return
 
     setId(Number(id))
   }, [router.query])
@@ -157,7 +157,7 @@ export default function CollectionView() {
     GET_COLLECTION,
     {
       errorPolicy: 'all',
-      variables: { id: Number(id) },
+      variables: { id },
       skip: !id,
     }
   )
@@ -186,7 +186,12 @@ export default function CollectionView() {
   if (loading)
     return (
       <Layout>
-        <Container sx={{ justifyContent: 'center', flexGrow: 1 }}>
+        <Container
+          sx={{
+            justifyContent: 'center',
+            flexGrow: 1,
+          }}
+        >
           Loading...
         </Container>
       </Layout>
@@ -216,15 +221,10 @@ export default function CollectionView() {
     name,
     description,
     imageUrl,
-    floor,
     size,
-    average,
-    totalVolume,
-    volume,
-    marketCap,
-    sevenDayFloorChange,
     numCollectors,
     timeSeries,
+    latestStats,
   } = data.collectionById
 
   const priceSeries =
@@ -242,7 +242,7 @@ export default function CollectionView() {
 
   return (
     <Layout>
-      <Grid columns={isMobile ? '1fr' : '1fr 1fr'} sx={{ gap: '40px' }}>
+      <Grid columns={['1fr', '1fr', '1fr 1fr']} sx={{ gap: '40px' }}>
         <Flex sx={{ flexDirection: 'column', gap: '16px' }}>
           <Flex sx={{ gap: 6, height: 100, alignItems: 'center' }}>
             <Box
@@ -293,42 +293,42 @@ export default function CollectionView() {
           <Grid columns="repeat(auto-fit, minmax(140px, 1fr))" sx={{ gap: 4 }}>
             <CollectionStat
               color="blue"
-              value={average ? weiToEth(average, 4, false) : '-'}
+              value={latestStats.average ? weiToEth(latestStats.average, 4, false) : '-'}
               currencySymbol="Ξ"
               label="Average Price"
             />
             <CollectionStat
               color="pink"
-              value={floor ? weiToEth(floor, 4, false) : '-'}
+              value={latestStats.floor ? weiToEth(latestStats.floor, 4, false) : '-'}
               currencySymbol="Ξ"
               label="Floor Price"
             />
             <CollectionStat
               color={
-                sevenDayFloorChange
-                  ? sevenDayFloorChange > 0
+                data.collectionById.latestStats.weekFloorChange
+                  ? data.collectionById.latestStats.weekFloorChange > 0
                     ? 'green'
                     : 'red'
                   : 'white'
               }
               value={
-                sevenDayFloorChange
-                  ? sevenDayFloorChange > 0
-                    ? '+' + sevenDayFloorChange.toFixed(2) + '%'
-                    : sevenDayFloorChange.toFixed(2) + '%'
+                data.collectionById.latestStats.weekFloorChange
+                  ? data.collectionById.latestStats.weekFloorChange > 0
+                    ? '+' + data.collectionById.latestStats.weekFloorChange.toFixed(2) + '%'
+                    : data.collectionById.latestStats.weekFloorChange.toFixed(2) + '%'
                   : '-'
               }
               label="7 Day Floor Change"
             />
             <CollectionStat
-              value={marketCap ? weiToEth(marketCap, 4, false) : '-'}
+              value={latestStats.marketCap ? weiToEth(latestStats.marketCap, 4, false) : '-'}
               currencySymbol="Ξ"
               label="Market Cap"
             />
             <CollectionStat
-              value={volume ? weiToEth(volume, 4, false) : '-'}
+              value={latestStats.pastWeekWeiVolume ? weiToEth(latestStats.pastWeekWeiVolume, 4, false) : '-'}
               currencySymbol="Ξ"
-              label="Wkly Volume"
+              label="Weekly Volume"
             />
             <CollectionStat value={size} label="NFTs in Collection" />
             {/* <CollectionStat
@@ -338,9 +338,11 @@ export default function CollectionView() {
           </Grid>
         </Flex>
         <Flex sx={{ flexDirection: 'column', paddingTop: isMobile ? 0 : 116 }}>
-          <Text variant="large" sx={{ textTransform: 'uppercase' }}>
-            About
-          </Text>
+          {description && (
+            <Text variant="large" sx={{ textTransform: 'uppercase' }}>
+              About
+            </Text>
+          )}
           <Text
             color="grey-300"
             onClick={() => {

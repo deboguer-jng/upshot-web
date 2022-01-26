@@ -19,7 +19,7 @@ export const BetaBanner = () => (
           textTransform: 'uppercase',
           fontWeight: 'bold',
           fontSize: 4,
-          flexShrink: [1, 0, 0],
+          flexShrink: [1, 0],
         }}
       >
         Upshot Beta

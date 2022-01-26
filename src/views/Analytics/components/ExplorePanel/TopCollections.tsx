@@ -2,12 +2,7 @@ import { useQuery } from '@apollo/client'
 import { CollectorAccordion, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { Pagination } from '@upshot-tech/upshot-ui'
-import {
-  Flex,
-  Grid,
-  Text,
-  Box,
-} from '@upshot-tech/upshot-ui'
+import { Flex, Grid, Text, Box } from '@upshot-tech/upshot-ui'
 import {
   TableBody,
   TableCell,
@@ -43,7 +38,7 @@ function CollectionTableHead() {
       {isMobile ? (
         <Box>
           <Flex sx={{ justifyContent: 'space-between', padding: 2 }}>
-            <Text> Collection Title </Text>
+            <Text> Collection </Text>
             <Text> Total Volume </Text>
           </Flex>
         </Box>
@@ -113,7 +108,7 @@ export default function ExploreNFTs({
       metric: 'VOLUME',
       limit: PAGE_SIZE,
       offset: page * PAGE_SIZE,
-      name: searchTerm
+      name: searchTerm,
     },
   })
 
@@ -126,26 +121,15 @@ export default function ExploreNFTs({
   if (!data?.orderedCollectionsByMetricSearch.assetSets.length)
     return <div>No results available.</div>
 
-  const dataCheck = data => {
-    return data
-      ? data
-      : '-'
+  const dataCheck = (data) => {
+    return data ? data : '-'
   }
 
   return (
     <>
       <CollectionItemsWrapper>
         {data.orderedCollectionsByMetricSearch.assetSets.map(
-          (
-            {
-              id,
-              name,
-              imageUrl,
-              sevenDayFloorChange,
-              latestStats,
-            },
-            idx
-          ) => (
+          ({ id, name, imageUrl, latestStats }, idx) => (
             <CollectionRow
               variant="black"
               title={name}
@@ -153,7 +137,9 @@ export default function ExploreNFTs({
               key={idx}
               onClick={() => handleShowCollection(id)}
               defaultOpen={idx === 0 ? true : false}
-              totalVolume={isMobile ? weiToEth(latestStats.totalWeiVolume, 0) : null}
+              totalVolume={
+                isMobile ? weiToEth(latestStats.totalWeiVolume, 0) : null
+              }
             >
               {isMobile ? (
                 <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>
@@ -165,7 +151,9 @@ export default function ExploreNFTs({
                     }}
                   >
                     <Text sx={{ marginBottom: 1 }}>Average Price</Text>
-                    <Text>{dataCheck(weiToEth(latestStats.pastDayWeiAverage, 2))}</Text>
+                    <Text>
+                      {dataCheck(weiToEth(latestStats.pastDayWeiAverage, 2))}
+                    </Text>
                   </Flex>
                   <Flex
                     sx={{
@@ -189,9 +177,9 @@ export default function ExploreNFTs({
                       <br /> (7 Days)
                     </Text>
                     <Text
-                      sx={{ color: getPriceChangeColor(sevenDayFloorChange) }}
+                      sx={{ color: getPriceChangeColor(latestStats.weekFloorChange) }}
                     >
-                      {getPriceChangeLabel(sevenDayFloorChange)}
+                      {getPriceChangeLabel(latestStats.weekFloorChange)}
                     </Text>
                   </Flex>
                 </Grid>
@@ -209,10 +197,10 @@ export default function ExploreNFTs({
                   <TableCell
                     sx={{
                       maxWidth: 100,
-                      color: getPriceChangeColor(sevenDayFloorChange),
+                      color: getPriceChangeColor(latestStats.weekFloorChange),
                     }}
                   >
-                    {getPriceChangeLabel(sevenDayFloorChange)}
+                    {getPriceChangeLabel(latestStats.weekFloorChange)}
                   </TableCell>
                 </>
               )}

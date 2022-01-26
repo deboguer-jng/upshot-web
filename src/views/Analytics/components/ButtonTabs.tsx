@@ -3,9 +3,9 @@ import { Button, Flex, SliderFade } from '@upshot-tech/upshot-ui'
 import { useState } from 'react'
 
 export const METRICS = {
+  VOLUME: 'Weekly Volume',
   FLOOR: 'Floor Price',
   AVERAGE: 'Average Price',
-  VOLUME: 'Weekly Volume',
 }
 
 export type METRIC = keyof typeof METRICS
@@ -26,17 +26,15 @@ export default function ButtonTabs({ onChange }: ButtonTabsProps) {
   const renderButtons = () => {
     return (
       <>
-        {Object.values(METRICS)
-          .slice(0, 2)
-          .map((children, idx) => (
-            <Button
-              key={idx}
-              variant="primary"
-              toggled={selected === idx}
-              onClick={() => handleChange(idx)}
-              {...{ children }}
-            />
-          ))}
+        {Object.values(METRICS).map((children, idx) => (
+          <Button
+            key={idx}
+            variant="primary"
+            toggled={selected === idx}
+            onClick={() => handleChange(idx)}
+            {...{ children }}
+          />
+        ))}
       </>
     )
   }
@@ -47,9 +45,9 @@ export default function ButtonTabs({ onChange }: ButtonTabsProps) {
         <SliderFade>
           <Flex
             sx={{
-              gap: 4,
+              gap: 5,
               width: 'fit-content',
-              justifyContent: ['center', 'center', 'flex-start'],
+              justifyContent: ['center', 'flex-start'],
               padding: '0.25rem',
             }}
           >
@@ -59,9 +57,9 @@ export default function ButtonTabs({ onChange }: ButtonTabsProps) {
       ) : (
         <Flex
           sx={{
-            gap: 4,
+            gap: 5,
             flexWrap: 'wrap',
-            justifyContent: ['center', 'center', 'flex-start'],
+            justifyContent: ['center', 'flex-start'],
           }}
         >
           {renderButtons()}

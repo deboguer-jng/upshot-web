@@ -11,6 +11,12 @@ import {
 } from '../queries'
 import { METRIC } from './ButtonTabs'
 
+interface TopCollectionsChartsProps {
+  metric: METRIC
+  selectedCollections: number[]
+  onClose?: (index: number) => void
+}
+
 const timeSeriesKeys = {
   AVERAGE: 'average',
   VOLUME: 'volume',
@@ -36,10 +42,8 @@ const floorCheck = (val) => {
 export default function TopCollectionsCharts({
   metric,
   selectedCollections,
-}: {
-  metric: METRIC
-  selectedCollections: number[]
-}) {
+  onClose,
+}: TopCollectionsChartsProps) {
   const currentDate = Date.now()
   const before7Daysdate = currentDate - 1000 * 60 * 60 * 24 * 7 // extract 7 days in millisec
   const minTimestamp =
@@ -110,11 +114,11 @@ export default function TopCollectionsCharts({
     .map(({ data, name, id, latestStats, ...rest }) => {
       const ath = rest[athKeys[metric]]?.value
       const atl = rest[atlKeys[metric]]?.value
-      const priceChange = !latestStats?.sevenDayChange
+      const priceChange = !latestStats?.weekCapChange
         ? null
-        : latestStats.sevenDayChange >= 0
-        ? '+' + latestStats.sevenDayChange + '%'
-        : latestStats.sevenDayChange + '%'
+        : latestStats.weekCapChange >= 0
+        ? '+' + latestStats.weekCapChange + '%'
+        : latestStats.weekCapChange + '%'
 
       return {
         name,
@@ -124,8 +128,8 @@ export default function TopCollectionsCharts({
         /* priceUsd: 10, */
         // priceChange,
         volume:
-          metric === 'VOLUME' && latestStats?.volume
-            ? parseFloat(weiToEth(latestStats.volume, 2, false))
+          metric === 'VOLUME' && latestStats?.pastWeekWeiVolume
+            ? parseFloat(weiToEth(latestStats.pastWeekWeiVolume, 2, false))
             : 0,
         data: data.map((val, i) =>
           i === 0
@@ -137,8 +141,11 @@ export default function TopCollectionsCharts({
         metric,
         currentFloor: weiToEth((latestStats?.floor).toString(), 4, false),
         currentAvg: weiToEth((latestStats?.pastDayWeiAverage).toString(), 4, false),
+        currentVolume: latestStats?.pastDayWeiAverage ? weiToEth((latestStats.pastWeekWeiVolume).toString(), 4, false) : '-',
       }
     })
 
-  return <Chart data={chartData} />
+  const handleClose = (index: number) => {}
+
+  return <Chart data={chartData} {...{ onClose }} />
 }
