@@ -45,6 +45,7 @@ import {
   GET_COLLECTION_ASSETS,
   GET_COLLECTOR,
   GET_UNSUPPORTED_ASSETS,
+  GET_UNSUPPORTED_COLLECTIONS,
   GET_UNSUPPORTED_FLOORS,
   GetCollectionAssetsData,
   GetCollectionAssetsVars,
@@ -52,12 +53,15 @@ import {
   GetCollectorVars,
   GetUnsupportedAssetsData,
   GetUnsupportedAssetsVars,
+  GetUnsupportedCollectionsData,
+  GetUnsupportedCollectionsVars,
   GetUnsupportedFloorsData,
   GetUnsupportedFloorsVars,
 } from './queries'
 
 type Collection = {
   id: number | null
+  osCollectionSlug?: string
   name: string
   imageUrl?: string
 }
@@ -297,36 +301,66 @@ export default function UserView() {
   )
 
   /* Request unsupported assets */
-  const { data: dataUnsupported, error: errorUnsupported } = useQuery<
-    GetUnsupportedAssetsData,
-    GetUnsupportedAssetsVars
-  >(GET_UNSUPPORTED_ASSETS, {
-    errorPolicy: 'all',
-    variables: { address: addressFormatted },
-  })
+  const {
+    data: dataUnsupportedCollections,
+    error: errorUnsupportedCollections,
+  } = useQuery<GetUnsupportedCollectionsData, GetUnsupportedCollectionsVars>(
+    GET_UNSUPPORTED_COLLECTIONS,
+    {
+      errorPolicy: 'all',
+      variables: { userAddress: addressFormatted, limit: 20 },
+      skip: !addressFormatted,
+    }
+  )
 
-  const unsupportedAssets = dataUnsupported?.getUnsupportedAssetPage?.assets
-  const unsupportedAddresses = [
-    ...new Set(unsupportedAssets?.map(({ address }) => address)),
-  ]
+  /* Request unsupported floors */
+  const { data: dataUnsupportedFloors, error: errorUnsupportedFloors } =
+    useQuery<GetUnsupportedFloorsData, GetUnsupportedFloorsVars>(
+      GET_UNSUPPORTED_FLOORS,
+      {
+        errorPolicy: 'all',
+        variables: {
+          stringifiedSlugs:
+            dataUnsupportedCollections?.getUnsupportedCollectionPage
+              ?.slugsWithNullFloors ?? '[]',
+        },
+        skip: !dataUnsupportedCollections?.getUnsupportedCollectionPage
+          ?.slugsWithNullFloors,
+      }
+    )
 
-  /* Request unsupported floors (dependent on unique contracts from asset query) */
-  const { data: dataFloors, error: errorFloors } = useQuery<
-    GetUnsupportedFloorsData,
-    GetUnsupportedFloorsVars
-  >(GET_UNSUPPORTED_FLOORS, {
-    errorPolicy: 'all',
-    variables: { collectionAddresses: JSON.stringify(unsupportedAddresses) },
-    skip: !unsupportedAddresses.length,
-  })
+  const collectionSlugs = dataUnsupportedCollections
+    ?.getUnsupportedCollectionPage?.slugsWithNullFloors
+    ? JSON.parse(
+        dataUnsupportedCollections.getUnsupportedCollectionPage
+          .slugsWithNullFloors
+      )
+    : []
 
-  const assetFloors = dataFloors?.getUnsupportedFloors
+  const collectionFloors = dataUnsupportedFloors?.getUnsupportedFloors
     ? Object.fromEntries(
-        dataFloors.getUnsupportedFloors.map(
-          ({ address, floorEth, floorUsd }) => [address, { floorEth, floorUsd }]
-        )
+        dataUnsupportedFloors.getUnsupportedFloors.map(({ floorEth }, i) => [
+          collectionSlugs[i],
+          floorEth,
+        ])
       )
     : {}
+
+  /* Request unsupported assets */
+  const { data: dataUnsupportedAssets, error: errorUnsupportedAssets } =
+    useQuery<GetUnsupportedAssetsData, GetUnsupportedAssetsVars>(
+      GET_UNSUPPORTED_ASSETS,
+      {
+        errorPolicy: 'all',
+        variables: {
+          userAddress: addressFormatted,
+          osCollectionSlug: showCollection?.osCollectionSlug,
+        },
+        skip: !addressFormatted || !showCollection?.osCollectionSlug,
+      }
+    )
+
+  console.log({ dataUnsupportedAssets })
 
   const handleFetchMoreAssets = useCallback(
     (startIndex: number) => {
@@ -406,7 +440,7 @@ export default function UserView() {
     isItemLoaded: (index, items) => !!items[index],
   })
 
-  const RenderMasonry = ({ index, data: { count, collection } }) => {
+  const RenderSupportedMasonry = ({ index, data: { count, collection } }) => {
     return (
       <>
         {index === 0 && ( // append Supported/Unsupported checkbox before the first card
@@ -471,58 +505,82 @@ export default function UserView() {
     )
   }
 
-  const RenderMasonryUnsupported = ({ index, data }) => {
+  const RenderUnsupportedMasonry = ({
+    index,
+    data: {
+      name,
+      imageUrl,
+      address,
+      osCollectionSlug,
+      floorEth,
+      numOwnedAssets,
+    },
+  }: {
+    index: number
+    data: {
+      name: string
+      imageUrl: string
+      address: string
+      floorEth: number
+      osCollectionSlug: string
+      numOwnedAssets: number
+    }
+  }) => {
     return (
-      <CollectionCard
-        hasSeeAll={data.length > 5}
-        seeAllImageSrc={data.slice(-1)[0].imageUrl}
-        total={data.length ?? 0}
-        name="Unappraised NFTs"
-        onExpand={() =>
-          setShowCollection({
-            id: null,
-            name: 'Unappraised NFTs',
-          })
-        }
-      >
-        {collection.ownerAssetsInCollection.assets
-          .slice(0, 5)
-          .map(({ id, previewImageUrl, mediaUrl, contractAddress }, idx) => {
-            const image = previewImageUrl ?? mediaUrl
-            return (
-              <Link passHref href={`/analytics/nft/${id}`} key={idx}>
-                <Box
-                  sx={{
-                    width: '100%',
-                    cursor: 'pointer',
-                    '&::after': {
-                      content: "''",
-                      display: 'block',
-                      paddingTop: '100%',
-                      backgroundImage: image
-                        ? `url(${
-                            imageOptimizer(image, {
-                              width: 180,
-                              height: 180,
-                            }) ?? image
-                          })`
-                        : null,
-                      backgroundSize: 'cover',
-                      backgroundRepeat: 'no-repeat',
-                      backgroundPosition: 'center',
-                      borderRadius: 'sm',
-                      imageRendering: PIXELATED_CONTRACTS.includes(
-                        contractAddress
-                      )
-                        ? 'pixelated'
-                        : 'auto',
-                    },
-                  }}
-                />
-              </Link>
-            )
-          })}
-      </CollectionCard>
+      <>
+        <CollectionCard
+          avatarImage={imageUrl}
+          name={name}
+          key={index}
+          total={numOwnedAssets}
+          floorPrice={
+            floorEth?.toFixed(2) ??
+            collectionFloors[osCollectionSlug]?.toFixed(2)
+          }
+          isUnsupported
+          onExpand={() =>
+            setShowCollection({
+              id: null,
+              osCollectionSlug,
+              name,
+              imageUrl,
+            })
+          }
+        >
+          <Box
+            onClick={() =>
+              setShowCollection({
+                id: null,
+                osCollectionSlug,
+                name,
+                imageUrl,
+              })
+            }
+            sx={{
+              width: '100%',
+              cursor: 'pointer',
+              '&::after': {
+                content: "''",
+                display: 'block',
+                paddingTop: '50%',
+                backgroundImage: `url(${
+                  imageOptimizer(imageUrl, {
+                    width: 500,
+                    height: 500,
+                  }) ?? imageUrl
+                })`,
+                backgroundSize: 'cover',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+                borderRadius: 'sm',
+                imageRendering: PIXELATED_CONTRACTS.includes(address)
+                  ? 'pixelated'
+                  : 'auto',
+              },
+            }}
+          />
+        </CollectionCard>
+      </>
     )
   }
 
@@ -1273,7 +1331,7 @@ export default function UserView() {
             columnGutter={16}
             rowGutter={16}
             items={data?.getUser?.extraCollections?.collectionAssetCounts ?? []}
-            render={RenderMasonry}
+            render={RenderSupportedMasonry}
             onRender={maybeLoadMore}
             key={data?.getUser?.extraCollections?.count}
           />
@@ -1282,9 +1340,13 @@ export default function UserView() {
               columnWidth={300}
               columnGutter={16}
               rowGutter={16}
-              items={unsupportedAssets ? [unsupportedAssets] : []}
-              render={RenderMasonryUnsupported}
-              key={unsupportedAssets?.length}
+              items={
+                dataUnsupportedCollections?.getUnsupportedCollectionPage
+                  ?.collections ?? []
+              }
+              render={RenderUnsupportedMasonry}
+              onRender={maybeLoadMore}
+              key={data?.getUser?.extraCollections?.count}
             />
           )}
         </Flex>
@@ -1312,9 +1374,10 @@ export default function UserView() {
               avatarImage={showCollection?.imageUrl}
               name={showCollection?.name ?? ''}
               total={
-                (showCollection?.id
-                  ? dataAssets?.collectionById?.ownerAssetsInCollection?.count
-                  : unsupportedAssets?.length) ?? 0
+                10
+                // (showCollection?.id
+                //   ? dataAssets?.collectionById?.ownerAssetsInCollection?.count
+                //   : unsupportedAssets?.length) ?? 0
               }
               items={
                 dataAssets?.collectionById?.ownerAssetsInCollection?.assets?.map(

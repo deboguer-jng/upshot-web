@@ -207,29 +207,42 @@ export const GET_COLLECTION_ASSETS = gql`
 `
 
 /**
- * Get unsupported assets
+ * Get unsupported collections
  */
-export type GetUnsupportedAssetsVars = {
-  address?: string
+export type GetUnsupportedCollectionsVars = {
+  userAddress?: string
+  limit?: number
 }
 
-export type GetUnsupportedAssetsData = {
-  getUnsupportedAssetPage: {
-    assets: {
+export type GetUnsupportedCollectionsData = {
+  getUnsupportedCollectionPage: {
+    nextOffset: number
+    slugsWithNullFloors: string
+    collections: {
+      imageUrl: string
+      osCollectionSlug: string
+      floorEth: number
+      floorUsd: number
       name: string
       address: string
-      imageUrl: string
+      numOwnedAssets: number
     }[]
   }
 }
 
-export const GET_UNSUPPORTED_ASSETS = gql`
-  query GetUnsupportedAssets($address: String!) {
-    getUnsupportedAssetPage(userAddress: $address) {
-      assets {
+export const GET_UNSUPPORTED_COLLECTIONS = gql`
+  query GetUnsupportedCollections($userAddress: String!, $limit: Int!) {
+    getUnsupportedCollectionPage(userAddress: $userAddress, limit: $limit) {
+      nextOffset
+      slugsWithNullFloors
+      collections {
+        imageUrl
+        osCollectionSlug
+        floorEth
+        floorUsd
         name
         address
-        imageUrl
+        numOwnedAssets
       }
     }
   }
@@ -239,23 +252,57 @@ export const GET_UNSUPPORTED_ASSETS = gql`
  * Get unsupported floors
  */
 export type GetUnsupportedFloorsVars = {
-  collectionAddresses?: string
+  stringifiedSlugs?: string
 }
 
 export type GetUnsupportedFloorsData = {
   getUnsupportedFloors: {
-    address: string
-    floorEth: string
-    floorUsd: string
+    floorEth: number
+    floorUsd: number
   }[]
 }
 
 export const GET_UNSUPPORTED_FLOORS = gql`
-  query GetUnsupportedFloors($collectionAddresses: String!) {
-    getUnsupportedFloors(collectionAddresses: $collectionAddresses) {
-      address
+  query GetUnsupportedFloors($stringifiedSlugs: String!) {
+    getUnsupportedFloors(stringifiedSlugs: $stringifiedSlugs) {
       floorEth
       floorUsd
+    }
+  }
+`
+
+/**
+ * Get unsupported assets
+ */
+export type GetUnsupportedAssetsVars = {
+  userAddress?: string
+  osCollectionSlug?: string
+}
+
+export type GetUnsupportedAssetsData = {
+  getUnsupportedAssetPage: {
+    nextOffset: number
+    assets: {
+      address: string
+      imageUrl: string
+    }[]
+  }
+}
+
+export const GET_UNSUPPORTED_ASSETS = gql`
+  query GetUnsupportedAssets(
+    $userAddress: String!
+    $osCollectionSlug: String!
+  ) {
+    getUnsupportedAssetPage(
+      userAddress: $userAddress
+      osCollectionSlug: $osCollectionSlug
+    ) {
+      nextOffset
+      assets {
+        address
+        imageUrl
+      }
     }
   }
 `
