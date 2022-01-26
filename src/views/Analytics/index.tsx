@@ -12,7 +12,7 @@ import ExplorePanel from './components/ExplorePanel'
 import TopCollectionsChart from './components/TopCollectionsChart'
 import TopSellingCollectionNFTs from './components/TopSellingCollectionNFTs'
 
-const selectedCollectionsColors = ['blue', 'pink', 'purple', 'green', 'orange']
+const selectedCollectionsColors = ['blue', 'pink', 'orange', 'green', 'yellow']
 
 export default function AnalyticsView() {
   const [chartMetric, setChartMetric] = useState<METRIC>('VOLUME')
@@ -138,7 +138,14 @@ export default function AnalyticsView() {
             </Box>
           </Flex>
         </Flex>
-        <Flex sx={{ flex: '1 1 auto', flexDirection: 'column', gap: 5 }}>
+        <Flex
+          sx={{
+            flex: '1 1 auto',
+            flexDirection: 'column',
+            gap: 5,
+            marginTop: 5,
+          }}
+        >
           <ButtonTabs onChange={handleChange} />
           <TopCollectionsChart
             metric={chartMetric}
