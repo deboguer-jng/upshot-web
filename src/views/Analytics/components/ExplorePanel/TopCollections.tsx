@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client'
 import { CollectorAccordion, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { Pagination } from '@upshot-tech/upshot-ui'
-import { Flex, Grid, Text, Box } from '@upshot-tech/upshot-ui'
+import { Box, Flex, Grid, Text } from '@upshot-tech/upshot-ui'
 import {
   TableBody,
   TableCell,
@@ -151,9 +151,9 @@ export default function ExploreNFTs({
                     }}
                   >
                     <Text sx={{ marginBottom: 1 }}>Average Price</Text>
-                    <Text>
+                    {/* <Text>
                       {dataCheck(weiToEth(latestStats.pastDayWeiAverage, 2))}
-                    </Text>
+                    </Text> */}
                   </Flex>
                   <Flex
                     sx={{
@@ -177,7 +177,9 @@ export default function ExploreNFTs({
                       <br /> (7 Days)
                     </Text>
                     <Text
-                      sx={{ color: getPriceChangeColor(latestStats.weekFloorChange) }}
+                      sx={{
+                        color: getPriceChangeColor(latestStats.weekFloorChange),
+                      }}
                     >
                       {getPriceChangeLabel(latestStats.weekFloorChange)}
                     </Text>
