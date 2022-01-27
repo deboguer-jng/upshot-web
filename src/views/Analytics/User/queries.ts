@@ -212,6 +212,7 @@ export const GET_COLLECTION_ASSETS = gql`
 export type GetUnsupportedCollectionsVars = {
   userAddress?: string
   limit?: number
+  offset?: number
 }
 
 export type GetUnsupportedCollectionsData = {
@@ -231,8 +232,16 @@ export type GetUnsupportedCollectionsData = {
 }
 
 export const GET_UNSUPPORTED_COLLECTIONS = gql`
-  query GetUnsupportedCollections($userAddress: String!, $limit: Int!) {
-    getUnsupportedCollectionPage(userAddress: $userAddress, limit: $limit) {
+  query GetUnsupportedCollections(
+    $userAddress: String!
+    $limit: Int!
+    $offset: Int
+  ) {
+    getUnsupportedCollectionPage(
+      userAddress: $userAddress
+      limit: $limit
+      offset: $offset
+    ) {
       nextOffset
       slugsWithNullFloors
       collections {
@@ -277,6 +286,8 @@ export const GET_UNSUPPORTED_FLOORS = gql`
 export type GetUnsupportedAssetsVars = {
   userAddress?: string
   osCollectionSlug?: string
+  limit?: number
+  offset?: number
 }
 
 export type GetUnsupportedAssetsData = {
@@ -295,10 +306,14 @@ export const GET_UNSUPPORTED_ASSETS = gql`
   query GetUnsupportedAssets(
     $userAddress: String!
     $osCollectionSlug: String!
+    $limit: Int
+    $offset: Int
   ) {
     getUnsupportedAssetPage(
       userAddress: $userAddress
       osCollectionSlug: $osCollectionSlug
+      limit: $limit
+      offset: $offset
     ) {
       nextOffset
       assets {

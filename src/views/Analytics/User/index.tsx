@@ -227,7 +227,10 @@ export default function UserView() {
   /* Collection & Asset offsets */
   const [showCollection, setShowCollection] = useState<Collection>()
   const [collectionOffset, setCollectionOffset] = useState(0)
+  const [unsupportedCollectionOffset, setUnsupportedCollectionOffset] =
+    useState(0)
   const [assetOffset, setAssetOffset] = useState(0)
+  const [unsupportedAssetOffset, setUnsupportedAssetOffset] = useState(0)
 
   /* Address formatting */
   const [addressFormatted, setAddressFormatted] = useState<string>()
@@ -255,7 +258,7 @@ export default function UserView() {
   const collectionLimit = 8
 
   const {
-    loading: loadingCollector,
+    loading: loadingCollection,
     error,
     data,
     fetchMore: fetchMoreCollections,
@@ -278,7 +281,7 @@ export default function UserView() {
   }
 
   /* Waiting for collector data or query string address param to format. */
-  const isLoading = loadingCollector || loadingAddressFormatted
+  const isLoading = loadingCollection || loadingAddressFormatted
 
   const noCollection =
     data?.getUser === null || data?.getUser?.extraCollections?.count === 0
@@ -305,11 +308,17 @@ export default function UserView() {
   const {
     data: dataUnsupportedCollections,
     error: errorUnsupportedCollections,
+    loading: loadingUnsupportedCollection,
+    fetchMore: fetchMoreUnsupportedCollections,
   } = useQuery<GetUnsupportedCollectionsData, GetUnsupportedCollectionsVars>(
     GET_UNSUPPORTED_COLLECTIONS,
     {
       errorPolicy: 'all',
-      variables: { userAddress: addressFormatted, limit: 20 },
+      variables: {
+        userAddress: addressFormatted,
+        limit: collectionLimit,
+        offset: 0,
+      },
       skip: !addressFormatted,
     }
   )
@@ -348,18 +357,37 @@ export default function UserView() {
     : {}
 
   /* Request unsupported assets */
-  const { data: dataUnsupportedAssets, error: errorUnsupportedAssets } =
-    useQuery<GetUnsupportedAssetsData, GetUnsupportedAssetsVars>(
-      GET_UNSUPPORTED_ASSETS,
-      {
-        errorPolicy: 'all',
-        variables: {
-          userAddress: addressFormatted,
-          osCollectionSlug: showCollection?.osCollectionSlug,
-        },
-        skip: !addressFormatted || !showCollection?.osCollectionSlug,
-      }
-    )
+  const {
+    data: dataUnsupportedAssets,
+    error: errorUnsupportedAssets,
+    loading: loadingUnsupportedAssets,
+    fetchMore: fetchMoreUnsupportedAssets,
+  } = useQuery<GetUnsupportedAssetsData, GetUnsupportedAssetsVars>(
+    GET_UNSUPPORTED_ASSETS,
+    {
+      errorPolicy: 'all',
+      variables: {
+        userAddress: addressFormatted,
+        osCollectionSlug: showCollection?.osCollectionSlug,
+        limit: 2,
+        offset: 0,
+      },
+      skip: !addressFormatted || !showCollection?.osCollectionSlug,
+    }
+  )
+
+  const handleFetchMoreCollections = useCallback(
+    (startIndex: number) => {
+      if (
+        loadingCollection ||
+        collectionOffset === startIndex ||
+        startIndex < collectionLimit
+      )
+        return
+      setCollectionOffset(startIndex)
+    },
+    [loadingCollection, collectionOffset]
+  )
 
   const handleFetchMoreAssets = useCallback(
     (startIndex: number) => {
@@ -369,19 +397,35 @@ export default function UserView() {
     [loadingAssets, assetOffset]
   )
 
-  const handleFetchMoreCollections = useCallback(
-    (startIndex: number) => {
-      if (
-        loadingCollector ||
-        collectionOffset === startIndex ||
-        startIndex < collectionLimit
-      )
-        return
-      setCollectionOffset(startIndex)
-    },
-    [loadingCollector, collectionOffset]
-  )
+  const handleFetchMoreUnsupportedCollections = useCallback(() => {
+    if (
+      loadingUnsupportedCollection ||
+      !dataUnsupportedCollections?.getUnsupportedCollectionPage?.nextOffset
+    )
+      return
+    setUnsupportedCollectionOffset(
+      dataUnsupportedCollections.getUnsupportedCollectionPage.nextOffset
+    )
+  }, [
+    loadingUnsupportedCollection,
+    dataUnsupportedCollections?.getUnsupportedCollectionPage.nextOffset,
+  ])
 
+  const handleFetchMoreUnsupportedAssets = useCallback(() => {
+    if (
+      loadingUnsupportedAssets ||
+      !dataUnsupportedAssets?.getUnsupportedAssetPage?.nextOffset
+    )
+      return
+    setUnsupportedAssetOffset(
+      dataUnsupportedAssets.getUnsupportedAssetPage.nextOffset
+    )
+  }, [
+    loadingUnsupportedAssets,
+    dataUnsupportedAssets?.getUnsupportedAssetPage?.nextOffset,
+  ])
+
+  /* Infinite scroll: Collections */
   useEffect(() => {
     if (!collectionOffset) return
 
@@ -406,8 +450,34 @@ export default function UserView() {
         }
       },
     })
-  }, [collectionOffset])
+  }, [collectionOffset, fetchMoreCollections])
 
+  /* Infinite scroll: Unsupported Collections */
+  useEffect(() => {
+    if (!unsupportedCollectionOffset) return
+
+    fetchMoreUnsupportedCollections({
+      variables: { offset: unsupportedCollectionOffset },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) return prev
+
+        return {
+          getUnsupportedCollectionPage: {
+            ...prev.getUnsupportedCollectionPage,
+            nextOffset:
+              fetchMoreResult.getUnsupportedCollectionPage?.nextOffset,
+            collections: [
+              ...(prev?.getUnsupportedCollectionPage?.collections ?? []),
+              ...(fetchMoreResult?.getUnsupportedCollectionPage?.collections ??
+                []),
+            ],
+          },
+        }
+      },
+    })
+  }, [unsupportedCollectionOffset, fetchMoreUnsupportedCollections])
+
+  /* Infinite scroll: Assets */
   useEffect(() => {
     if (!assetOffset) return
 
@@ -433,11 +503,44 @@ export default function UserView() {
         }
       },
     })
-  }, [assetOffset])
+  }, [assetOffset, fetchMoreAssets])
 
-  const maybeLoadMore = useInfiniteLoader(handleFetchMoreCollections, {
-    isItemLoaded: (index, items) => !!items[index],
-  })
+  /* Infinite scroll: Unsupported Assets */
+  useEffect(() => {
+    if (!unsupportedAssetOffset) return
+
+    fetchMoreUnsupportedAssets({
+      variables: { offset: unsupportedAssetOffset },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) return prev
+
+        return {
+          getUnsupportedAssetPage: {
+            ...prev.getUnsupportedAssetPage,
+            nextOffset: fetchMoreResult.getUnsupportedAssetPage.nextOffset,
+            assets: [
+              ...prev.getUnsupportedAssetPage.assets,
+              ...fetchMoreResult.getUnsupportedAssetPage.assets,
+            ],
+          },
+        }
+      },
+    })
+  }, [unsupportedAssetOffset, fetchMoreUnsupportedAssets])
+
+  const maybeLoadMoreCollections = useInfiniteLoader(
+    handleFetchMoreCollections,
+    {
+      isItemLoaded: (index, items) => !!items[index],
+    }
+  )
+
+  const maybeLoadMoreUnsupportedCollections = useInfiniteLoader(
+    handleFetchMoreUnsupportedCollections,
+    {
+      isItemLoaded: (index, items) => !!items[index],
+    }
+  )
 
   const RenderSupportedMasonry = ({ index, data: { count, collection } }) => {
     return (
@@ -1332,7 +1435,7 @@ export default function UserView() {
             rowGutter={16}
             items={data?.getUser?.extraCollections?.collectionAssetCounts ?? []}
             render={RenderSupportedMasonry}
-            onRender={maybeLoadMore}
+            onRender={maybeLoadMoreCollections}
             key={data?.getUser?.extraCollections?.count}
           />
           {includeUnsupportedAssets && (
@@ -1345,8 +1448,11 @@ export default function UserView() {
                   ?.collections ?? []
               }
               render={RenderUnsupportedMasonry}
-              onRender={maybeLoadMore}
-              key={data?.getUser?.extraCollections?.count}
+              onRender={maybeLoadMoreUnsupportedCollections}
+              key={
+                dataUnsupportedCollections?.getUnsupportedCollectionPage
+                  ?.collections?.length
+              }
             />
           )}
         </Flex>
@@ -1441,7 +1547,11 @@ export default function UserView() {
                     )) ?? []
               }
               onClose={() => modalRef?.current?.click()}
-              onFetchMore={handleFetchMoreAssets}
+              onFetchMore={
+                showCollection?.id
+                  ? handleFetchMoreAssets
+                  : handleFetchMoreUnsupportedAssets
+              }
             />
           </Box>
         )}
