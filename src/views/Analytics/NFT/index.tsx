@@ -686,18 +686,14 @@ export default function NFTView() {
                                   : '-'}
                               </Label>
 
-                              <Label
-                                color="primary"
-                                sx={{ marginTop: '.5rem' }}
-                              >
-                                {latestAppraisal?.medianRelativeError
-                                  ? '± ' +
-                                    (
-                                      latestAppraisal.medianRelativeError * 100
-                                    ).toFixed(2) +
-                                    '%'
-                                  : ''}
-                              </Label>
+                              {!!latestAppraisal?.medianRelativeError && (
+                                <Label
+                                  color="primary"
+                                  sx={{ marginTop: '.5rem' }}
+                                >
+                                  {'±' + (latestAppraisal.medianRelativeError * 100).toFixed(2) + '%'}
+                                </Label>
+                              )}
                             </Flex>
                             {!!latestAppraisal?.usdSalePrice &&
                             !isNaN(parseFloat(latestAppraisal?.usdSalePrice)) && (
