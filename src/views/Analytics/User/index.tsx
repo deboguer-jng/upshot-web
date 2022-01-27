@@ -179,11 +179,11 @@ function Header({ address }: { address: string }) {
 }
 
 function IncludeUnsupportedCheckbox({
-  defaultChecked,
-  onChange,
+  value,
+  onClick,
 }: {
-  defaultChecked: boolean
-  onChange: (checked: boolean) => void
+  value: boolean
+  onClick: (e: React.MouseEvent<HTMLInputElement>) => void
 }) {
   const { theme } = useTheme()
   return (
@@ -200,12 +200,7 @@ function IncludeUnsupportedCheckbox({
       }}
     >
       <LabelUI sx={{ alignItems: 'center', marginBottom: 2 }}>
-        <Checkbox
-          defaultChecked={defaultChecked}
-          onChange={(e) => {
-            onChange(e.target.checked)
-          }}
-        />
+        <Checkbox checked={value} sx={{ cursor: 'pointer' }} {...{ onClick }} />
         <Text color="blue">Include unappraised assets</Text>
       </LabelUI>
       <Text color="grey-500">
@@ -219,7 +214,8 @@ function IncludeUnsupportedCheckbox({
 export default function UserView() {
   const router = useRouter()
   const { theme } = useTheme()
-  const [includeUnsupportedAssets, setIncludeUnsupportedAssets] = useState(true)
+  const [includeUnsupportedAssets, setIncludeUnsupportedAssets] =
+    useState(false)
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
   const modalRef = useRef<HTMLDivElement>(null)
@@ -231,6 +227,8 @@ export default function UserView() {
     useState(0)
   const [assetOffset, setAssetOffset] = useState(0)
   const [unsupportedAssetOffset, setUnsupportedAssetOffset] = useState(0)
+  const [hasAllSupportedCollections, setHasAllSupportedCollections] =
+    useState(false)
 
   /* Address formatting */
   const [addressFormatted, setAddressFormatted] = useState<string>()
@@ -319,7 +317,10 @@ export default function UserView() {
         limit: collectionLimit,
         offset: 0,
       },
-      skip: !addressFormatted,
+      skip:
+        !addressFormatted ||
+        !includeUnsupportedAssets ||
+        !hasAllSupportedCollections,
     }
   )
 
@@ -369,7 +370,7 @@ export default function UserView() {
       variables: {
         userAddress: addressFormatted,
         osCollectionSlug: showCollection?.osCollectionSlug,
-        limit: 2,
+        limit: 8,
         offset: 0,
       },
       skip: !addressFormatted || !showCollection?.osCollectionSlug,
@@ -383,7 +384,7 @@ export default function UserView() {
         collectionOffset === startIndex ||
         startIndex < collectionLimit
       )
-        return
+        return setHasAllSupportedCollections(true)
       setCollectionOffset(startIndex)
     },
     [loadingCollection, collectionOffset]
@@ -542,13 +543,18 @@ export default function UserView() {
     }
   )
 
-  const RenderSupportedMasonry = ({ index, data: { count, collection } }) => {
+  const RenderSupportedMasonry = ({
+    index,
+    data: { count, collection, ownedAppraisedValue },
+  }) => {
     return (
       <>
         {index === 0 && ( // append Supported/Unsupported checkbox before the first card
           <IncludeUnsupportedCheckbox
-            defaultChecked={includeUnsupportedAssets}
-            onChange={(checked) => setIncludeUnsupportedAssets(checked)}
+            onClick={() =>
+              setIncludeUnsupportedAssets(!includeUnsupportedAssets)
+            }
+            value={includeUnsupportedAssets}
           />
         )}
         <CollectionCard
@@ -556,6 +562,13 @@ export default function UserView() {
           seeAllImageSrc={
             collection.ownerAssetsInCollection.assets.slice(-1)[0]
               .previewImageUrl
+          }
+          appraisalPrice={
+            ownedAppraisedValue
+              ? parseFloat(
+                  ethers.utils.formatEther(ownedAppraisedValue)
+                ).toFixed(2)
+              : undefined
           }
           avatarImage={collection.imageUrl}
           link={`/analytics/collection/${collection.id}`}
@@ -631,6 +644,7 @@ export default function UserView() {
     return (
       <>
         <CollectionCard
+          isUnsupported
           avatarImage={imageUrl}
           name={name}
           key={index}
@@ -639,7 +653,6 @@ export default function UserView() {
             floorEth?.toFixed(2) ??
             collectionFloors[osCollectionSlug]?.toFixed(2)
           }
-          isUnsupported
           onExpand={() =>
             setShowCollection({
               id: null,
@@ -1436,25 +1449,25 @@ export default function UserView() {
             items={data?.getUser?.extraCollections?.collectionAssetCounts ?? []}
             render={RenderSupportedMasonry}
             onRender={maybeLoadMoreCollections}
-            key={data?.getUser?.extraCollections?.count}
           />
-          {includeUnsupportedAssets && (
-            <Masonry
-              columnWidth={300}
-              columnGutter={16}
-              rowGutter={16}
-              items={
-                dataUnsupportedCollections?.getUnsupportedCollectionPage
-                  ?.collections ?? []
-              }
-              render={RenderUnsupportedMasonry}
-              onRender={maybeLoadMoreUnsupportedCollections}
-              key={
-                dataUnsupportedCollections?.getUnsupportedCollectionPage
-                  ?.collections?.length
-              }
-            />
-          )}
+          {includeUnsupportedAssets &&
+            !!dataUnsupportedCollections?.getUnsupportedCollectionPage
+              ?.collections?.length && (
+              <>
+                <Text variant="h1Primary">Unappraised</Text>
+                <Masonry
+                  columnWidth={300}
+                  columnGutter={16}
+                  rowGutter={16}
+                  items={
+                    dataUnsupportedCollections?.getUnsupportedCollectionPage
+                      ?.collections ?? []
+                  }
+                  render={RenderUnsupportedMasonry}
+                  onRender={maybeLoadMoreUnsupportedCollections}
+                />
+              </>
+            )}
         </Flex>
       </Layout>
       <Modal
@@ -1462,7 +1475,8 @@ export default function UserView() {
         onClose={() => setShowCollection(undefined)}
         open={showCollection?.id !== undefined}
       >
-        {loadingAssets && showCollection?.id ? (
+        {(loadingAssets && showCollection?.id) ||
+        (loadingUnsupportedAssets && showCollection?.osCollectionSlug) ? (
           <Flex
             sx={{
               width: '100vw',
@@ -1479,19 +1493,7 @@ export default function UserView() {
             <CollectionCardExpanded
               avatarImage={showCollection?.imageUrl}
               name={showCollection?.name ?? ''}
-              total={
-                showCollection?.numOwnedAssets ??
-                dataAssets?.collectionById?.ownerAssetsInCollection?.count ??
-                0
-              }
-              key={
-                (showCollection?.id || showCollection?.osCollectionSlug) +
-                '-' +
-                (dataAssets?.collectionById?.ownerAssetsInCollection?.assets
-                  ?.length ||
-                  dataUnsupportedAssets?.getUnsupportedAssetPage?.assets
-                    ?.length)
-              }
+              total={showCollection?.numOwnedAssets ?? 0}
               items={
                 (showCollection?.id
                   ? dataAssets?.collectionById?.ownerAssetsInCollection?.assets?.map(
@@ -1556,19 +1558,6 @@ export default function UserView() {
           </Box>
         )}
       </Modal>
-      {/* {noCollection && (
-        <Box
-          sx={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100vw',
-            height: '100vh',
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            backdropFilter: 'blur(4px)',
-          }}
-        />
-      )} */}
     </>
   )
 }
