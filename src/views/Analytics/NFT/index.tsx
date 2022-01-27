@@ -453,10 +453,13 @@ export default function NFTView() {
                             <a
                               sx={{
                                 cursor: 'pointer',
+                                textOverflow: 'ellipsis',
+                                overflow: 'hidden',
                                 '&:hover': {
                                   textDecoration: 'underline',
                                 },
                               }}
+                              title={displayName}
                             >
                               <Text
                                 color="grey-300"
