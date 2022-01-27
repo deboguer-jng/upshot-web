@@ -57,17 +57,26 @@ export default forwardRef(function CollectionPanel(
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
 
+  const clearAutoFilter = () => {
+    clearTimeout(autoFilter)
+    setAutoFilter(undefined)
+  }
+
   const handleChange = (e: React.ChangeEvent) => {
-    if (autoFilter) {
-      clearTimeout(autoFilter)
-      setAutoFilter(undefined)
-    }
+    if (autoFilter) clearAutoFilter()
 
     setAutoFilter(
       setTimeout(() => {
         onSearch?.(e)
       }, 500)
     )
+  }
+
+  const handleSearch = (e: React.FormEvent | React.MouseEvent) => {
+    if (autoFilter) clearAutoFilter()
+    e.preventDefault()
+
+    onSearch?.(e)
   }
 
   const childrenArray = React.Children.toArray(children)
@@ -101,7 +110,10 @@ export default forwardRef(function CollectionPanel(
             </Text>
           </Flex>
           <Flex sx={searchStyle}>
-            <form style={isMobile ? { width: '100%' } : {}} onSubmit={onSearch}>
+            <form
+              style={isMobile ? { width: '100%' } : {}}
+              onSubmit={handleSearch}
+            >
               <InputRoundedSearch
                 dark
                 fullWidth
@@ -109,7 +121,7 @@ export default forwardRef(function CollectionPanel(
                 onChange={handleChange}
                 buttonProps={{
                   type: 'button',
-                  onClick: onSearch,
+                  onClick: handleSearch,
                 }}
                 {...inputProps}
               />

@@ -24,6 +24,11 @@ jobs:
           build_directory: "out"
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NEXT_PUBLIC_GRAPHQL_ENDPOINT: ${{ secrets.STAGE_NEXT_PUBLIC_GRAPHQL_ENDPOINT }}
+          NEXT_PUBLIC_GOOGLE_ANALYTICS: ${{ secrets.NEXT_PUBLIC_GOOGLE_ANALYTICS }}
+          NEXT_PUBLIC_BUGSNAG_API_KEY: ${{ secrets.NEXT_PUBLIC_BUGSNAG_API_KEY }}
+          NEXT_PUBLIC_MOUSEFLOW_ID: ${{ secrets.NEXT_PUBLIC_MOUSEFLOW_ID }}
+          NEXT_PUBLIC_INFURA_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_INFURA_PROJECT_ID }}
       
       # Creates a status check with link to preview
       - name: Status check

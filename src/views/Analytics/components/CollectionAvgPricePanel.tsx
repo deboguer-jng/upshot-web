@@ -84,7 +84,7 @@ export default function CollectionAvgPricePanel({
       </CollectionPanel>
     )
 
-  const skeletonCells = [...new Array(16)]
+  const skeletonCells = [...new Array(20)]
 
   if (loading)
     return (
@@ -184,7 +184,7 @@ export default function CollectionAvgPricePanel({
                 subText={printMetricData(metric, {
                   average: latestStats.pastDayWeiAverage,
                   floor: latestStats.floor,
-                  volume: latestStats.pastDayWeiVolume,
+                  volume: latestStats.pastWeekWeiVolume,
                 })}
                 {...{ underglow, hoverUnderglow }}
               />
@@ -192,7 +192,6 @@ export default function CollectionAvgPricePanel({
           )
         }
       )}
-      )
     </CollectionPanel>
   )
 }

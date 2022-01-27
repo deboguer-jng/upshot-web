@@ -50,9 +50,11 @@ export type GetTopCollectionsData = {
       }
       latestStats: {
         volume: string
-        sevenDayChange: number
+        weekCapChange: number
+        pastWeekWeiVolume: string
         floor: number
-        pastDayWeiAverage: number
+        pastDayWeiAverage: string
+        pastDayWeiVolume: string
       }
       timeSeries?: TimeSeries[]
     }[]
@@ -121,9 +123,11 @@ export const GET_TOP_COLLECTIONS = gql`
         }
         latestStats {
           volume
-          sevenDayChange
+          weekCapChange
+          pastWeekWeiVolume
           floor
           pastDayWeiAverage
+          pastDayWeiVolume
         }
       }
     }
@@ -300,11 +304,11 @@ export type GetExploreCollectionsData = {
       id: number
       name: string
       imageUrl?: string
-      sevenDayFloorChange: number
       latestStats: {
         floor: string
         pastDayWeiAverage: string
         totalWeiVolume: string
+        weekFloorChange: number
       }
     }[]
   }
@@ -329,11 +333,11 @@ export const GET_EXPLORE_COLLECTIONS = gql`
         id
         name
         imageUrl
-        sevenDayFloorChange
         latestStats {
           floor
           pastDayWeiAverage
           totalWeiVolume
+          weekFloorChange
         }
       }
     }
@@ -370,35 +374,39 @@ export const GET_TOP_SALES = gql`
 `
 
 /**
- * Get 7-day Market Cap Change
- * @see TreeMapMarketCap
+ * Gets top collections for the treemap
+ * @see TreeMap
  */
-export type GetSevenDayMCChangeVars = {
+export type GetTreemapCollectionsVars = {
   limit: number
 }
 
-export type GetSevenDayMCChangeData = {
-  collections: {
+export type GetTreemapCollectionsData = {
+  orderedCollectionsByMetricSearch: {
     assetSets: {
       id: number
       name: string
       latestStats: {
         totalWeiVolume: string
-        sevenDayChange: number
+        weekCapChange: number
       }
     }[]
   }
 }
 
-export const GET_SEVEN_DAY_MC_CHANGE = gql`
-  query SevenDayMCChange($limit: Int) {
-    collections(limit: $limit) {
+export const GET_TREEMAP_COLLECTIONS = gql`
+  query GetTreeMapCollections($limit: OneToHundredInt!) {
+    orderedCollectionsByMetricSearch(
+      limit: $limit
+      metric: VOLUME
+      windowSize: WEEK
+    ) {
       assetSets {
         id
         name
         latestStats {
           totalWeiVolume
-          sevenDayChange
+          weekCapChange
         }
       }
     }
@@ -504,6 +512,7 @@ export type GetCollectorsData = {
   getOwnersByWhaleness: {
     count: number
     owners: {
+      id: number
       username: string
       addresses: { address: string; ens: string }[]
       firstAssetPurchaseTime: number
@@ -553,6 +562,7 @@ export const GET_COLLECTORS = gql`
     ) {
       count
       owners {
+        id
         username
         addresses {
           address
@@ -604,6 +614,7 @@ export type GetPreviousOwnersData = {
   getOwnersByWhaleness: {
     count: number
     owners: {
+      id: number
       username: string
       addresses: { address: string; ens: string }[]
       firstAssetPurchaseTime: number
@@ -646,6 +657,7 @@ export const GET_PREVIOUS_OWNERS = gql`
     getOwnersByWhaleness(limit: $limit, offset: $offset, assetId: $assetId) {
       count
       owners {
+        id
         username
         addresses {
           address
@@ -676,6 +688,41 @@ export const GET_PREVIOUS_OWNERS = gql`
               }
             }
           }
+        }
+      }
+    }
+  }
+`
+
+export type GetUserOwnedAssetsVars = {
+  userId?: number
+  collectionId?: number
+}
+
+
+export type GetUserOwnedAssetsData = {
+  getUser: {
+    ownedAssets: {
+      count: number
+      assets: {
+        id: number
+        previewImageUrl: string
+      }[]
+    }
+  }
+}
+
+export const GET_USER_OWNED_ASSETS = gql`
+  query GetUserOwnedAssets(
+    $userId: Int!
+    $collectionId: Int!
+  ) {
+    getUser(userId: $userId) {
+      ownedAssets(collectionId: $collectionId, limit: 20, notable: true) {
+        count
+        assets {
+          id
+          previewImageUrl
         }
       }
     }

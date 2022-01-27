@@ -23,7 +23,7 @@ import {
 import { Footer } from 'components/Footer'
 import { FormattedENS } from 'components/FormattedENS'
 import { Nav } from 'components/Nav'
-import { PIXELATED_CONTRACTS } from 'constants/'
+import { ART_BLOCKS_CONTRACTS, PIXELATED_CONTRACTS } from 'constants/'
 import { format } from 'date-fns'
 import makeBlockie from 'ethereum-blockies-base64'
 import { ethers } from 'ethers'
@@ -34,7 +34,7 @@ import { useEffect, useState } from 'react'
 import { fetchEns, shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
 import { getPriceChangeColor } from 'utils/color'
-import { formatCurrencyUnits, weiToEth } from 'utils/number'
+import { formatCommas, formatCurrencyUnits, weiToEth } from 'utils/number'
 
 import Breadcrumbs from '../components/Breadcrumbs'
 import Collectors from '../components/ExplorePanel/Collectors'
@@ -220,10 +220,12 @@ export default function NFTView() {
     creatorUsername ??
     shortenAddress(txHistory[0]?.txToAddress) ??
     'Unknown'
-  
+
   const image = previewImageUrl ?? mediaUrl
-  const optimizedSrc = imageOptimizer(image, {width: 340}) ?? image
-  const finalImageSrc = PIXELATED_CONTRACTS.includes(contractAddress) ? image : optimizedSrc
+  const optimizedSrc = imageOptimizer(image, { width: 340 }) ?? image
+  const finalImageSrc = PIXELATED_CONTRACTS.includes(contractAddress)
+    ? image
+    : optimizedSrc
   return (
     <>
       <Head>
@@ -251,18 +253,42 @@ export default function NFTView() {
           }}
         >
           <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-            <Image
-              src={finalImageSrc}
-              alt={`Featured image for ${assetName}`}
-              sx={{
-                borderRadius: '10px',
-                width: '100%',
-                backgroundColor: 'grey-600',
-                imageRendering: PIXELATED_CONTRACTS.includes(contractAddress)
-                  ? 'pixelated'
-                  : 'auto',
-              }}
-            />
+            {ART_BLOCKS_CONTRACTS.includes(contractAddress) ? (
+              <Box
+                sx={{
+                  position: 'relative',
+                  overflow: 'hidden',
+                  paddingTop: '100%',
+                }}
+              >
+                <iframe
+                  src={`https://generator.artblocks.io/${tokenId}`}
+                  width="100%"
+                  height="100%"
+                  frameBorder={0}
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                  }}
+                />
+              </Box>
+            ) : (
+              <Image
+                src={finalImageSrc}
+                alt={`Featured image for ${assetName}`}
+                sx={{
+                  borderRadius: '10px',
+                  width: '100%',
+                  backgroundColor: 'grey-600',
+                  imageRendering: PIXELATED_CONTRACTS.includes(contractAddress)
+                    ? 'pixelated'
+                    : 'auto',
+                }}
+              />
+            )}
             <Flex sx={{ flexDirection: 'column', gap: 4 }}>
               <Text variant="h2Primary">{assetName}</Text>
               {!!latestAppraisal && (
@@ -642,9 +668,14 @@ export default function NFTView() {
                             <Flex sx={{ gap: 2 }}>
                               <Label
                                 color="primary"
-                                currencySymbol={lastSale ? 'Ξ' : undefined}
+                                currencySymbol={
+                                  latestAppraisal?.ethSalePrice
+                                    ? 'Ξ'
+                                    : undefined
+                                }
                                 variant="currency"
-                                size="md"
+                                size="lg"
+                                sx={{ lineHeight: 1 }}
                               >
                                 {latestAppraisal?.ethSalePrice
                                   ? weiToEth(
@@ -654,7 +685,11 @@ export default function NFTView() {
                                     )
                                   : '-'}
                               </Label>
-                              <Label color="primary">
+
+                              <Label
+                                color="primary"
+                                sx={{ marginTop: '.5rem' }}
+                              >
                                 {latestAppraisal?.medianRelativeError
                                   ? '± ' +
                                     (
@@ -664,6 +699,22 @@ export default function NFTView() {
                                   : ''}
                               </Label>
                             </Flex>
+                            {!!latestAppraisal?.usdSalePrice &&
+                            !isNaN(parseFloat(latestAppraisal?.usdSalePrice)) && (
+                              <Label
+                                color="white"
+                                currencySymbol="$"
+                                variant="currency"
+                                size="md"
+                                sx={{
+                                  marginTop: '-.5rem',
+                                }}
+                              >
+                                {formatCommas(
+                                  Number(latestAppraisal.usdSalePrice) / 1e6
+                                )}
+                              </Label>
+                            )}
                             <Text
                               color="primary"
                               sx={{ fontSize: 2, textTransform: 'uppercase' }}

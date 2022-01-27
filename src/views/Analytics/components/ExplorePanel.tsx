@@ -50,26 +50,30 @@ function ExplorePanelHead({
   const [open, setOpen] = useState(false)
   const searchTermRef = useRef<HTMLInputElement>(null)
   const breakpointIndex = useBreakpointIndex()
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
 
-    onSearch?.(searchTermRef?.current?.value ?? '')
+  const clearAutoFilter = () => {
+    clearTimeout(autoFilter)
+    setAutoFilter(undefined)
   }
 
   /**
    * Auto apply search filter with 500ms timeout.
    */
   const handleChange = (e: React.ChangeEvent) => {
-    if (autoFilter) {
-      clearTimeout(autoFilter)
-      setAutoFilter(undefined)
-    }
+    if (autoFilter) clearAutoFilter()
 
     setAutoFilter(
       setTimeout(() => {
         onSearch?.(searchTermRef?.current?.value ?? '')
       }, 500)
     )
+  }
+
+  const handleSearch = (e: React.FormEvent | React.MouseEvent) => {
+    if (autoFilter) clearAutoFilter()
+    e.preventDefault()
+
+    onSearch?.(searchTermRef?.current?.value ?? '')
   }
 
   const dropdownOptions = ['NFTs', 'Collectors']
