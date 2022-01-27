@@ -62,6 +62,7 @@ import {
 type Collection = {
   id: number | null
   osCollectionSlug?: string
+  numOwnedAssets?: number
   name: string
   imageUrl?: string
 }
@@ -360,8 +361,6 @@ export default function UserView() {
       }
     )
 
-  console.log({ dataUnsupportedAssets })
-
   const handleFetchMoreAssets = useCallback(
     (startIndex: number) => {
       if (loadingAssets || assetOffset === startIndex) return
@@ -542,6 +541,7 @@ export default function UserView() {
             setShowCollection({
               id: null,
               osCollectionSlug,
+              numOwnedAssets,
               name,
               imageUrl,
             })
@@ -1374,42 +1374,71 @@ export default function UserView() {
               avatarImage={showCollection?.imageUrl}
               name={showCollection?.name ?? ''}
               total={
-                10
-                // (showCollection?.id
-                //   ? dataAssets?.collectionById?.ownerAssetsInCollection?.count
-                //   : unsupportedAssets?.length) ?? 0
+                showCollection?.numOwnedAssets ??
+                dataAssets?.collectionById?.ownerAssetsInCollection?.count ??
+                0
+              }
+              key={
+                (showCollection?.id || showCollection?.osCollectionSlug) +
+                '-' +
+                (dataAssets?.collectionById?.ownerAssetsInCollection?.assets
+                  ?.length ||
+                  dataUnsupportedAssets?.getUnsupportedAssetPage?.assets
+                    ?.length)
               }
               items={
-                dataAssets?.collectionById?.ownerAssetsInCollection?.assets?.map(
-                  ({
-                    id,
-                    name,
-                    lastAppraisalWeiPrice,
-                    lastAppraisalUsdPrice,
-                    previewImageUrl,
-                    mediaUrl,
-                    contractAddress,
-                  }) => ({
-                    id,
-                    expanded: isMobile,
-                    avatarImage:
-                      showCollection?.imageUrl ?? '/img/defaultAvatar.png',
-                    imageSrc: previewImageUrl ?? mediaUrl,
-                    collection: showCollection?.name ?? '',
-                    isPixelated: PIXELATED_CONTRACTS.includes(contractAddress),
-                    appraisalPriceETH: lastAppraisalWeiPrice
-                      ? weiToEth(lastAppraisalWeiPrice, 4, false)
-                      : null,
-                    appraisalPriceUSD: lastAppraisalUsdPrice
-                      ? Math.round(parseInt(lastAppraisalUsdPrice) / 1000000)
-                      : null,
-                    name: name
-                      ? showCollection
-                        ? name.replace(showCollection.name, '')
-                        : name
-                      : '', // remove collection name from NFT name
-                  })
-                ) ?? []
+                (showCollection?.id
+                  ? dataAssets?.collectionById?.ownerAssetsInCollection?.assets?.map(
+                      ({
+                        id,
+                        name,
+                        lastAppraisalWeiPrice,
+                        lastAppraisalUsdPrice,
+                        previewImageUrl,
+                        mediaUrl,
+                        contractAddress,
+                      }) => ({
+                        id,
+                        expanded: isMobile,
+                        avatarImage:
+                          showCollection?.imageUrl ?? '/img/defaultAvatar.png',
+                        imageSrc: previewImageUrl ?? mediaUrl,
+                        collection: showCollection?.name ?? '',
+                        isPixelated:
+                          PIXELATED_CONTRACTS.includes(contractAddress),
+                        appraisalPriceETH: lastAppraisalWeiPrice
+                          ? weiToEth(lastAppraisalWeiPrice, 4, false)
+                          : null,
+                        appraisalPriceUSD: lastAppraisalUsdPrice
+                          ? Math.round(
+                              parseInt(lastAppraisalUsdPrice) / 1000000
+                            )
+                          : null,
+                        name: name
+                          ? showCollection
+                            ? name.replace(showCollection.name, '')
+                            : name
+                          : '', // remove collection name from NFT name
+                      })
+                    )
+                  : dataUnsupportedAssets?.getUnsupportedAssetPage?.assets?.map(
+                      ({ name, address, tokenId, imageUrl }) => ({
+                        id: address + '/' + tokenId,
+                        expanded: isMobile,
+                        avatarImage:
+                          showCollection?.imageUrl ?? '/img/defaultAvatar.png',
+                        imageSrc: imageUrl ?? '/img/defaultAvatar.png',
+                        collection: showCollection?.name ?? '',
+                        isPixelated: PIXELATED_CONTRACTS.includes(address),
+                        appraisalPriceETH: null,
+                        appraisalPriceUSD: null,
+                        name: name
+                          ? showCollection
+                            ? name.replace(showCollection.name, '')
+                            : name
+                          : '', // remove collection name from NFT name
+                      })
+                    )) ?? []
               }
               onClose={() => modalRef?.current?.click()}
               onFetchMore={handleFetchMoreAssets}

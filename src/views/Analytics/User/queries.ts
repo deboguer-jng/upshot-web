@@ -284,6 +284,8 @@ export type GetUnsupportedAssetsData = {
     nextOffset: number
     assets: {
       address: string
+      tokenId: string
+      name: string
       imageUrl: string
     }[]
   }
@@ -301,6 +303,8 @@ export const GET_UNSUPPORTED_ASSETS = gql`
       nextOffset
       assets {
         address
+        name
+        tokenId
         imageUrl
       }
     }
