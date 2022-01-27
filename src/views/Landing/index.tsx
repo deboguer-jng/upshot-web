@@ -389,7 +389,7 @@ export default function LandingView() {
 
         <Text variant="h2Primary">Discover</Text>
         <Text variant="xLarge" color="grey-500">
-          Explore innovative products at the intersection of DeFi x NFTs.
+          Innovative products at the intersection of DeFi x NFTs.
         </Text>
 
         {/*  The content of the Discover section can be found in /src/views/Landing/content.tsx  */}

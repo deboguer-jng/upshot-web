@@ -114,11 +114,11 @@ export default function TopCollectionsCharts({
     .map(({ data, name, id, latestStats, ...rest }) => {
       const ath = rest[athKeys[metric]]?.value
       const atl = rest[atlKeys[metric]]?.value
-      const priceChange = !latestStats?.sevenDayChange
-        ? null
-        : latestStats.sevenDayChange >= 0
-        ? '+' + latestStats.sevenDayChange + '%'
-        : latestStats.sevenDayChange + '%'
+      // const priceChange = !latestStats?.weekCapChange
+      //   ? null
+      //   : latestStats.weekCapChange >= 0
+      //   ? '+' + latestStats.weekCapChange + '%'
+      //   : latestStats.weekCapChange + '%'
 
       return {
         name,
@@ -139,13 +139,17 @@ export default function TopCollectionsCharts({
             : val
         ),
         metric,
-        currentFloor: weiToEth((latestStats?.floor).toString(), 4, false),
-        currentAvg: weiToEth((latestStats?.pastDayWeiAverage).toString(), 4, false),
-        currentVolume: weiToEth((latestStats.pastWeekWeiVolume).toString(), 4, false),
+        currentFloor: latestStats?.floor
+          ? weiToEth(latestStats.floor.toString(), 4, false)
+          : null,
+        currentAvg: latestStats?.pastDayWeiAverage
+          ? weiToEth(latestStats.pastDayWeiAverage.toString(), 4, false)
+          : null,
+        currentVolume: latestStats?.pastWeekWeiVolume
+          ? weiToEth(latestStats.pastWeekWeiVolume.toString(), 4, false)
+          : null,
       }
     })
-
-  const handleClose = (index: number) => {}
 
   return <Chart data={chartData} {...{ onClose }} />
 }
