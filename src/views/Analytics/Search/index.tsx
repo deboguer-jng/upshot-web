@@ -27,6 +27,16 @@ import {
   GetAssetsSearchVars,
 } from './queries'
 
+enum BREAKPOINT_INDEXES {
+  ZERO = 0,
+  ONE = 1,
+  TWO = 2,
+  THREE = 3,
+  FOUR = 4,
+  FIVE = 5,
+  SIX = 6
+}
+
 export default function SearchView() {
   const { theme } = useTheme()
   const router = useRouter()
@@ -129,13 +139,13 @@ export default function SearchView() {
   }
 
   const chunks = {
-    0: 2,
-    1: 2,
-    2: 2,
-    3: 3,
-    4: 4,
-    5: 5,
-    6: 5
+    [BREAKPOINT_INDEXES.ZERO]: 2,
+    [BREAKPOINT_INDEXES.ONE]: 2,
+    [BREAKPOINT_INDEXES.TWO]: 2,
+    [BREAKPOINT_INDEXES.THREE]: 3,
+    [BREAKPOINT_INDEXES.FOUR]: 4,
+    [BREAKPOINT_INDEXES.FIVE]: 5,
+    [BREAKPOINT_INDEXES.SIX]: 5
   }
 
   const chunkSize = chunks[breakpointIndex]
