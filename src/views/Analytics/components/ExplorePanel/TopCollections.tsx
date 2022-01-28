@@ -131,7 +131,7 @@ export default function ExploreNFTs({
     <>
       <CollectionItemsWrapper>
         {data.orderedCollectionsByMetricSearch.assetSets.map(
-          ({ id, name, imageUrl, sevenDayFloorChange, latestStats }, idx) => (
+          ({ id, name, imageUrl, latestStats }, idx) => (
             <CollectionRow
               variant="black"
               title={name}
@@ -179,9 +179,9 @@ export default function ExploreNFTs({
                       <br /> (7 Days)
                     </Text>
                     <Text
-                      sx={{ color: getPriceChangeColor(sevenDayFloorChange) }}
+                      sx={{ color: getPriceChangeColor(latestStats.weekFloorChange) }}
                     >
-                      {getPriceChangeLabel(sevenDayFloorChange)}
+                      {getPriceChangeLabel(latestStats.weekFloorChange)}
                     </Text>
                   </Flex>
                 </Grid>
@@ -199,10 +199,10 @@ export default function ExploreNFTs({
                   <TableCell
                     sx={{
                       maxWidth: 100,
-                      color: getPriceChangeColor(sevenDayFloorChange),
+                      color: getPriceChangeColor(latestStats.weekFloorChange),
                     }}
                   >
-                    {getPriceChangeLabel(sevenDayFloorChange)}
+                    {getPriceChangeLabel(latestStats.weekFloorChange)}
                   </TableCell>
                 </>
               )}

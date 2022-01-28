@@ -50,9 +50,11 @@ export type GetTopCollectionsData = {
       }
       latestStats: {
         volume: string
-        sevenDayChange: number
+        weekCapChange: number
+        pastWeekWeiVolume: string
         floor: number
-        pastDayWeiAverage: number
+        pastDayWeiAverage: string
+        pastDayWeiVolume: string
       }
       timeSeries?: TimeSeries[]
     }[]
@@ -121,9 +123,11 @@ export const GET_TOP_COLLECTIONS = gql`
         }
         latestStats {
           volume
-          sevenDayChange
+          weekCapChange
+          pastWeekWeiVolume
           floor
           pastDayWeiAverage
+          pastDayWeiVolume
         }
       }
     }
@@ -300,11 +304,11 @@ export type GetExploreCollectionsData = {
       id: number
       name: string
       imageUrl?: string
-      sevenDayFloorChange: number
       latestStats: {
         floor: string
         pastDayWeiAverage: string
         totalWeiVolume: string
+        weekFloorChange: number
       }
     }[]
   }
@@ -329,11 +333,11 @@ export const GET_EXPLORE_COLLECTIONS = gql`
         id
         name
         imageUrl
-        sevenDayFloorChange
         latestStats {
           floor
           pastDayWeiAverage
           totalWeiVolume
+          weekFloorChange
         }
       }
     }
@@ -384,7 +388,7 @@ export type GetTreemapCollectionsData = {
       name: string
       latestStats: {
         totalWeiVolume: string
-        sevenDayChange: number
+        weekCapChange: number
       }
     }[]
   }
@@ -402,7 +406,7 @@ export const GET_TREEMAP_COLLECTIONS = gql`
         name
         latestStats {
           totalWeiVolume
-          sevenDayChange
+          weekCapChange
         }
       }
     }
@@ -508,6 +512,7 @@ export type GetCollectorsData = {
   getOwnersByWhaleness: {
     count: number
     owners: {
+      id: number
       username: string
       addresses: { address: string; ens: string }[]
       firstAssetPurchaseTime: number
@@ -557,6 +562,7 @@ export const GET_COLLECTORS = gql`
     ) {
       count
       owners {
+        id
         username
         addresses {
           address
@@ -608,6 +614,7 @@ export type GetPreviousOwnersData = {
   getOwnersByWhaleness: {
     count: number
     owners: {
+      id: number
       username: string
       addresses: { address: string; ens: string }[]
       firstAssetPurchaseTime: number
@@ -650,6 +657,7 @@ export const GET_PREVIOUS_OWNERS = gql`
     getOwnersByWhaleness(limit: $limit, offset: $offset, assetId: $assetId) {
       count
       owners {
+        id
         username
         addresses {
           address
@@ -680,6 +688,41 @@ export const GET_PREVIOUS_OWNERS = gql`
               }
             }
           }
+        }
+      }
+    }
+  }
+`
+
+export type GetUserOwnedAssetsVars = {
+  userId?: number
+  collectionId?: number
+}
+
+
+export type GetUserOwnedAssetsData = {
+  getUser: {
+    ownedAssets: {
+      count: number
+      assets: {
+        id: number
+        previewImageUrl: string
+      }[]
+    }
+  }
+}
+
+export const GET_USER_OWNED_ASSETS = gql`
+  query GetUserOwnedAssets(
+    $userId: Int!
+    $collectionId: Int!
+  ) {
+    getUser(userId: $userId) {
+      ownedAssets(collectionId: $collectionId, limit: 20, notable: true) {
+        count
+        assets {
+          id
+          previewImageUrl
         }
       }
     }

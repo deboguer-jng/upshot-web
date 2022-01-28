@@ -184,7 +184,7 @@ export default function CollectionAvgPricePanel({
                 subText={printMetricData(metric, {
                   average: latestStats.pastDayWeiAverage,
                   floor: latestStats.floor,
-                  volume: latestStats.pastDayWeiVolume,
+                  volume: latestStats.pastWeekWeiVolume,
                 })}
                 {...{ underglow, hoverUnderglow }}
               />

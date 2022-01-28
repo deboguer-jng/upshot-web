@@ -699,7 +699,8 @@ export default function NFTView() {
                                   : ''}
                               </Label>
                             </Flex>
-                            {!!latestAppraisal?.usdSalePrice && (
+                            {!!latestAppraisal?.usdSalePrice &&
+                            !isNaN(parseFloat(latestAppraisal?.usdSalePrice)) && (
                               <Label
                                 color="white"
                                 currencySymbol="$"
