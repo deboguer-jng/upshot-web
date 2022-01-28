@@ -577,7 +577,7 @@ export default function UserView() {
   const headerRenderer = (label) => {
     return (
       <TableCell color="grey-500" backgroundColor="grey-800">
-        {label}
+        <Text sx={{ textTransform: "none" }}>{label}</Text>
       </TableCell>
     )
   }
@@ -1021,7 +1021,7 @@ export default function UserView() {
                                         headerHeight={30}
                                         width={width}
                                         height={270}
-                                        rowHeight={30}
+                                        rowHeight={40}
                                         rowCount={
                                           txHistoryData?.getUser?.txHistory
                                             ?.count
@@ -1041,7 +1041,7 @@ export default function UserView() {
                                             return (
                                               <Text
                                                 sx={{
-                                                  fontWeight: 'bold',
+                                                  fontWeight: 'normal',
                                                   fontSize: 4,
                                                   color: 'grey-500',
                                                   textAlign: 'center',
