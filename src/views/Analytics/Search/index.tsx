@@ -145,7 +145,7 @@ export default function SearchView() {
     [BREAKPOINT_INDEXES.THREE]: 3,
     [BREAKPOINT_INDEXES.FOUR]: 4,
     [BREAKPOINT_INDEXES.FIVE]: 5,
-    [BREAKPOINT_INDEXES.SIX]: 5
+    [BREAKPOINT_INDEXES.SIX]: 6
   }
 
   const chunkSize = chunks[breakpointIndex]
@@ -176,19 +176,6 @@ export default function SearchView() {
             </Flex>
           </Flex>
         </Box>
-
-        {/* <Box>
-          <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-            <Text sx={{ paddingTop: [4, 0] }} color="grey-500">
-              Keywords
-            </Text>
-            <InputRounded
-              placeholder="Keywords"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.currentTarget.value)}
-            />
-          </Flex>
-        </Box> */}
 
         <Box>
           <Flex sx={{ flexDirection: 'column', gap: 2 }}>
@@ -431,7 +418,7 @@ export default function SearchView() {
       <Flex sx={{ minHeight: '100vh', flexDirection: 'column' }}>
         <Nav />
         <Container
-          maxBreakpoint="xl"
+          maxBreakpoint="xxl"
           sx={{
             flexDirection: 'column',
             gap: 4,
@@ -444,7 +431,7 @@ export default function SearchView() {
             <Grid
               columns={[1, 1, 3]}
               sx={{
-                gridTemplateColumns: ['1fr', '1fr 3fr', '1fr 3fr 1fr'],
+                gridTemplateColumns: ['1fr', '1fr 3fr', '1fr 4fr 1fr'],
                 flexGrow: 1,
                 gap: [8, 5, 8],
               }}
