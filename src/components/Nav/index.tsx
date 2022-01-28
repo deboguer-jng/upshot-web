@@ -159,9 +159,13 @@ export const Nav = () => {
           padding: 4,
         }}
       >
-        <a href="https://blog.upshot.io/" target="_blank" rel="noreferrer">
+        <a
+          href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
+          target="_blank"
+          rel="noreferrer"
+        >
           <IconButton>
-            <Icon color="white" icon="mediumBlock" size={32} />
+            <Icon color="white" icon="mirror" size={32} />
           </IconButton>
         </a>
 
