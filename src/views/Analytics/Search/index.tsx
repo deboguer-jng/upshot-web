@@ -11,7 +11,6 @@ import {
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import { PIXELATED_CONTRACTS } from 'constants/'
-import { PAGE_SIZE } from 'constants/'
 import { ethers } from 'ethers'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -26,6 +25,8 @@ import {
   GetAssetsSearchData,
   GetAssetsSearchVars,
 } from './queries'
+
+const ROW_SIZE = 4;
 
 enum BREAKPOINT_INDEXES {
   ZERO = 0,
@@ -64,14 +65,30 @@ export default function SearchView() {
   const [maxPriceEth, setMaxPriceEth] = useState('')
   const [maxPriceWei, setMaxPriceWei] = useState<string>()
 
+  const breakpointIndex = useBreakpointIndex()
+  const isMobile = breakpointIndex <= 1
+
+  const chunks = {
+    [BREAKPOINT_INDEXES.ZERO]: 2,
+    [BREAKPOINT_INDEXES.ONE]: 2,
+    [BREAKPOINT_INDEXES.TWO]: 2,
+    [BREAKPOINT_INDEXES.THREE]: 3,
+    [BREAKPOINT_INDEXES.FOUR]: 4,
+    [BREAKPOINT_INDEXES.FIVE]: 5,
+    [BREAKPOINT_INDEXES.SIX]: 6
+  }
+
+  const chunkSize = chunks[breakpointIndex]
+  const loadArr = [...new Array(ROW_SIZE * chunkSize)]
+
   const { loading, error, data } = useQuery<
     GetAssetsSearchData,
     GetAssetsSearchVars
   >(GET_ASSETS_SEARCH, {
     errorPolicy: 'all',
     variables: {
-      limit: PAGE_SIZE,
-      offset: page * PAGE_SIZE,
+      limit: ROW_SIZE * chunkSize,
+      offset: page * ROW_SIZE * chunkSize,
       searchTerm: searchTermApplied,
       collectionName: collectionNameApplied,
       traits: attributesApplied,
@@ -92,8 +109,6 @@ export default function SearchView() {
     )
   }, [collectionParam, queryParam, attributesParam])
 
-  const breakpointIndex = useBreakpointIndex()
-  const isMobile = breakpointIndex <= 1
 
   const handleBlurMinPrice = (e: React.FocusEvent<HTMLInputElement>) => {
     const eth = parseEthString(e.currentTarget.value)
@@ -138,18 +153,6 @@ export default function SearchView() {
     router.push('/analytics/nft/' + id)
   }
 
-  const chunks = {
-    [BREAKPOINT_INDEXES.ZERO]: 2,
-    [BREAKPOINT_INDEXES.ONE]: 2,
-    [BREAKPOINT_INDEXES.TWO]: 2,
-    [BREAKPOINT_INDEXES.THREE]: 3,
-    [BREAKPOINT_INDEXES.FOUR]: 4,
-    [BREAKPOINT_INDEXES.FIVE]: 5,
-    [BREAKPOINT_INDEXES.SIX]: 6
-  }
-
-  const chunkSize = chunks[breakpointIndex]
-  const loadArr = [...new Array(PAGE_SIZE)]
   const assetArr = data?.assetGlobalSearch?.assets
 
   const searchFilters = () => {
@@ -365,7 +368,7 @@ export default function SearchView() {
           {!!data?.assetGlobalSearch?.count && (
             <Pagination
               forcePage={page}
-              pageCount={Math.ceil(data.assetGlobalSearch.count / PAGE_SIZE)}
+              pageCount={Math.ceil(data.assetGlobalSearch.count / (chunkSize * ROW_SIZE))}
               pageRangeDisplayed={0}
               marginPagesDisplayed={0}
               onPageChange={handlePageChange}
