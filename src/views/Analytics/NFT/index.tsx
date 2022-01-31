@@ -453,10 +453,13 @@ export default function NFTView() {
                             <a
                               sx={{
                                 cursor: 'pointer',
+                                textOverflow: 'ellipsis',
+                                overflow: 'hidden',
                                 '&:hover': {
                                   textDecoration: 'underline',
                                 },
                               }}
+                              title={displayName}
                             >
                               <Text
                                 color="grey-300"
@@ -686,18 +689,14 @@ export default function NFTView() {
                                   : '-'}
                               </Label>
 
-                              <Label
-                                color="primary"
-                                sx={{ marginTop: '.5rem' }}
-                              >
-                                {latestAppraisal?.medianRelativeError
-                                  ? '± ' +
-                                    (
-                                      latestAppraisal.medianRelativeError * 100
-                                    ).toFixed(2) +
-                                    '%'
-                                  : ''}
-                              </Label>
+                              {!!latestAppraisal?.medianRelativeError && (
+                                <Label
+                                  color="primary"
+                                  sx={{ marginTop: '.5rem' }}
+                                >
+                                  {'±' + (latestAppraisal.medianRelativeError * 100).toFixed(2) + '%'}
+                                </Label>
+                              )}
                             </Flex>
                             {!!latestAppraisal?.usdSalePrice &&
                             !isNaN(parseFloat(latestAppraisal?.usdSalePrice)) && (
