@@ -1,9 +1,13 @@
 /** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
-import { CollectorAccordion, Icon, useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import {
+  CollectorAccordion,
+  Icon,
+  useBreakpointIndex,
+} from '@upshot-tech/upshot-ui'
 import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { Pagination } from '@upshot-tech/upshot-ui'
-import { Flex, Grid, Text, Box } from '@upshot-tech/upshot-ui'
+import { Box, Flex, Grid, Text } from '@upshot-tech/upshot-ui'
 import {
   TableBody,
   TableCell,
@@ -118,7 +122,7 @@ export default function ExploreNFTs({
   if (loading) return <ExplorePanelSkeleton />
 
   /* Error state. */
-  if (error) return <div>There was an error completing your request.</div>
+  // if (error) return <div>There was an error completing your request.</div>
 
   if (!data?.orderedCollectionsByMetricSearch.assetSets.length)
     return <div>No results available.</div>
@@ -179,7 +183,9 @@ export default function ExploreNFTs({
                       <br /> (7 Days)
                     </Text>
                     <Text
-                      sx={{ color: getPriceChangeColor(latestStats.weekFloorChange) }}
+                      sx={{
+                        color: getPriceChangeColor(latestStats.weekFloorChange),
+                      }}
                     >
                       {getPriceChangeLabel(latestStats.weekFloorChange)}
                     </Text>

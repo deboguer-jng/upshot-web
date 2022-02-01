@@ -55,7 +55,7 @@ export default function TopCollectors({ searchTerm }: { searchTerm: string }) {
   if (loading) return <ExplorePanelSkeleton />
 
   /* Error state. */
-  if (error) return <div>There was an error completing your request.</div>
+  // if (error) return <div>There was an error completing your request.</div>
 
   /* No results state. */
   if (!data?.getOwnersByWhaleness?.['owners']?.length)
