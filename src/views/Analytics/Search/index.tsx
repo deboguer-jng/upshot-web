@@ -281,7 +281,7 @@ export default function SearchView() {
         ) : data?.assetGlobalSearch?.assets.length === 0 ? (
           <div>No results available.</div>
         ) : (
-          <Flex sx={{ flexDirection: 'column', gap: 5 }}>
+          <Flex sx={{ flexDirection: 'column', gap: 5, alignItems: isMobile ? 'center' : 'baseline' }}>
             {
               /* Chunk results into non-wrapping rows. */
               loading
