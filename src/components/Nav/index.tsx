@@ -132,7 +132,7 @@ export const Nav = () => {
               Analytics
             </SideLink>
           </Link>
-          <Link href="https://upshot.gitbook.io/upshot-api/" passHref>
+          <Link href="https://docs.upshot.xyz" passHref>
             <SideLink
               sx={{ fontSize: 6, fontWeight: 'heading' }}
               target="_blank"
