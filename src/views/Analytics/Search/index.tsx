@@ -11,7 +11,6 @@ import {
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import { PIXELATED_CONTRACTS } from 'constants/'
-import { PAGE_SIZE } from 'constants/'
 import { ethers } from 'ethers'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -26,6 +25,18 @@ import {
   GetAssetsSearchData,
   GetAssetsSearchVars,
 } from './queries'
+
+const ROW_SIZE = 4;
+
+enum BREAKPOINT_INDEXES {
+  ZERO = 0,
+  ONE = 1,
+  TWO = 2,
+  THREE = 3,
+  FOUR = 4,
+  FIVE = 5,
+  SIX = 6
+}
 
 export default function SearchView() {
   const { theme } = useTheme()
@@ -54,14 +65,30 @@ export default function SearchView() {
   const [maxPriceEth, setMaxPriceEth] = useState('')
   const [maxPriceWei, setMaxPriceWei] = useState<string>()
 
+  const breakpointIndex = useBreakpointIndex()
+  const isMobile = breakpointIndex <= 1
+
+  const chunks = {
+    [BREAKPOINT_INDEXES.ZERO]: 2,
+    [BREAKPOINT_INDEXES.ONE]: 2,
+    [BREAKPOINT_INDEXES.TWO]: 2,
+    [BREAKPOINT_INDEXES.THREE]: 3,
+    [BREAKPOINT_INDEXES.FOUR]: 4,
+    [BREAKPOINT_INDEXES.FIVE]: 5,
+    [BREAKPOINT_INDEXES.SIX]: 6
+  }
+
+  const chunkSize = chunks[breakpointIndex]
+  const loadArr = [...new Array(ROW_SIZE * chunkSize)]
+
   const { loading, error, data } = useQuery<
     GetAssetsSearchData,
     GetAssetsSearchVars
   >(GET_ASSETS_SEARCH, {
     errorPolicy: 'all',
     variables: {
-      limit: PAGE_SIZE,
-      offset: page * PAGE_SIZE,
+      limit: ROW_SIZE * chunkSize,
+      offset: page * ROW_SIZE * chunkSize,
       searchTerm: searchTermApplied,
       collectionName: collectionNameApplied,
       traits: attributesApplied,
@@ -82,8 +109,6 @@ export default function SearchView() {
     )
   }, [collectionParam, queryParam, attributesParam])
 
-  const breakpointIndex = useBreakpointIndex()
-  const isMobile = breakpointIndex <= 1
 
   const handleBlurMinPrice = (e: React.FocusEvent<HTMLInputElement>) => {
     const eth = parseEthString(e.currentTarget.value)
@@ -128,15 +153,6 @@ export default function SearchView() {
     router.push('/analytics/nft/' + id)
   }
 
-  const chunks = {
-    0: 2,
-    1: 2,
-    2: 3,
-    3: 4,
-  }
-
-  const chunkSize = chunks[breakpointIndex]
-  const loadArr = [...new Array(PAGE_SIZE)]
   const assetArr = data?.assetGlobalSearch?.assets
 
   const searchFilters = () => {
@@ -161,19 +177,6 @@ export default function SearchView() {
                 onChange={(e) => setMaxPriceEth(e.currentTarget.value)}
               />
             </Flex>
-          </Flex>
-        </Box>
-
-        <Box>
-          <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-            <Text sx={{ paddingTop: [4, 0] }} color="grey-500">
-              Keywords
-            </Text>
-            <InputRounded
-              placeholder="Keywords"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.currentTarget.value)}
-            />
           </Flex>
         </Box>
 
@@ -228,13 +231,12 @@ export default function SearchView() {
   const searchResults = () => (
     <>
       <Flex
-        paddingX={8}
         sx={{
           position: ['static', 'static', 'static', 'sticky'],
           top: 0,
           alignSelf: 'flex-start',
           flexDirection: 'column',
-          gap: 8,
+          gap: 5,
           width: '100%',
         }}
       >
@@ -249,9 +251,9 @@ export default function SearchView() {
         ) : (
           <>
             <Box>
-              <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+              <Flex sx={{ flexDirection: 'column', gap: 1 }}>
                 <Flex sx={{ flexDirection: 'column', gap: 1 }}>
-                  <Text variant="h3Secondary" color="grey-500">
+                  <Text variant="h2Secondary" color="grey-500">
                     Search Filters
                   </Text>
                 </Flex>
@@ -262,7 +264,6 @@ export default function SearchView() {
         )}
       </Flex>
       <Flex
-        paddingX={[8, 8, 0]}
         sx={{
           flex: '1 auto auto',
           flexDirection: 'column',
@@ -280,7 +281,7 @@ export default function SearchView() {
         ) : data?.assetGlobalSearch?.assets.length === 0 ? (
           <div>No results available.</div>
         ) : (
-          <Flex sx={{ flexDirection: 'column', gap: 5 }}>
+          <Flex sx={{ flexDirection: 'column', gap: 5, alignItems: isMobile ? 'center' : 'baseline' }}>
             {
               /* Chunk results into non-wrapping rows. */
               loading
@@ -367,7 +368,7 @@ export default function SearchView() {
           {!!data?.assetGlobalSearch?.count && (
             <Pagination
               forcePage={page}
-              pageCount={Math.ceil(data.assetGlobalSearch.count / PAGE_SIZE)}
+              pageCount={Math.ceil(data.assetGlobalSearch.count / (chunkSize * ROW_SIZE))}
               pageRangeDisplayed={0}
               marginPagesDisplayed={0}
               onPageChange={handlePageChange}
@@ -420,29 +421,30 @@ export default function SearchView() {
       <Flex sx={{ minHeight: '100vh', flexDirection: 'column' }}>
         <Nav />
         <Container
-          maxBreakpoint="lg"
+          maxBreakpoint="xxl"
           sx={{
             flexDirection: 'column',
             gap: 4,
             padding: 4,
+            flexGrow: 1,
           }}
         >
           <Breadcrumbs crumbs={breadcrumbs} />
+          {!isMobile ? (
+            <Grid
+              columns={[1, 1, 3]}
+              sx={{
+                gridTemplateColumns: ['1fr', '1fr 3fr', '1fr 4fr 1fr'],
+                flexGrow: 1,
+                gap: [8, 5, 8],
+              }}
+            >
+              {searchResults()}
+            </Grid>
+          ) : (
+            searchResults()
+          )}
         </Container>
-        {!isMobile ? (
-          <Grid
-            columns={[1, 1, 3]}
-            sx={{
-              gridTemplateColumns: ['1fr', '1fr 3fr', '1fr 3fr 1fr'],
-              flexGrow: 1,
-              gap: [8, 5, 0],
-            }}
-          >
-            {searchResults()}
-          </Grid>
-        ) : (
-          searchResults()
-        )}
         <Container
           maxBreakpoint="lg"
           sx={{
