@@ -460,6 +460,10 @@ export default function UserView() {
   useEffect(() => {
     if (!collectionOffset) return
 
+    const hasAllCollections =
+      data?.getUser?.extraCollections?.count === collectionOffset
+    if (hasAllCollections) return setHasAllSupportedCollections(true)
+
     fetchMoreCollections({
       variables: { collectionOffset },
       updateQuery: (prev, { fetchMoreResult }) => {
@@ -1484,6 +1488,7 @@ export default function UserView() {
             items={data?.getUser?.extraCollections?.collectionAssetCounts ?? []}
             render={RenderSupportedMasonry}
             onRender={maybeLoadMoreCollections}
+            style={{ outline: 'none' }}
           />
           {includeUnsupportedAssets &&
             !!dataUnsupportedCollections?.getUnsupportedCollectionPage
@@ -1500,6 +1505,7 @@ export default function UserView() {
                   }
                   render={RenderUnsupportedMasonry}
                   onRender={maybeLoadMoreUnsupportedCollections}
+                  style={{ outline: 'none' }}
                 />
               </>
             )}
