@@ -46,7 +46,7 @@ export const GET_ASSETS_SEARCH = gql`
     $collectionName: String
     $tokenId: String
     $traits: String
-    $limit: OneToHundredInt!
+    $limit: Int!
     $minPrice: String
     $maxPrice: String
     $offset: Int

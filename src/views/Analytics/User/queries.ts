@@ -78,11 +78,11 @@ export const GET_COLLECTOR = gql`
   query GetCollector(
     $userId: Int
     $address: String
-    $collectionLimit: OneToHundredInt!
+    $collectionLimit: Int!
     $collectionOffset: Int!
-    $assetLimit: OneToHundredInt!
+    $assetLimit: Int!
     $assetOffset: Int!
-    $txLimit: OneToHundredInt!
+    $txLimit: Int!
     $txOffset: Int!
   ) {
     getUser(userId: $userId, address: $address) {
@@ -181,7 +181,7 @@ export const GET_COLLECTION_ASSETS = gql`
   query GetCollectionAssets(
     $userAddress: String
     $id: Int!
-    $limit: OneToHundredInt!
+    $limit: Int!
     $offset: Int!
   ) {
     collectionById(id: $id) {
@@ -274,6 +274,29 @@ export type GetUnsupportedFloorsData = {
 export const GET_UNSUPPORTED_FLOORS = gql`
   query GetUnsupportedFloors($stringifiedSlugs: String!) {
     getUnsupportedFloors(stringifiedSlugs: $stringifiedSlugs) {
+      floorEth
+      floorUsd
+    }
+  }
+`
+
+/**
+ * Get unsupported weighted floors
+ */
+export type GetUnsupportedWeightedFloorsVars = {
+  userAddress?: string
+}
+
+export type GetUnsupportedWeightedFloorsData = {
+  getUnsupportedWeightedFloorSum: {
+    floorEth: number
+    floorUsd: number
+  }
+}
+
+export const GET_UNSUPPORTED_WEIGHTED_FLOORS = gql`
+  query GetUnsupportedWeightedFloorSum($userAddress: String!) {
+    getUnsupportedWeightedFloorSum(userAddress: $userAddress) {
       floorEth
       floorUsd
     }

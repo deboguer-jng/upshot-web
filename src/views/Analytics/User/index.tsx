@@ -47,6 +47,7 @@ import {
   GET_UNSUPPORTED_ASSETS,
   GET_UNSUPPORTED_COLLECTIONS,
   GET_UNSUPPORTED_FLOORS,
+  GET_UNSUPPORTED_WEIGHTED_FLOORS,
   GetCollectionAssetsData,
   GetCollectionAssetsVars,
   GetCollectorData,
@@ -57,6 +58,8 @@ import {
   GetUnsupportedCollectionsVars,
   GetUnsupportedFloorsData,
   GetUnsupportedFloorsVars,
+  GetUnsupportedWeightedFloorsData,
+  GetUnsupportedWeightedFloorsVars,
 } from './queries'
 
 type Collection = {
@@ -324,6 +327,28 @@ export default function UserView() {
     }
   )
 
+  /* Request unsupported weighted floors */
+  const { data: dataUnsupportedWeightedFloors } = useQuery<
+    GetUnsupportedWeightedFloorsData,
+    GetUnsupportedWeightedFloorsVars
+  >(GET_UNSUPPORTED_WEIGHTED_FLOORS, {
+    errorPolicy: 'all',
+    variables: {
+      userAddress: addressFormatted,
+    },
+    skip: !addressFormatted || !includeUnsupportedAssets,
+  })
+
+  const unsupportedWeightedFloorEth = Number(
+    dataUnsupportedWeightedFloors?.getUnsupportedWeightedFloorSum?.floorEth ??
+      0.0
+  )
+
+  const unsupportedWeightedFloorUsd = Number(
+    dataUnsupportedWeightedFloors?.getUnsupportedWeightedFloorSum?.floorUsd ??
+      0.0
+  )
+
   /* Request unsupported floors */
   const { data: dataUnsupportedFloors, error: errorUnsupportedFloors } =
     useQuery<GetUnsupportedFloorsData, GetUnsupportedFloorsVars>(
@@ -560,8 +585,7 @@ export default function UserView() {
         <CollectionCard
           hasSeeAll={count > 5}
           seeAllImageSrc={
-            collection.ownerAssetsInCollection.assets.slice(-1)[0]
-              .previewImageUrl
+            collection.ownerAssetsInCollection.assets[0]?.previewImageUrl
           }
           appraisalPrice={
             ownedAppraisedValue
@@ -880,10 +904,12 @@ export default function UserView() {
                             }}
                           >
                             {data?.getUser?.totalAssetAppraisedValueWei
-                              ? parseFloat(
-                                  ethers.utils.formatEther(
-                                    data.getUser.totalAssetAppraisedValueWei
-                                  )
+                              ? (
+                                  parseFloat(
+                                    ethers.utils.formatEther(
+                                      data.getUser.totalAssetAppraisedValueWei
+                                    )
+                                  ) + unsupportedWeightedFloorEth
                                 ).toFixed(2)
                               : '-'}
                           </Text>
@@ -916,7 +942,7 @@ export default function UserView() {
                                       data.getUser.totalAssetAppraisedValueUsd,
                                       6
                                     )
-                                  )
+                                  ) + unsupportedWeightedFloorUsd
                                 )
                               : '-'}
                           </Text>
