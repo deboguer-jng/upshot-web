@@ -499,6 +499,9 @@ export default function UserView() {
         return {
           getUnsupportedCollectionPage: {
             ...prev.getUnsupportedCollectionPage,
+            slugsWithNullFloors:
+              fetchMoreResult?.getUnsupportedCollectionPage
+                ?.slugsWithNullFloors,
             nextOffset:
               fetchMoreResult.getUnsupportedCollectionPage?.nextOffset,
             collections: [
