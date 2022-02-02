@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { CollectorAccordion,useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import { CollectorAccordion, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { Pagination } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Grid, Skeleton, Text } from '@upshot-tech/upshot-ui'
@@ -37,17 +37,18 @@ function NFTTableHead() {
   return (
     <>
       {!isMobile && (
-          <TableHead>
-            <TableRow>
-              <TableCell></TableCell>
-              <TableCell color="grey-500">NFT</TableCell>
-              {columns.map((col, key) => (
-                <TableCell key={key} color="grey-500">
-                  {col}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
+        <TableHead>
+          <TableRow>
+            <TableCell></TableCell>
+            <TableCell color="grey-500">NFT</TableCell>
+            {columns.map((col, key) => (
+              <TableCell key={key} color="grey-500">
+                {col}
+              </TableCell>
+            ))}
+            <TableCell></TableCell>
+          </TableRow>
+        </TableHead>
       )}
     </>
   )
@@ -64,7 +65,7 @@ export function ExplorePanelSkeleton() {
       <TableBody>
         {[...new Array(PAGE_SIZE)].map((_, idx) => (
           <Skeleton sx={{ height: 56 }} as="tr" key={idx}>
-            <TableCell colSpan={6}>
+            <TableCell colSpan={7}>
               <Box sx={{ height: 40, width: '100%' }} />
             </TableCell>
           </Skeleton>
@@ -129,7 +130,7 @@ export default function ExploreNFTs({
   if (loading) return <ExplorePanelSkeleton />
 
   /* Error state. */
-  if (error) return <div>There was an error completing your request.</div>
+  // if (error) return <div>There was an error completing your request.</div>
 
   if (!data?.assetGlobalSearch?.assets?.length)
     return <div>No results available.</div>

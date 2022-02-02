@@ -132,12 +132,9 @@ export const Nav = () => {
               Analytics
             </SideLink>
           </Link>
-        </Flex>
-        <Flex sx={{ flexDirection: 'column', gap: 24 }}>
-          <Text sx={{ color: 'grey-600', fontSize: 4 }}>Resources</Text>
-          <Link href="https://upshot.gitbook.io/upshot-api/" passHref>
+          <Link href="https://docs.upshot.xyz" passHref>
             <SideLink
-              sx={{ fontSize: 5, fontWeight: 'heading' }}
+              sx={{ fontSize: 6, fontWeight: 'heading' }}
               target="_blank"
             >
               API Docs
@@ -145,7 +142,7 @@ export const Nav = () => {
           </Link>
           <Link href="https://jv3yfpod32j.typeform.com/to/CZ28JWz9" passHref>
             <SideLink
-              sx={{ fontSize: 5, fontWeight: 'heading' }}
+              sx={{ fontSize: 6, fontWeight: 'heading' }}
               target="_blank"
             >
               Feedback
@@ -162,9 +159,13 @@ export const Nav = () => {
           padding: 4,
         }}
       >
-        <a href="https://blog.upshot.io/" target="_blank" rel="noreferrer">
+        <a
+          href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
+          target="_blank"
+          rel="noreferrer"
+        >
           <IconButton>
-            <Icon color="white" icon="mediumBlock" size={32} />
+            <Icon color="white" icon="mirror" size={32} />
           </IconButton>
         </a>
 

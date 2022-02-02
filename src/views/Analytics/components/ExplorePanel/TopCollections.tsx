@@ -1,5 +1,10 @@
+/** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
-import { CollectorAccordion, useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import {
+  CollectorAccordion,
+  Icon,
+  useBreakpointIndex,
+} from '@upshot-tech/upshot-ui'
 import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { Pagination } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Grid, Text } from '@upshot-tech/upshot-ui'
@@ -52,6 +57,7 @@ function CollectionTableHead() {
                 {col}
               </TableCell>
             ))}
+            <TableCell></TableCell>
           </TableRow>
         </TableHead>
       )}
@@ -116,7 +122,7 @@ export default function ExploreNFTs({
   if (loading) return <ExplorePanelSkeleton />
 
   /* Error state. */
-  if (error) return <div>There was an error completing your request.</div>
+  // if (error) return <div>There was an error completing your request.</div>
 
   if (!data?.orderedCollectionsByMetricSearch.assetSets.length)
     return <div>No results available.</div>
