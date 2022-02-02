@@ -26,7 +26,7 @@ import { imageOptimizer, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import { FormattedENS } from 'components/FormattedENS'
 import { Nav } from 'components/Nav'
-import { PIXELATED_CONTRACTS } from 'constants/'
+import { OPENSEA_REFERRAL_LINK, PIXELATED_CONTRACTS } from 'constants/'
 import { format, formatDistance } from 'date-fns'
 import makeBlockie from 'ethereum-blockies-base64'
 import { ethers } from 'ethers'
@@ -200,7 +200,12 @@ function IncludeUnsupportedCheckbox({
       }}
     >
       <LabelUI sx={{ alignItems: 'center', marginBottom: 2 }}>
-        <Checkbox checked={value} sx={{ cursor: 'pointer' }} {...{ onClick }} />
+        <Checkbox
+          readOnly
+          checked={value}
+          sx={{ cursor: 'pointer' }}
+          {...{ onClick }}
+        />
         <Text color="blue">Include unappraised assets</Text>
       </LabelUI>
       <Text color="grey-500">
@@ -579,7 +584,8 @@ export default function UserView() {
             setShowCollection({
               id: collection.id,
               name: collection.name,
-              imageUrl: collection.imageUrl,
+              imageUrl: collection.imagrl,
+              eU,
             })
           }
         >
@@ -645,6 +651,7 @@ export default function UserView() {
       <>
         <CollectionCard
           isUnsupported
+          link={`https://opensea.io/collection/${osCollectionSlug}?ref=${OPENSEA_REFERRAL_LINK}`}
           avatarImage={imageUrl}
           name={name}
           key={index}
@@ -1527,6 +1534,7 @@ export default function UserView() {
                             ? name.replace(showCollection.name, '')
                             : name
                           : '', // remove collection name from NFT name
+                        url: `/analytics/nft/${id}`,
                       })
                     )
                   : dataUnsupportedAssets?.getUnsupportedAssetPage?.assets?.map(
@@ -1545,6 +1553,7 @@ export default function UserView() {
                             ? name.replace(showCollection.name, '')
                             : name
                           : '', // remove collection name from NFT name
+                        url: `https://opensea.io/assets/${address}/${tokenId}?ref=${OPENSEA_REFERRAL_LINK}`,
                       })
                     )) ?? []
               }
