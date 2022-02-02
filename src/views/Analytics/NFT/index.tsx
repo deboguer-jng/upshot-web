@@ -217,7 +217,6 @@ export default function NFTView() {
   const assetName = getAssetName(name, collection?.name, tokenId)
   const displayName =
     ensName ??
-    creatorUsername ??
     shortenAddress(txHistory[0]?.txToAddress) ??
     'Unknown'
 
