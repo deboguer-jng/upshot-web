@@ -221,6 +221,7 @@ export type GetUnsupportedCollectionsData = {
     slugsWithNullFloors: string
     collections: {
       imageUrl: string
+      bannerImageUrl: string
       osCollectionSlug: string
       floorEth: number
       floorUsd: number
@@ -246,6 +247,7 @@ export const GET_UNSUPPORTED_COLLECTIONS = gql`
       slugsWithNullFloors
       collections {
         imageUrl
+        bannerImageUrl
         osCollectionSlug
         floorEth
         floorUsd

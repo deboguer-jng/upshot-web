@@ -655,6 +655,7 @@ export default function UserView() {
     data: {
       name,
       imageUrl,
+      bannerImageUrl,
       address,
       osCollectionSlug,
       floorEth,
@@ -665,6 +666,7 @@ export default function UserView() {
     data: {
       name: string
       imageUrl: string
+      bannerImageUrl: string
       address: string
       floorEth: number
       osCollectionSlug: string
@@ -711,10 +713,11 @@ export default function UserView() {
                 display: 'block',
                 paddingTop: '50%',
                 backgroundImage: `url(${
+                  bannerImageUrl ??
                   imageOptimizer(imageUrl, {
                     width: 500,
                     height: 500,
-                  }) ?? imageUrl
+                  })
                 })`,
                 backgroundSize: 'cover',
                 backgroundRepeat: 'no-repeat',
