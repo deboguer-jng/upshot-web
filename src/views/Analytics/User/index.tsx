@@ -609,7 +609,6 @@ export default function UserView() {
               id: collection.id,
               name: collection.name,
               imageUrl: collection.imagrl,
-              eU,
             })
           }
         >
