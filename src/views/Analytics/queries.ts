@@ -166,7 +166,7 @@ export type GetCollectionAvgPriceData = {
 export const GET_COLLECTION_AVG_PRICE = gql`
   query GetCollectionAvgPrice(
     $metric: EOrderedAssetSetMetric!
-    $limit: OneToHundredInt!
+    $limit: Int!
     $name: String
   ) {
     orderedCollectionsByMetricSearch(
@@ -225,7 +225,7 @@ export type GetExploreNFTsData = {
 
 export const GET_EXPLORE_NFTS = gql`
   query GetExploreNFTs(
-    $limit: OneToHundredInt!
+    $limit: Int!
     $offset: Int!
     $searchTerm: String
     $collectionId: Int
@@ -317,7 +317,7 @@ export type GetExploreCollectionsData = {
 export const GET_EXPLORE_COLLECTIONS = gql`
   query GetTopCollections(
     $metric: EOrderedAssetSetMetric!
-    $limit: OneToHundredInt!
+    $limit: Int!
     $offset: Int!
     $name: String
   ) {
@@ -345,11 +345,7 @@ export const GET_EXPLORE_COLLECTIONS = gql`
 `
 
 export const GET_TOP_SALES = gql`
-  query TopSales(
-    $windowSize: ETimeWindow!
-    $limit: OneToHundredInt!
-    $collectionId: Int
-  ) {
+  query TopSales($windowSize: ETimeWindow!, $limit: Int!, $collectionId: Int) {
     topSales(
       windowSize: $windowSize
       limit: $limit
@@ -395,7 +391,7 @@ export type GetTreemapCollectionsData = {
 }
 
 export const GET_TREEMAP_COLLECTIONS = gql`
-  query GetTreeMapCollections($limit: OneToHundredInt!) {
+  query GetTreeMapCollections($limit: Int!) {
     orderedCollectionsByMetricSearch(
       limit: $limit
       metric: VOLUME
@@ -454,11 +450,7 @@ export type GetTopCollectorsData = {
 }
 
 export const GET_TOP_COLLECTORS = gql`
-  query GetTopCollectors(
-    $limit: OneToHundredInt!
-    $offset: Int
-    $searchTerm: String
-  ) {
+  query GetTopCollectors($limit: Int!, $offset: Int, $searchTerm: String) {
     getOwnersByWhaleness(
       limit: $limit
       offset: $offset
@@ -548,7 +540,7 @@ export type GetCollectorsData = {
 export const GET_COLLECTORS = gql`
   query GetCollectors(
     $id: Int
-    $limit: OneToHundredInt!
+    $limit: Int!
     $offset: Int!
     $assetId: String
     $searchTerm: String
@@ -650,7 +642,7 @@ export type GetPreviousOwnersData = {
 export const GET_PREVIOUS_OWNERS = gql`
   query GetPreviousOwners(
     $id: Int
-    $limit: OneToHundredInt!
+    $limit: Int!
     $assetId: String
     $offset: Int!
   ) {
@@ -699,7 +691,6 @@ export type GetUserOwnedAssetsVars = {
   collectionId?: number
 }
 
-
 export type GetUserOwnedAssetsData = {
   getUser: {
     ownedAssets: {
@@ -713,10 +704,7 @@ export type GetUserOwnedAssetsData = {
 }
 
 export const GET_USER_OWNED_ASSETS = gql`
-  query GetUserOwnedAssets(
-    $userId: Int!
-    $collectionId: Int!
-  ) {
+  query GetUserOwnedAssets($userId: Int!, $collectionId: Int!) {
     getUser(userId: $userId) {
       ownedAssets(collectionId: $collectionId, limit: 20, notable: true) {
         count

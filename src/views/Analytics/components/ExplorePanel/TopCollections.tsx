@@ -157,9 +157,9 @@ export default function ExploreNFTs({
                     }}
                   >
                     <Text sx={{ marginBottom: 1 }}>Average Price</Text>
-                    <Text>
+                    {/* <Text>
                       {dataCheck(weiToEth(latestStats.pastDayWeiAverage, 2))}
-                    </Text>
+                    </Text> */}
                   </Flex>
                   <Flex
                     sx={{
