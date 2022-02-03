@@ -13,7 +13,7 @@ import { PIXELATED_CONTRACTS } from 'constants/'
 import { PAGE_SIZE } from 'constants/'
 import { format } from 'date-fns'
 import router from 'next/router'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
 import { getPriceChangeLabel, weiToEth } from 'utils/number'
 
@@ -125,6 +125,10 @@ export default function ExploreNFTs({
       collectionId,
     },
   })
+
+  useEffect(() => {
+    setPage(0)
+  }, [searchTerm])
 
   /* Loading state. */
   if (loading) return <ExplorePanelSkeleton />

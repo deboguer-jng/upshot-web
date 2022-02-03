@@ -77,12 +77,12 @@ export default function CollectionAvgPricePanel({
   const subtitle =
     'Select collections to add them to the chart, or click icons to see more'
 
-  if (error)
-    return (
-      <CollectionPanel {...{ title, subtitle }}>
-        There was an error completing your request.
-      </CollectionPanel>
-    )
+  // if (error)
+  //   return (
+  //     <CollectionPanel {...{ title, subtitle }}>
+  //       There was an error completing your request.
+  //     </CollectionPanel>
+  //   )
 
   const skeletonCells = [...new Array(20)]
 

@@ -16,7 +16,7 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE } from 'constants/'
 import router from 'next/router'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
 import { getPriceChangeLabel, weiToEth } from 'utils/number'
 
@@ -118,6 +118,10 @@ export default function ExploreNFTs({
     },
   })
 
+  useEffect(() => {
+    setPage(0)
+  }, [searchTerm])
+
   /* Loading state. */
   if (loading) return <ExplorePanelSkeleton />
 
@@ -157,9 +161,9 @@ export default function ExploreNFTs({
                     }}
                   >
                     <Text sx={{ marginBottom: 1 }}>Average Price</Text>
-                    <Text>
+                    {/* <Text>
                       {dataCheck(weiToEth(latestStats.pastDayWeiAverage, 2))}
-                    </Text>
+                    </Text> */}
                   </Flex>
                   <Flex
                     sx={{

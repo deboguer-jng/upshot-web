@@ -12,19 +12,19 @@ import {
   useBreakpointIndex,
 } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE, PIXELATED_CONTRACTS } from 'constants/'
-import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 
 import {
   GET_COLLECTORS,
   GET_PREVIOUS_OWNERS,
+  GET_USER_OWNED_ASSETS,
   GetCollectorsData,
   GetCollectorsVars,
   GetPreviousOwnersData,
   GetPreviousOwnersVars,
   GetUserOwnedAssetsData,
   GetUserOwnedAssetsVars,
-  GET_USER_OWNED_ASSETS,
 } from '../../queries'
 
 export default function Collectors({
@@ -39,8 +39,12 @@ export default function Collectors({
   searchTerm?: string
 }) {
   const [selectedExtraCollections, setSelectedExtraCollections] = useState({})
-  const [selectedExtraCollectionId, setSelectedExtraCollectionId] = useState<number | undefined>()
-  const [selectedCollectorId, setSelectedCollectorId] = useState<number | undefined>()
+  const [selectedExtraCollectionId, setSelectedExtraCollectionId] = useState<
+    number | undefined
+  >()
+  const [selectedCollectorId, setSelectedCollectorId] = useState<
+    number | undefined
+  >()
   const router = useRouter()
   const [page, setPage] = useState(0)
   const handlePageChange = ({ selected }: { selected: number }) => {
@@ -74,27 +78,35 @@ export default function Collectors({
         },
         skip: !id,
       })
-  
-  const { data: extraCollectionData } = useQuery<GetUserOwnedAssetsData, GetUserOwnedAssetsVars>(
-    GET_USER_OWNED_ASSETS,
-    {
-      errorPolicy: 'all',
-      variables: {
-        userId: selectedCollectorId,
-        collectionId: selectedExtraCollectionId
-      },
-      skip: !selectedCollectorId || !selectedExtraCollectionId
-    }
-  )
+
+  const { data: extraCollectionData } = useQuery<
+    GetUserOwnedAssetsData,
+    GetUserOwnedAssetsVars
+  >(GET_USER_OWNED_ASSETS, {
+    errorPolicy: 'all',
+    variables: {
+      userId: selectedCollectorId,
+      collectionId: selectedExtraCollectionId,
+    },
+    skip: !selectedCollectorId || !selectedExtraCollectionId,
+  })
 
   useEffect(() => {
-    if (extraCollectionData?.getUser?.ownedAssets?.assets && selectedCollectorId) {
+    if (
+      extraCollectionData?.getUser?.ownedAssets?.assets &&
+      selectedCollectorId
+    ) {
       setSelectedExtraCollections({
         ...selectedExtraCollections,
-        [selectedCollectorId]: extraCollectionData?.getUser?.ownedAssets?.assets
+        [selectedCollectorId]:
+          extraCollectionData?.getUser?.ownedAssets?.assets,
       })
     }
   }, [extraCollectionData])
+
+  useEffect(() => {
+    setPage(0)
+  }, [searchTerm])
 
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
@@ -117,7 +129,7 @@ export default function Collectors({
   if (loading) return <ExplorePanelSkeleton />
 
   /* Error state. */
-  if (error) return null
+  // if (error) return null
 
   /* No results state. */
   if (!data?.getOwnersByWhaleness?.owners?.length) return null
@@ -168,27 +180,28 @@ export default function Collectors({
                     pixelated: true,
                     url: `/analytics/collection/${id}`,
                   })
-                  )}
-                  extraCollectionChanged={(collectionId) => {
+                )}
+                extraCollectionChanged={(collectionId) => {
                   setSelectedCollectorId(id)
                   setSelectedExtraCollectionId(collectionId)
                 }}
-                nftCollection={(selectedExtraCollections[id] || assets).map(({ previewImageUrl, id }) => ({
-                  id,
-                  imageUrl: previewImageUrl,
-                  url: `/analytics/nft/${id}`,
-                  pixelated: PIXELATED_CONTRACTS.includes(
-                    id.toString().split('/')[0]
-                  ),
-                  count,
-                })
-              )}
-              key={idx}
-              defaultOpen={idx === 0 ? true : false}
-              {...{ username, count, avgHoldTime }}
-            />
-          )
-        )}
+                nftCollection={(selectedExtraCollections[id] || assets).map(
+                  ({ previewImageUrl, id }) => ({
+                    id,
+                    imageUrl: previewImageUrl,
+                    url: `/analytics/nft/${id}`,
+                    pixelated: PIXELATED_CONTRACTS.includes(
+                      id.toString().split('/')[0]
+                    ),
+                    count,
+                  })
+                )}
+                key={idx}
+                defaultOpen={idx === 0 ? true : false}
+                {...{ username, count, avgHoldTime }}
+              />
+            )
+          )}
       </CollectorAccordion>
       <Flex sx={{ justifyContent: 'center', marginTop: '18px' }}>
         <Pagination
