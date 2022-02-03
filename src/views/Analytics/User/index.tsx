@@ -212,9 +212,9 @@ function IncludeUnsupportedCheckbox({
         <Text color="blue">Include unappraised assets</Text>
       </LabelUI>
       <Text color="grey-500">
-        We are in the process of supporting more collections and NFT
-        appraisals. In the meantime, check this box to view all of the 
-        collections you own NFTs from along with their floor prices.
+        We are in the process of supporting more collections and NFT appraisals.
+        In the meantime, check this box to view all of the collections you own
+        NFTs from along with their floor prices.
       </Text>
     </Panel>
   )
@@ -931,39 +931,40 @@ export default function UserView() {
                               : '-'}
                           </Text>
                         </Flex>
-                        <Flex sx={{ justifyContent: 'center' }}>
-                          <Text
-                            color="blue"
-                            sx={{
-                              fontSize: 1,
-                              lineHeight: 1,
-                              marginRight: '2px',
-                            }}
-                          >
-                            {data?.getUser?.totalAssetAppraisedValueUsd
-                              ? '~ $'
-                              : ''}
-                          </Text>
-                          <Text
-                            color="blue"
-                            sx={{
-                              fontSize: 2,
-                              fontWeight: 'heading',
-                              lineHeight: 1,
-                            }}
-                          >
-                            {data?.getUser?.totalAssetAppraisedValueUsd
-                              && formatLargeNumber(
-                                  Number(
-                                    formatCurrencyUnits(
-                                      data.getUser.totalAssetAppraisedValueUsd,
-                                      6
-                                    )
-                                  ) + unsupportedWeightedFloorUsd
-                                )
-                            }
-                          </Text>
-                        </Flex>
+
+                        {!!data?.getUser?.totalAssetAppraisedValueUsd && (
+                          <Flex sx={{ justifyContent: 'center' }}>
+                            <Text
+                              color="blue"
+                              sx={{
+                                fontSize: 1,
+                                lineHeight: 1,
+                                marginRight: '2px',
+                              }}
+                            >
+                              {data?.getUser?.totalAssetAppraisedValueUsd
+                                ? '~ $'
+                                : ''}
+                            </Text>
+                            <Text
+                              color="blue"
+                              sx={{
+                                fontSize: 2,
+                                fontWeight: 'heading',
+                                lineHeight: 1,
+                              }}
+                            >
+                              {formatLargeNumber(
+                                Number(
+                                  formatCurrencyUnits(
+                                    data.getUser.totalAssetAppraisedValueUsd,
+                                    6
+                                  )
+                                ) + unsupportedWeightedFloorUsd
+                              )}
+                            </Text>
+                          </Flex>
+                        )}
                         <Text
                           color="blue"
                           sx={{
@@ -997,7 +998,8 @@ export default function UserView() {
                             textTransform: 'capitalize',
                           }}
                         >
-                          {data?.getUser?.firstAssetPurchaseTime && !noCollection
+                          {data?.getUser?.firstAssetPurchaseTime &&
+                          !noCollection
                             ? formatDistance(
                                 data.getUser.firstAssetPurchaseTime * 1000,
                                 new Date()
@@ -1397,9 +1399,9 @@ export default function UserView() {
               <>
                 {isLoading ? (
                   <Skeleton sx={{ borderRadius: 'lg' }} />
-                ) : noCollection ?
-                  (<></>) : 
-                  Number(data?.getUser?.extraCollections?.count) > 2 ? (
+                ) : noCollection ? (
+                  <></>
+                ) : Number(data?.getUser?.extraCollections?.count) > 2 ? (
                   distributionRadar
                 ) : (
                   distributionTable
@@ -1489,11 +1491,11 @@ export default function UserView() {
           {!data?.getUser?.extraCollections?.count && (
             <Grid gap={4} columns={[1, 1, 1, 3]}>
               <IncludeUnsupportedCheckbox
-              onClick={() =>
-                setIncludeUnsupportedAssets(!includeUnsupportedAssets)
-              }
-              value={includeUnsupportedAssets}
-            />
+                onClick={() =>
+                  setIncludeUnsupportedAssets(!includeUnsupportedAssets)
+                }
+                value={includeUnsupportedAssets}
+              />
             </Grid>
           )}
           <Masonry
