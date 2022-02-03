@@ -1405,7 +1405,7 @@ export default function UserView() {
               </>
             </Grid>
 
-            {noCollection && (
+            {/* {noCollection && (
               <>
                 <Box
                   sx={{
@@ -1478,11 +1478,21 @@ export default function UserView() {
                   </Flex>
                 </Flex>
               </>
-            )}
+            )} */}
           </Box>
 
           {!!data?.getUser?.extraCollections?.count && (
             <Text variant="h1Primary">Collection</Text>
+          )}
+          {!data?.getUser?.extraCollections?.count && (
+            <Grid gap={4} columns={[1, 1, 1, 3]}>
+              <IncludeUnsupportedCheckbox
+              onClick={() =>
+                setIncludeUnsupportedAssets(!includeUnsupportedAssets)
+              }
+              value={includeUnsupportedAssets}
+            />
+            </Grid>
           )}
           <Masonry
             columnWidth={300}
