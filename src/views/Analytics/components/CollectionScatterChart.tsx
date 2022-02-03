@@ -27,7 +27,7 @@ export default function CollectionScatterChart({
   if (loading) return <ScatterChart loading />
 
   /* Error state. */
-  if (error) return <ScatterChart error />
+  // if (error) return <ScatterChart error />
 
   /* No results state. */
   if (!data?.collectionById?.allSaleEvents?.length)

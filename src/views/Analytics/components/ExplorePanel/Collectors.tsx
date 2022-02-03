@@ -125,7 +125,7 @@ export default function Collectors({
   if (loading) return <ExplorePanelSkeleton />
 
   /* Error state. */
-  if (error) return null
+  // if (error) return null
 
   /* No results state. */
   if (!data?.getOwnersByWhaleness?.owners?.length) return null
