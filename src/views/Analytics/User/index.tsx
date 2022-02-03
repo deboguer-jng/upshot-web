@@ -212,8 +212,9 @@ function IncludeUnsupportedCheckbox({
         <Text color="blue">Include unappraised assets</Text>
       </LabelUI>
       <Text color="grey-500">
-        We are in the process of supporting more and more collections and NFT
-        appraisals. See the full list of currently supported collections here.
+        We are in the process of supporting more collections and NFT
+        appraisals. In the meantime, check this box to view all of the 
+        collections you own NFTs from along with their floor prices.
       </Text>
     </Panel>
   )
