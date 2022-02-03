@@ -1396,7 +1396,8 @@ export default function UserView() {
               <>
                 {isLoading ? (
                   <Skeleton sx={{ borderRadius: 'lg' }} />
-                ) : noCollection ||
+                ) : noCollection ?
+                  (<></>) : 
                   Number(data?.getUser?.extraCollections?.count) > 2 ? (
                   distributionRadar
                 ) : (
