@@ -1,8 +1,8 @@
 import { useQuery } from '@apollo/client'
 import { CollectorAccordion, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
-import { Pagination } from '@upshot-tech/upshot-ui'
-import { Box, Flex, Grid, Skeleton, Text } from '@upshot-tech/upshot-ui'
+import { Pagination, useTheme } from '@upshot-tech/upshot-ui'
+import { Box, Flex, Grid, Icon, Skeleton, Text } from '@upshot-tech/upshot-ui'
 import {
   TableBody,
   TableCell,
@@ -23,16 +23,28 @@ import {
   GetExploreNFTsVars,
 } from '../../queries'
 
-const columns = [
-  'Last Sale Date',
-  'Last Sale Price',
-  'Latest Appraised Value',
-  'Last Sale/Latest Appraisal',
-]
+const columns = {
+  LAST_SALE_DATE: 'Last Sale Date',
+  LAST_SALE_PRICE: 'Last Sale Price',
+  LAST_APPRAISAL_PRICE: 'Latest Appraised Value',
+  LAST_SALE_LATEST_APPRAISAL: 'Last Sale/Latest Appraisal',
+}
 
 function NFTTableHead() {
+  const [selectedColumn, setSelectedColumn] = useState(1)
+  const [sortAscending, setSortAscending] = useState(false)
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
+  const { theme } = useTheme()
+
+  const handleChangeSelection = (columnIdx: number) => {
+    if (columnIdx === selectedColumn) {
+      // Toggle sort order for current selection.
+      setSortAscending(!sortAscending)
+    }
+
+    setSelectedColumn(columnIdx)
+  }
 
   return (
     <>
@@ -40,10 +52,70 @@ function NFTTableHead() {
         <TableHead>
           <TableRow>
             <TableCell></TableCell>
-            <TableCell color="grey-500">NFT</TableCell>
-            {columns.map((col, key) => (
-              <TableCell key={key} color="grey-500">
-                {col}
+            <TableCell
+              color="grey-500"
+              /**
+               * Collection sorting currently not available from API.
+               */
+              // onClick={() => handleChangeSelection(0)}
+              sx={{
+                cursor: 'pointer',
+                color: selectedColumn === 0 ? 'white' : null,
+                userSelect: 'none',
+                transition: 'default',
+                '& svg path': {
+                  transition: 'default',
+                  '&:nth-of-type(1)': {
+                    fill:
+                      selectedColumn === 0 && sortAscending
+                        ? 'white'
+                        : theme.rawColors['grey-500'],
+                  },
+                  '&:nth-of-type(2)': {
+                    fill:
+                      !sortAscending && selectedColumn === 0
+                        ? 'white'
+                        : theme.rawColors['grey-500'],
+                  },
+                },
+              }}
+            >
+              <Flex sx={{ alignItems: 'center' }}>
+                NFT
+                {/* <Icon icon="tableSort" height={16} width={16} /> */}
+              </Flex>
+            </TableCell>
+            {Object.values(columns).map((col, idx) => (
+              <TableCell
+                key={idx}
+                color="grey-500"
+                onClick={() => handleChangeSelection(idx + 1)}
+                sx={{
+                  cursor: 'pointer',
+                  color: selectedColumn === idx + 1 ? 'white' : null,
+                  transition: 'default',
+                  userSelect: 'none',
+                  '& svg path': {
+                    transition: 'default',
+                    '&:nth-child(1)': {
+                      fill:
+                        selectedColumn === idx + 1 && sortAscending
+                          ? 'white'
+                          : theme.rawColors['grey-500'],
+                    },
+                    '&:nth-child(2)': {
+                      fill:
+                        !sortAscending && selectedColumn === idx + 1
+                          ? 'white'
+                          : theme.rawColors['grey-500'],
+                    },
+                  },
+                }}
+              >
+                <Flex sx={{ alignItems: 'center' }}>
+                  {col}
+                  {idx < 3 && <Icon icon="tableSort" height={16} width={16} />}
+                </Flex>
               </TableCell>
             ))}
             <TableCell></TableCell>

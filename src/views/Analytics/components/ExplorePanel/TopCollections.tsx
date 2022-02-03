@@ -6,7 +6,7 @@ import {
   useBreakpointIndex,
 } from '@upshot-tech/upshot-ui'
 import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
-import { Pagination } from '@upshot-tech/upshot-ui'
+import { Pagination, useTheme } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Grid, Text } from '@upshot-tech/upshot-ui'
 import {
   TableBody,
@@ -27,16 +27,29 @@ import {
 } from '../../queries'
 import { ExplorePanelSkeleton } from './NFTs'
 
-const columns = [
-  'Total Volume',
-  'Average Price',
-  'Floor Price',
-  'Floor Change (7 Days)',
-]
+const columns = {
+  VOLUME: 'Total Volume',
+  AVERAGE: 'Average Price',
+  FLOOR: 'Floor Price',
+  WEEK_FLOOR_CHANGE: 'Floor Change (7 Days)',
+}
 
 function CollectionTableHead() {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
+  const [selectedColumn, setSelectedColumn] = useState(0)
+  const [sortAscending, setSortAscending] = useState(false)
+  const { theme } = useTheme()
+
+  const handleChangeSelection = (columnIdx: number) => {
+    console.log({ columnIdx })
+    if (columnIdx === selectedColumn) {
+      // Toggle sort order for current selection.
+      setSortAscending(!sortAscending)
+    }
+
+    setSelectedColumn(columnIdx)
+  }
 
   return (
     <>
@@ -51,10 +64,70 @@ function CollectionTableHead() {
         <TableHead>
           <TableRow>
             <TableCell></TableCell>
-            <TableCell color="grey-500">Collection</TableCell>
-            {columns.map((col, key) => (
-              <TableCell key={key} color="grey-500">
-                {col}
+            <TableCell
+              color="grey-500"
+              /**
+               * Collection sorting currently not available from API.
+               */
+              // onClick={() => handleChangeSelection(0)}
+              sx={{
+                cursor: 'pointer',
+                color: selectedColumn === 0 ? 'white' : null,
+                transition: 'default',
+                userSelect: 'none',
+                '& svg path': {
+                  transition: 'default',
+                  '&:nth-of-type(1)': {
+                    fill:
+                      selectedColumn === 0 && sortAscending
+                        ? 'white'
+                        : theme.rawColors['grey-500'],
+                  },
+                  '&:nth-of-type(2)': {
+                    fill:
+                      !sortAscending && selectedColumn === 0
+                        ? 'white'
+                        : theme.rawColors['grey-500'],
+                  },
+                },
+              }}
+            >
+              <Flex sx={{ alignItems: 'center' }}>
+                Collection
+                {/* <Icon icon="tableSort" height={16} width={16} /> */}
+              </Flex>
+            </TableCell>
+            {Object.values(columns).map((col, idx) => (
+              <TableCell
+                key={idx}
+                color="grey-500"
+                onClick={() => handleChangeSelection(idx + 1)}
+                sx={{
+                  cursor: 'pointer',
+                  color: selectedColumn === idx + 1 ? 'white' : null,
+                  transition: 'default',
+                  userSelect: 'none',
+                  '& svg path': {
+                    transition: 'default',
+                    '&:nth-child(1)': {
+                      fill:
+                        selectedColumn === idx + 1 && sortAscending
+                          ? 'white'
+                          : theme.rawColors['grey-500'],
+                    },
+                    '&:nth-child(2)': {
+                      fill:
+                        !sortAscending && selectedColumn === idx + 1
+                          ? 'white'
+                          : theme.rawColors['grey-500'],
+                    },
+                  },
+                }}
+              >
+                <Flex sx={{ alignItems: 'center' }}>
+                  {col}
+                  <Icon icon="tableSort" height={16} width={16} />
+                </Flex>
               </TableCell>
             ))}
             <TableCell></TableCell>
