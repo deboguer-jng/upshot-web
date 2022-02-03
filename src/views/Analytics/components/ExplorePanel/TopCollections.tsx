@@ -16,7 +16,7 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE } from 'constants/'
 import router from 'next/router'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
 import { getPriceChangeLabel, weiToEth } from 'utils/number'
 
@@ -117,6 +117,10 @@ export default function ExploreNFTs({
       name: searchTerm,
     },
   })
+
+  useEffect(() => {
+    setPage(0)
+  }, [searchTerm])
 
   /* Loading state. */
   if (loading) return <ExplorePanelSkeleton />

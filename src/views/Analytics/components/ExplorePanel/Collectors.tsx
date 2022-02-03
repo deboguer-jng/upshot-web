@@ -104,6 +104,10 @@ export default function Collectors({
     }
   }, [extraCollectionData])
 
+  useEffect(() => {
+    setPage(0)
+  }, [searchTerm])
+
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
 
