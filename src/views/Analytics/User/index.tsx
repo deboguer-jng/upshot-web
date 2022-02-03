@@ -953,7 +953,7 @@ export default function UserView() {
                             }}
                           >
                             {data?.getUser?.totalAssetAppraisedValueUsd
-                              ? formatLargeNumber(
+                              && formatLargeNumber(
                                   Number(
                                     formatCurrencyUnits(
                                       data.getUser.totalAssetAppraisedValueUsd,
@@ -961,7 +961,7 @@ export default function UserView() {
                                     )
                                   ) + unsupportedWeightedFloorUsd
                                 )
-                              : '-'}
+                            }
                           </Text>
                         </Flex>
                         <Text
@@ -997,7 +997,7 @@ export default function UserView() {
                             textTransform: 'capitalize',
                           }}
                         >
-                          {data?.getUser?.firstAssetPurchaseTime
+                          {data?.getUser?.firstAssetPurchaseTime && !noCollection
                             ? formatDistance(
                                 data.getUser.firstAssetPurchaseTime * 1000,
                                 new Date()
