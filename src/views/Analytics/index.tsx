@@ -81,7 +81,7 @@ export default function AnalyticsView() {
         sx={{
           flexDirection: 'column',
           minHeight: '100vh',
-          gap: 4,
+          gap: 5,
           padding: 4,
         }}
       >
@@ -89,18 +89,17 @@ export default function AnalyticsView() {
           sx={{
             flexDirection: 'column',
             paddingBottom: 0,
-            marginTop: '-20px',
+            marginTop: '-2px',
             '@media screen and (min-width: 320px)': {
               flexDirection: 'row',
               paddingDirection: '10px',
-              marginTop: '-10px',
             },
           }}
         >
           <Text
             variant="h0Secondary"
             sx={{
-              lineHeight: '2.25rem',
+              lineHeight: '3.5rem',
               color: 'blue',
               fontWeight: '700',
               fontSize: ['42px', 8],
@@ -113,7 +112,7 @@ export default function AnalyticsView() {
             <Text
               variant="h0Secondary"
               sx={{
-                lineHeight: '2.25rem',
+                lineHeight: '3.5rem',
                 fontWeight: '500',
                 fontSize: ['42px', 8],
               }}
@@ -127,7 +126,7 @@ export default function AnalyticsView() {
                   color: 'black',
                   backgroundColor: 'blue',
                   borderRadius: 'xs',
-                  padding: '2px 4px',
+                  padding: '4px 8px',
                   fontSize: ['9px', 2],
                   fontWeight: 'bold',
                   lineHeight: 1,
@@ -143,7 +142,6 @@ export default function AnalyticsView() {
             flex: '1 1 auto',
             flexDirection: 'column',
             gap: 5,
-            marginTop: 5,
           }}
         >
           <ButtonTabs onChange={handleChange} />
@@ -165,10 +163,13 @@ export default function AnalyticsView() {
           <Box sx={{ position: 'relative' }}>
             <TopSellingCollectionNFTs />
           </Box>
-          <Text variant="text.h1Secondary" sx={{ lineHeight: '2.25rem' }}>
-            Market Cap (Change Over 7 Days)
-          </Text>
-          <CollectionsTreeMap />
+          {
+          // Temporarily disabled until we can address MC inconsistencies
+          // <Text variant="text.h1Secondary" sx={{ lineHeight: '2.25rem' }}>
+          //   Market Cap (Change Over 7 Days)
+          // </Text>
+          // <CollectionsTreeMap />
+          }
           <ExplorePanel />
         </Flex>
         <Footer />

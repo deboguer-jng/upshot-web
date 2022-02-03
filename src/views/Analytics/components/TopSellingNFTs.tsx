@@ -135,16 +135,16 @@ export default function TopSellingNFTs({
       </>
     )
 
-  if (error)
-    return (
-      <>
-        <TopSellingNFTsHeader
-          period={period}
-          setPeriod={(val) => setPeriod(val)}
-        />
-        There was an error completing your request.
-      </>
-    )
+  // if (error)
+  //   return (
+  //     <>
+  //       <TopSellingNFTsHeader
+  //         period={period}
+  //         setPeriod={(val) => setPeriod(val)}
+  //       />
+  //       There was an error completing your request.
+  //     </>
+  //   )
 
   if (!data?.topSales.length)
     return (

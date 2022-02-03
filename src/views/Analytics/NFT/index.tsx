@@ -217,7 +217,6 @@ export default function NFTView() {
   const assetName = getAssetName(name, collection?.name, tokenId)
   const displayName =
     ensName ??
-    creatorUsername ??
     shortenAddress(txHistory[0]?.txToAddress) ??
     'Unknown'
 
@@ -553,7 +552,7 @@ export default function NFTView() {
 
                     <Text variant="h3Secondary">Attributes</Text>
                     <Grid columns={isMobile ? 1 : 2}>
-                      {traits.map(({ value, rarity }, idx) => (
+                      {traits.map(({ traitType, value, rarity }, idx) => (
                         <Box key={idx}>
                           <Link
                             href={`/analytics/search?attributes=${value}&collection=${collection?.name}`}
@@ -566,6 +565,8 @@ export default function NFTView() {
                               }}
                             >
                               <LabelAttribute
+                                expanded={true}
+                                expandedText={traitType ? traitType : 'Trait'}
                                 variant="percentage"
                                 percentage={(100 - rarity * 100)
                                   .toFixed(2)

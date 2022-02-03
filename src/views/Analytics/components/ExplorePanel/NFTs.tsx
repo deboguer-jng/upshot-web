@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { CollectorAccordion,useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import { CollectorAccordion, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { Pagination } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Grid, Skeleton, Text } from '@upshot-tech/upshot-ui'
@@ -13,7 +13,7 @@ import { PIXELATED_CONTRACTS } from 'constants/'
 import { PAGE_SIZE } from 'constants/'
 import { format } from 'date-fns'
 import router from 'next/router'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
 import { getPriceChangeLabel, weiToEth } from 'utils/number'
 
@@ -126,11 +126,15 @@ export default function ExploreNFTs({
     },
   })
 
+  useEffect(() => {
+    setPage(0)
+  }, [searchTerm])
+
   /* Loading state. */
   if (loading) return <ExplorePanelSkeleton />
 
   /* Error state. */
-  if (error) return <div>There was an error completing your request.</div>
+  // if (error) return <div>There was an error completing your request.</div>
 
   if (!data?.assetGlobalSearch?.assets?.length)
     return <div>No results available.</div>

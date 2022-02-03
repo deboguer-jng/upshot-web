@@ -57,10 +57,12 @@ export const GET_COLLECTOR = gql`
   query GetCollector(
     $userId: Int
     $address: String
-    $collectionLimit: OneToHundredInt!
+    $collectionLimit: Int!
     $collectionOffset: Int!
-    $assetLimit: OneToHundredInt!
+    $assetLimit: Int!
     $assetOffset: Int!
+    $txLimit: Int!
+    $txOffset: Int!
   ) {
     getUser(userId: $userId, address: $address) {
       totalAssetAppraisedValueUsd
@@ -197,7 +199,7 @@ export const GET_COLLECTION_ASSETS = gql`
   query GetCollectionAssets(
     $userAddress: String
     $id: Int!
-    $limit: OneToHundredInt!
+    $limit: Int!
     $offset: Int!
   ) {
     collectionById(id: $id) {
@@ -217,6 +219,151 @@ export const GET_COLLECTION_ASSETS = gql`
           lastAppraisalUsdPrice
           contractAddress
         }
+      }
+    }
+  }
+`
+
+/**
+ * Get unsupported collections
+ */
+export type GetUnsupportedCollectionsVars = {
+  userAddress?: string
+  limit?: number
+  offset?: number
+}
+
+export type GetUnsupportedCollectionsData = {
+  getUnsupportedCollectionPage: {
+    nextOffset: number
+    slugsWithNullFloors: string
+    collections: {
+      imageUrl: string
+      bannerImageUrl: string
+      osCollectionSlug: string
+      floorEth: number
+      floorUsd: number
+      name: string
+      address: string
+      numOwnedAssets: number
+    }[]
+  }
+}
+
+export const GET_UNSUPPORTED_COLLECTIONS = gql`
+  query GetUnsupportedCollections(
+    $userAddress: String!
+    $limit: Int!
+    $offset: Int
+  ) {
+    getUnsupportedCollectionPage(
+      userAddress: $userAddress
+      limit: $limit
+      offset: $offset
+    ) {
+      nextOffset
+      slugsWithNullFloors
+      collections {
+        imageUrl
+        bannerImageUrl
+        osCollectionSlug
+        floorEth
+        floorUsd
+        name
+        address
+        numOwnedAssets
+      }
+    }
+  }
+`
+
+/**
+ * Get unsupported floors
+ */
+export type GetUnsupportedFloorsVars = {
+  stringifiedSlugs?: string
+}
+
+export type GetUnsupportedFloorsData = {
+  getUnsupportedFloors: {
+    floorEth: number
+    floorUsd: number
+  }[]
+}
+
+export const GET_UNSUPPORTED_FLOORS = gql`
+  query GetUnsupportedFloors($stringifiedSlugs: String!) {
+    getUnsupportedFloors(stringifiedSlugs: $stringifiedSlugs) {
+      floorEth
+      floorUsd
+    }
+  }
+`
+
+/**
+ * Get unsupported weighted floors
+ */
+export type GetUnsupportedWeightedFloorsVars = {
+  userAddress?: string
+}
+
+export type GetUnsupportedWeightedFloorsData = {
+  getUnsupportedWeightedFloorSum: {
+    floorEth: number
+    floorUsd: number
+  }
+}
+
+export const GET_UNSUPPORTED_WEIGHTED_FLOORS = gql`
+  query GetUnsupportedWeightedFloorSum($userAddress: String!) {
+    getUnsupportedWeightedFloorSum(userAddress: $userAddress) {
+      floorEth
+      floorUsd
+    }
+  }
+`
+
+/**
+ * Get unsupported assets
+ */
+export type GetUnsupportedAssetsVars = {
+  userAddress?: string
+  osCollectionSlug?: string
+  limit?: number
+  offset?: number
+}
+
+export type GetUnsupportedAssetsData = {
+  getUnsupportedAssetPage: {
+    nextOffset: number
+    assets: {
+      address: string
+      tokenId: string
+      name: string
+      imageUrl: string
+    }[]
+  }
+}
+
+export const GET_UNSUPPORTED_ASSETS = gql`
+  query GetUnsupportedAssets(
+    $userAddress: String!
+    $osCollectionSlug: String!
+    $limit: Int
+    $offset: Int
+  ) {
+    getUnsupportedAssetPage(
+      userAddress: $userAddress
+      osCollectionSlug: $osCollectionSlug
+      limit: $limit
+      offset: $offset
+    ) {
+      nextOffset
+      assets {
+        address
+        name
+        tokenId
+        imageUrl
       }
     }
   }

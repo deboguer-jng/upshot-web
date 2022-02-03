@@ -173,18 +173,18 @@ export default function TopSellingCollectionNFTs({
       </>
     )
 
-  if (error || collectionError)
-    return (
-      <>
-        <TopSellingCollectionNFTsHeader
-          period={period}
-          setPeriod={(val) => setPeriod(val)}
-          topSellingType={topSellingType}
-          setTopSellingType={(val) => setTopSellingType(val)}
-        />
-        There was an error completing your request.
-      </>
-    )
+  // if (error || collectionError)
+  //   return (
+  //     <>
+  //       <TopSellingCollectionNFTsHeader
+  //         period={period}
+  //         setPeriod={(val) => setPeriod(val)}
+  //         topSellingType={topSellingType}
+  //         setTopSellingType={(val) => setTopSellingType(val)}
+  //       />
+  //       There was an error completing your request.
+  //     </>
+  //   )
 
   if (
     !data?.topSales.length ||

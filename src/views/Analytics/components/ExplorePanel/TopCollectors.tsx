@@ -16,7 +16,7 @@ import {
 import { PAGE_SIZE, PIXELATED_CONTRACTS } from 'constants/'
 import makeBlockie from 'ethereum-blockies-base64'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
 import { weiToEth } from 'utils/number'
@@ -51,11 +51,15 @@ export default function TopCollectors({ searchTerm }: { searchTerm: string }) {
     variables: { limit: PAGE_SIZE, offset: page * PAGE_SIZE, searchTerm },
   })
 
+  useEffect(() => {
+    setPage(0)
+  }, [searchTerm])
+
   /* Load state. */
   if (loading) return <ExplorePanelSkeleton />
 
   /* Error state. */
-  if (error) return <div>There was an error completing your request.</div>
+  // if (error) return <div>There was an error completing your request.</div>
 
   /* No results state. */
   if (!data?.getOwnersByWhaleness?.['owners']?.length)

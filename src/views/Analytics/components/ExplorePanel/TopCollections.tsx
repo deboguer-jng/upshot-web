@@ -1,9 +1,13 @@
 /** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
-import { CollectorAccordion, Icon, useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import {
+  CollectorAccordion,
+  Icon,
+  useBreakpointIndex,
+} from '@upshot-tech/upshot-ui'
 import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { Pagination } from '@upshot-tech/upshot-ui'
-import { Flex, Grid, Text, Box } from '@upshot-tech/upshot-ui'
+import { Box, Flex, Grid, Text } from '@upshot-tech/upshot-ui'
 import {
   TableBody,
   TableCell,
@@ -12,7 +16,7 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE } from 'constants/'
 import router from 'next/router'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
 import { getPriceChangeLabel, weiToEth } from 'utils/number'
 
@@ -114,11 +118,15 @@ export default function ExploreNFTs({
     },
   })
 
+  useEffect(() => {
+    setPage(0)
+  }, [searchTerm])
+
   /* Loading state. */
   if (loading) return <ExplorePanelSkeleton />
 
   /* Error state. */
-  if (error) return <div>There was an error completing your request.</div>
+  // if (error) return <div>There was an error completing your request.</div>
 
   if (!data?.orderedCollectionsByMetricSearch.assetSets.length)
     return <div>No results available.</div>
@@ -153,9 +161,9 @@ export default function ExploreNFTs({
                     }}
                   >
                     <Text sx={{ marginBottom: 1 }}>Average Price</Text>
-                    <Text>
+                    {/* <Text>
                       {dataCheck(weiToEth(latestStats.pastDayWeiAverage, 2))}
-                    </Text>
+                    </Text> */}
                   </Flex>
                   <Flex
                     sx={{
@@ -179,7 +187,9 @@ export default function ExploreNFTs({
                       <br /> (7 Days)
                     </Text>
                     <Text
-                      sx={{ color: getPriceChangeColor(latestStats.weekFloorChange) }}
+                      sx={{
+                        color: getPriceChangeColor(latestStats.weekFloorChange),
+                      }}
                     >
                       {getPriceChangeLabel(latestStats.weekFloorChange)}
                     </Text>
