@@ -20,6 +20,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  Tooltip,
   useTheme,
 } from '@upshot-tech/upshot-ui'
 import { imageOptimizer, useBreakpointIndex } from '@upshot-tech/upshot-ui'
@@ -869,6 +870,81 @@ export default function UserView() {
     </Panel>
   )
 
+  // pre-calculate portfolio appraisal values
+  const calculatedTotalAssetAppraisedValueWei =
+    data?.getUser?.totalAssetAppraisedValueWei
+    ? (
+        parseFloat(
+          ethers.utils.formatEther(
+            data.getUser.totalAssetAppraisedValueWei
+          )
+        ) + unsupportedWeightedFloorEth
+      ).toFixed(2)
+    : '-'
+
+  const calculatedTotalAssetAppraisedValueUsd = 
+    data?.getUser?.totalAssetAppraisedValueUsd
+    ? formatLargeNumber(
+        Number(
+          formatCurrencyUnits(
+            data.getUser.totalAssetAppraisedValueUsd,
+            6
+          )
+        ) + unsupportedWeightedFloorUsd
+      )
+    : '-'
+
+  // Generate content for tooltip
+  const TooltipContent = (
+    <div style={{ textAlign: 'left' }}>
+      <Text
+        color="blue"
+        sx={{
+          fontSize: 4,
+          lineHeight: 1.3,
+          display: 'block',
+        }}
+      >
+        {data?.getUser?.totalAssetAppraisedValueWei ? 'Ξ' : ''}
+        {calculatedTotalAssetAppraisedValueWei}
+      </Text>
+      {!!data?.getUser?.totalAssetAppraisedValueUsd && (
+        <Text
+          color="blue"
+          sx={{
+            fontSize: 4,
+            lineHeight: 1.3,
+            display: 'block',
+          }}
+        >
+          {data?.getUser?.totalAssetAppraisedValueUsd
+            ? '~ $'
+            : ''}
+          {calculatedTotalAssetAppraisedValueUsd}
+        </Text>
+      )}
+{/*       <Text
+        color="grey-500"
+        sx={{
+          display: 'block',
+          marginTop: 4,
+          lineHeight: 1.3,
+        }}
+      >
+        Portfolio appraisal last updated:
+      </Text>
+      <Text
+        color="grey-500"
+        sx={{
+          display: 'block',
+          lineHeight: 1.3,
+        }}
+      >
+        We should display the last update datetime here
+      </Text> */}
+    </div>
+  )
+
   return (
     <>
       <Layout>
@@ -911,7 +987,7 @@ export default function UserView() {
                               marginRight: '2px',
                             }}
                           >
-                            {data?.getUser?.totalAssetAppraisedValueUsd
+                            {data?.getUser?.totalAssetAppraisedValueWei
                               ? 'Ξ'
                               : ''}
                           </Text>
@@ -923,51 +999,9 @@ export default function UserView() {
                               lineHeight: 1,
                             }}
                           >
-                            {data?.getUser?.totalAssetAppraisedValueWei
-                              ? (
-                                  parseFloat(
-                                    ethers.utils.formatEther(
-                                      data.getUser.totalAssetAppraisedValueWei
-                                    )
-                                  ) + unsupportedWeightedFloorEth
-                                ).toFixed(2)
-                              : '-'}
+                            {calculatedTotalAssetAppraisedValueWei}
                           </Text>
                         </Flex>
-
-                        {!!data?.getUser?.totalAssetAppraisedValueUsd && (
-                          <Flex sx={{ justifyContent: 'center' }}>
-                            <Text
-                              color="blue"
-                              sx={{
-                                fontSize: 1,
-                                lineHeight: 1,
-                                marginRight: '2px',
-                              }}
-                            >
-                              {data?.getUser?.totalAssetAppraisedValueUsd
-                                ? '~ $'
-                                : ''}
-                            </Text>
-                            <Text
-                              color="blue"
-                              sx={{
-                                fontSize: 2,
-                                fontWeight: 'heading',
-                                lineHeight: 1,
-                              }}
-                            >
-                              {formatLargeNumber(
-                                Number(
-                                  formatCurrencyUnits(
-                                    data.getUser.totalAssetAppraisedValueUsd,
-                                    6
-                                  )
-                                ) + unsupportedWeightedFloorUsd
-                              )}
-                            </Text>
-                          </Flex>
-                        )}
                         <Text
                           color="blue"
                           sx={{
@@ -977,6 +1011,7 @@ export default function UserView() {
                           }}
                         >
                           Portfolio Appraisal
+                          <Tooltip tooltip={TooltipContent} sx={{ marginLeft: '5px' }} />
                         </Text>
                       </Panel>
                       <Panel
