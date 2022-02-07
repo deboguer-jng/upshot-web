@@ -789,6 +789,7 @@ export default function UserView() {
               <TableCell />
               <TableCell color="grey-500">Collection Name</TableCell>
               <TableCell color="grey-500">NFT Count</TableCell>
+              <TableCell />
             </TableRow>
           </TableHead>
           <TableBody>
@@ -871,79 +872,23 @@ export default function UserView() {
   )
 
   // pre-calculate portfolio appraisal values
-  const calculatedTotalAssetAppraisedValueWei =
-    data?.getUser?.totalAssetAppraisedValueWei
+  const calculatedTotalAssetAppraisedValueWei = data?.getUser
+    ?.totalAssetAppraisedValueWei
     ? (
         parseFloat(
-          ethers.utils.formatEther(
-            data.getUser.totalAssetAppraisedValueWei
-          )
+          ethers.utils.formatEther(data.getUser.totalAssetAppraisedValueWei)
         ) + unsupportedWeightedFloorEth
       ).toFixed(2)
     : '-'
 
-  const calculatedTotalAssetAppraisedValueUsd = 
-    data?.getUser?.totalAssetAppraisedValueUsd
+  const calculatedTotalAssetAppraisedValueUsd = data?.getUser
+    ?.totalAssetAppraisedValueUsd
     ? formatLargeNumber(
         Number(
-          formatCurrencyUnits(
-            data.getUser.totalAssetAppraisedValueUsd,
-            6
-          )
+          formatCurrencyUnits(data.getUser.totalAssetAppraisedValueUsd, 6)
         ) + unsupportedWeightedFloorUsd
       )
     : '-'
-
-  // Generate content for tooltip
-  const TooltipContent = (
-    <div style={{ textAlign: 'left' }}>
-      <Text
-        color="blue"
-        sx={{
-          fontSize: 4,
-          lineHeight: 1.3,
-          display: 'block',
-        }}
-      >
-        {data?.getUser?.totalAssetAppraisedValueWei ? 'Ξ' : ''}
-        {calculatedTotalAssetAppraisedValueWei}
-      </Text>
-      {!!data?.getUser?.totalAssetAppraisedValueUsd && (
-        <Text
-          color="blue"
-          sx={{
-            fontSize: 4,
-            lineHeight: 1.3,
-            display: 'block',
-          }}
-        >
-          {data?.getUser?.totalAssetAppraisedValueUsd
-            ? '~ $'
-            : ''}
-          {calculatedTotalAssetAppraisedValueUsd}
-        </Text>
-      )}
-{/*       <Text
-        color="grey-500"
-        sx={{
-          display: 'block',
-          marginTop: 4,
-          lineHeight: 1.3,
-        }}
-      >
-        Portfolio appraisal last updated:
-      </Text>
-      <Text
-        color="grey-500"
-        sx={{
-          display: 'block',
-          lineHeight: 1.3,
-        }}
-      >
-        We should display the last update datetime here
-      </Text> */}
-    </div>
-  )
 
   return (
     <>
@@ -1011,7 +956,27 @@ export default function UserView() {
                           }}
                         >
                           Portfolio Appraisal
-                          <Tooltip tooltip={TooltipContent} sx={{ marginLeft: '5px' }} />
+                          <Tooltip
+                            tooltip={
+                              <Text
+                                color="grey-300"
+                                variant="small"
+                                sx={{
+                                  textAlign: 'left',
+                                  maxWidth: 150,
+                                  display: 'block',
+                                  fontWeight: 'heading',
+                                  lineHeight: '1rem',
+                                }}
+                              >
+                                {data?.getUser?.totalAssetAppraisedValueWei
+                                  ? `Fancy! Our top tier appraisals are currently
+                                under active development.`
+                                  : `Appraisal currently unavailable.`}
+                              </Text>
+                            }
+                            sx={{ marginLeft: '5px' }}
+                          />
                         </Text>
                       </Panel>
                       <Panel
