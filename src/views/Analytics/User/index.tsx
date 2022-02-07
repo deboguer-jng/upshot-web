@@ -880,6 +880,9 @@ export default function UserView() {
           <Box sx={{ position: 'relative' }}>
             <Grid gap={4} columns={[1, 1, 1, 2]}>
               <Flex sx={{ flexDirection: 'column', gap: 4 }}>
+                <Text variant="h3Secondary" sx={{ lineHeight: 1 }}>
+                  Appraised Assets Summary
+                </Text>
                 <Grid gap={2} columns={[2, 2, 3]}>
                   {isLoading ? (
                     [...new Array(6)].map((_, idx) => (
