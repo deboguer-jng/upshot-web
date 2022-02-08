@@ -335,7 +335,7 @@ export default function UserView() {
   )
 
   /* Request unsupported aggregate collection stats */
-    const { data: dataUnsupportedAggregateCollectionStats } = useQuery<
+  const { data: dataUnsupportedAggregateCollectionStats } = useQuery<
     GetUnsupportedAggregateCollectionStatsData,
     GetUnsupportedAggregateCollectionStatsVars
   >(GET_UNSUPPORTED_AGGREGATE_COLLECTION_STATS, {
@@ -347,23 +347,23 @@ export default function UserView() {
   })
 
   const unsupportedAggregateCollectionStatFloorEth = Number(
-    dataUnsupportedAggregateCollectionStats?.getUnsupportedAggregateCollectionStats?.floorEth ??
-      0.0
+    dataUnsupportedAggregateCollectionStats
+      ?.getUnsupportedAggregateCollectionStats?.floorEth ?? 0.0
   )
 
   const unsupportedAggregateCollectionStatFloorUsd = Number(
-    dataUnsupportedAggregateCollectionStats?.getUnsupportedAggregateCollectionStats?.floorUsd ??
-      0.0
+    dataUnsupportedAggregateCollectionStats
+      ?.getUnsupportedAggregateCollectionStats?.floorUsd ?? 0.0
   )
 
   const unsupportedAggregateCollectionStatNumUniqueCollections = Number(
-    dataUnsupportedAggregateCollectionStats?.getUnsupportedAggregateCollectionStats?.numUniqueCollections ??
-      0
+    dataUnsupportedAggregateCollectionStats
+      ?.getUnsupportedAggregateCollectionStats?.numUniqueCollections ?? 0
   )
 
   const unsupportedAggregateCollectionStatNumAssets = Number(
-    dataUnsupportedAggregateCollectionStats?.getUnsupportedAggregateCollectionStats?.numAssets ??
-      0
+    dataUnsupportedAggregateCollectionStats
+      ?.getUnsupportedAggregateCollectionStats?.numAssets ?? 0
   )
 
   /* Request unsupported floors */
@@ -886,9 +886,7 @@ export default function UserView() {
     ?.totalAssetAppraisedValueWei
     ? (
         parseFloat(
-          ethers.utils.formatEther(
-            data.getUser.totalAssetAppraisedValueWei
-          )
+          ethers.utils.formatEther(data.getUser.totalAssetAppraisedValueWei)
         ) + unsupportedAggregateCollectionStatFloorEth
       ).toFixed(2)
     : '-'
@@ -897,74 +895,22 @@ export default function UserView() {
     ?.totalAssetAppraisedValueUsd
     ? formatLargeNumber(
         Number(
-          formatCurrencyUnits(
-            data.getUser.totalAssetAppraisedValueUsd,
-            6
-          )
+          formatCurrencyUnits(data.getUser.totalAssetAppraisedValueUsd, 6)
         ) + unsupportedAggregateCollectionStatFloorUsd
       )
     : '-'
 
-  const calculatedTotalNumUniqueCollections = 
-    data?.getUser?.extraCollections?.count
-    ? Number(data.getUser.extraCollections?.count) + unsupportedAggregateCollectionStatNumUniqueCollections
+  const calculatedTotalNumUniqueCollections = data?.getUser?.extraCollections
+    ?.count
+    ? Number(data.getUser.extraCollections?.count) +
+      unsupportedAggregateCollectionStatNumUniqueCollections
     : '-'
 
-  const calculatedTotalNumAssets = 
-    data?.getUser?.numAssets
-    ? Number(data.getUser.numAssets) + unsupportedAggregateCollectionStatNumAssets
+  const calculatedTotalNumAssets = data?.getUser?.numAssets
+    ? Number(data.getUser.numAssets) +
+      unsupportedAggregateCollectionStatNumAssets
     : '-'
 
-  // Generate content for tooltip
-  const TooltipContent = (
-    <div style={{ textAlign: 'left' }}>
-      <Text
-        color="blue"
-        sx={{
-          fontSize: 4,
-          lineHeight: 1.3,
-          display: 'block',
-        }}
-      >
-        {data?.getUser?.totalAssetAppraisedValueWei ? 'Ξ' : ''}
-        {calculatedTotalAssetAppraisedValueWei}
-      </Text>
-      {!!data?.getUser?.totalAssetAppraisedValueUsd && (
-        <Text
-          color="blue"
-          sx={{
-            fontSize: 4,
-            lineHeight: 1.3,
-            display: 'block',
-          }}
-        >
-          {data?.getUser?.totalAssetAppraisedValueUsd
-            ? '~ $'
-            : ''}
-          {calculatedTotalAssetAppraisedValueUsd}
-        </Text>
-      )}
-{/*       <Text
-        color="grey-500"
-        sx={{
-          display: 'block',
-          marginTop: 4,
-          lineHeight: 1.3,
-        }}
-      >
-        Portfolio appraisal last updated:
-      </Text>
-      <Text
-        color="grey-500"
-        sx={{
-          display: 'block',
-          lineHeight: 1.3,
-        }}
-      >
-        We should display the last update datetime here
-      </Text> */}
-    </div>
-  )
   return (
     <>
       <Layout>
@@ -1002,23 +948,14 @@ export default function UserView() {
                           <Text
                             color="blue"
                             sx={{
-                              fontSize: 1,
-                              lineHeight: 1,
-                              marginRight: '2px',
-                            }}
-                          >
-                            {data?.getUser?.totalAssetAppraisedValueWei
-                              ? 'Ξ'
-                              : ''}
-                          </Text>
-                          <Text
-                            color="blue"
-                            sx={{
                               fontWeight: 'bold',
                               fontSize: 4,
                               lineHeight: 1,
                             }}
                           >
+                            {data?.getUser?.totalAssetAppraisedValueWei
+                              ? 'Ξ'
+                              : ''}
                             {calculatedTotalAssetAppraisedValueWei}
                           </Text>
                         </Flex>
@@ -1054,31 +991,16 @@ export default function UserView() {
                                 </Text>
                                 <Flex sx={{ flexDirection: 'column' }}>
                                   <Text color="blue">
-                                    Ξ
                                     {data?.getUser?.totalAssetAppraisedValueWei
-                                      ? (
-                                          parseFloat(
-                                            ethers.utils.formatEther(
-                                              data.getUser
-                                                .totalAssetAppraisedValueWei
-                                            )
-                                          ) + unsupportedWeightedFloorEth
-                                        ).toFixed(2)
-                                      : '0.0000'}
+                                      ? 'Ξ'
+                                      : ''}
+                                    {calculatedTotalAssetAppraisedValueWei}
                                   </Text>
                                   <Text color="blue">
-                                    $
                                     {data?.getUser?.totalAssetAppraisedValueUsd
-                                      ? formatLargeNumber(
-                                          Number(
-                                            formatCurrencyUnits(
-                                              data.getUser
-                                                .totalAssetAppraisedValueUsd,
-                                              6
-                                            )
-                                          ) + unsupportedWeightedFloorUsd
-                                        )
-                                      : '0.00'}
+                                      ? '~ $'
+                                      : ''}
+                                    {calculatedTotalAssetAppraisedValueUsd}
                                   </Text>
                                 </Flex>
                               </Flex>
