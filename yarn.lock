@@ -2040,7 +2040,7 @@
     schema-utils "^3.0.0"
     source-map "^0.7.3"
 
-"@popperjs/core@^2.5.4", "@popperjs/core@^2.6.0":
+"@popperjs/core@^2.10.2", "@popperjs/core@^2.5.4", "@popperjs/core@^2.6.0":
   version "2.11.2"
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.11.2.tgz#830beaec4b4091a9e9398ac50f865ddea52186b9"
   integrity sha512-92FRmppjjqz29VMJ2dn+xdyXZBrMlE42AV6Kq6BwjWV7CNUW1hs2FtxSNLQE+gJhaZ6AAmYuO9y8dshhcBl7vA==
@@ -3406,10 +3406,10 @@
     "@typescript-eslint/types" "4.33.0"
     eslint-visitor-keys "^2.0.0"
 
-"@upshot-tech/upshot-ui@^0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@upshot-tech/upshot-ui/-/upshot-ui-0.5.1.tgz#1b36c562947ac18a5512a0b56a0bc14fa351fb9a"
-  integrity sha512-G2/e2UbXGmOplRrDxQrbFt2+GzFvzRwawyM9wa1fP9vWuwtE+9lKHrPTRynLlPHFWVLhnFN6/an4HQ0l/z2a2w==
+"@upshot-tech/upshot-ui@^0.5.5":
+  version "0.5.5"
+  resolved "https://registry.yarnpkg.com/@upshot-tech/upshot-ui/-/upshot-ui-0.5.5.tgz#10b3c1be5b03598eb877bec1be36976589b5bcbc"
+  integrity sha512-7TOC74MHRHXtBKwXnI0HDL6JSzwvaE9nZ0z3HuSgL9SbgTQW4eKB8+NGxtWhZA1APliv62S19sG4b107grHDTw==
   dependencies:
     "@emotion/react" "^11.4.1"
     "@emotion/styled" "^11.3.0"
@@ -3425,6 +3425,7 @@
     react-dom "^17.0.2"
     react-inlinesvg "^2.3.0"
     react-paginate "https://github.com/DaWe35/react-paginate.git#fix/pagesBreaking"
+    react-popper-tooltip "^4.3.1"
     theme-ui "^0.11.2"
     uuid "^8.3.2"
 
@@ -10205,9 +10206,9 @@ react-markdown@^7.1.1:
     unist-util-visit "^4.0.0"
     vfile "^5.0.0"
 
-"react-paginate@https://github.com/DaWe35/react-paginate.git#fix/pagesBreaking":
+"react-paginate@git+https://github.com/DaWe35/react-paginate.git#fix/pagesBreaking":
   version "9.0.0"
-  resolved "https://github.com/DaWe35/react-paginate.git#ab3e3871d4444e9f924d075bf4afcd1f4037fe08"
+  resolved "git+https://github.com/DaWe35/react-paginate.git#ab3e3871d4444e9f924d075bf4afcd1f4037fe08"
   dependencies:
     prop-types "^15.6.1"
 
@@ -10220,7 +10221,16 @@ react-popper-tooltip@^3.1.1:
     "@popperjs/core" "^2.5.4"
     react-popper "^2.2.4"
 
-react-popper@^2.2.4:
+react-popper-tooltip@^4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/react-popper-tooltip/-/react-popper-tooltip-4.3.1.tgz#0bfdd40453395865d7a5678a160640243070528e"
+  integrity sha512-/Lj1vjAEFEFxKKWnxupeS9pRrXYQlJd++OAAj/Ht3uOSqjWLtYWDXKV99e+YO6b5hV3SgXbtkHFzHH4eqlMWJA==
+  dependencies:
+    "@babel/runtime" "^7.15.4"
+    "@popperjs/core" "^2.10.2"
+    react-popper "^2.2.5"
+
+react-popper@^2.2.4, react-popper@^2.2.5:
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/react-popper/-/react-popper-2.2.5.tgz#1214ef3cec86330a171671a4fbcbeeb65ee58e96"
   integrity sha512-kxGkS80eQGtLl18+uig1UIf9MKixFSyPxglsgLBxlYnyDf65BiY9B3nZSc6C9XUNDgStROB0fMQlTEz1KxGddw==
