@@ -61,8 +61,6 @@ import {
   GetUnsupportedCollectionsVars,
   GetUnsupportedFloorsData,
   GetUnsupportedFloorsVars,
-  GetUnsupportedWeightedFloorsData,
-  GetUnsupportedWeightedFloorsVars,
 } from './queries'
 
 type Collection = {
