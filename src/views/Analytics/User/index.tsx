@@ -45,14 +45,16 @@ import Breadcrumbs from '../components/Breadcrumbs'
 import {
   GET_COLLECTION_ASSETS,
   GET_COLLECTOR,
+  GET_UNSUPPORTED_AGGREGATE_COLLECTION_STATS,
   GET_UNSUPPORTED_ASSETS,
   GET_UNSUPPORTED_COLLECTIONS,
   GET_UNSUPPORTED_FLOORS,
-  GET_UNSUPPORTED_WEIGHTED_FLOORS,
   GetCollectionAssetsData,
   GetCollectionAssetsVars,
   GetCollectorData,
   GetCollectorVars,
+  GetUnsupportedAggregateCollectionStatsData,
+  GetUnsupportedAggregateCollectionStatsVars,
   GetUnsupportedAssetsData,
   GetUnsupportedAssetsVars,
   GetUnsupportedCollectionsData,
@@ -334,11 +336,11 @@ export default function UserView() {
     }
   )
 
-  /* Request unsupported weighted floors */
-  const { data: dataUnsupportedWeightedFloors } = useQuery<
-    GetUnsupportedWeightedFloorsData,
-    GetUnsupportedWeightedFloorsVars
-  >(GET_UNSUPPORTED_WEIGHTED_FLOORS, {
+  /* Request unsupported aggregate collection stats */
+    const { data: dataUnsupportedAggregateCollectionStats } = useQuery<
+    GetUnsupportedAggregateCollectionStatsData,
+    GetUnsupportedAggregateCollectionStatsVars
+  >(GET_UNSUPPORTED_AGGREGATE_COLLECTION_STATS, {
     errorPolicy: 'all',
     variables: {
       userAddress: addressFormatted,
@@ -346,14 +348,24 @@ export default function UserView() {
     skip: !addressFormatted || !includeUnsupportedAssets,
   })
 
-  const unsupportedWeightedFloorEth = Number(
-    dataUnsupportedWeightedFloors?.getUnsupportedWeightedFloorSum?.floorEth ??
+  const unsupportedAggregateCollectionStatFloorEth = Number(
+    dataUnsupportedAggregateCollectionStats?.getUnsupportedAggregateCollectionStats?.floorEth ??
       0.0
   )
 
-  const unsupportedWeightedFloorUsd = Number(
-    dataUnsupportedWeightedFloors?.getUnsupportedWeightedFloorSum?.floorUsd ??
+  const unsupportedAggregateCollectionStatFloorUsd = Number(
+    dataUnsupportedAggregateCollectionStats?.getUnsupportedAggregateCollectionStats?.floorUsd ??
       0.0
+  )
+
+  const unsupportedAggregateCollectionStatNumUniqueCollections = Number(
+    dataUnsupportedAggregateCollectionStats?.getUnsupportedAggregateCollectionStats?.numUniqueCollections ??
+      0
+  )
+
+  const unsupportedAggregateCollectionStatNumAssets = Number(
+    dataUnsupportedAggregateCollectionStats?.getUnsupportedAggregateCollectionStats?.numAssets ??
+      0
   )
 
   /* Request unsupported floors */
@@ -878,7 +890,7 @@ export default function UserView() {
           ethers.utils.formatEther(
             data.getUser.totalAssetAppraisedValueWei
           )
-        ) + unsupportedWeightedFloorEth
+        ) + unsupportedAggregateCollectionStatFloorEth
       ).toFixed(2)
     : '-'
 
@@ -890,8 +902,18 @@ export default function UserView() {
             data.getUser.totalAssetAppraisedValueUsd,
             6
           )
-        ) + unsupportedWeightedFloorUsd
+        ) + unsupportedAggregateCollectionStatFloorUsd
       )
+    : '-'
+
+  const calculatedTotalNumUniqueCollections = 
+    data?.getUser?.extraCollections?.count
+    ? Number(data.getUser.extraCollections?.count) + unsupportedAggregateCollectionStatNumUniqueCollections
+    : '-'
+
+  const calculatedTotalNumAssets = 
+    data?.getUser?.numAssets
+    ? Number(data.getUser.numAssets) + unsupportedAggregateCollectionStatNumAssets
     : '-'
 
   // Generate content for tooltip
@@ -1081,7 +1103,7 @@ export default function UserView() {
                             textAlign: 'center',
                           }}
                         >
-                          {data?.getUser?.numAssets ?? 0}
+                          {calculatedTotalNumAssets ?? 0}
                         </Text>
                         <Text
                           color="blue"
@@ -1116,7 +1138,7 @@ export default function UserView() {
                             textAlign: 'center',
                           }}
                         >
-                          {data?.getUser?.extraCollections?.count ?? 0}
+                          {calculatedTotalNumUniqueCollections ?? 0}
                         </Text>
                         <Text
                           color="grey-500"
