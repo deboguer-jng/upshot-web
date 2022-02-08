@@ -623,7 +623,7 @@ export default function UserView() {
         >
           {collection.ownerAssetsInCollection.assets
             .slice(0, 5)
-            .map(({ id, previewImageUrl, contractAddress }, idx) => (
+            .map(({ id, previewImageUrl, mediaUrl, contractAddress }, idx) => (
               <Link passHref href={`/analytics/nft/${id}`} key={idx}>
                 <Box
                   sx={{
@@ -634,10 +634,10 @@ export default function UserView() {
                       display: 'block',
                       paddingTop: '100%',
                       backgroundImage: `url(${
-                        imageOptimizer(previewImageUrl, {
+                        imageOptimizer(previewImageUrl ?? mediaUrl, {
                           width: 180,
                           height: 180,
-                        }) ?? previewImageUrl
+                        }) ?? previewImageUrl ?? mediaUrl
                       })`,
                       backgroundSize: 'cover',
                       backgroundRepeat: 'no-repeat',
