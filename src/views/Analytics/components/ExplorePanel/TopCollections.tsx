@@ -28,21 +28,20 @@ import {
 import { ExplorePanelSkeleton } from './NFTs'
 
 const columns = {
-  VOLUME: 'Total Volume',
-  AVERAGE: 'Average Price',
-  FLOOR: 'Floor Price',
-  WEEK_FLOOR_CHANGE: 'Floor Change (7 Days)',
+  VOLUME: 'Volume',
+  AVERAGE: 'Avg Price',
+  FLOOR: 'Floor',
+  WEEK_FLOOR_CHANGE: 'Floor Change (1W)',
 }
 
 function CollectionTableHead() {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
-  const [selectedColumn, setSelectedColumn] = useState(0)
+  const [selectedColumn, setSelectedColumn] = useState(1)
   const [sortAscending, setSortAscending] = useState(false)
   const { theme } = useTheme()
 
   const handleChangeSelection = (columnIdx: number) => {
-    console.log({ columnIdx })
     if (columnIdx === selectedColumn) {
       // Toggle sort order for current selection.
       setSortAscending(!sortAscending)
@@ -56,8 +55,8 @@ function CollectionTableHead() {
       {isMobile ? (
         <Box>
           <Flex sx={{ justifyContent: 'space-between', padding: 2 }}>
-            <Text> Collection </Text>
-            <Text> Total Volume </Text>
+            <Text></Text>
+            <Text>Total Volume</Text>
           </Flex>
         </Box>
       ) : (
@@ -92,21 +91,21 @@ function CollectionTableHead() {
                 },
               }}
             >
-              <Flex sx={{ alignItems: 'center' }}>
-                Collection
-                {/* <Icon icon="tableSort" height={16} width={16} /> */}
-              </Flex>
+              {/* Unsortable name column */}
             </TableCell>
             {Object.values(columns).map((col, idx) => (
               <TableCell
                 key={idx}
                 color="grey-500"
                 onClick={() => handleChangeSelection(idx + 1)}
+                colSpan={idx === Object.values(columns).length - 1 ? 2 : 1}
                 sx={{
                   cursor: 'pointer',
                   color: selectedColumn === idx + 1 ? 'white' : null,
                   transition: 'default',
                   userSelect: 'none',
+                  minWidth: 100,
+                  width: idx === 0 ? '100%' : 'auto',
                   '& svg path': {
                     transition: 'default',
                     '&:nth-child(1)': {
@@ -125,12 +124,18 @@ function CollectionTableHead() {
                 }}
               >
                 <Flex sx={{ alignItems: 'center' }}>
-                  {col}
+                  <Flex
+                    sx={{
+                      whiteSpace: 'pre-wrap',
+                      fontSize: '.85rem',
+                    }}
+                  >
+                    {col}
+                  </Flex>
                   <Icon icon="tableSort" height={16} width={16} />
                 </Flex>
               </TableCell>
             ))}
-            <TableCell></TableCell>
           </TableRow>
         </TableHead>
       )}
@@ -234,9 +239,9 @@ export default function ExploreNFTs({
                     }}
                   >
                     <Text sx={{ marginBottom: 1 }}>Average Price</Text>
-                    {/* <Text>
+                    <Text>
                       {dataCheck(weiToEth(latestStats.pastDayWeiAverage, 2))}
-                    </Text> */}
+                    </Text>
                   </Flex>
                   <Flex
                     sx={{
@@ -270,18 +275,18 @@ export default function ExploreNFTs({
                 </Grid>
               ) : (
                 <>
-                  <TableCell sx={{ maxWidth: 100 }}>
+                  <TableCell sx={{ maxWidth: 50 }}>
                     {dataCheck(weiToEth(latestStats.totalWeiVolume, 0))}
                   </TableCell>
-                  <TableCell sx={{ maxWidth: 100 }}>
+                  <TableCell sx={{ maxWidth: 50 }}>
                     {dataCheck(weiToEth(latestStats.pastDayWeiAverage, 2))}
                   </TableCell>
-                  <TableCell sx={{ maxWidth: 100 }}>
+                  <TableCell sx={{ maxWidth: 50 }}>
                     {dataCheck(weiToEth(latestStats.floor, 2))}
                   </TableCell>
                   <TableCell
                     sx={{
-                      maxWidth: 100,
+                      maxWidth: 50,
                       color: getPriceChangeColor(latestStats.weekFloorChange),
                     }}
                   >

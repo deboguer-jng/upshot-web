@@ -24,10 +24,10 @@ import {
 } from '../../queries'
 
 const columns = {
-  LAST_SALE_DATE: 'Last Sale Date',
+  LAST_SALE_DATE: 'Last Sale',
   LAST_SALE_PRICE: 'Last Sale Price',
-  LAST_APPRAISAL_PRICE: 'Latest Appraised Value',
-  LAST_SALE_LATEST_APPRAISAL: 'Last Sale/Latest Appraisal',
+  LAST_APPRAISAL_PRICE: 'Latest Appraisal',
+  LAST_SALE_LATEST_APPRAISAL: 'Last Sale/Appraisal',
 }
 
 function NFTTableHead() {
@@ -80,21 +80,21 @@ function NFTTableHead() {
                 },
               }}
             >
-              <Flex sx={{ alignItems: 'center' }}>
-                NFT
-                {/* <Icon icon="tableSort" height={16} width={16} /> */}
-              </Flex>
+              {/* Unsortable name column */}
             </TableCell>
             {Object.values(columns).map((col, idx) => (
               <TableCell
                 key={idx}
                 color="grey-500"
                 onClick={() => handleChangeSelection(idx + 1)}
+                colSpan={idx === Object.values(columns).length - 1 ? 2 : 1}
                 sx={{
                   cursor: 'pointer',
                   color: selectedColumn === idx + 1 ? 'white' : null,
                   transition: 'default',
                   userSelect: 'none',
+                  minWidth: 100,
+                  width: idx === 0 ? '100%' : 'auto',
                   '& svg path': {
                     transition: 'default',
                     '&:nth-child(1)': {
@@ -112,13 +112,19 @@ function NFTTableHead() {
                   },
                 }}
               >
-                <Flex sx={{ alignItems: 'center' }}>
-                  {col}
-                  {idx < 3 && <Icon icon="tableSort" height={16} width={16} />}
+                <Flex sx={{ alignItems: 'center', gap: 1 }}>
+                  <Flex
+                    sx={{
+                      whiteSpace: 'pre-wrap',
+                      fontSize: '.85rem',
+                    }}
+                  >
+                    {col}
+                  </Flex>
+                  <Icon icon="tableSort" height={16} width={16} />
                 </Flex>
               </TableCell>
             ))}
-            <TableCell></TableCell>
           </TableRow>
         </TableHead>
       )}
