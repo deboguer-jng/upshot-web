@@ -958,22 +958,55 @@ export default function UserView() {
                           Portfolio Appraisal
                           <Tooltip
                             tooltip={
-                              <Text
-                                color="grey-300"
-                                variant="small"
+                              <Flex
                                 sx={{
+                                  flexDirection: 'column',
                                   textAlign: 'left',
                                   maxWidth: 150,
-                                  display: 'block',
-                                  fontWeight: 'heading',
-                                  lineHeight: '1rem',
+                                  gap: 1,
                                 }}
                               >
-                                {data?.getUser?.totalAssetAppraisedValueWei
-                                  ? `Fancy! Our top tier appraisals are currently
-                                under active development.`
-                                  : `Appraisal currently unavailable.`}
-                              </Text>
+                                <Text
+                                  color="grey-300"
+                                  variant="small"
+                                  sx={{
+                                    fontWeight: 'heading',
+                                    lineHeight: '1rem',
+                                  }}
+                                >
+                                  Fancy! Our top tier appraisals are currently
+                                  under active development.
+                                </Text>
+                                <Flex sx={{ flexDirection: 'column' }}>
+                                  <Text color="blue">
+                                    Ξ
+                                    {data?.getUser?.totalAssetAppraisedValueWei
+                                      ? (
+                                          parseFloat(
+                                            ethers.utils.formatEther(
+                                              data.getUser
+                                                .totalAssetAppraisedValueWei
+                                            )
+                                          ) + unsupportedWeightedFloorEth
+                                        ).toFixed(2)
+                                      : '0.0000'}
+                                  </Text>
+                                  <Text color="blue">
+                                    $
+                                    {data?.getUser?.totalAssetAppraisedValueUsd
+                                      ? formatLargeNumber(
+                                          Number(
+                                            formatCurrencyUnits(
+                                              data.getUser
+                                                .totalAssetAppraisedValueUsd,
+                                              6
+                                            )
+                                          ) + unsupportedWeightedFloorUsd
+                                        )
+                                      : '0.00'}
+                                  </Text>
+                                </Flex>
+                              </Flex>
                             }
                             sx={{ marginLeft: '5px' }}
                           />
