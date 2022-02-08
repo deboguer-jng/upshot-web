@@ -313,10 +313,7 @@ export default function NFTView() {
                     sx={{ width: 20, height: 20 }}
                   />
                 </a>
-                {(contractAddress ===
-                  '0x059EDD72Cd353dF5106D2B9cC5ab83a52287aC3a' ||
-                  contractAddress ===
-                    '0xa7d8d9ef8D8Ce8992Df33D8b8CF4Aebabd5bD270') && (
+                {ART_BLOCKS_CONTRACTS.includes(contractAddress) && (
                   <a
                     href={`https://generator.artblocks.io/${id}`}
                     target="_blank"
@@ -603,26 +600,6 @@ export default function NFTView() {
                     <Flex sx={{ padding: '20px', paddingBottom: 0 }}>
                       <Text variant="h3Secondary">Pricing History</Text>
                     </Flex>
-                    {(contractAddress ==
-                      '0x059EDD72Cd353dF5106D2B9cC5ab83a52287aC3a' ||
-                      contractAddress ==
-                        '0xa7d8d9ef8D8Ce8992Df33D8b8CF4Aebabd5bD270') && (
-                      <div sx={{ padding: '20px' }}>
-                        <Panel
-                          sx={{
-                            backgroundColor: theme.colors.blue,
-                            color: theme.colors.black,
-                            width: 0,
-                            minWidth: '100%',
-                            borderRadius: 'sm',
-                          }}
-                        >
-                          This collection is currently under active development.
-                          Appraisals are experimental and may be less accurate
-                          than most.
-                        </Panel>
-                      </div>
-                    )}
                     {(!!lastSale || !!latestAppraisal) && (
                       <Flex sx={{ gap: '40px', flexGrow: 1, padding: '20px' }}>
                         {/* {!!lastSale && (

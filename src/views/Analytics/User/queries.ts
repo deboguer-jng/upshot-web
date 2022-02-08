@@ -283,29 +283,6 @@ export const GET_UNSUPPORTED_FLOORS = gql`
 `
 
 /**
- * Get unsupported weighted floors
- */
-export type GetUnsupportedWeightedFloorsVars = {
-  userAddress?: string
-}
-
-export type GetUnsupportedWeightedFloorsData = {
-  getUnsupportedWeightedFloorSum: {
-    floorEth: number
-    floorUsd: number
-  }
-}
-
-export const GET_UNSUPPORTED_WEIGHTED_FLOORS = gql`
-  query GetUnsupportedWeightedFloorSum($userAddress: String!) {
-    getUnsupportedWeightedFloorSum(userAddress: $userAddress) {
-      floorEth
-      floorUsd
-    }
-  }
-`
-
-/**
  * Get unsupported assets
  */
 export type GetUnsupportedAssetsVars = {
@@ -347,6 +324,33 @@ export const GET_UNSUPPORTED_ASSETS = gql`
         tokenId
         imageUrl
       }
+    }
+  }
+`
+
+/**
+ * Get unsupported aggregate collection stats
+ */
+ export type GetUnsupportedAggregateCollectionStatsVars = {
+  userAddress?: string
+}
+
+export type GetUnsupportedAggregateCollectionStatsData = {
+  getUnsupportedAggregateCollectionStats: {
+    floorEth: number
+    floorUsd: number
+    numUniqueCollections: number
+    numAssets: number
+  }
+}
+
+export const GET_UNSUPPORTED_AGGREGATE_COLLECTION_STATS = gql`
+  query GetUnsupportedAggregateCollectionStats($userAddress: String!) {
+    getUnsupportedAggregateCollectionStats(userAddress: $userAddress) {
+      floorEth
+      floorUsd
+      numUniqueCollections
+      numAssets
     }
   }
 `
