@@ -23,28 +23,36 @@ import {
   GetExploreNFTsVars,
 } from '../../queries'
 
-const columns = {
+interface NFTTableHeadProps extends React.HTMLAttributes<HTMLElement> {
+  /**
+   * The current selected column index used for sorting.
+   */
+  selectedColumn: number
+  /**
+   * Request the results in ascending order.
+   */
+  sortAscending: boolean
+  /**
+   * Handler for selection change
+   */
+  onChangeSelection?: (colIdx: number) => void
+}
+
+export const nftColumns = {
   LAST_SALE_DATE: 'Last Sale',
   LAST_SALE_PRICE: 'Last Sale Price',
   LAST_APPRAISAL_PRICE: 'Latest Appraisal',
-  LAST_SALE_LATEST_APPRAISAL: 'Last Sale/Appraisal',
+  LAST_APPRAISAL_SALE_RATIO: 'Last Sale/Appraisal',
 }
 
-function NFTTableHead() {
-  const [selectedColumn, setSelectedColumn] = useState(1)
-  const [sortAscending, setSortAscending] = useState(false)
+function NFTTableHead({
+  selectedColumn,
+  sortAscending,
+  onChangeSelection,
+}: NFTTableHeadProps) {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
   const { theme } = useTheme()
-
-  const handleChangeSelection = (columnIdx: number) => {
-    if (columnIdx === selectedColumn) {
-      // Toggle sort order for current selection.
-      setSortAscending(!sortAscending)
-    }
-
-    setSelectedColumn(columnIdx)
-  }
 
   return (
     <>
@@ -82,15 +90,15 @@ function NFTTableHead() {
             >
               {/* Unsortable name column */}
             </TableCell>
-            {Object.values(columns).map((col, idx) => (
+            {Object.values(nftColumns).map((col, idx) => (
               <TableCell
                 key={idx}
                 color="grey-500"
-                onClick={() => handleChangeSelection(idx + 1)}
-                colSpan={idx === Object.values(columns).length - 1 ? 2 : 1}
+                onClick={() => onChangeSelection?.(idx)}
+                colSpan={idx === Object.values(nftColumns).length - 1 ? 2 : 1}
                 sx={{
                   cursor: 'pointer',
-                  color: selectedColumn === idx + 1 ? 'white' : null,
+                  color: selectedColumn === idx ? 'white' : null,
                   transition: 'default',
                   userSelect: 'none',
                   minWidth: 100,
@@ -99,13 +107,13 @@ function NFTTableHead() {
                     transition: 'default',
                     '&:nth-child(1)': {
                       fill:
-                        selectedColumn === idx + 1 && sortAscending
+                        selectedColumn === idx && sortAscending
                           ? 'white'
                           : theme.rawColors['grey-500'],
                     },
                     '&:nth-child(2)': {
                       fill:
-                        !sortAscending && selectedColumn === idx + 1
+                        !sortAscending && selectedColumn === idx
                           ? 'white'
                           : theme.rawColors['grey-500'],
                     },
@@ -136,10 +144,10 @@ const handleShowNFT = (id: string) => {
   router.push('/analytics/nft/' + id)
 }
 
-export function ExplorePanelSkeleton() {
+export function ExplorePanelSkeleton({ children }) {
   return (
     <CollectionTable>
-      <NFTTableHead />
+      {children}
       <TableBody>
         {[...new Array(PAGE_SIZE)].map((_, idx) => (
           <Skeleton sx={{ height: 56 }} as="tr" key={idx}>
@@ -153,19 +161,19 @@ export function ExplorePanelSkeleton() {
   )
 }
 
-const NFTItemsWrapper = ({ children }) => {
+const NFTItemsWrapper = ({ children, ...props }: NFTTableHeadProps) => {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
   return (
     <>
       {isMobile ? (
         <>
-          <NFTTableHead />
+          <NFTTableHead {...props} />
           <CollectorAccordion> {children} </CollectorAccordion>
         </>
       ) : (
         <CollectionTable>
-          <NFTTableHead />
+          <NFTTableHead {...props} />
           <TableBody>{children}</TableBody>
         </CollectionTable>
       )}
@@ -179,9 +187,15 @@ const NFTItemsWrapper = ({ children }) => {
 export default function ExploreNFTs({
   searchTerm = '',
   collectionId,
+  selectedColumn,
+  sortAscending,
+  onChangeSelection,
 }: {
   searchTerm?: string
   collectionId?: number
+  selectedColumn: number
+  sortAscending: boolean
+  onChangeSelection: (colIdx: number) => void
 }) {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
@@ -201,6 +215,8 @@ export default function ExploreNFTs({
       offset: page * PAGE_SIZE,
       searchTerm,
       collectionId,
+      orderColumn: Object.keys(nftColumns)[selectedColumn],
+      orderDirection: sortAscending ? 'ASC' : 'DESC',
     },
   })
 
@@ -209,7 +225,12 @@ export default function ExploreNFTs({
   }, [searchTerm])
 
   /* Loading state. */
-  if (loading) return <ExplorePanelSkeleton />
+  if (loading)
+    return (
+      <ExplorePanelSkeleton>
+        <NFTTableHead {...{ selectedColumn, sortAscending }} />
+      </ExplorePanelSkeleton>
+    )
 
   /* Error state. */
   // if (error) return <div>There was an error completing your request.</div>
@@ -219,7 +240,9 @@ export default function ExploreNFTs({
 
   return (
     <>
-      <NFTItemsWrapper>
+      <NFTItemsWrapper
+        {...{ selectedColumn, sortAscending, onChangeSelection }}
+      >
         {data.assetGlobalSearch.assets.map(
           (
             {
@@ -254,7 +277,7 @@ export default function ExploreNFTs({
                     }}
                   >
                     <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
-                      Last Sale Date
+                      {nftColumns.LAST_SALE_DATE}
                     </Text>
                     <Text>
                       {lastSale?.timestamp
@@ -270,7 +293,7 @@ export default function ExploreNFTs({
                     }}
                   >
                     <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
-                      Last Sale Price
+                      {nftColumns.LAST_SALE_PRICE}
                     </Text>
                     <Text>
                       {lastSale?.ethSalePrice
@@ -286,7 +309,7 @@ export default function ExploreNFTs({
                     }}
                   >
                     <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
-                      Latest Appraised Value
+                      {nftColumns.LAST_APPRAISAL_PRICE}
                     </Text>
                     <Text>
                       {lastAppraisalWeiPrice
@@ -302,7 +325,7 @@ export default function ExploreNFTs({
                     }}
                   >
                     <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
-                      Last Sale/Latest Appraisal
+                      {nftColumns.LAST_SALE_LATEST_APPRAISAL}
                     </Text>
                     <Text
                       sx={{

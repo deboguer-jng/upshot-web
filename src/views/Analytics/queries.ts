@@ -200,6 +200,8 @@ export type GetExploreNFTsVars = {
   offset: number
   searchTerm: string
   collectionId?: number
+  orderColumn: string
+  orderDirection: string
 }
 
 export type GetExploreNFTsData = {
@@ -229,12 +231,16 @@ export const GET_EXPLORE_NFTS = gql`
     $offset: Int!
     $searchTerm: String
     $collectionId: Int
+    $orderColumn: AssetSearchSortOption
+    $orderDirection: OrderDirection
   ) {
     assetGlobalSearch(
       limit: $limit
       offset: $offset
       searchTerm: $searchTerm
       collectionId: $collectionId
+      orderColumn: $orderColumn
+      orderDirection: $orderDirection
     ) {
       count
       assets {
@@ -291,14 +297,15 @@ export type GetTopSalesData = {
  */
 
 export type GetExploreCollectionsVars = {
-  metric: string
+  orderColumn: string
+  orderDirection: string
   limit: number
   offset: number
   name?: string
 }
 
 export type GetExploreCollectionsData = {
-  orderedCollectionsByMetricSearch: {
+  searchCollectionByMetric: {
     count: number
     assetSets: {
       id: number
@@ -316,17 +323,20 @@ export type GetExploreCollectionsData = {
 
 export const GET_EXPLORE_COLLECTIONS = gql`
   query GetTopCollections(
-    $metric: EOrderedAssetSetMetric!
+    $orderColumn: EAssetSetStatSearchOrder!
+    $orderDirection: OrderDirection!
     $limit: Int!
     $offset: Int!
     $name: String
   ) {
-    orderedCollectionsByMetricSearch(
-      metric: $metric
-      limit: $limit
-      offset: $offset
-      name: $name
-      windowSize: WEEK
+    searchCollectionByMetric(
+      searchArgs: {
+        orderColumn: $orderColumn
+        orderDirection: $orderDirection
+        limit: $limit
+        offset: $offset
+        name: $name
+      }
     ) {
       count
       assetSets {

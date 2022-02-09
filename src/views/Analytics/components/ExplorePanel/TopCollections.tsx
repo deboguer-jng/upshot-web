@@ -27,28 +27,55 @@ import {
 } from '../../queries'
 import { ExplorePanelSkeleton } from './NFTs'
 
-const columns = {
-  VOLUME: 'Volume',
-  AVERAGE: 'Avg Price',
-  FLOOR: 'Floor',
-  WEEK_FLOOR_CHANGE: 'Floor Change (1W)',
+export enum EAssetSetStatSearchOrder {
+  FLOOR,
+  CEIL,
+  ALL_TIME_VOLUME,
+  PAST_DAY_VOLUME,
+  PAST_WEEK_VOLUME,
+  PAST_DAY_AVERAGE,
+  PAST_WEEK_AVERAGE,
+  PAST_WEEK_CAP_CHANGE,
+  PAST_WEEK_FLOOR_CHANGE,
+  PAST_MONTH_TRANSACTIONS,
+  MEDIAN_RELATIVE_ERROR,
 }
 
-function CollectionTableHead() {
+export type OrderedAssetColumns = {
+  [key in keyof typeof EAssetSetStatSearchOrder]: string
+}
+
+interface CollectionTableHeadProps extends React.HTMLAttributes<HTMLElement> {
+  /**
+   * The current selected column index used for sorting.
+   */
+  selectedColumn: number
+  /**
+   * Request the results in ascending order.
+   */
+  sortAscending: boolean
+  /**
+   * Handler for selection change
+   */
+  onChangeSelection?: (colIdx: number) => void
+}
+
+export const collectionColumns: Partial<OrderedAssetColumns> = {
+  PAST_WEEK_VOLUME: 'Volume',
+  PAST_WEEK_AVERAGE: 'Avg Price',
+  FLOOR: 'Floor',
+  PAST_WEEK_FLOOR_CHANGE: 'Floor Change (1W)',
+}
+
+function CollectionTableHead({
+  selectedColumn,
+  sortAscending,
+  onChangeSelection,
+}: CollectionTableHeadProps) {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
-  const [selectedColumn, setSelectedColumn] = useState(1)
-  const [sortAscending, setSortAscending] = useState(false)
+
   const { theme } = useTheme()
-
-  const handleChangeSelection = (columnIdx: number) => {
-    if (columnIdx === selectedColumn) {
-      // Toggle sort order for current selection.
-      setSortAscending(!sortAscending)
-    }
-
-    setSelectedColumn(columnIdx)
-  }
 
   return (
     <>
@@ -56,7 +83,7 @@ function CollectionTableHead() {
         <Box>
           <Flex sx={{ justifyContent: 'space-between', padding: 2 }}>
             <Text></Text>
-            <Text>Total Volume</Text>
+            <Text>{collectionColumns.PAST_WEEK_VOLUME}</Text>
           </Flex>
         </Box>
       ) : (
@@ -93,15 +120,17 @@ function CollectionTableHead() {
             >
               {/* Unsortable name column */}
             </TableCell>
-            {Object.values(columns).map((col, idx) => (
+            {Object.values(collectionColumns).map((col, idx) => (
               <TableCell
                 key={idx}
                 color="grey-500"
-                onClick={() => handleChangeSelection(idx + 1)}
-                colSpan={idx === Object.values(columns).length - 1 ? 2 : 1}
+                onClick={() => onChangeSelection?.(idx)}
+                colSpan={
+                  idx === Object.values(collectionColumns).length - 1 ? 2 : 1
+                }
                 sx={{
                   cursor: 'pointer',
-                  color: selectedColumn === idx + 1 ? 'white' : null,
+                  color: selectedColumn === idx ? 'white' : null,
                   transition: 'default',
                   userSelect: 'none',
                   minWidth: 100,
@@ -110,13 +139,13 @@ function CollectionTableHead() {
                     transition: 'default',
                     '&:nth-child(1)': {
                       fill:
-                        selectedColumn === idx + 1 && sortAscending
+                        selectedColumn === idx && sortAscending
                           ? 'white'
                           : theme.rawColors['grey-500'],
                     },
                     '&:nth-child(2)': {
                       fill:
-                        !sortAscending && selectedColumn === idx + 1
+                        !sortAscending && selectedColumn === idx
                           ? 'white'
                           : theme.rawColors['grey-500'],
                     },
@@ -147,19 +176,23 @@ const handleShowCollection = (id: number) => {
   router.push('/analytics/collection/' + id)
 }
 
-const CollectionItemsWrapper = ({ children }) => {
+const CollectionItemsWrapper = ({
+  children,
+  ...props
+}: CollectionTableHeadProps) => {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
+
   return (
     <>
       {isMobile ? (
         <>
-          <CollectionTableHead />
+          <CollectionTableHead {...props} />
           <CollectorAccordion>{children}</CollectorAccordion>
         </>
       ) : (
         <CollectionTable>
-          <CollectionTableHead />
+          <CollectionTableHead {...props} />
           <TableBody>{children}</TableBody>
         </CollectionTable>
       )}
@@ -170,10 +203,16 @@ const CollectionItemsWrapper = ({ children }) => {
 /**
  *Default render function
  */
-export default function ExploreNFTs({
+export default function ExploreCollections({
   searchTerm = '',
+  selectedColumn,
+  sortAscending,
+  onChangeSelection,
 }: {
   searchTerm?: string
+  selectedColumn: number
+  sortAscending: boolean
+  onChangeSelection: (colIdx: number) => void
 }) {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
@@ -189,7 +228,8 @@ export default function ExploreNFTs({
   >(GET_EXPLORE_COLLECTIONS, {
     errorPolicy: 'ignore',
     variables: {
-      metric: 'VOLUME',
+      orderColumn: Object.keys(collectionColumns)[selectedColumn],
+      orderDirection: sortAscending ? 'ASC' : 'DESC',
       limit: PAGE_SIZE,
       offset: page * PAGE_SIZE,
       name: searchTerm,
@@ -201,12 +241,17 @@ export default function ExploreNFTs({
   }, [searchTerm])
 
   /* Loading state. */
-  if (loading) return <ExplorePanelSkeleton />
+  if (loading)
+    return (
+      <ExplorePanelSkeleton>
+        <CollectionTableHead {...{ selectedColumn, sortAscending }} />
+      </ExplorePanelSkeleton>
+    )
 
   /* Error state. */
   // if (error) return <div>There was an error completing your request.</div>
 
-  if (!data?.orderedCollectionsByMetricSearch.assetSets.length)
+  if (!data?.searchCollectionByMetric.assetSets.length)
     return <div>No results available.</div>
 
   const dataCheck = (data) => {
@@ -215,8 +260,10 @@ export default function ExploreNFTs({
 
   return (
     <>
-      <CollectionItemsWrapper>
-        {data.orderedCollectionsByMetricSearch.assetSets.map(
+      <CollectionItemsWrapper
+        {...{ selectedColumn, sortAscending, onChangeSelection }}
+      >
+        {data.searchCollectionByMetric.assetSets.map(
           ({ id, name, imageUrl, latestStats }, idx) => (
             <CollectionRow
               variant="black"
@@ -238,7 +285,9 @@ export default function ExploreNFTs({
                       alignItems: 'center',
                     }}
                   >
-                    <Text sx={{ marginBottom: 1 }}>Average Price</Text>
+                    <Text sx={{ marginBottom: 1 }}>
+                      {collectionColumns.PAST_WEEK_AVERAGE}
+                    </Text>
                     <Text>
                       {dataCheck(weiToEth(latestStats.pastDayWeiAverage, 2))}
                     </Text>
@@ -250,7 +299,9 @@ export default function ExploreNFTs({
                       alignItems: 'center',
                     }}
                   >
-                    <Text sx={{ marginBottom: 1 }}>Floor Price</Text>
+                    <Text sx={{ marginBottom: 1 }}>
+                      {collectionColumns.FLOOR}
+                    </Text>
                     <Text>{dataCheck(weiToEth(latestStats.floor, 2))}</Text>
                   </Flex>
                   <Flex
@@ -261,8 +312,7 @@ export default function ExploreNFTs({
                     }}
                   >
                     <Text sx={{ textAlign: 'center', marginBottom: 1 }}>
-                      Floor Change
-                      <br /> (7 Days)
+                      {collectionColumns.PAST_WEEK_FLOOR_CHANGE}
                     </Text>
                     <Text
                       sx={{
@@ -302,9 +352,7 @@ export default function ExploreNFTs({
       <Flex sx={{ justifyContent: 'center', marginTop: '10px' }}>
         <Pagination
           forcePage={page}
-          pageCount={Math.ceil(
-            data.orderedCollectionsByMetricSearch.count / PAGE_SIZE
-          )}
+          pageCount={Math.ceil(data.searchCollectionByMetric.count / PAGE_SIZE)}
           pageRangeDisplayed={0}
           marginPagesDisplayed={0}
           onPageChange={handlePageChange}
