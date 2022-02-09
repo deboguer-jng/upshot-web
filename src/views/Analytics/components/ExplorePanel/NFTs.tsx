@@ -102,7 +102,6 @@ function NFTTableHead({
                   transition: 'default',
                   userSelect: 'none',
                   minWidth: 100,
-                  width: idx === 0 ? '100%' : 'auto',
                   '& svg path': {
                     transition: 'default',
                     '&:nth-child(1)': {
@@ -325,7 +324,7 @@ export default function ExploreNFTs({
                     }}
                   >
                     <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
-                      {nftColumns.LAST_SALE_LATEST_APPRAISAL}
+                      {nftColumns.LAST_APPRAISAL_SALE_RATIO}
                     </Text>
                     <Text
                       sx={{

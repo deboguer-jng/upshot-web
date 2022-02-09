@@ -134,7 +134,6 @@ function CollectionTableHead({
                   transition: 'default',
                   userSelect: 'none',
                   minWidth: 100,
-                  width: idx === 0 ? '100%' : 'auto',
                   '& svg path': {
                     transition: 'default',
                     '&:nth-child(1)': {
@@ -272,8 +271,8 @@ export default function ExploreCollections({
               key={idx}
               onClick={() => handleShowCollection(id)}
               defaultOpen={idx === 0 ? true : false}
-              totalVolume={
-                isMobile ? weiToEth(latestStats.totalWeiVolume, 0) : null
+              volume={
+                isMobile ? weiToEth(latestStats.pastWeekWeiVolume, 0) : null
               }
             >
               {isMobile ? (
@@ -326,7 +325,7 @@ export default function ExploreCollections({
               ) : (
                 <>
                   <TableCell sx={{ maxWidth: 50 }}>
-                    {dataCheck(weiToEth(latestStats.totalWeiVolume, 0))}
+                    {dataCheck(weiToEth(latestStats.pastWeekWeiVolume, 0))}
                   </TableCell>
                   <TableCell sx={{ maxWidth: 50 }}>
                     {dataCheck(weiToEth(latestStats.pastDayWeiAverage, 2))}

@@ -314,7 +314,7 @@ export type GetExploreCollectionsData = {
       latestStats: {
         floor: string
         pastDayWeiAverage: string
-        totalWeiVolume: string
+        pastWeekWeiVolume: string
         weekFloorChange: number
       }
     }[]
@@ -346,7 +346,7 @@ export const GET_EXPLORE_COLLECTIONS = gql`
         latestStats {
           floor
           pastDayWeiAverage
-          totalWeiVolume
+          pastWeekWeiVolume
           weekFloorChange
         }
       }
