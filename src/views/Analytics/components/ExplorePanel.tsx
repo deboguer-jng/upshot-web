@@ -6,9 +6,7 @@ import React, { useEffect, useRef, useState } from 'react'
 
 import Collectors from './ExplorePanel/Collectors'
 import ExploreNFTs from './ExplorePanel/NFTs'
-import TopCollections, {
-  collectionColumns,
-} from './ExplorePanel/TopCollections'
+import TopCollections from './ExplorePanel/TopCollections'
 import TopCollectors from './ExplorePanel/TopCollectors'
 
 function searchForm(

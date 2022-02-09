@@ -143,7 +143,11 @@ const handleShowNFT = (id: string) => {
   router.push('/analytics/nft/' + id)
 }
 
-export function ExplorePanelSkeleton({ children }) {
+export function ExplorePanelSkeleton({
+  children,
+}: {
+  children?: React.ReactNode
+}) {
   return (
     <CollectionTable>
       {children}

@@ -10,20 +10,12 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { formatDistance } from 'date-fns'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { shortenAddress } from 'utils/address'
 import { weiToEth } from 'utils/number'
 
-import {
-  GET_COLLECTION_AVG_PRICE,
-  GET_TOP_SALES,
-  GetCollectionAvgPriceData,
-  GetCollectionAvgPriceVars,
-  GetTopSalesData,
-  GetTopSalesVars,
-} from '../queries'
+import { GET_TOP_SALES, GetTopSalesData, GetTopSalesVars } from '../queries'
 import { MiniNFTContainer } from './Styled'
 
 export const WINDOWS = {
