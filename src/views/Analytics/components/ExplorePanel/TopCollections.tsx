@@ -272,7 +272,7 @@ export default function ExploreCollections({
               onClick={() => handleShowCollection(id)}
               defaultOpen={idx === 0 ? true : false}
               volume={
-                isMobile ? weiToEth(latestStats.pastWeekWeiVolume, 0) : null
+                isMobile ? weiToEth(latestStats?.pastWeekWeiVolume, 0) : null
               }
             >
               {isMobile ? (
@@ -288,7 +288,7 @@ export default function ExploreCollections({
                       {collectionColumns.PAST_WEEK_AVERAGE}
                     </Text>
                     <Text>
-                      {dataCheck(weiToEth(latestStats.pastDayWeiAverage, 2))}
+                      {dataCheck(weiToEth(latestStats?.pastDayWeiAverage, 2))}
                     </Text>
                   </Flex>
                   <Flex
@@ -301,7 +301,7 @@ export default function ExploreCollections({
                     <Text sx={{ marginBottom: 1 }}>
                       {collectionColumns.FLOOR}
                     </Text>
-                    <Text>{dataCheck(weiToEth(latestStats.floor, 2))}</Text>
+                    <Text>{dataCheck(weiToEth(latestStats?.floor, 2))}</Text>
                   </Flex>
                   <Flex
                     sx={{
@@ -315,31 +315,33 @@ export default function ExploreCollections({
                     </Text>
                     <Text
                       sx={{
-                        color: getPriceChangeColor(latestStats.weekFloorChange),
+                        color: getPriceChangeColor(
+                          latestStats?.weekFloorChange
+                        ),
                       }}
                     >
-                      {getPriceChangeLabel(latestStats.weekFloorChange)}
+                      {getPriceChangeLabel(latestStats?.weekFloorChange)}
                     </Text>
                   </Flex>
                 </Grid>
               ) : (
                 <>
                   <TableCell sx={{ maxWidth: 50 }}>
-                    {dataCheck(weiToEth(latestStats.pastWeekWeiVolume, 0))}
+                    {dataCheck(weiToEth(latestStats?.pastWeekWeiVolume, 0))}
                   </TableCell>
                   <TableCell sx={{ maxWidth: 50 }}>
-                    {dataCheck(weiToEth(latestStats.pastDayWeiAverage, 2))}
+                    {dataCheck(weiToEth(latestStats?.pastDayWeiAverage, 2))}
                   </TableCell>
                   <TableCell sx={{ maxWidth: 50 }}>
-                    {dataCheck(weiToEth(latestStats.floor, 2))}
+                    {dataCheck(weiToEth(latestStats?.floor, 2))}
                   </TableCell>
                   <TableCell
                     sx={{
                       maxWidth: 50,
-                      color: getPriceChangeColor(latestStats.weekFloorChange),
+                      color: getPriceChangeColor(latestStats?.weekFloorChange),
                     }}
                   >
-                    {getPriceChangeLabel(latestStats.weekFloorChange)}
+                    {getPriceChangeLabel(latestStats?.weekFloorChange)}
                   </TableCell>
                 </>
               )}

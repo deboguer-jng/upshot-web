@@ -296,7 +296,7 @@ export default function TopSellingCollectionNFTs({
                         tooltip={`volume / ${period}`}
                         price={
                           latestStats?.pastDayWeiVolume
-                            ? weiToEth(latestStats.pastDayWeiVolume)
+                            ? weiToEth(latestStats?.pastDayWeiVolume)
                             : undefined
                         }
                         name={name}
@@ -304,7 +304,7 @@ export default function TopSellingCollectionNFTs({
                         image={imageUrl}
                         floorPrice={
                           latestStats?.floor
-                            ? weiToEth(latestStats.floor)
+                            ? weiToEth(latestStats?.floor)
                             : undefined
                         }
                         sales={getSalesNumber(latestStats)}
