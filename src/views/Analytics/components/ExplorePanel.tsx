@@ -2,7 +2,7 @@ import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { InputRoundedSearch } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Panel, SwitchDropdown } from '@upshot-tech/upshot-ui'
 import router from 'next/router'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import Collectors from './ExplorePanel/Collectors'
 import ExploreNFTs from './ExplorePanel/NFTs'
@@ -167,7 +167,24 @@ export default function ExplorePanel({
   const [tab, setTab] = useState(
     router.pathname.includes('/collection') ? 'NFTs' : 'Collections'
   )
-  const handleSearch = (searchTerm) => setSearchTerm(searchTerm)
+  const [selectedColumn, setSelectedColumn] = useState<number>(0)
+  const [sortAscending, setSortAscending] = useState(false)
+  const handleSearch = (searchTerm: string) => setSearchTerm(searchTerm)
+
+  const handleChangeSelection = (columnIdx: number) => {
+    if (columnIdx === selectedColumn) {
+      // Toggle sort order for current selection.
+      setSortAscending(!sortAscending)
+    }
+
+    setSelectedColumn(columnIdx)
+  }
+
+  useEffect(() => {
+    // Reset sort + selection on new tab selection.
+    setSelectedColumn(0)
+    setSortAscending(false)
+  }, [tab])
 
   return (
     <Panel>
@@ -179,7 +196,10 @@ export default function ExplorePanel({
         />
         <Box sx={{ paddingTop: isMobile ? '110px' : '70px' }}>
           {tab === 'NFTs' && (
-            <ExploreNFTs searchTerm={searchTerm} collectionId={collectionId} />
+            <ExploreNFTs
+              onChangeSelection={handleChangeSelection}
+              {...{ searchTerm, selectedColumn, sortAscending, collectionId }}
+            />
           )}
           {tab === 'Collectors' && !collectionId && (
             <TopCollectors searchTerm={searchTerm} />
@@ -191,7 +211,12 @@ export default function ExplorePanel({
               searchTerm={searchTerm}
             />
           )}
-          {tab === 'Collections' && <TopCollections searchTerm={searchTerm} />}
+          {tab === 'Collections' && (
+            <TopCollections
+              onChangeSelection={handleChangeSelection}
+              {...{ searchTerm, selectedColumn, sortAscending }}
+            />
+          )}
         </Box>
       </Flex>
     </Panel>
