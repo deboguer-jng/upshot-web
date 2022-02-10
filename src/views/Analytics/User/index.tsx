@@ -335,7 +335,7 @@ export default function UserView() {
   )
 
   /* Request unsupported aggregate collection stats */
-    const { data: dataUnsupportedAggregateCollectionStats } = useQuery<
+  const { data: dataUnsupportedAggregateCollectionStats } = useQuery<
     GetUnsupportedAggregateCollectionStatsData,
     GetUnsupportedAggregateCollectionStatsVars
   >(GET_UNSUPPORTED_AGGREGATE_COLLECTION_STATS, {
@@ -347,23 +347,23 @@ export default function UserView() {
   })
 
   const unsupportedAggregateCollectionStatFloorEth = Number(
-    dataUnsupportedAggregateCollectionStats?.getUnsupportedAggregateCollectionStats?.floorEth ??
-      0.0
+    dataUnsupportedAggregateCollectionStats
+      ?.getUnsupportedAggregateCollectionStats?.floorEth ?? 0.0
   )
 
   const unsupportedAggregateCollectionStatFloorUsd = Number(
-    dataUnsupportedAggregateCollectionStats?.getUnsupportedAggregateCollectionStats?.floorUsd ??
-      0.0
+    dataUnsupportedAggregateCollectionStats
+      ?.getUnsupportedAggregateCollectionStats?.floorUsd ?? 0.0
   )
 
   const unsupportedAggregateCollectionStatNumUniqueCollections = Number(
-    dataUnsupportedAggregateCollectionStats?.getUnsupportedAggregateCollectionStats?.numUniqueCollections ??
-      0
+    dataUnsupportedAggregateCollectionStats
+      ?.getUnsupportedAggregateCollectionStats?.numUniqueCollections ?? 0
   )
 
   const unsupportedAggregateCollectionStatNumAssets = Number(
-    dataUnsupportedAggregateCollectionStats?.getUnsupportedAggregateCollectionStats?.numAssets ??
-      0
+    dataUnsupportedAggregateCollectionStats
+      ?.getUnsupportedAggregateCollectionStats?.numAssets ?? 0
   )
 
   /* Request unsupported floors */
@@ -647,7 +647,9 @@ export default function UserView() {
                         imageOptimizer(previewImageUrl ?? mediaUrl, {
                           width: 180,
                           height: 180,
-                        }) ?? previewImageUrl ?? mediaUrl
+                        }) ??
+                        previewImageUrl ??
+                        mediaUrl
                       })`,
                       backgroundSize: 'cover',
                       backgroundRepeat: 'no-repeat',
@@ -673,7 +675,6 @@ export default function UserView() {
     data: {
       name,
       imageUrl,
-      bannerImageUrl,
       address,
       osCollectionSlug,
       floorEth,
@@ -684,7 +685,6 @@ export default function UserView() {
     data: {
       name: string
       imageUrl: string
-      bannerImageUrl: string
       address: string
       floorEth: number
       osCollectionSlug: string
@@ -730,13 +730,10 @@ export default function UserView() {
                 content: "''",
                 display: 'block',
                 paddingTop: '50%',
-                backgroundImage: `url(${
-                  bannerImageUrl ??
-                  imageOptimizer(imageUrl, {
-                    width: 500,
-                    height: 500,
-                  })
-                })`,
+                backgroundImage: `url(${imageOptimizer(imageUrl, {
+                  width: 500,
+                  height: 500,
+                })})`,
                 backgroundSize: 'cover',
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
@@ -881,37 +878,33 @@ export default function UserView() {
   )
 
   // pre-calculate portfolio appraisal values
-  const calculatedTotalAssetAppraisedValueWei =
-    data?.getUser?.totalAssetAppraisedValueWei
+  const calculatedTotalAssetAppraisedValueWei = data?.getUser
+    ?.totalAssetAppraisedValueWei
     ? (
         parseFloat(
-          ethers.utils.formatEther(
-            data.getUser.totalAssetAppraisedValueWei
-          )
+          ethers.utils.formatEther(data.getUser.totalAssetAppraisedValueWei)
         ) + unsupportedAggregateCollectionStatFloorEth
       ).toFixed(2)
     : '-'
 
-  const calculatedTotalAssetAppraisedValueUsd = 
-    data?.getUser?.totalAssetAppraisedValueUsd
+  const calculatedTotalAssetAppraisedValueUsd = data?.getUser
+    ?.totalAssetAppraisedValueUsd
     ? formatLargeNumber(
         Number(
-          formatCurrencyUnits(
-            data.getUser.totalAssetAppraisedValueUsd,
-            6
-          )
+          formatCurrencyUnits(data.getUser.totalAssetAppraisedValueUsd, 6)
         ) + unsupportedAggregateCollectionStatFloorUsd
       )
     : '-'
 
-  const calculatedTotalNumUniqueCollections = 
-    data?.getUser?.extraCollections?.count
-    ? Number(data.getUser.extraCollections?.count) + unsupportedAggregateCollectionStatNumUniqueCollections
+  const calculatedTotalNumUniqueCollections = data?.getUser?.extraCollections
+    ?.count
+    ? Number(data.getUser.extraCollections?.count) +
+      unsupportedAggregateCollectionStatNumUniqueCollections
     : '-'
 
-  const calculatedTotalNumAssets = 
-    data?.getUser?.numAssets
-    ? Number(data.getUser.numAssets) + unsupportedAggregateCollectionStatNumAssets
+  const calculatedTotalNumAssets = data?.getUser?.numAssets
+    ? Number(data.getUser.numAssets) +
+      unsupportedAggregateCollectionStatNumAssets
     : '-'
 
   // Generate content for tooltip
@@ -937,13 +930,11 @@ export default function UserView() {
             display: 'block',
           }}
         >
-          {data?.getUser?.totalAssetAppraisedValueUsd
-            ? '~ $'
-            : ''}
+          {data?.getUser?.totalAssetAppraisedValueUsd ? '~ $' : ''}
           {calculatedTotalAssetAppraisedValueUsd}
         </Text>
       )}
-{/*       <Text
+      {/*       <Text
         color="grey-500"
         sx={{
           display: 'block',
@@ -1031,7 +1022,10 @@ export default function UserView() {
                           }}
                         >
                           Portfolio Appraisal
-                          <Tooltip tooltip={TooltipContent} sx={{ marginLeft: '5px' }} />
+                          <Tooltip
+                            tooltip={TooltipContent}
+                            sx={{ marginLeft: '5px' }}
+                          />
                         </Text>
                       </Panel>
                       <Panel
