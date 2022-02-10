@@ -221,7 +221,6 @@ export type GetUnsupportedCollectionsData = {
     slugsWithNullFloors: string
     collections: {
       imageUrl: string
-      bannerImageUrl: string
       osCollectionSlug: string
       floorEth: number
       floorUsd: number
@@ -247,7 +246,6 @@ export const GET_UNSUPPORTED_COLLECTIONS = gql`
       slugsWithNullFloors
       collections {
         imageUrl
-        bannerImageUrl
         osCollectionSlug
         floorEth
         floorUsd
@@ -331,7 +329,7 @@ export const GET_UNSUPPORTED_ASSETS = gql`
 /**
  * Get unsupported aggregate collection stats
  */
- export type GetUnsupportedAggregateCollectionStatsVars = {
+export type GetUnsupportedAggregateCollectionStatsVars = {
   userAddress?: string
 }
 
