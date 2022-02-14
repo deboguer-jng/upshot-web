@@ -257,7 +257,7 @@ export default function ExploreNFTs({
               totalSaleCount,
               lastSale,
               lastAppraisalWeiPrice,
-              lastSaleAppraisalRelativeDiff,
+              lastAppraisalSaleRatio,
             },
             idx
           ) => (
@@ -333,11 +333,11 @@ export default function ExploreNFTs({
                     <Text
                       sx={{
                         color: getPriceChangeColor(
-                          lastSaleAppraisalRelativeDiff
+                          lastAppraisalSaleRatio
                         ),
                       }}
                     >
-                      {getPriceChangeLabel(lastSaleAppraisalRelativeDiff)}
+                      {getPriceChangeLabel(lastAppraisalSaleRatio)}
                     </Text>
                   </Flex>
                 </Grid>
@@ -361,10 +361,10 @@ export default function ExploreNFTs({
                   <TableCell
                     sx={{
                       maxWidth: 100,
-                      color: getPriceChangeColor(lastSaleAppraisalRelativeDiff),
+                      color: getPriceChangeColor(lastAppraisalSaleRatio),
                     }}
                   >
-                    {getPriceChangeLabel(lastSaleAppraisalRelativeDiff)}
+                    {getPriceChangeLabel(lastAppraisalSaleRatio)}
                   </TableCell>
                 </>
               )}

@@ -220,7 +220,7 @@ export type GetExploreNFTsData = {
         ethSalePrice: string
       }
       lastAppraisalWeiPrice: string
-      lastSaleAppraisalRelativeDiff: number
+      lastAppraisalSaleRatio: number
     }[]
   }
 }
@@ -256,7 +256,7 @@ export const GET_EXPLORE_NFTS = gql`
           ethSalePrice
         }
         lastAppraisalWeiPrice
-        lastSaleAppraisalRelativeDiff
+        lastAppraisalSaleRatio
       }
     }
   }
