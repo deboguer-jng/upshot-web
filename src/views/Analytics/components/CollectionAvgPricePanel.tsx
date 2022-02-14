@@ -182,9 +182,9 @@ export default function CollectionAvgPricePanel({
                 onClick={() => onCollectionSelected(id)}
                 text={name ?? 'Unknown'}
                 subText={printMetricData(metric, {
-                  average: latestStats.pastDayWeiAverage,
-                  floor: latestStats.floor,
-                  volume: latestStats.pastWeekWeiVolume,
+                  average: latestStats?.pastDayWeiAverage,
+                  floor: latestStats?.floor,
+                  volume: latestStats?.pastWeekWeiVolume,
                 })}
                 {...{ underglow, hoverUnderglow }}
               />

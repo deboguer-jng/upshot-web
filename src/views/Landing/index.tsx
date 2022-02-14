@@ -9,6 +9,7 @@ import {
   LandingPanel,
   Panel,
   Text,
+  Investors,
   theme,
 } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
@@ -427,7 +428,7 @@ export default function LandingView() {
             </Grid>
           </Grid>
         </Grid>
-
+        <Investors />
         <Footer />
       </Container>
     </>

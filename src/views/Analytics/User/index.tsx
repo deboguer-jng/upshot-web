@@ -628,12 +628,13 @@ export default function UserView() {
               id: collection.id,
               name: collection.name,
               imageUrl: collection.imagrl,
+              numOwnedAssets: collection?.ownerAssetsInCollection?.count,
             })
           }
         >
           {collection.ownerAssetsInCollection.assets
             .slice(0, 5)
-            .map(({ id, previewImageUrl, contractAddress }, idx) => (
+            .map(({ id, previewImageUrl, mediaUrl, contractAddress }, idx) => (
               <Link passHref href={`/analytics/nft/${id}`} key={idx}>
                 <Box
                   sx={{
@@ -644,10 +645,12 @@ export default function UserView() {
                       display: 'block',
                       paddingTop: '100%',
                       backgroundImage: `url(${
-                        imageOptimizer(previewImageUrl, {
+                        imageOptimizer(previewImageUrl ?? mediaUrl, {
                           width: 180,
                           height: 180,
-                        }) ?? previewImageUrl
+                        }) ??
+                        previewImageUrl ??
+                        mediaUrl
                       })`,
                       backgroundSize: 'cover',
                       backgroundRepeat: 'no-repeat',
@@ -673,7 +676,6 @@ export default function UserView() {
     data: {
       name,
       imageUrl,
-      bannerImageUrl,
       address,
       osCollectionSlug,
       floorEth,
@@ -684,7 +686,6 @@ export default function UserView() {
     data: {
       name: string
       imageUrl: string
-      bannerImageUrl: string
       address: string
       floorEth: number
       osCollectionSlug: string
@@ -730,13 +731,10 @@ export default function UserView() {
                 content: "''",
                 display: 'block',
                 paddingTop: '50%',
-                backgroundImage: `url(${
-                  bannerImageUrl ??
-                  imageOptimizer(imageUrl, {
-                    width: 500,
-                    height: 500,
-                  })
-                })`,
+                backgroundImage: `url(${imageOptimizer(imageUrl, {
+                  width: 500,
+                  height: 500,
+                })})`,
                 backgroundSize: 'cover',
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
@@ -911,6 +909,58 @@ export default function UserView() {
       unsupportedAggregateCollectionStatNumAssets
     : '-'
 
+<<<<<<< HEAD
+=======
+  // Generate content for tooltip
+  const TooltipContent = (
+    <div style={{ textAlign: 'left' }}>
+      <Text
+        color="blue"
+        sx={{
+          fontSize: 4,
+          lineHeight: 1.3,
+          display: 'block',
+        }}
+      >
+        {data?.getUser?.totalAssetAppraisedValueWei ? 'Ξ' : ''}
+        {calculatedTotalAssetAppraisedValueWei}
+      </Text>
+      {!!data?.getUser?.totalAssetAppraisedValueUsd && (
+        <Text
+          color="blue"
+          sx={{
+            fontSize: 4,
+            lineHeight: 1.3,
+            display: 'block',
+          }}
+        >
+          {data?.getUser?.totalAssetAppraisedValueUsd ? '~ $' : ''}
+          {calculatedTotalAssetAppraisedValueUsd}
+        </Text>
+      )}
+      {/*       <Text
+        color="grey-500"
+        sx={{
+          display: 'block',
+          marginTop: 4,
+          lineHeight: 1.3,
+        }}
+      >
+        Portfolio appraisal last updated:
+      </Text>
+      <Text
+        color="grey-500"
+        sx={{
+          display: 'block',
+          lineHeight: 1.3,
+        }}
+      >
+        We should display the last update datetime here
+      </Text> */}
+    </div>
+  )
+
+>>>>>>> staging
   return (
     <>
       <Layout>
@@ -969,6 +1019,7 @@ export default function UserView() {
                         >
                           Portfolio Appraisal
                           <Tooltip
+<<<<<<< HEAD
                             tooltip={
                               <Flex
                                 sx={{
@@ -1005,6 +1056,9 @@ export default function UserView() {
                                 </Flex>
                               </Flex>
                             }
+=======
+                            tooltip={TooltipContent}
+>>>>>>> staging
                             sx={{ marginLeft: '5px' }}
                           />
                         </Text>

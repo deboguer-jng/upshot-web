@@ -3406,10 +3406,10 @@
     "@typescript-eslint/types" "4.33.0"
     eslint-visitor-keys "^2.0.0"
 
-"@upshot-tech/upshot-ui@^0.5.5":
-  version "0.5.5"
-  resolved "https://registry.yarnpkg.com/@upshot-tech/upshot-ui/-/upshot-ui-0.5.5.tgz#10b3c1be5b03598eb877bec1be36976589b5bcbc"
-  integrity sha512-7TOC74MHRHXtBKwXnI0HDL6JSzwvaE9nZ0z3HuSgL9SbgTQW4eKB8+NGxtWhZA1APliv62S19sG4b107grHDTw==
+"@upshot-tech/upshot-ui@^0.5.8":
+  version "0.5.8"
+  resolved "https://registry.yarnpkg.com/@upshot-tech/upshot-ui/-/upshot-ui-0.5.8.tgz#c37439c5b48eec35455fe297a40839576734590c"
+  integrity sha512-aeCMUP+BTOdGUYiZiWSch4BruYnZpxGfIUBG9qjQ8ODqOcA9pHdtY9+TlaPvg41zCZgqNLNjo+vRdq89fwrTHw==
   dependencies:
     "@emotion/react" "^11.4.1"
     "@emotion/styled" "^11.3.0"
@@ -6693,9 +6693,9 @@ flush-write-stream@^1.0.0:
     readable-stream "^2.3.6"
 
 follow-redirects@^1.14.0:
-  version "1.14.7"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.7.tgz#2004c02eb9436eee9a21446a6477debf17e81685"
-  integrity sha512-+hbxoLbFMbRKDwohX8GkTataGqO6Jb7jGwpAlwgy2bIz25XtRm7KEzJM76R1WiNT5SwZkX4Y75SwBolkpmE7iQ==
+  version "1.14.8"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.8.tgz#016996fb9a11a100566398b1c6839337d7bfa8fc"
+  integrity sha512-1x0S9UVJHsQprFcEC/qnNzBLcIxsjAV905f/UkQxbclCsoTWlacCNOpQa/anodLl2uaEKFhfWOvM2Qg77+15zA==
 
 for-in@^1.0.2:
   version "1.0.2"
@@ -10206,9 +10206,9 @@ react-markdown@^7.1.1:
     unist-util-visit "^4.0.0"
     vfile "^5.0.0"
 
-"react-paginate@git+https://github.com/DaWe35/react-paginate.git#fix/pagesBreaking":
+"react-paginate@https://github.com/DaWe35/react-paginate.git#fix/pagesBreaking":
   version "9.0.0"
-  resolved "git+https://github.com/DaWe35/react-paginate.git#ab3e3871d4444e9f924d075bf4afcd1f4037fe08"
+  resolved "https://github.com/DaWe35/react-paginate.git#ab3e3871d4444e9f924d075bf4afcd1f4037fe08"
   dependencies:
     prop-types "^15.6.1"
 
