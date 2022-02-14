@@ -251,7 +251,7 @@ export default function NFTView() {
             flexGrow: 1,
           }}
         >
-          <Flex sx={{ flexDirection: 'column', gap: 4, position: 'sticky', height: 'min-content', top: '160px' }}>
+          <Flex sx={{ flexDirection: 'column', gap: 4, position: isMobile ? 'block' : 'sticky', height: 'min-content', top: '160px' }}>
             {ART_BLOCKS_CONTRACTS.includes(contractAddress) ? (
               <Box
                 sx={{
