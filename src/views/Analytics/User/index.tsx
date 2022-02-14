@@ -909,8 +909,6 @@ export default function UserView() {
       unsupportedAggregateCollectionStatNumAssets
     : '-'
 
-<<<<<<< HEAD
-=======
   // Generate content for tooltip
   const TooltipContent = (
     <div style={{ textAlign: 'left' }}>
@@ -960,7 +958,6 @@ export default function UserView() {
     </div>
   )
 
->>>>>>> staging
   return (
     <>
       <Layout>
@@ -998,14 +995,23 @@ export default function UserView() {
                           <Text
                             color="blue"
                             sx={{
-                              fontWeight: 'bold',
-                              fontSize: 4,
+                              fontSize: 1,
                               lineHeight: 1,
+                              marginRight: '2px',
                             }}
                           >
                             {data?.getUser?.totalAssetAppraisedValueWei
                               ? 'Ξ'
                               : ''}
+                          </Text>
+                          <Text
+                            color="blue"
+                            sx={{
+                              fontWeight: 'bold',
+                              fontSize: 4,
+                              lineHeight: 1,
+                            }}
+                          >
                             {calculatedTotalAssetAppraisedValueWei}
                           </Text>
                         </Flex>
@@ -1019,46 +1025,7 @@ export default function UserView() {
                         >
                           Portfolio Appraisal
                           <Tooltip
-<<<<<<< HEAD
-                            tooltip={
-                              <Flex
-                                sx={{
-                                  flexDirection: 'column',
-                                  textAlign: 'left',
-                                  maxWidth: 150,
-                                  gap: 1,
-                                }}
-                              >
-                                <Text
-                                  color="grey-300"
-                                  variant="small"
-                                  sx={{
-                                    fontWeight: 'heading',
-                                    lineHeight: '1rem',
-                                  }}
-                                >
-                                  Fancy! Our top tier appraisals are currently
-                                  under active development.
-                                </Text>
-                                <Flex sx={{ flexDirection: 'column' }}>
-                                  <Text color="blue">
-                                    {data?.getUser?.totalAssetAppraisedValueWei
-                                      ? 'Ξ'
-                                      : ''}
-                                    {calculatedTotalAssetAppraisedValueWei}
-                                  </Text>
-                                  <Text color="blue">
-                                    {data?.getUser?.totalAssetAppraisedValueUsd
-                                      ? '~ $'
-                                      : ''}
-                                    {calculatedTotalAssetAppraisedValueUsd}
-                                  </Text>
-                                </Flex>
-                              </Flex>
-                            }
-=======
                             tooltip={TooltipContent}
->>>>>>> staging
                             sx={{ marginLeft: '5px' }}
                           />
                         </Text>
