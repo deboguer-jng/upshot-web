@@ -201,6 +201,7 @@ export default function NFTView() {
     creatorAddress,
     creatorUsername,
     contractAddress,
+    warningBanner,
   } = data.assetById
 
   const appraisalSeries = appraisalHistory.map(
@@ -250,7 +251,15 @@ export default function NFTView() {
             flexGrow: 1,
           }}
         >
-          <Flex sx={{ flexDirection: 'column', gap: 4, position: ['static', 'sticky', 'sticky'], height: 'min-content', top: '160px' }}>
+          <Flex
+            sx={{
+              flexDirection: 'column',
+              gap: 4,
+              position: ['static', 'sticky', 'sticky'],
+              height: 'min-content',
+              top: '160px',
+            }}
+          >
             {ART_BLOCKS_CONTRACTS.includes(contractAddress) ? (
               <Box
                 sx={{
@@ -295,29 +304,31 @@ export default function NFTView() {
                     {'Last Appraisal: Ξ' +
                       weiToEth(latestAppraisal.ethSalePrice, 3, false)}
                   </Label>
-                  <Tooltip
-                    tooltip={
-                      <Flex
-                        sx={{
-                          flexDirection: 'column',
-                          textAlign: 'left',
-                          maxWidth: 150,
-                        }}
-                      >
-                        <Text
-                          color="grey-300"
-                          variant="small"
+                  {warningBanner && (
+                    <Tooltip
+                      tooltip={
+                        <Flex
                           sx={{
-                            fontWeight: 'heading',
-                            lineHeight: '1rem',
+                            flexDirection: 'column',
+                            textAlign: 'left',
+                            maxWidth: 150,
                           }}
                         >
-                          Fancy! Our top tier appraisals are currently under
-                          active development.
-                        </Text>
-                      </Flex>
-                    }
-                  />
+                          <Text
+                            color="grey-300"
+                            variant="small"
+                            sx={{
+                              fontWeight: 'heading',
+                              lineHeight: '1rem',
+                            }}
+                          >
+                            Fancy! Our top tier appraisals are currently under
+                            active development.
+                          </Text>
+                        </Flex>
+                      }
+                    />
+                  )}
                 </Flex>
               )}
               {!!rarity && (
