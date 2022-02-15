@@ -797,6 +797,7 @@ export default function UserView() {
               <TableCell />
               <TableCell color="grey-500">Collection Name</TableCell>
               <TableCell color="grey-500">NFT Count</TableCell>
+              <TableCell />
             </TableRow>
           </TableHead>
           <TableBody>

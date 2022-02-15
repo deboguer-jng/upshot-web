@@ -11,6 +11,7 @@ import {
   Label,
   LabelAttribute,
   Panel,
+  Tooltip,
   useTheme,
 } from '@upshot-tech/upshot-ui'
 import {
@@ -216,9 +217,7 @@ export default function NFTView() {
 
   const assetName = getAssetName(name, collection?.name, tokenId)
   const displayName =
-    ensName ??
-    shortenAddress(txHistory[0]?.txToAddress) ??
-    'Unknown'
+    ensName ?? shortenAddress(txHistory[0]?.txToAddress) ?? 'Unknown'
 
   const image = previewImageUrl ?? mediaUrl
   const optimizedSrc = imageOptimizer(image, { width: 340 }) ?? image
@@ -291,10 +290,35 @@ export default function NFTView() {
             <Flex sx={{ flexDirection: 'column', gap: 4 }}>
               <Text variant="h2Primary">{assetName}</Text>
               {!!latestAppraisal && (
-                <Label size="md" color="blue">
-                  {'Last Appraisal: Ξ ' +
-                    weiToEth(latestAppraisal.ethSalePrice, 3, false)}
-                </Label>
+                <Flex sx={{ alignItems: 'center', gap: 2 }}>
+                  <Label size="md" color="blue">
+                    {'Last Appraisal: Ξ' +
+                      weiToEth(latestAppraisal.ethSalePrice, 3, false)}
+                  </Label>
+                  <Tooltip
+                    tooltip={
+                      <Flex
+                        sx={{
+                          flexDirection: 'column',
+                          textAlign: 'left',
+                          maxWidth: 150,
+                        }}
+                      >
+                        <Text
+                          color="grey-300"
+                          variant="small"
+                          sx={{
+                            fontWeight: 'heading',
+                            lineHeight: '1rem',
+                          }}
+                        >
+                          Fancy! Our top tier appraisals are currently under
+                          active development.
+                        </Text>
+                      </Flex>
+                    }
+                  />
+                </Flex>
               )}
               {!!rarity && (
                 <Label size="md">
@@ -672,26 +696,32 @@ export default function NFTView() {
                                   color="primary"
                                   sx={{ marginTop: '.5rem' }}
                                 >
-                                  {'±' + (latestAppraisal.medianRelativeError * 100).toFixed(2) + '%'}
+                                  {'±' +
+                                    (
+                                      latestAppraisal.medianRelativeError * 100
+                                    ).toFixed(2) +
+                                    '%'}
                                 </Label>
                               )}
                             </Flex>
                             {!!latestAppraisal?.usdSalePrice &&
-                            !isNaN(parseFloat(latestAppraisal?.usdSalePrice)) && (
-                              <Label
-                                color="white"
-                                currencySymbol="$"
-                                variant="currency"
-                                size="md"
-                                sx={{
-                                  marginTop: '-.5rem',
-                                }}
-                              >
-                                {formatCommas(
-                                  Number(latestAppraisal.usdSalePrice) / 1e6
-                                )}
-                              </Label>
-                            )}
+                              !isNaN(
+                                parseFloat(latestAppraisal?.usdSalePrice)
+                              ) && (
+                                <Label
+                                  color="white"
+                                  currencySymbol="$"
+                                  variant="currency"
+                                  size="md"
+                                  sx={{
+                                    marginTop: '-.5rem',
+                                  }}
+                                >
+                                  {formatCommas(
+                                    Number(latestAppraisal.usdSalePrice) / 1e6
+                                  )}
+                                </Label>
+                              )}
                             <Text
                               color="primary"
                               sx={{ fontSize: 2, textTransform: 'uppercase' }}
