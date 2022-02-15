@@ -451,7 +451,7 @@ export default function UserView() {
     )
   }, [
     loadingUnsupportedCollection,
-    dataUnsupportedCollections?.getUnsupportedCollectionPage.nextOffset,
+    dataUnsupportedCollections?.getUnsupportedCollectionPage?.nextOffset,
   ])
 
   const handleFetchMoreUnsupportedAssets = useCallback(() => {
@@ -567,10 +567,10 @@ export default function UserView() {
         return {
           getUnsupportedAssetPage: {
             ...prev.getUnsupportedAssetPage,
-            nextOffset: fetchMoreResult.getUnsupportedAssetPage.nextOffset,
+            nextOffset: fetchMoreResult?.getUnsupportedAssetPage?.nextOffset,
             assets: [
-              ...prev.getUnsupportedAssetPage.assets,
-              ...fetchMoreResult.getUnsupportedAssetPage.assets,
+              ...(prev.getUnsupportedAssetPage.assets ?? []),
+              ...(fetchMoreResult.getUnsupportedAssetPage.assets ?? []),
             ],
           },
         }
