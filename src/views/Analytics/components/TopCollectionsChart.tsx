@@ -116,9 +116,9 @@ export default function TopCollectionsCharts({
       const atl = rest[atlKeys[metric]]?.value
       // const priceChange = !latestStats?.weekCapChange
       //   ? null
-      //   : latestStats.weekCapChange >= 0
-      //   ? '+' + latestStats.weekCapChange + '%'
-      //   : latestStats.weekCapChange + '%'
+      //   : latestStats?.weekCapChange >= 0
+      //   ? '+' + latestStats?.weekCapChange + '%'
+      //   : latestStats?.weekCapChange + '%'
 
       return {
         name,
@@ -129,7 +129,7 @@ export default function TopCollectionsCharts({
         // priceChange,
         volume:
           metric === 'VOLUME' && latestStats?.pastWeekWeiVolume
-            ? parseFloat(weiToEth(latestStats.pastWeekWeiVolume, 2, false))
+            ? parseFloat(weiToEth(latestStats?.pastWeekWeiVolume, 2, false))
             : 0,
         data: data.map((val, i) =>
           i === 0
@@ -140,13 +140,13 @@ export default function TopCollectionsCharts({
         ),
         metric,
         currentFloor: latestStats?.floor
-          ? weiToEth(latestStats.floor.toString(), 4, false)
+          ? weiToEth(latestStats?.floor.toString(), 4, false)
           : null,
         currentAvg: latestStats?.pastDayWeiAverage
-          ? weiToEth(latestStats.pastDayWeiAverage.toString(), 4, false)
+          ? weiToEth(latestStats?.pastDayWeiAverage.toString(), 4, false)
           : null,
         currentVolume: latestStats?.pastWeekWeiVolume
-          ? weiToEth(latestStats.pastWeekWeiVolume.toString(), 4, false)
+          ? weiToEth(latestStats?.pastWeekWeiVolume.toString(), 4, false)
           : null,
       }
     })

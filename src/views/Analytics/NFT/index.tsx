@@ -11,6 +11,7 @@ import {
   Label,
   LabelAttribute,
   Panel,
+  Tooltip,
   useTheme,
 } from '@upshot-tech/upshot-ui'
 import {
@@ -200,6 +201,7 @@ export default function NFTView() {
     creatorAddress,
     creatorUsername,
     contractAddress,
+    warningBanner,
   } = data.assetById
 
   const appraisalSeries = appraisalHistory.map(
@@ -216,9 +218,7 @@ export default function NFTView() {
 
   const assetName = getAssetName(name, collection?.name, tokenId)
   const displayName =
-    ensName ??
-    shortenAddress(txHistory[0]?.txToAddress) ??
-    'Unknown'
+    ensName ?? shortenAddress(txHistory[0]?.txToAddress) ?? 'Unknown'
 
   const image = previewImageUrl ?? mediaUrl
   const optimizedSrc = imageOptimizer(image, { width: 340 }) ?? image
@@ -251,7 +251,15 @@ export default function NFTView() {
             flexGrow: 1,
           }}
         >
-          <Flex sx={{ flexDirection: 'column', gap: 4 }}>
+          <Flex
+            sx={{
+              flexDirection: 'column',
+              gap: 4,
+              position: ['static', 'sticky', 'sticky'],
+              height: 'min-content',
+              top: '160px',
+            }}
+          >
             {ART_BLOCKS_CONTRACTS.includes(contractAddress) ? (
               <Box
                 sx={{
@@ -291,10 +299,37 @@ export default function NFTView() {
             <Flex sx={{ flexDirection: 'column', gap: 4 }}>
               <Text variant="h2Primary">{assetName}</Text>
               {!!latestAppraisal && (
-                <Label size="md" color="blue">
-                  {'Last Appraisal: Ξ ' +
-                    weiToEth(latestAppraisal.ethSalePrice, 3, false)}
-                </Label>
+                <Flex sx={{ alignItems: 'center', gap: 2 }}>
+                  <Label size="md" color="blue">
+                    {'Last Appraisal: Ξ' +
+                      weiToEth(latestAppraisal.ethSalePrice, 3, false)}
+                  </Label>
+                  {warningBanner && (
+                    <Tooltip
+                      tooltip={
+                        <Flex
+                          sx={{
+                            flexDirection: 'column',
+                            textAlign: 'left',
+                            maxWidth: 150,
+                          }}
+                        >
+                          <Text
+                            color="grey-300"
+                            variant="small"
+                            sx={{
+                              fontWeight: 'heading',
+                              lineHeight: '1rem',
+                            }}
+                          >
+                            Fancy! Our top tier appraisals are currently under
+                            active development.
+                          </Text>
+                        </Flex>
+                      }
+                    />
+                  )}
+                </Flex>
               )}
               {!!rarity && (
                 <Label size="md">
@@ -313,10 +348,7 @@ export default function NFTView() {
                     sx={{ width: 20, height: 20 }}
                   />
                 </a>
-                {(contractAddress ===
-                  '0x059EDD72Cd353dF5106D2B9cC5ab83a52287aC3a' ||
-                  contractAddress ===
-                    '0xa7d8d9ef8D8Ce8992Df33D8b8CF4Aebabd5bD270') && (
+                {ART_BLOCKS_CONTRACTS.includes(contractAddress) && (
                   <a
                     href={`https://generator.artblocks.io/${id}`}
                     target="_blank"
@@ -603,26 +635,6 @@ export default function NFTView() {
                     <Flex sx={{ padding: '20px', paddingBottom: 0 }}>
                       <Text variant="h3Secondary">Pricing History</Text>
                     </Flex>
-                    {(contractAddress ==
-                      '0x059EDD72Cd353dF5106D2B9cC5ab83a52287aC3a' ||
-                      contractAddress ==
-                        '0xa7d8d9ef8D8Ce8992Df33D8b8CF4Aebabd5bD270') && (
-                      <div sx={{ padding: '20px' }}>
-                        <Panel
-                          sx={{
-                            backgroundColor: theme.colors.blue,
-                            color: theme.colors.black,
-                            width: 0,
-                            minWidth: '100%',
-                            borderRadius: 'sm',
-                          }}
-                        >
-                          This collection is currently under active development.
-                          Appraisals are experimental and may be less accurate
-                          than most.
-                        </Panel>
-                      </div>
-                    )}
                     {(!!lastSale || !!latestAppraisal) && (
                       <Flex sx={{ gap: '40px', flexGrow: 1, padding: '20px' }}>
                         {/* {!!lastSale && (
@@ -695,26 +707,32 @@ export default function NFTView() {
                                   color="primary"
                                   sx={{ marginTop: '.5rem' }}
                                 >
-                                  {'±' + (latestAppraisal.medianRelativeError * 100).toFixed(2) + '%'}
+                                  {'±' +
+                                    (
+                                      latestAppraisal.medianRelativeError * 100
+                                    ).toFixed(2) +
+                                    '%'}
                                 </Label>
                               )}
                             </Flex>
                             {!!latestAppraisal?.usdSalePrice &&
-                            !isNaN(parseFloat(latestAppraisal?.usdSalePrice)) && (
-                              <Label
-                                color="white"
-                                currencySymbol="$"
-                                variant="currency"
-                                size="md"
-                                sx={{
-                                  marginTop: '-.5rem',
-                                }}
-                              >
-                                {formatCommas(
-                                  Number(latestAppraisal.usdSalePrice) / 1e6
-                                )}
-                              </Label>
-                            )}
+                              !isNaN(
+                                parseFloat(latestAppraisal?.usdSalePrice)
+                              ) && (
+                                <Label
+                                  color="white"
+                                  currencySymbol="$"
+                                  variant="currency"
+                                  size="md"
+                                  sx={{
+                                    marginTop: '-.5rem',
+                                  }}
+                                >
+                                  {formatCommas(
+                                    Number(latestAppraisal.usdSalePrice) / 1e6
+                                  )}
+                                </Label>
+                              )}
                             <Text
                               color="primary"
                               sx={{ fontSize: 2, textTransform: 'uppercase' }}

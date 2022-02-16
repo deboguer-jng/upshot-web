@@ -83,7 +83,7 @@ export const formatLargeNumber = (num: number, digits = 2) => {
  * @returns + prefixed percent if positive, - prefixed percent if negative.
  */
 export const getPriceChangeLabel = (val: number | null) => {
-  if (val === null) return '-'
+  if (val === undefined || val === null) return '-'
 
   const percentChange = val.toFixed(2) + '%'
   return val > 0 ? '+' + percentChange : percentChange

@@ -20,6 +20,7 @@ export type GetAssetData = {
     creatorAddress: string
     creatorUsername: string
     creatorAvatar: string
+    warningBanner: boolean
     collection?: {
       id: number
       name: string
@@ -80,6 +81,7 @@ export const GET_ASSET = gql`
       creatorAddress
       creatorUsername
       creatorAvatar
+      warningBanner
       collection {
         id
         name

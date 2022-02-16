@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+import { Icon } from '@upshot-tech/upshot-ui'
 import { Flex, Text } from 'theme-ui'
 
 const BetaBannerBase = styled.div`
@@ -10,9 +11,13 @@ const BetaBannerBase = styled.div`
   z-index: ${({ theme }) => theme.zIndex.nav + 2};
 `
 
-export const BetaBanner = () => (
+interface BetaBannerProps {
+  error?: boolean
+}
+
+export const BetaBanner = ({ error = false }: BetaBannerProps) => (
   <BetaBannerBase>
-    <Flex sx={{ gap: 4, alignItems: 'center', justifyContent: 'center' }}>
+    {!error ? <Flex sx={{ gap: 4, alignItems: 'center', justifyContent: 'center' }}>
       <Text
         color="primary"
         sx={{
@@ -35,6 +40,11 @@ export const BetaBanner = () => (
           Give us feedback.
         </a>
       </Text>
-    </Flex>
+    </Flex> : (
+      <Flex sx={{ alignItems: 'center', justifyContent: 'center', gap: 1 }}>
+        <Icon size={20} icon="warning" color='red' />
+        <Text color="red" > We are having trouble pulling data from our partners right now; please refer back soon! </Text>
+      </Flex>
+    )}
   </BetaBannerBase>
 )

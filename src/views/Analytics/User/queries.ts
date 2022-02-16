@@ -239,7 +239,6 @@ export type GetUnsupportedCollectionsData = {
     slugsWithNullFloors: string
     collections: {
       imageUrl: string
-      bannerImageUrl: string
       osCollectionSlug: string
       floorEth: number
       floorUsd: number
@@ -265,7 +264,6 @@ export const GET_UNSUPPORTED_COLLECTIONS = gql`
       slugsWithNullFloors
       collections {
         imageUrl
-        bannerImageUrl
         osCollectionSlug
         floorEth
         floorUsd
@@ -294,29 +292,6 @@ export type GetUnsupportedFloorsData = {
 export const GET_UNSUPPORTED_FLOORS = gql`
   query GetUnsupportedFloors($stringifiedSlugs: String!) {
     getUnsupportedFloors(stringifiedSlugs: $stringifiedSlugs) {
-      floorEth
-      floorUsd
-    }
-  }
-`
-
-/**
- * Get unsupported weighted floors
- */
-export type GetUnsupportedWeightedFloorsVars = {
-  userAddress?: string
-}
-
-export type GetUnsupportedWeightedFloorsData = {
-  getUnsupportedWeightedFloorSum: {
-    floorEth: number
-    floorUsd: number
-  }
-}
-
-export const GET_UNSUPPORTED_WEIGHTED_FLOORS = gql`
-  query GetUnsupportedWeightedFloorSum($userAddress: String!) {
-    getUnsupportedWeightedFloorSum(userAddress: $userAddress) {
       floorEth
       floorUsd
     }
@@ -365,6 +340,33 @@ export const GET_UNSUPPORTED_ASSETS = gql`
         tokenId
         imageUrl
       }
+    }
+  }
+`
+
+/**
+ * Get unsupported aggregate collection stats
+ */
+export type GetUnsupportedAggregateCollectionStatsVars = {
+  userAddress?: string
+}
+
+export type GetUnsupportedAggregateCollectionStatsData = {
+  getUnsupportedAggregateCollectionStats: {
+    floorEth: number
+    floorUsd: number
+    numUniqueCollections: number
+    numAssets: number
+  }
+}
+
+export const GET_UNSUPPORTED_AGGREGATE_COLLECTION_STATS = gql`
+  query GetUnsupportedAggregateCollectionStats($userAddress: String!) {
+    getUnsupportedAggregateCollectionStats(userAddress: $userAddress) {
+      floorEth
+      floorUsd
+      numUniqueCollections
+      numAssets
     }
   }
 `
