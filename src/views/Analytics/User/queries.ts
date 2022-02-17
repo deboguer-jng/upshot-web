@@ -61,8 +61,6 @@ export const GET_COLLECTOR = gql`
     $collectionOffset: Int!
     $assetLimit: Int!
     $assetOffset: Int!
-    $txLimit: Int!
-    $txOffset: Int!
   ) {
     getUser(userId: $userId, address: $address) {
       totalAssetAppraisedValueUsd
@@ -116,7 +114,7 @@ export type GetCollectorTxHistoryVars = {
 }
 
 export type GetCollectorTxHistoryData = {
-  getUser: {
+  getTxHistory: {
     txHistory: {
       count: number
       events: {
@@ -139,10 +137,10 @@ export const GET_COLLECTOR_TX_HISTORY = gql`
   query GetCollector(
     $userId: Int
     $address: String
-    $txLimit: OneToHundredInt!
+    $txLimit: Int!
     $txOffset: Int!
   ) {
-    getUser(userId: $userId, address: $address) {
+    getTxHistory: getUser(userId: $userId, address: $address) {
       txHistory(limit: $txLimit, offset: $txOffset) {
         count
         events {

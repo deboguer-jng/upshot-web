@@ -501,7 +501,6 @@ export default function UserView() {
       variables: { collectionOffset },
       updateQuery: (prev, { fetchMoreResult }) => {
         if (!fetchMoreResult) return prev
-
         return {
           getUser: {
             ...prev.getUser,
@@ -527,13 +526,13 @@ export default function UserView() {
         if (!fetchMoreResult) return prev
         promiseResolve()
         return {
-          getUser: {
-            ...prev.getUser,
+          getTxHistory: {
+            ...prev.getTxHistory,
             txHistory: {
-              count: fetchMoreResult?.getUser?.txHistory?.count ?? 0,
+              count: fetchMoreResult?.getTxHistory?.txHistory?.count ?? 0,
               events: [
-                ...(prev?.getUser?.txHistory?.events ?? []),
-                ...(fetchMoreResult?.getUser?.txHistory?.events ?? []),
+                ...(prev?.getTxHistory?.txHistory?.events ?? []),
+                ...(fetchMoreResult?.getTxHistory?.txHistory?.events ?? []),
               ],
             },
           }
@@ -925,7 +924,7 @@ export default function UserView() {
     // simulate a request
     setTimeout(() => {
       fetchTxHistories(
-        txHistoryData?.getUser?.txHistory?.events?.length ?? 0 + 1
+        txHistoryData?.getTxHistory?.txHistory?.events?.length ?? 0 + 1
       )
     }, 500)
     // we need to return a promise
@@ -1292,17 +1291,17 @@ export default function UserView() {
                   <Flex sx={{ flexDirection: 'column', gap: 4 }}>
                     <Flex sx={{ flexDirection: 'column', gap: 4 }}>
                       <Text variant="h3Secondary">Transaction History</Text>
-                      {!!txHistoryData?.getUser?.txHistory?.count ? (
+                      {!!txHistoryData?.getTxHistory?.txHistory?.count ? (
                         <Box
                           sx={{ position: 'relative', height: '300px' }}
                           css={theme.scroll.thin.styles}
                         >
                           <InfiniteLoader
                             isRowLoaded={({ index }) =>
-                              !!txHistoryData?.getUser?.txHistory?.events[index]
+                              !!txHistoryData?.getTxHistory?.txHistory?.events[index]
                             }
                             loadMoreRows={loadMore}
-                            rowCount={txHistoryData?.getUser?.txHistory?.count}
+                            rowCount={txHistoryData?.getTxHistory?.txHistory?.count}
                           >
                             {({ onRowsRendered, registerChild }) => (
                               <AutoSizer>
@@ -1318,11 +1317,11 @@ export default function UserView() {
                                         height={270}
                                         rowHeight={30}
                                         rowCount={
-                                          txHistoryData?.getUser?.txHistory
+                                          txHistoryData?.getTxHistory?.txHistory
                                             ?.count
                                         }
                                         rowGetter={({ index }) =>
-                                          txHistoryData?.getUser?.txHistory
+                                          txHistoryData?.getTxHistory?.txHistory
                                             ?.events[index]
                                         }
                                       >
@@ -1430,11 +1429,11 @@ export default function UserView() {
                                         height={270}
                                         rowHeight={40}
                                         rowCount={
-                                          txHistoryData?.getUser?.txHistory
+                                          txHistoryData?.getTxHistory?.txHistory
                                             ?.count
                                         }
                                         rowGetter={({ index }) =>
-                                          txHistoryData?.getUser?.txHistory
+                                          txHistoryData?.getTxHistory?.txHistory
                                             ?.events[index]
                                         }
                                       >
@@ -1767,6 +1766,7 @@ export default function UserView() {
             render={RenderSupportedMasonry}
             onRender={maybeLoadMoreCollections}
             style={{ outline: 'none' }}
+            key={data?.getUser?.extraCollections?.collectionAssetCounts?.length}
           />
           {includeUnsupportedAssets &&
             !!dataUnsupportedCollections?.getUnsupportedCollectionPage
