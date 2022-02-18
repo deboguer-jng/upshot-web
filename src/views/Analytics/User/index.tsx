@@ -49,7 +49,6 @@ import {
   GET_UNSUPPORTED_ASSETS,
   GET_UNSUPPORTED_COLLECTIONS,
   GET_UNSUPPORTED_FLOORS,
-  GET_UNSUPPORTED_WEIGHTED_FLOORS,
   GetCollectorTxHistoryData,
   GetCollectorTxHistoryVars,
   GET_COLLECTOR_TX_HISTORY,
@@ -304,13 +303,14 @@ export default function UserView() {
       skip: !addressFormatted,
     }
   )
-  
+
   const handleShowCollection = (id: number) => {
     router.push('/analytics/collection/' + id)
   }
 
   /* Waiting for collector data or query string address param to format. */
-  const isLoading = loadingCollection || loadingAddressFormatted || loadingTxHistory
+  const isLoading =
+    loadingCollection || loadingAddressFormatted || loadingTxHistory
 
   const noCollection =
     data?.getUser === null || data?.getUser?.extraCollections?.count === 0
@@ -524,7 +524,6 @@ export default function UserView() {
       variables: { txOffset: offset },
       updateQuery: (prev, { fetchMoreResult }) => {
         if (!fetchMoreResult) return prev
-        promiseResolve()
         return {
           getTxHistory: {
             ...prev.getTxHistory,
@@ -535,9 +534,9 @@ export default function UserView() {
                 ...(fetchMoreResult?.getTxHistory?.txHistory?.events ?? []),
               ],
             },
-          }
+          },
         }
-      }
+      },
     })
   }
   /* Infinite scroll: Unsupported Collections */
@@ -922,21 +921,16 @@ export default function UserView() {
 
   const loadMore = () => {
     // simulate a request
-    setTimeout(() => {
-      fetchTxHistories(
-        txHistoryData?.getTxHistory?.txHistory?.events?.length ?? 0 + 1
-      )
-    }, 500)
-    // we need to return a promise
-    return new Promise((resolve, reject) => {
-      promiseResolve = resolve
-    })
+    fetchTxHistories(
+      txHistoryData?.getTxHistory?.txHistory?.events?.length ?? 0 + 1
+    )
+    return new Promise((resolve, reject) => {})
   }
 
   const headerRenderer = (label) => {
     return (
       <TableCell color="grey-500" backgroundColor="grey-800">
-        <Text sx={{ textTransform: "none" }}>{label}</Text>
+        <Text sx={{ textTransform: 'none' }}>{label}</Text>
       </TableCell>
     )
   }
@@ -1298,10 +1292,14 @@ export default function UserView() {
                         >
                           <InfiniteLoader
                             isRowLoaded={({ index }) =>
-                              !!txHistoryData?.getTxHistory?.txHistory?.events[index]
+                              !!txHistoryData?.getTxHistory?.txHistory?.events[
+                                index
+                              ]
                             }
                             loadMoreRows={loadMore}
-                            rowCount={txHistoryData?.getTxHistory?.txHistory?.count}
+                            rowCount={
+                              txHistoryData?.getTxHistory?.txHistory?.count
+                            }
                           >
                             {({ onRowsRendered, registerChild }) => (
                               <AutoSizer>
