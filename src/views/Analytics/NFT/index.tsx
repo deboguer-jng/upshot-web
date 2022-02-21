@@ -244,6 +244,11 @@ export default function NFTView() {
         />
       </Head>
       <Layout>
+        {warningBanner && (
+          <Text backgroundColor={"primary"} color="black" sx={{padding: '10px 30px', borderRadius: '10px', fontWeight: 600}}>
+            Fancy! This collection contains super-rare items. Our top-tier appraisals are currently under active development.
+          </Text>
+        )}
         <Grid
           columns={[1, 1, 1, 2]}
           sx={{
@@ -304,31 +309,6 @@ export default function NFTView() {
                     {'Last Appraisal: Ξ' +
                       weiToEth(latestAppraisal.ethSalePrice, 3, false)}
                   </Label>
-                  {warningBanner && (
-                    <Tooltip
-                      tooltip={
-                        <Flex
-                          sx={{
-                            flexDirection: 'column',
-                            textAlign: 'left',
-                            maxWidth: 150,
-                          }}
-                        >
-                          <Text
-                            color="grey-300"
-                            variant="small"
-                            sx={{
-                              fontWeight: 'heading',
-                              lineHeight: '1rem',
-                            }}
-                          >
-                            Fancy! Our top tier appraisals are currently under
-                            active development.
-                          </Text>
-                        </Flex>
-                      }
-                    />
-                  )}
                 </Flex>
               )}
               {!!rarity && (
