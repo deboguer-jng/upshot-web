@@ -26,7 +26,7 @@ import {
   GetAssetsSearchVars,
 } from './queries'
 
-const ROW_SIZE = 4;
+const ROW_SIZE = 4
 
 enum BREAKPOINT_INDEXES {
   ZERO = 0,
@@ -35,7 +35,7 @@ enum BREAKPOINT_INDEXES {
   THREE = 3,
   FOUR = 4,
   FIVE = 5,
-  SIX = 6
+  SIX = 6,
 }
 
 export default function SearchView() {
@@ -59,12 +59,6 @@ export default function SearchView() {
   const [collectionNameApplied, setCollectionNameApplied] =
     useState(collectionParam)
 
-  const [minPriceEth, setMinPriceEth] = useState('')
-  const [minPriceWei, setMinPriceWei] = useState<string>()
-
-  const [maxPriceEth, setMaxPriceEth] = useState('')
-  const [maxPriceWei, setMaxPriceWei] = useState<string>()
-
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
 
@@ -75,7 +69,7 @@ export default function SearchView() {
     [BREAKPOINT_INDEXES.THREE]: 3,
     [BREAKPOINT_INDEXES.FOUR]: 4,
     [BREAKPOINT_INDEXES.FIVE]: 5,
-    [BREAKPOINT_INDEXES.SIX]: 6
+    [BREAKPOINT_INDEXES.SIX]: 6,
   }
 
   const chunkSize = chunks[breakpointIndex]
@@ -93,8 +87,6 @@ export default function SearchView() {
       collectionName: collectionNameApplied,
       traits: attributesApplied,
       tokenId: tokenIdApplied,
-      minPrice: minPriceWei,
-      maxPrice: maxPriceWei,
     },
   })
 
@@ -109,19 +101,6 @@ export default function SearchView() {
     )
   }, [collectionParam, queryParam, attributesParam])
 
-
-  const handleBlurMinPrice = (e: React.FocusEvent<HTMLInputElement>) => {
-    const eth = parseEthString(e.currentTarget.value)
-
-    setMinPriceEth(eth || '')
-  }
-
-  const handleBlurMaxPrice = (e: React.FocusEvent<HTMLInputElement>) => {
-    const eth = parseEthString(e.currentTarget.value)
-
-    setMaxPriceEth(eth || '')
-  }
-
   const handlePageChange = ({ selected }: { selected: number }) => {
     setPage(selected)
   }
@@ -133,20 +112,6 @@ export default function SearchView() {
     setAttributesApplied(
       attributes ? JSON.stringify(attributes.split(/[ ,]+/)) : ''
     )
-    let minPriceWei
-    try {
-      if (minPriceEth)
-        minPriceWei = ethers.utils.parseEther(minPriceEth).toString()
-    } catch (err) {}
-
-    let maxPriceWei
-    try {
-      if (maxPriceEth)
-        maxPriceWei = ethers.utils.parseEther(maxPriceEth).toString()
-    } catch (err) {}
-
-    setMinPriceWei(minPriceWei)
-    setMaxPriceWei(maxPriceWei)
   }
 
   const handleClickNFT = (id: string) => {
@@ -158,28 +123,6 @@ export default function SearchView() {
   const searchFilters = () => {
     return (
       <>
-        <Box>
-          <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-            <Text sx={{ paddingTop: [4, 0] }} color="grey-500">
-              Price Range
-            </Text>
-            <Flex sx={{ gap: 4 }}>
-              <InputRounded
-                placeholder="Ξ Min"
-                value={minPriceEth}
-                onBlur={handleBlurMinPrice}
-                onChange={(e) => setMinPriceEth(e.currentTarget.value)}
-              />
-              <InputRounded
-                placeholder="Ξ Max"
-                value={maxPriceEth}
-                onBlur={handleBlurMaxPrice}
-                onChange={(e) => setMaxPriceEth(e.currentTarget.value)}
-              />
-            </Flex>
-          </Flex>
-        </Box>
-
         <Box>
           <Flex sx={{ flexDirection: 'column', gap: 2 }}>
             <Text sx={{ paddingTop: [4, 0] }} color="grey-500">
@@ -281,7 +224,13 @@ export default function SearchView() {
         ) : data?.assetGlobalSearch?.assets.length === 0 ? (
           <div>No results available.</div>
         ) : (
-          <Flex sx={{ flexDirection: 'column', gap: 5, alignItems: isMobile ? 'center' : 'baseline' }}>
+          <Flex
+            sx={{
+              flexDirection: 'column',
+              gap: 5,
+              alignItems: isMobile ? 'center' : 'baseline',
+            }}
+          >
             {
               /* Chunk results into non-wrapping rows. */
               loading
@@ -368,7 +317,9 @@ export default function SearchView() {
           {!!data?.assetGlobalSearch?.count && (
             <Pagination
               forcePage={page}
-              pageCount={Math.ceil(data.assetGlobalSearch.count / (chunkSize * ROW_SIZE))}
+              pageCount={Math.ceil(
+                data.assetGlobalSearch.count / (chunkSize * ROW_SIZE)
+              )}
               pageRangeDisplayed={0}
               marginPagesDisplayed={0}
               onPageChange={handlePageChange}
