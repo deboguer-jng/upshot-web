@@ -124,6 +124,10 @@ export type GetCollectorTxHistoryData = {
         txToAddress: string
         txHash: string
         price: string
+        asset: {
+          id: number
+          name: string
+        }
         currency: {
           symbol: string
           decimals: number

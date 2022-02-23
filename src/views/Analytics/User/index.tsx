@@ -34,7 +34,7 @@ import { Masonry, useInfiniteLoader } from 'masonic'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { Table, Column, AutoSizer, InfiniteLoader } from 'react-virtualized'
+import { Table, Column, AutoSizer, InfiniteLoader, Grid as GridVirtualized } from 'react-virtualized'
 import { transparentize } from 'polished'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Label as LabelUI } from 'theme-ui'
@@ -1013,6 +1013,21 @@ export default function UserView() {
     </div>
   )
 
+  const getColumnWidth = (index) => {
+    switch (index) {
+      case 0:
+        return 100;
+      case 1:
+        return 200;
+      case 2:
+        return 140;
+      case 3:
+        return 140;
+      default:
+        return 140;
+    }
+  }
+
   return (
     <>
       <Layout>
@@ -1302,7 +1317,7 @@ export default function UserView() {
                             }
                           >
                             {({ onRowsRendered, registerChild }) => (
-                              <AutoSizer>
+                              <AutoSizer defaultWidth={700}>
                                 {({ width }) => (
                                   <>
                                     {isMobile ? (
@@ -1442,11 +1457,12 @@ export default function UserView() {
                                             headerRenderer(label)
                                           }
                                           cellRenderer={({ rowData }) => {
+                                            console.log(rowData)
                                             return (
                                               <Text
                                                 sx={{
                                                   fontWeight: 'normal',
-                                                  fontSize: 4,
+                                                  fontSize: '16px',
                                                   color: 'grey-500',
                                                   textAlign: 'center',
                                                 }}
@@ -1461,7 +1477,37 @@ export default function UserView() {
                                             )
                                           }}
                                           cellDataGetter={() => {}}
-                                          width={width * 0.2}
+                                          width={width * 0.15}
+                                        />
+                                        <Column
+                                          label="NFT"
+                                          dataKey="name"
+                                          headerRenderer={({ label }) => headerRenderer(label)}
+                                          cellRenderer={({rowData}) => {
+                                            return (
+                                              <Link
+                                                href={`/analytics/nft/${rowData?.asset?.id}`}
+                                              >
+                                                <a
+                                                  sx={{
+                                                    cursor: 'pointer',
+                                                    textOverflow: 'ellipsis',
+                                                    whiteSpace: 'nowrap',
+                                                    display: 'inline-block',
+                                                    overflow: 'hidden',
+                                                    width: width * 0.23,
+                                                    '&:hover': {
+                                                      textDecoration: 'underline',
+                                                    },
+                                                  }}
+                                                >
+                                                  {rowData?.asset?.name}
+                                                </a>
+                                              </Link>
+                                            )
+                                          }}
+                                          cellDataGetter={() => {}}
+                                          width={width * 0.25}
                                         />
                                         <Column
                                           label="Sender"
@@ -1470,13 +1516,15 @@ export default function UserView() {
                                             headerRenderer(label)
                                           }
                                           cellDataGetter={() => {}}
-                                          width={width * 0.3}
+                                          width={width * 0.2}
                                           cellRenderer={({ rowData }) => {
                                             return (
-                                              <Flex
+                                              <Grid
                                                 sx={{
                                                   alignItems: 'center',
-                                                  gap: 2,
+                                                  gap: 1,
+                                                  gridTemplateColumns: '12px auto',
+                                                  overflow: 'hidden'
                                                 }}
                                               >
                                                 <Box
@@ -1493,6 +1541,7 @@ export default function UserView() {
                                                   <a
                                                     sx={{
                                                       cursor: 'pointer',
+                                                      fontSize: 2.5,
                                                       '&:hover': {
                                                         textDecoration:
                                                           'underline',
@@ -1506,12 +1555,12 @@ export default function UserView() {
                                                     />
                                                   </a>
                                                 </Link>
-                                              </Flex>
+                                              </Grid>
                                             )
                                           }}
                                         />
                                         <Column
-                                          width={width * 0.3}
+                                          width={width * 0.2}
                                           label="Recipient"
                                           dataKey="txToAddress"
                                           headerRenderer={({ label }) =>
@@ -1520,10 +1569,12 @@ export default function UserView() {
                                           cellDataGetter={() => {}}
                                           cellRenderer={({ rowData }) => {
                                             return (
-                                              <Flex
+                                              <Grid
                                                 sx={{
                                                   alignItems: 'center',
-                                                  gap: 2,
+                                                  gap: 1,
+                                                  gridTemplateColumns: '12px auto',
+                                                  overflow: 'hidden'
                                                 }}
                                               >
                                                 <Box
@@ -1540,6 +1591,7 @@ export default function UserView() {
                                                   <a
                                                     sx={{
                                                       cursor: 'pointer',
+                                                      fontSize: 2.5,
                                                       '&:hover': {
                                                         textDecoration:
                                                           'underline',
@@ -1553,12 +1605,12 @@ export default function UserView() {
                                                     />
                                                   </a>
                                                 </Link>
-                                              </Flex>
+                                              </Grid>
                                             )
                                           }}
                                         />
                                         <Column
-                                          width={width * 0.3}
+                                          width={width * 0.2}
                                           label="Sale Price"
                                           dataKey="price"
                                           headerRenderer={({ label }) =>
