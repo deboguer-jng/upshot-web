@@ -1477,7 +1477,7 @@ export default function UserView() {
                                             )
                                           }}
                                           cellDataGetter={() => {}}
-                                          width={width * 0.15}
+                                          width={width * 0.2}
                                         />
                                         <Column
                                           label="NFT"
@@ -1507,7 +1507,7 @@ export default function UserView() {
                                             )
                                           }}
                                           cellDataGetter={() => {}}
-                                          width={width * 0.25}
+                                          width={width * 0.2}
                                         />
                                         <Column
                                           label="Sender"
