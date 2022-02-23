@@ -72,22 +72,6 @@ export const Nav = () => {
     getNavCollections({ variables: { limit: 1000 } })
   }
 
-  const handleSearchSuggestionChange = (item: InputSuggestion) => {
-    isAddress
-      ? router.push(`/analytics/user/${encodeURIComponent(navSearchTerm)}`)
-      : router.push(`/analytics/collection/${encodeURIComponent(item.id)}`)
-  }
-
-  const handleNavSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-
-    isAddress
-      ? router.push(`/analytics/user/${encodeURIComponent(navSearchTerm)}`)
-      : router.push(
-          `/analytics/search?query=${encodeURIComponent(navSearchTerm)}`
-        )
-  }
-
   const suggestions = useMemo(() => {
     const suggestions = navCollectionsData?.collections?.assetSets ?? []
 
@@ -97,6 +81,27 @@ export const Nav = () => {
           name.toLowerCase().includes(navSearchTerm.toLowerCase())
         )
   }, [navCollectionsData, navSearchTerm, isAddress])
+
+  const handleNavSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!suggestions.length) return
+
+    const firstCollectionName = suggestions[0].name
+
+    isAddress
+      ? router.push(`/analytics/user/${encodeURIComponent(navSearchTerm)}`)
+      : router.push(
+          `/analytics/search?collection=${encodeURIComponent(
+            firstCollectionName
+          )}`
+        )
+  }
+
+  const handleSearchSuggestionChange = (item: InputSuggestion) => {
+    isAddress
+      ? router.push(`/analytics/user/${encodeURIComponent(navSearchTerm)}`)
+      : router.push(`/analytics/collection/${encodeURIComponent(item.id)}`)
+  }
 
   const hideMetaMask =
     typeof window['ethereum'] === 'undefined' &&
