@@ -244,9 +244,9 @@ export default function NFTView() {
         />
       </Head>
       <Layout>
-        {warningBanner && (
+        {warningBanner && !name.includes('punk') && (
           <Text backgroundColor={"primary"} color="black" sx={{padding: '10px 30px', borderRadius: '10px', fontWeight: 600}}>
-            Fancy! This collection contains super-rare items. Our top-tier appraisals are currently under active development.
+            Fancy! This is a super-rare item. Our top-tier appraisals are currently under active development.
           </Text>
         )}
         <Grid
