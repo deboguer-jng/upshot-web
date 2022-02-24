@@ -479,17 +479,17 @@ export default function UserView() {
     fetchMoreCollections({
       variables: { collectionOffset },
       updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) return prev
+        if (!fetchMoreResult?.getUser) return prev
 
         return {
           getUser: {
             ...prev.getUser,
             extraCollections: {
-              count: fetchMoreResult?.getUser?.extraCollections?.count ?? 0,
+              count: fetchMoreResult.getUser?.extraCollections?.count ?? 0,
               collectionAssetCounts: [
-                ...(prev?.getUser?.extraCollections?.collectionAssetCounts ??
+                ...(prev.getUser?.extraCollections?.collectionAssetCounts ??
                   []),
-                ...(fetchMoreResult?.getUser?.extraCollections
+                ...(fetchMoreResult.getUser?.extraCollections
                   ?.collectionAssetCounts ?? []),
               ],
             },
@@ -506,19 +506,18 @@ export default function UserView() {
     fetchMoreUnsupportedCollections({
       variables: { offset: unsupportedCollectionOffset },
       updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) return prev
+        if (!fetchMoreResult?.getUnsupportedCollectionPage) return prev
 
         return {
           getUnsupportedCollectionPage: {
             ...prev.getUnsupportedCollectionPage,
             slugsWithNullFloors:
-              fetchMoreResult?.getUnsupportedCollectionPage
-                ?.slugsWithNullFloors,
+              fetchMoreResult.getUnsupportedCollectionPage?.slugsWithNullFloors,
             nextOffset:
               fetchMoreResult.getUnsupportedCollectionPage?.nextOffset,
             collections: [
-              ...(prev?.getUnsupportedCollectionPage?.collections ?? []),
-              ...(fetchMoreResult?.getUnsupportedCollectionPage?.collections ??
+              ...(prev.getUnsupportedCollectionPage?.collections ?? []),
+              ...(fetchMoreResult.getUnsupportedCollectionPage?.collections ??
                 []),
             ],
           },
@@ -534,18 +533,17 @@ export default function UserView() {
     fetchMoreAssets({
       variables: { offset: assetOffset },
       updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) return prev
+        if (!fetchMoreResult?.collectionById) return prev
 
         return {
           collectionById: {
             ownerAssetsInCollection: {
               count:
-                fetchMoreResult?.collectionById?.ownerAssetsInCollection
+                fetchMoreResult.collectionById?.ownerAssetsInCollection
                   ?.count ?? 0,
               assets: [
-                ...(prev?.collectionById?.ownerAssetsInCollection?.assets ??
-                  []),
-                ...(fetchMoreResult?.collectionById?.ownerAssetsInCollection
+                ...(prev.collectionById?.ownerAssetsInCollection?.assets ?? []),
+                ...(fetchMoreResult.collectionById?.ownerAssetsInCollection
                   ?.assets ?? []),
               ],
             },
@@ -562,15 +560,15 @@ export default function UserView() {
     fetchMoreUnsupportedAssets({
       variables: { offset: unsupportedAssetOffset },
       updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) return prev
+        if (!fetchMoreResult?.getUnsupportedAssetPage) return prev
 
         return {
           getUnsupportedAssetPage: {
             ...prev.getUnsupportedAssetPage,
-            nextOffset: fetchMoreResult?.getUnsupportedAssetPage?.nextOffset,
+            nextOffset: fetchMoreResult.getUnsupportedAssetPage?.nextOffset,
             assets: [
-              ...(prev.getUnsupportedAssetPage.assets ?? []),
-              ...(fetchMoreResult.getUnsupportedAssetPage.assets ?? []),
+              ...(prev.getUnsupportedAssetPage?.assets ?? []),
+              ...(fetchMoreResult.getUnsupportedAssetPage?.assets ?? []),
             ],
           },
         }
