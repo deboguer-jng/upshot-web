@@ -961,7 +961,7 @@ export default function UserView() {
   return (
     <>
       <Layout>
-        {calculatedTotalAssetAppraisedValueWei === '-' && (
+        {data?.getUser?.warningBanner && (
           <Text backgroundColor={"primary"} color="black" sx={{padding: '10px 30px', borderRadius: '10px', fontWeight: 600}}>
             Fancy! This collection contains super-rare items. Our top-tier appraisals are currently under active development.
           </Text>
@@ -1029,10 +1029,10 @@ export default function UserView() {
                           }}
                         >
                           Portfolio Appraisal
-                          {calculatedTotalAssetAppraisedValueWei !== '-' && <Tooltip
+                          <Tooltip
                             tooltip={TooltipContent}
                             sx={{ marginLeft: '5px' }}
-                          />}
+                          />
                         </Text>
                       </Panel>
                       <Panel
