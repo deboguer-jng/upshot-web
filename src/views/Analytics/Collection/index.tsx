@@ -294,15 +294,18 @@ export default function CollectionView() {
           <a href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104" target="_blank" sx={{textDecoration: 'none'}}>
             <Box 
               sx={{
-                cursor: 'pointer', 
-                width: '100%', 
-                borderRadius: '10px', 
-                color: theme.colors.primary, 
-                border: '1px solid', 
-                padding: '10px', 
-                borderColor: theme.colors.primary, 
-                textDecoration: 'none', 
-                fontSize: '12px'
+                cursor: 'pointer',
+                width: '100%',
+                borderRadius: '10px',
+                color: theme.colors.primary,
+                border: '1px solid',
+                padding: '10px',
+                borderColor: theme.colors.primary,
+                textDecoration: 'none',
+                fontSize: '12px',
+                '&:hover': {
+                  background: theme.colors['grey-800']
+                }
               }}
             >
               How do we develop our appraisals?  Read article to learn more. 
