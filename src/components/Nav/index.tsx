@@ -62,7 +62,7 @@ export const Nav = () => {
 
   const handleConnect = (provider: ConnectorName) => {
     dispatch(setActivatingConnector(provider))
-    activate(connectorsByName[provider])
+    activate(connectorsByName[provider], (err) => console.error(err))
     modalRef?.current?.click()
   }
 

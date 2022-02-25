@@ -15,6 +15,7 @@ export const Injected = new InjectedConnector({ supportedChainIds: [1] })
 export const WalletConnect = new WalletConnectConnector({
   rpc: { 1: RPC_URLS[1] },
   qrcode: true,
+  infuraId: process.env.NEXT_PUBLIC_INFURA_PROJECT_ID,
 })
 
 export const connectorsByName: { [connectorName in ConnectorName]: any } = {
