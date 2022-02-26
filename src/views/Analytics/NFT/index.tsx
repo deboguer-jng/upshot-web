@@ -305,7 +305,7 @@ export default function NFTView() {
                       {'Last Appraisal: Ξ' +
                         weiToEth(latestAppraisal.ethSalePrice, 3, false)}
                     </Label>
-                    
+
                     {warningBanner && (
                       <Tooltip
                         tooltip={
@@ -338,8 +338,12 @@ export default function NFTView() {
                       </Label>
                     )}
                   </Flex>
-                  <a href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104" target="_blank" sx={{textDecoration: 'none'}}>
-                    <Box 
+                  <a
+                    href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
+                    target="_blank"
+                    sx={{ textDecoration: 'none' }}
+                  >
+                    <Box
                       sx={{
                         cursor: 'pointer',
                         width: '100%',
@@ -351,8 +355,8 @@ export default function NFTView() {
                         textDecoration: 'none',
                         fontSize: '12px',
                         '&:hover': {
-                          background: theme.colors['grey-800']
-                        }
+                          background: theme.colors['grey-800'],
+                        },
                       }}
                     >
                       How did we calculate this appraisal?
@@ -360,7 +364,7 @@ export default function NFTView() {
                   </a>
                 </>
               )}
-              
+
               <Flex>
                 <a
                   href={`https://opensea.io/assets/${id}`}

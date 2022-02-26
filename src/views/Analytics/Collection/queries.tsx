@@ -14,6 +14,7 @@ export type GetCollectionData = {
     description: string
     imageUrl: string
     size: string
+    isAppraised: boolean
     numCollectors: number
     timeSeries?: {
       average: string
@@ -34,6 +35,7 @@ export const GET_COLLECTION = gql`
     collectionById(id: $id) {
       name
       description
+      isAppraised
       imageUrl
       size
       numCollectors
