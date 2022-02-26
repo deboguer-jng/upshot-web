@@ -83,6 +83,7 @@ export default function AnalyticsView() {
           minHeight: '100vh',
           gap: 5,
           padding: 4,
+          paddingBottom: 0
         }}
       >
         <Flex
