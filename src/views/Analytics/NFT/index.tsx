@@ -300,7 +300,7 @@ export default function NFTView() {
               <Text variant="h2Primary">{assetName}</Text>
               {!!latestAppraisal && (
                 <>
-                  <Flex sx={{ alignItems: 'center', gap: 2 }}>
+                  <Flex sx={{ alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
                     <Label size="md" color="blue">
                       {'Last Appraisal: Ξ' +
                         weiToEth(latestAppraisal.ethSalePrice, 3, false)}
