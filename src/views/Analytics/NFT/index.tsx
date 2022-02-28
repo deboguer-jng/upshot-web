@@ -211,9 +211,15 @@ export default function NFTView() {
     ]
   )
 
+  const isFloor =
+    latestAppraisal?.timestamp && !latestAppraisal?.medianRelativeError
+
   const chartData = [
-    { name: 'Appraisals', data: appraisalSeries },
-    // { name: 'Sales', data: salesSeries },
+    {
+      name: isFloor ? 'Collection Floor' : 'Appraisals',
+      data: appraisalSeries,
+      color: theme.rawColors[isFloor ? 'pink' : 'blue'],
+    },
   ]
 
   const assetName = getAssetName(name, collection?.name, tokenId)
@@ -225,6 +231,7 @@ export default function NFTView() {
   const finalImageSrc = PIXELATED_CONTRACTS.includes(contractAddress)
     ? image
     : optimizedSrc
+
   return (
     <>
       <Head>
@@ -255,7 +262,7 @@ export default function NFTView() {
             sx={{
               flexDirection: 'column',
               gap: 4,
-              position: ['static', 'static', 'sticky', 'sticky'],
+              position: ['static', 'sticky', 'sticky'],
               height: 'min-content',
               top: '160px',
             }}
@@ -300,8 +307,8 @@ export default function NFTView() {
               <Text variant="h2Primary">{assetName}</Text>
               {!!latestAppraisal && (
                 <Flex sx={{ alignItems: 'center', gap: 2 }}>
-                  <Label size="md" color="blue">
-                    {'Last Appraisal: Ξ' +
+                  <Label size="md" color={isFloor ? 'pink' : 'blue'}>
+                    {`Last ${isFloor ? 'Floor' : 'Appraisal'}: Ξ` +
                       weiToEth(latestAppraisal.ethSalePrice, 3, false)}
                   </Label>
                   {warningBanner && (
@@ -511,77 +518,6 @@ export default function NFTView() {
                 </Panel>
                 <Panel sx={{ flexGrow: 1 }}>
                   <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-                    {/* <Text variant="h3Secondary">Statistics</Text>
-                    <Box>
-                      <Table
-                        sx={{
-                          borderSpacing: '32px 8px',
-                          marginTop: '-8px',
-                          marginLeft: '-32px',
-                          width: 'auto',
-                        }}
-                      >
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>
-                              <Text color="grey-500" sx={{ fontSize: 2 }}>
-                                Price Change
-                                <br />
-                                from Primary Market
-                              </Text>
-                            </TableCell>
-                            <TableCell>
-                              <Text color="grey-500" sx={{ fontSize: 2 }}>
-                                Original Primary
-                                <br />
-                                Market Price
-                              </Text>
-                            </TableCell>
-                            <TableCell>
-                              <Text color="grey-500" sx={{ fontSize: 3 }}>
-                                Average
-                                <br />
-                                Resale Price
-                              </Text>
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody sx={{ borderSpacing: '8px' }}>
-                          <TableRow>
-                            <TableCell>
-                              <Text
-                                sx={{
-                                  fontWeight: 'bold',
-                                  fontSize: 5,
-                                  color: getPriceChangeColor(
-                                    priceChangeFromFirstSale ?? 0
-                                  ),
-                                }}
-                              >
-                                {priceChangeFromFirstSale
-                                  ? priceChangeFromFirstSale.toFixed(0) + '%'
-                                  : '-'}
-                              </Text>
-                            </TableCell>
-                            <TableCell>
-                              <Text sx={{ fontWeight: 'bold', fontSize: 5 }}>
-                                {firstSale?.estimatedPrice
-                                  ? weiToEth(firstSale?.estimatedPrice)
-                                  : '-'}
-                              </Text>
-                            </TableCell>
-                            <TableCell>
-                              <Text sx={{ fontWeight: 'bold', fontSize: 5 }}>
-                                {avgResalePrice
-                                  ? weiToEth(avgResalePrice)
-                                  : '-'}
-                              </Text>
-                            </TableCell>
-                          </TableRow>
-                        </TableBody>
-                      </Table>
-                    </Box> */}
-
                     <Text variant="h3Secondary">Attributes</Text>
                     <Grid columns={isMobile ? 1 : 2}>
                       {traits.map(({ traitType, value, rarity }, idx) => (
@@ -635,121 +571,85 @@ export default function NFTView() {
                     <Flex sx={{ padding: '20px', paddingBottom: 0 }}>
                       <Text variant="h3Secondary">Pricing History</Text>
                     </Flex>
-                    {(!!lastSale || !!latestAppraisal) && (
-                      <Flex sx={{ gap: '40px', flexGrow: 1, padding: '20px' }}>
-                        {/* {!!lastSale && (
-                          <Flex sx={{ flexDirection: 'column' }}>
+
+                    <Flex sx={{ gap: '40px', flexGrow: 1, padding: '20px' }}>
+                      {!!latestAppraisal?.timestamp && (
+                        <Flex sx={{ flexDirection: 'column' }}>
+                          <Flex sx={{ gap: 4 }}>
                             <Text
-                              color="pink"
+                              color="primary"
                               variant="h3Primary"
                               sx={{ fontWeight: 'heading', fontSize: 4 }}
                             >
-                              Last Sale
+                              Last {isFloor ? 'Floor' : 'Appraisal'}
                             </Text>
+                          </Flex>
+                          <Flex sx={{ gap: 2 }}>
                             <Label
-                              color="pink"
-                              currencySymbol={lastSale ? 'Ξ' : undefined}
+                              color="primary"
+                              currencySymbol={
+                                latestAppraisal?.ethSalePrice ? 'Ξ' : undefined
+                              }
                               variant="currency"
-                              size="md"
+                              size="lg"
+                              sx={{ lineHeight: 1 }}
                             >
-                              {lastSale?.ethSalePrice
-                                ? weiToEth(lastSale.ethSalePrice, 3, false)
+                              {latestAppraisal?.ethSalePrice
+                                ? weiToEth(
+                                    latestAppraisal.ethSalePrice,
+                                    3,
+                                    false
+                                  )
                                 : '-'}
                             </Label>
 
-                            <Text
-                              color="pink"
-                              sx={{ fontSize: 2, textTransform: 'uppercase' }}
-                            >
-                              {lastSale?.timestamp
-                                ? format(
-                                    lastSale.timestamp * 1000,
-                                    'LLL dd yyyy hh:mm'
-                                  )
-                                : '-'}
-                            </Text>
-                          </Flex>
-                        )} */}
-                        {!!latestAppraisal && (
-                          <Flex sx={{ flexDirection: 'column' }}>
-                            <Flex sx={{ gap: 4 }}>
-                              <Text
-                                color="primary"
-                                variant="h3Primary"
-                                sx={{ fontWeight: 'heading', fontSize: 4 }}
-                              >
-                                Last Appraisal
-                              </Text>
-                            </Flex>
-                            <Flex sx={{ gap: 2 }}>
+                            {!!latestAppraisal?.medianRelativeError && (
                               <Label
                                 color="primary"
-                                currencySymbol={
-                                  latestAppraisal?.ethSalePrice
-                                    ? 'Ξ'
-                                    : undefined
-                                }
-                                variant="currency"
-                                size="lg"
-                                sx={{ lineHeight: 1 }}
+                                sx={{ marginTop: '.5rem' }}
                               >
-                                {latestAppraisal?.ethSalePrice
-                                  ? weiToEth(
-                                      latestAppraisal.ethSalePrice,
-                                      3,
-                                      false
-                                    )
-                                  : '-'}
+                                {'±' +
+                                  (
+                                    latestAppraisal.medianRelativeError * 100
+                                  ).toFixed(2) +
+                                  '%'}
                               </Label>
-
-                              {!!latestAppraisal?.medianRelativeError && (
-                                <Label
-                                  color="primary"
-                                  sx={{ marginTop: '.5rem' }}
-                                >
-                                  {'±' +
-                                    (
-                                      latestAppraisal.medianRelativeError * 100
-                                    ).toFixed(2) +
-                                    '%'}
-                                </Label>
-                              )}
-                            </Flex>
-                            {!!latestAppraisal?.usdSalePrice &&
-                              !isNaN(
-                                parseFloat(latestAppraisal?.usdSalePrice)
-                              ) && (
-                                <Label
-                                  color="white"
-                                  currencySymbol="$"
-                                  variant="currency"
-                                  size="md"
-                                  sx={{
-                                    marginTop: '-.5rem',
-                                  }}
-                                >
-                                  {formatCommas(
-                                    Number(latestAppraisal.usdSalePrice) / 1e6
-                                  )}
-                                </Label>
-                              )}
-                            <Text
-                              color="primary"
-                              sx={{ fontSize: 2, textTransform: 'uppercase' }}
-                            >
-                              {latestAppraisal?.timestamp
-                                ? format(
-                                    latestAppraisal.timestamp * 1000,
-                                    'LLL dd yyyy hh:mm'
-                                  )
-                                : '-'}
-                            </Text>
+                            )}
                           </Flex>
-                        )}
-                      </Flex>
-                    )}
+                          {!!latestAppraisal?.usdSalePrice &&
+                            !Number.isNaN(
+                              parseFloat(latestAppraisal?.usdSalePrice)
+                            ) && (
+                              <Label
+                                color="white"
+                                currencySymbol="$"
+                                variant="currency"
+                                size="md"
+                                sx={{
+                                  marginTop: '-.5rem',
+                                }}
+                              >
+                                {formatCommas(
+                                  Number(latestAppraisal.usdSalePrice) / 1e6
+                                )}
+                              </Label>
+                            )}
+                          <Text
+                            color="primary"
+                            sx={{ fontSize: 2, textTransform: 'uppercase' }}
+                          >
+                            {latestAppraisal?.timestamp
+                              ? format(
+                                  latestAppraisal.timestamp * 1000,
+                                  'LLL dd yyyy hh:mm'
+                                )
+                              : '-'}
+                          </Text>
+                        </Flex>
+                      )}
+                    </Flex>
 
-                    {!lastSale && !latestAppraisal && (
+                    {!latestAppraisal && (
                       <Flex sx={{ padding: '20px', flexGrow: 1 }}>
                         <Text color="grey-500" sx={{ fontSize: 2 }}>
                           No sales data available.
