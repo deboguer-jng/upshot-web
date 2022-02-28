@@ -105,6 +105,7 @@ export default function LandingView() {
           minHeight: '100vh',
           gap: 4,
           padding: 4,
+          paddingBottom: '100px',
         }}
       >
         <Box sx={{ display: 'flex' }}>
@@ -428,9 +429,9 @@ export default function LandingView() {
             </Grid>
           </Grid>
         </Grid>
-        <Investors />
-        <Footer />
       </Container>
+      <Investors />
+      <Footer />
     </>
   )
 }
