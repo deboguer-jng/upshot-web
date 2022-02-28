@@ -17,8 +17,6 @@ export default class MyDocument extends Document {
     return { ...initialProps }
   }
   render() {
-    console.log({ ENV: process.env })
-
     const mouseFlow = (
       <script
         dangerouslySetInnerHTML={{
