@@ -304,18 +304,46 @@ export default function NFTView() {
             <Flex sx={{ flexDirection: 'column', gap: 4 }}>
               <Text variant="h2Primary">{assetName}</Text>
               {!!latestAppraisal && (
-                <Flex sx={{ alignItems: 'center', gap: 2 }}>
-                  <Label size="md" color="blue">
-                    {'Last Appraisal: Ξ' +
-                      weiToEth(latestAppraisal.ethSalePrice, 3, false)}
-                  </Label>
-                </Flex>
+                <>
+                  <Flex sx={{ alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+                    <Label size="md" color="blue">
+                      {'Last Appraisal: Ξ' +
+                        weiToEth(latestAppraisal.ethSalePrice, 3, false)}
+                    </Label>
+
+                    {!!rarity && (
+                      <Label size="md">
+                        {(rarity * 100).toFixed(2) + '% Rarity'}
+                      </Label>
+                    )}
+                  </Flex>
+                  <a
+                    href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
+                    target="_blank"
+                    sx={{ textDecoration: 'none' }}
+                  >
+                    <Box
+                      sx={{
+                        cursor: 'pointer',
+                        width: '100%',
+                        borderRadius: '10px',
+                        color: theme.colors.primary,
+                        border: '1px solid',
+                        padding: '10px',
+                        borderColor: theme.colors.primary,
+                        textDecoration: 'none',
+                        fontSize: '12px',
+                        '&:hover': {
+                          background: theme.colors['grey-800'],
+                        },
+                      }}
+                    >
+                      How did we calculate this appraisal?
+                    </Box>
+                  </a>
+                </>
               )}
-              {!!rarity && (
-                <Label size="md">
-                  {(rarity * 100).toFixed(2) + '% Rarity'}
-                </Label>
-              )}
+
               <Flex>
                 <a
                   href={`https://opensea.io/assets/${id}`}
