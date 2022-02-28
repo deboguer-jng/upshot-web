@@ -244,6 +244,11 @@ export default function NFTView() {
         />
       </Head>
       <Layout>
+        {warningBanner && !name.includes('punk') && (
+          <Text backgroundColor={"primary"} color="black" sx={{padding: '10px 30px', borderRadius: '10px', fontWeight: 600}}>
+            Fancy! This is a super-rare item. Our top-tier appraisals are currently under active development.
+          </Text>
+        )}
         <Grid
           columns={[1, 1, 1, 2]}
           sx={{
@@ -255,7 +260,7 @@ export default function NFTView() {
             sx={{
               flexDirection: 'column',
               gap: 4,
-              position: ['static', 'sticky', 'sticky'],
+              position: ['static', 'static', 'sticky', 'sticky'],
               height: 'min-content',
               top: '160px',
             }}
@@ -305,32 +310,6 @@ export default function NFTView() {
                       {'Last Appraisal: Ξ' +
                         weiToEth(latestAppraisal.ethSalePrice, 3, false)}
                     </Label>
-
-                    {warningBanner && (
-                      <Tooltip
-                        tooltip={
-                          <Flex
-                            sx={{
-                              flexDirection: 'column',
-                              textAlign: 'left',
-                              maxWidth: 150,
-                            }}
-                          >
-                            <Text
-                              color="grey-300"
-                              variant="small"
-                              sx={{
-                                fontWeight: 'heading',
-                                lineHeight: '1rem',
-                              }}
-                            >
-                              Fancy! Our top tier appraisals are currently under
-                              active development.
-                            </Text>
-                          </Flex>
-                        }
-                      />
-                    )}
 
                     {!!rarity && (
                       <Label size="md">
