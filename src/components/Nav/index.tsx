@@ -11,6 +11,7 @@ import {
   useTheme,
 } from '@upshot-tech/upshot-ui'
 import { useWeb3React } from '@web3-react/core'
+import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { ConnectorName, connectorsByName } from 'constants/connectors'
 import makeBlockie from 'ethereum-blockies-base64'
 import {
@@ -37,7 +38,7 @@ import { Sidebar, SidebarShade, SideLink } from './Styled'
 
 export const Nav = () => {
   const { theme } = useTheme()
-  const { activate, deactivate } = useWeb3React()
+  const { activate, deactivate, connector } = useWeb3React()
   const router = useRouter()
   const dispatch = useAppDispatch()
   const address = useAppSelector(selectAddress)
@@ -61,8 +62,15 @@ export const Nav = () => {
     navSearchTerm.substring(0, 2) === '0x' && navSearchTerm.length === 42
 
   const handleConnect = (provider: ConnectorName) => {
+    if (
+      connector instanceof WalletConnectConnector &&
+      connector.walletConnectProvider?.wc?.uri
+    ) {
+      connector.walletConnectProvider = undefined
+    }
+
     dispatch(setActivatingConnector(provider))
-    activate(connectorsByName[provider])
+    activate(connectorsByName[provider], (err) => console.error(err))
     modalRef?.current?.click()
   }
 
