@@ -20,6 +20,7 @@ export type GetCollectorData = {
     firstAssetPurchaseTime: number
     bio: string
     numAssets: number
+    warningBanner: boolean
     extraCollections: {
       count: number
       collectionAssetCounts: {
@@ -68,6 +69,7 @@ export const GET_COLLECTOR = gql`
       firstAssetPurchaseTime
       bio
       numAssets
+      warningBanner
       extraCollections(limit: $collectionLimit, offset: $collectionOffset) {
         count
         collectionAssetCounts {

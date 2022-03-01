@@ -91,15 +91,26 @@ export default function SearchView() {
   })
 
   useEffect(() => {
+    if (!collectionParam) return
+
     setCollectionName(collectionParam)
     setCollectionNameApplied(collectionParam)
+  }, [collectionParam])
+
+  useEffect(() => {
+    if (!queryParam) return
+
     setSearchTermApplied(queryParam)
     setSearchTerm(queryParam)
+  }, [queryParam])
+
+  useEffect(() => {
+    if (!attributesParam) return
     setAttributes(attributesParam)
     setAttributesApplied(
       attributesParam ? JSON.stringify(attributesParam.split(',')) : ''
     )
-  }, [collectionParam, queryParam, attributesParam])
+  }, [attributesParam])
 
   const handlePageChange = ({ selected }: { selected: number }) => {
     setPage(selected)
@@ -112,6 +123,8 @@ export default function SearchView() {
     setAttributesApplied(
       attributes ? JSON.stringify(attributes.split(/[ ,]+/)) : ''
     )
+
+    router.replace('/analytics/search', undefined, { shallow: true })
   }
 
   const handleClickNFT = (id: string) => {

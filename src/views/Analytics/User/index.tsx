@@ -34,7 +34,13 @@ import { Masonry, useInfiniteLoader } from 'masonic'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { Table, Column, AutoSizer, InfiniteLoader, Grid as GridVirtualized } from 'react-virtualized'
+import {
+  Table,
+  Column,
+  AutoSizer,
+  InfiniteLoader,
+  Grid as GridVirtualized,
+} from 'react-virtualized'
 import { transparentize } from 'polished'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Label as LabelUI } from 'theme-ui'
@@ -500,16 +506,17 @@ export default function UserView() {
     fetchMoreCollections({
       variables: { collectionOffset },
       updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) return prev
+        if (!fetchMoreResult?.getUser) return prev
+
         return {
           getUser: {
             ...prev.getUser,
             extraCollections: {
-              count: fetchMoreResult?.getUser?.extraCollections?.count ?? 0,
+              count: fetchMoreResult.getUser?.extraCollections?.count ?? 0,
               collectionAssetCounts: [
-                ...(prev?.getUser?.extraCollections?.collectionAssetCounts ??
+                ...(prev.getUser?.extraCollections?.collectionAssetCounts ??
                   []),
-                ...(fetchMoreResult?.getUser?.extraCollections
+                ...(fetchMoreResult.getUser?.extraCollections
                   ?.collectionAssetCounts ?? []),
               ],
             },
@@ -546,19 +553,18 @@ export default function UserView() {
     fetchMoreUnsupportedCollections({
       variables: { offset: unsupportedCollectionOffset },
       updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) return prev
+        if (!fetchMoreResult?.getUnsupportedCollectionPage) return prev
 
         return {
           getUnsupportedCollectionPage: {
             ...prev.getUnsupportedCollectionPage,
             slugsWithNullFloors:
-              fetchMoreResult?.getUnsupportedCollectionPage
-                ?.slugsWithNullFloors,
+              fetchMoreResult.getUnsupportedCollectionPage?.slugsWithNullFloors,
             nextOffset:
               fetchMoreResult.getUnsupportedCollectionPage?.nextOffset,
             collections: [
-              ...(prev?.getUnsupportedCollectionPage?.collections ?? []),
-              ...(fetchMoreResult?.getUnsupportedCollectionPage?.collections ??
+              ...(prev.getUnsupportedCollectionPage?.collections ?? []),
+              ...(fetchMoreResult.getUnsupportedCollectionPage?.collections ??
                 []),
             ],
           },
@@ -574,18 +580,17 @@ export default function UserView() {
     fetchMoreAssets({
       variables: { offset: assetOffset },
       updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) return prev
+        if (!fetchMoreResult?.collectionById) return prev
 
         return {
           collectionById: {
             ownerAssetsInCollection: {
               count:
-                fetchMoreResult?.collectionById?.ownerAssetsInCollection
+                fetchMoreResult.collectionById?.ownerAssetsInCollection
                   ?.count ?? 0,
               assets: [
-                ...(prev?.collectionById?.ownerAssetsInCollection?.assets ??
-                  []),
-                ...(fetchMoreResult?.collectionById?.ownerAssetsInCollection
+                ...(prev.collectionById?.ownerAssetsInCollection?.assets ?? []),
+                ...(fetchMoreResult.collectionById?.ownerAssetsInCollection
                   ?.assets ?? []),
               ],
             },
@@ -602,15 +607,15 @@ export default function UserView() {
     fetchMoreUnsupportedAssets({
       variables: { offset: unsupportedAssetOffset },
       updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) return prev
+        if (!fetchMoreResult?.getUnsupportedAssetPage) return prev
 
         return {
           getUnsupportedAssetPage: {
             ...prev.getUnsupportedAssetPage,
-            nextOffset: fetchMoreResult?.getUnsupportedAssetPage?.nextOffset,
+            nextOffset: fetchMoreResult.getUnsupportedAssetPage?.nextOffset,
             assets: [
-              ...(prev.getUnsupportedAssetPage.assets ?? []),
-              ...(fetchMoreResult.getUnsupportedAssetPage.assets ?? []),
+              ...(prev.getUnsupportedAssetPage?.assets ?? []),
+              ...(fetchMoreResult.getUnsupportedAssetPage?.assets ?? []),
             ],
           },
         }
@@ -1016,21 +1021,31 @@ export default function UserView() {
   const getColumnWidth = (index) => {
     switch (index) {
       case 0:
-        return 100;
+        return 100
       case 1:
-        return 200;
+        return 200
       case 2:
-        return 140;
+        return 140
       case 3:
-        return 140;
+        return 140
       default:
-        return 140;
+        return 140
     }
   }
 
   return (
     <>
       <Layout>
+        {data?.getUser?.warningBanner && (
+          <Text
+            backgroundColor={'primary'}
+            color="black"
+            sx={{ padding: '10px 30px', borderRadius: '10px', fontWeight: 600 }}
+          >
+            Fancy! This collection contains super-rare items. Our top-tier
+            appraisals are currently under active development.
+          </Text>
+        )}
         <Flex sx={{ flexDirection: 'column', gap: 4 }}>
           {!!address && <Header key={address} {...{ address }} />}
           {/* User Description */}
@@ -1482,8 +1497,10 @@ export default function UserView() {
                                         <Column
                                           label="NFT"
                                           dataKey="name"
-                                          headerRenderer={({ label }) => headerRenderer(label)}
-                                          cellRenderer={({rowData}) => {
+                                          headerRenderer={({ label }) =>
+                                            headerRenderer(label)
+                                          }
+                                          cellRenderer={({ rowData }) => {
                                             return (
                                               <Link
                                                 href={`/analytics/nft/${rowData?.asset?.id}`}
@@ -1497,7 +1514,8 @@ export default function UserView() {
                                                     overflow: 'hidden',
                                                     width: width * 0.23,
                                                     '&:hover': {
-                                                      textDecoration: 'underline',
+                                                      textDecoration:
+                                                        'underline',
                                                     },
                                                   }}
                                                 >
@@ -1523,8 +1541,9 @@ export default function UserView() {
                                                 sx={{
                                                   alignItems: 'center',
                                                   gap: 1,
-                                                  gridTemplateColumns: '12px auto',
-                                                  overflow: 'hidden'
+                                                  gridTemplateColumns:
+                                                    '12px auto',
+                                                  overflow: 'hidden',
                                                 }}
                                               >
                                                 <Box
@@ -1573,8 +1592,9 @@ export default function UserView() {
                                                 sx={{
                                                   alignItems: 'center',
                                                   gap: 1,
-                                                  gridTemplateColumns: '12px auto',
-                                                  overflow: 'hidden'
+                                                  gridTemplateColumns:
+                                                    '12px auto',
+                                                  overflow: 'hidden',
                                                 }}
                                               >
                                                 <Box
