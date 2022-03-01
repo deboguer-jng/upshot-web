@@ -211,8 +211,7 @@ export default function NFTView() {
     ]
   )
 
-  const isFloor =
-    latestAppraisal?.timestamp && !latestAppraisal?.medianRelativeError
+  const isFloor = !latestAppraisal && appraisalHistory.length
 
   const chartData = [
     {
@@ -307,8 +306,8 @@ export default function NFTView() {
               <Text variant="h2Primary">{assetName}</Text>
               {!!latestAppraisal && (
                 <Flex sx={{ alignItems: 'center', gap: 2 }}>
-                  <Label size="md" color={isFloor ? 'pink' : 'blue'}>
-                    {`Last ${isFloor ? 'Floor' : 'Appraisal'}: Ξ` +
+                  <Label size="md" color="blue">
+                    {`Last Appraisal: Ξ` +
                       weiToEth(latestAppraisal.ethSalePrice, 3, false)}
                   </Label>
                   {warningBanner && (
@@ -573,28 +572,34 @@ export default function NFTView() {
                     </Flex>
 
                     <Flex sx={{ gap: '40px', flexGrow: 1, padding: '20px' }}>
-                      {!!latestAppraisal?.timestamp && (
+                      {appraisalHistory?.length > 0 && (
                         <Flex sx={{ flexDirection: 'column' }}>
                           <Flex sx={{ gap: 4 }}>
                             <Text
-                              color="primary"
+                              color={isFloor ? 'pink' : 'blue'}
                               variant="h3Primary"
                               sx={{ fontWeight: 'heading', fontSize: 4 }}
                             >
-                              Last {isFloor ? 'Floor' : 'Appraisal'}
+                              Last {isFloor ? 'Floor Price' : 'Appraisal'}
                             </Text>
                           </Flex>
                           <Flex sx={{ gap: 2 }}>
                             <Label
-                              color="primary"
-                              currencySymbol={
-                                latestAppraisal?.ethSalePrice ? 'Ξ' : undefined
-                              }
+                              color={isFloor ? 'pink' : 'blue'}
+                              currencySymbol="Ξ"
                               variant="currency"
                               size="lg"
                               sx={{ lineHeight: 1 }}
                             >
-                              {latestAppraisal?.ethSalePrice
+                              {isFloor
+                                ? weiToEth(
+                                    appraisalHistory[
+                                      appraisalHistory.length - 1
+                                    ].estimatedPrice,
+                                    3,
+                                    false
+                                  )
+                                : latestAppraisal?.ethSalePrice
                                 ? weiToEth(
                                     latestAppraisal.ethSalePrice,
                                     3,
@@ -635,10 +640,16 @@ export default function NFTView() {
                               </Label>
                             )}
                           <Text
-                            color="primary"
+                            color={isFloor ? 'pink' : 'blue'}
                             sx={{ fontSize: 2, textTransform: 'uppercase' }}
                           >
-                            {latestAppraisal?.timestamp
+                            {isFloor
+                              ? format(
+                                  appraisalHistory[appraisalHistory.length - 1]
+                                    .timestamp * 1000,
+                                  'LLL dd yyyy hh:mm'
+                                )
+                              : latestAppraisal?.timestamp
                               ? format(
                                   latestAppraisal.timestamp * 1000,
                                   'LLL dd yyyy hh:mm'
@@ -649,7 +660,7 @@ export default function NFTView() {
                       )}
                     </Flex>
 
-                    {!latestAppraisal && (
+                    {!appraisalHistory?.length && (
                       <Flex sx={{ padding: '20px', flexGrow: 1 }}>
                         <Text color="grey-500" sx={{ fontSize: 2 }}>
                           No sales data available.
