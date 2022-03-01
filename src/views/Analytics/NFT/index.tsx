@@ -250,7 +250,7 @@ export default function NFTView() {
         />
       </Head>
       <Layout>
-        {warningBanner && !name.includes('punk') && (
+        {warningBanner && !isFloor && !name.includes('punk') && (
           <Text
             backgroundColor={'primary'}
             color="black"
