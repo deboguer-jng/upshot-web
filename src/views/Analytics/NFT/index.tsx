@@ -594,7 +594,7 @@ export default function NFTView() {
                               variant="h3Primary"
                               sx={{ fontWeight: 'heading', fontSize: 4 }}
                             >
-                              Last {isFloor ? 'Floor Price' : 'Appraisal'}
+                              {isFloor ? 'Floor Price' : 'Last Appraisal'}
                             </Text>
                           </Flex>
                           <Flex sx={{ gap: 2 }}>
