@@ -86,14 +86,10 @@ export const Nav = () => {
     e.preventDefault()
     if (!suggestions.length) return
 
-    const firstCollectionName = suggestions[0].name
-
     isAddress
       ? router.push(`/analytics/user/${encodeURIComponent(navSearchTerm)}`)
       : router.push(
-          `/analytics/search?collection=${encodeURIComponent(
-            firstCollectionName
-          )}`
+          `/analytics/collection/${encodeURIComponent(suggestions[0].id)}`
         )
   }
 
