@@ -245,8 +245,13 @@ export default function NFTView() {
       </Head>
       <Layout>
         {warningBanner && !name.includes('punk') && (
-          <Text backgroundColor={"primary"} color="black" sx={{padding: '10px 30px', borderRadius: '10px', fontWeight: 600}}>
-            Fancy! This is a super-rare item. Our top-tier appraisals are currently under active development.
+          <Text
+            backgroundColor={'primary'}
+            color="black"
+            sx={{ padding: '10px 30px', borderRadius: '10px', fontWeight: 600 }}
+          >
+            Fancy! This is a super-rare item. Our top-tier appraisals are
+            currently under active development.
           </Text>
         )}
         <Grid
@@ -321,6 +326,7 @@ export default function NFTView() {
                     href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
                     target="_blank"
                     sx={{ textDecoration: 'none' }}
+                    rel="noreferrer"
                   >
                     <Box
                       sx={{
