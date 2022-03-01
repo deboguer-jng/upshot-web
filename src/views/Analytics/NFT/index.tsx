@@ -188,6 +188,7 @@ export default function NFTView() {
   const {
     name,
     rarity,
+    rarityRank,
     previewImageUrl,
     mediaUrl,
     collection,
@@ -322,9 +323,9 @@ export default function NFTView() {
                         weiToEth(latestAppraisal.ethSalePrice, 3, false)}
                     </Label>
 
-                    {!!rarity && (
+                    {!!rarityRank && !!collection && !!collection?.size && (
                       <Label size="md">
-                        {(rarity * 100).toFixed(2) + '% Rarity'}
+                        {'Rarity Rank: #' + rarityRank + ' / ' + collection?.size}
                       </Label>
                     )}
                   </Flex>
