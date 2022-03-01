@@ -15,6 +15,7 @@ export type GetAssetData = {
     previewImageUrl?: string
     mediaUrl: string
     rarity: number
+    rarityRank: number
     priceChangeFromFirstSale: number
     contractAddress: string
     creatorAddress: string
@@ -25,6 +26,7 @@ export type GetAssetData = {
       id: number
       name: string
       imageUrl: string
+      size: number
     }
     lastSale?: {
       ethSalePrice: string
@@ -76,6 +78,7 @@ export const GET_ASSET = gql`
       previewImageUrl
       mediaUrl
       rarity
+      rarityRank
       priceChangeFromFirstSale
       contractAddress
       creatorAddress
@@ -86,6 +89,7 @@ export const GET_ASSET = gql`
         id
         name
         imageUrl
+        size
       }
       lastSale {
         ethSalePrice
