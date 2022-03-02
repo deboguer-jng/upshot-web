@@ -272,7 +272,7 @@ export default function NFTView() {
             sx={{
               flexDirection: 'column',
               gap: 4,
-              position: ['static', 'sticky', 'sticky'],
+              position: ['static', 'static', 'sticky', 'sticky'],
               height: 'min-content',
               top: '160px',
             }}
