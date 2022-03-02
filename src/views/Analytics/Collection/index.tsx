@@ -212,7 +212,9 @@ export default function CollectionView() {
 
   return (
     <Layout>
-      <Flex>
+      <Flex
+        sx={{ flexDirection: ['column', 'column', 'column', 'row'], gap: 4 }}
+      >
         <Flex sx={{ minWidth: 300, flexDirection: 'column', gap: 8 }}>
           <Flex sx={{ alignItems: 'center', gap: 4 }}>
             <Icon icon="filter" size={24} color="white" />
@@ -245,6 +247,8 @@ export default function CollectionView() {
                     minWidth: '63px',
                     padding: isMobile ? '4px' : '8px',
                     borderRadius: '50%',
+
+                    flexShrink: 0,
                   }}
                 >
                   <Avatar
