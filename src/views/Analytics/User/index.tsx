@@ -1315,7 +1315,20 @@ export default function UserView() {
                   <Flex sx={{ flexDirection: 'column', gap: 4 }}>
                     <Flex sx={{ flexDirection: 'column', gap: 4 }}>
                       <Text variant="h3Secondary">Transaction History</Text>
-                      {!!txHistoryData?.getTxHistory?.txHistory?.count ? (
+                      {isLoading ? (
+                        <Flex sx={{ flexDirection: 'column', gap: 4 }}>
+                          {[...new Array(3)].map((_, idx) => (
+                            <Skeleton
+                              sx={{
+                                height: 24,
+                                width: '100%',
+                                borderRadius: 'sm',
+                              }}
+                              key={idx}
+                            />
+                          ))}
+                        </Flex>
+                      ) : !!txHistoryData?.getTxHistory?.txHistory?.count ? (
                         <Box
                           sx={{ position: 'relative', height: '300px' }}
                           css={theme.scroll.thin.styles}
@@ -1393,19 +1406,32 @@ export default function UserView() {
                                             return (
                                               <TableCell
                                                 sx={{
-                                                  minWidth: 100,
-                                                  color: 'pink',
+                                                  display: 'flex',
+                                                  alignItems: 'center',
                                                 }}
                                               >
                                                 {'SALE' === rowData?.type &&
-                                                  rowData?.price &&
-                                                  `${formatCurrencyUnits(
-                                                    rowData?.price,
-                                                    rowData?.currency?.decimals
-                                                  )} ${
-                                                    rowData?.currency?.symbol ??
-                                                    'ETH'
-                                                  }`}
+                                                  rowData?.price && (
+                                                    <Text
+                                                      color="pink"
+                                                      sx={{
+                                                        overflow: 'hidden',
+                                                        textOverflow:
+                                                          'ellipsis',
+                                                      }}
+                                                    >
+                                                      {`${formatCurrencyUnits(
+                                                        rowData?.price,
+                                                        rowData?.currency
+                                                          ?.decimals
+                                                      )}
+                                                      ${
+                                                        rowData?.currency
+                                                          ?.symbol ?? 'ETH'
+                                                      }
+                                                      `}
+                                                    </Text>
+                                                  )}
                                                 {'TRANSFER' ===
                                                   rowData?.type && (
                                                   <Text color="blue">
@@ -1451,7 +1477,7 @@ export default function UserView() {
                                       <Table
                                         ref={registerChild}
                                         onRowsRendered={onRowsRendered}
-                                        rowClassName="table-row"
+                                        rowStyle={{ width: width }}
                                         headerHeight={30}
                                         width={width}
                                         height={270}
@@ -1554,26 +1580,25 @@ export default function UserView() {
                                                     height: 3,
                                                   }}
                                                 />
-                                                <Link
+                                                <a
                                                   href={`/analytics/user/${rowData?.txFromAddress}`}
+                                                  sx={{
+                                                    cursor: 'pointer',
+                                                    fontSize: 2.5,
+                                                    color: 'white',
+                                                    textDecoration: 'none',
+                                                    '&:hover': {
+                                                      textDecoration:
+                                                        'underline',
+                                                    },
+                                                  }}
                                                 >
-                                                  <a
-                                                    sx={{
-                                                      cursor: 'pointer',
-                                                      fontSize: 2.5,
-                                                      '&:hover': {
-                                                        textDecoration:
-                                                          'underline',
-                                                      },
-                                                    }}
-                                                  >
-                                                    <FormattedENS
-                                                      address={
-                                                        rowData?.txFromAddress
-                                                      }
-                                                    />
-                                                  </a>
-                                                </Link>
+                                                  <FormattedENS
+                                                    address={
+                                                      rowData?.txFromAddress
+                                                    }
+                                                  />
+                                                </a>
                                               </Grid>
                                             )
                                           }}
@@ -1605,26 +1630,25 @@ export default function UserView() {
                                                     height: 3,
                                                   }}
                                                 />
-                                                <Link
+                                                <a
                                                   href={`/analytics/user/${rowData?.txToAddress}`}
+                                                  sx={{
+                                                    cursor: 'pointer',
+                                                    fontSize: 2.5,
+                                                    textDecoration: 'none',
+                                                    color: 'white',
+                                                    '&:hover': {
+                                                      textDecoration:
+                                                        'underline',
+                                                    },
+                                                  }}
                                                 >
-                                                  <a
-                                                    sx={{
-                                                      cursor: 'pointer',
-                                                      fontSize: 2.5,
-                                                      '&:hover': {
-                                                        textDecoration:
-                                                          'underline',
-                                                      },
-                                                    }}
-                                                  >
-                                                    <FormattedENS
-                                                      address={
-                                                        rowData?.txToAddress
-                                                      }
-                                                    />
-                                                  </a>
-                                                </Link>
+                                                  <FormattedENS
+                                                    address={
+                                                      rowData?.txToAddress
+                                                    }
+                                                  />
+                                                </a>
                                               </Grid>
                                             )
                                           }}
@@ -1641,19 +1665,31 @@ export default function UserView() {
                                             return (
                                               <TableCell
                                                 sx={{
-                                                  minWidth: 100,
-                                                  color: 'pink',
+                                                  display: 'flex',
+                                                  alignItems: 'center',
                                                 }}
                                               >
                                                 {'SALE' === rowData?.type &&
-                                                  rowData?.price &&
-                                                  `${formatCurrencyUnits(
-                                                    rowData?.price,
-                                                    rowData?.currency?.decimals
-                                                  )} ${
-                                                    rowData?.currency?.symbol ??
-                                                    'ETH'
-                                                  }`}
+                                                  rowData?.price && (
+                                                    <Text
+                                                      color="pink"
+                                                      sx={{
+                                                        overflow: 'hidden',
+                                                        textOverflow:
+                                                          'ellipsis',
+                                                      }}
+                                                    >
+                                                      {`${formatCurrencyUnits(
+                                                        rowData?.price,
+                                                        rowData?.currency
+                                                          ?.decimals
+                                                      )} ${
+                                                        rowData?.currency
+                                                          ?.symbol ?? 'ETH'
+                                                      }
+                                                      `}
+                                                    </Text>
+                                                  )}
                                                 {'TRANSFER' ===
                                                   rowData?.type && (
                                                   <Text color="blue">
@@ -1704,22 +1740,9 @@ export default function UserView() {
                         </Box>
                       ) : (
                         <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-                          {isLoading ? (
-                            [...new Array(3)].map((_, idx) => (
-                              <Skeleton
-                                sx={{
-                                  height: 24,
-                                  width: '100%',
-                                  borderRadius: 'sm',
-                                }}
-                                key={idx}
-                              />
-                            ))
-                          ) : (
-                            <Text color="grey-600">
-                              No transaction history available.
-                            </Text>
-                          )}
+                          <Text color="grey-600">
+                            No transaction history available.
+                          </Text>
                         </Flex>
                       )}
                     </Flex>
