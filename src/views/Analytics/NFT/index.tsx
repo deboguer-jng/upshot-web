@@ -232,9 +232,6 @@ export default function NFTView() {
     ? image
     : optimizedSrc
 
-  console.log('rarity', rarityRank)
-  console.log('collection', collection)
-
   return (
     <>
       <Head>
