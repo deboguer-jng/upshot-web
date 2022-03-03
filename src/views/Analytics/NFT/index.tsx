@@ -315,13 +315,15 @@ export default function NFTView() {
             )}
             <Flex sx={{ flexDirection: 'column', gap: 4 }}>
               <Text variant="h2Primary">{assetName}</Text>
-              {!!latestAppraisal && (
                 <>
                   <Flex sx={{ alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+                  {!!latestAppraisal && (
                     <Label size="md" color="blue">
                       {'Last Appraisal: Ξ' +
                         weiToEth(latestAppraisal.ethSalePrice, 3, false)}
                     </Label>
+
+                  )}
 
                     {!!rarityRank && !!collection && !!collection?.size && (
                       <Label size="md">
@@ -329,6 +331,7 @@ export default function NFTView() {
                       </Label>
                     )}
                   </Flex>
+                  {!!latestAppraisal && (
                   <a
                     href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
                     target="_blank"
@@ -354,8 +357,8 @@ export default function NFTView() {
                       How did we calculate this appraisal?
                     </Box>
                   </a>
+                  )}
                 </>
-              )}
 
               <Flex>
                 <a
