@@ -8,6 +8,7 @@ import Collectors from './ExplorePanel/Collectors'
 import ExploreNFTs from './ExplorePanel/NFTs'
 import TopCollections from './ExplorePanel/TopCollections'
 import TopCollectors from './ExplorePanel/TopCollectors'
+import Traits from './ExplorePanel/Traits'
 
 function searchForm(
   handleSearch,
@@ -80,6 +81,8 @@ function ExplorePanelHead({
   if (!router.pathname.includes('/collection'))
     // if page is not collection page
     dropdownOptions.push('Collections')
+  if (router.pathname.includes('/collection'))
+    dropdownOptions.push('Traits')
 
   return (
     <>
@@ -165,7 +168,7 @@ export default function ExplorePanel({
 
   const [searchTerm, setSearchTerm] = useState('')
   const [tab, setTab] = useState(
-    router.pathname.includes('/collection') ? 'NFTs' : 'Collections'
+    router.pathname.includes('/collection') ? 'Traits' : 'Collections'
   )
   const [selectedColumn, setSelectedColumn] = useState<number>(0)
   const [sortAscending, setSortAscending] = useState(false)
@@ -200,6 +203,9 @@ export default function ExplorePanel({
               onChangeSelection={handleChangeSelection}
               {...{ searchTerm, selectedColumn, sortAscending, collectionId }}
             />
+          )}
+          {tab === 'Traits' && !!collectionId && (
+            <Traits collectionId={collectionId} searchTerm={searchTerm} />
           )}
           {tab === 'Collectors' && !collectionId && (
             <TopCollectors searchTerm={searchTerm} />
