@@ -27,6 +27,13 @@ export type GetCollectionData = {
       average: string
       pastWeekWeiVolume: string
     }
+    traitGroups: {
+      traitType: string
+      traits: {
+        id: number
+        value: string
+      }[]
+    }[]
   }
 }
 
@@ -49,6 +56,13 @@ export const GET_COLLECTION = gql`
         marketCap
         average
         pastWeekWeiVolume
+      }
+      traitGroups {
+        traitType
+        traits(limit: 1000, offset: 0) {
+          id
+          value
+        }
       }
     }
   }
