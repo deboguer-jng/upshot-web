@@ -224,7 +224,7 @@ export default function NFTView() {
 
   const assetName = getAssetName(name, collection?.name, tokenId)
   const displayName =
-    ensName ?? shortenAddress(txHistory[0]?.txToAddress) ?? 'Unknown'
+    ensName ?? shortenAddress(txHistory?.[0]?.txToAddress) ?? 'Unknown'
 
   const image = previewImageUrl ?? mediaUrl
   const optimizedSrc = imageOptimizer(image, { width: 340 }) ?? image
@@ -478,7 +478,7 @@ export default function NFTView() {
                       <Flex sx={{ gap: [1, 1, 4], alignItems: 'center' }}>
                         <Image
                           src={
-                            txHistory[0]?.txToAddress
+                            txHistory?.[0]?.txToAddress
                               ? makeBlockie(txHistory[0].txToAddress)
                               : '/img/defaultAvatar.png'
                           }
@@ -503,7 +503,7 @@ export default function NFTView() {
                             Owned By
                           </Text>
                           <Link
-                            href={`/analytics/user/${txHistory[0]?.txToAddress}`}
+                            href={`/analytics/user/${txHistory?.[0]?.txToAddress}`}
                           >
                             <a
                               sx={{
@@ -712,7 +712,7 @@ export default function NFTView() {
                   >
                     <Text variant="h3Secondary">Transaction History</Text>
                   </Flex>
-                  {txHistory.length > 0 && (
+                  {txHistory && txHistory.length > 0 && (
                     <Table sx={{ borderSpacing: '0 10px' }}>
                       <TableHead>
                         <TableRow>
@@ -841,7 +841,7 @@ export default function NFTView() {
                       </TableBody>
                     </Table>
                   )}
-                  {txHistory.length == 0 && (
+                  {!txHistory || txHistory.length == 0 && (
                     <Text sx={{ color: 'grey-500' }}>
                       This asset hasn’t been sold or transferred yet.
                     </Text>
