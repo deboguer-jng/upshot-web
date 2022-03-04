@@ -129,12 +129,13 @@ function Layout({ children }: { children: React.ReactNode }) {
           minHeight: '100vh',
           gap: 4,
           padding: 4,
+          marginBottom: 10,
         }}
       >
         <Breadcrumbs crumbs={breadcrumbs} />
         {children}
-        <Footer />
       </Container>
+      <Footer />
     </>
   )
 }
