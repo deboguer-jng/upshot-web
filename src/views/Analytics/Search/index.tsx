@@ -1,25 +1,20 @@
 import { useQuery } from '@apollo/client'
-import { useBreakpointIndex, useTheme } from '@upshot-tech/upshot-ui'
-import { Button, Container } from '@upshot-tech/upshot-ui'
-import { Box, Flex, Grid, MiniNftCard, Text } from '@upshot-tech/upshot-ui'
-import {
-  Accordion,
-  BlurrySquareTemplate,
-  InputRounded,
-  Pagination,
-} from '@upshot-tech/upshot-ui'
+import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import { Container } from '@upshot-tech/upshot-ui'
+import { Flex, Grid, MiniNftCard, Text } from '@upshot-tech/upshot-ui'
+import { BlurrySquareTemplate, Pagination } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import { PIXELATED_CONTRACTS } from 'constants/'
-import { ethers } from 'ethers'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
-import { parseEthString, weiToEth } from 'utils/number'
+import { weiToEth } from 'utils/number'
 
 import Breadcrumbs from '../components/Breadcrumbs'
+import SearchFilterSidebar from '../components/SearchFilterSidebar'
 import {
   GET_ASSETS_SEARCH,
   GetAssetsSearchData,
@@ -39,28 +34,13 @@ enum BREAKPOINT_INDEXES {
 }
 
 export default function SearchView() {
-  const { theme } = useTheme()
   const router = useRouter()
   const [page, setPage] = useState(0)
-  const collectionParam = (router.query.collection as string) ?? ''
-  const queryParam = (router.query.query as string) ?? ''
-  const attributesParam = (router.query.attributes as string) ?? ''
-
-  // @todo Replace these states refs
-  const [searchTerm, setSearchTerm] = useState(queryParam)
-  const [searchTermApplied, setSearchTermApplied] = useState(queryParam)
-
-  const [tokenId, setTokenId] = useState('')
-  const [tokenIdApplied, setTokenIdApplied] = useState('')
-  const [attributes, setAttributes] = useState(attributesParam)
-  const [attributesApplied, setAttributesApplied] = useState('')
-
-  const [collectionName, setCollectionName] = useState(collectionParam)
-  const [collectionNameApplied, setCollectionNameApplied] =
-    useState(collectionParam)
 
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
+
+  const id = 1
 
   const chunks = {
     [BREAKPOINT_INDEXES.ZERO]: 2,
@@ -83,48 +63,11 @@ export default function SearchView() {
     variables: {
       limit: ROW_SIZE * chunkSize,
       offset: page * ROW_SIZE * chunkSize,
-      searchTerm: searchTermApplied,
-      collectionName: collectionNameApplied,
-      traits: attributesApplied,
-      tokenId: tokenIdApplied,
     },
   })
 
-  useEffect(() => {
-    if (!collectionParam) return
-
-    setCollectionName(collectionParam)
-    setCollectionNameApplied(collectionParam)
-  }, [collectionParam])
-
-  useEffect(() => {
-    if (!queryParam) return
-
-    setSearchTermApplied(queryParam)
-    setSearchTerm(queryParam)
-  }, [queryParam])
-
-  useEffect(() => {
-    if (!attributesParam) return
-    setAttributes(attributesParam)
-    setAttributesApplied(
-      attributesParam ? JSON.stringify(attributesParam.split(',')) : ''
-    )
-  }, [attributesParam])
-
   const handlePageChange = ({ selected }: { selected: number }) => {
     setPage(selected)
-  }
-
-  const handleApplyFilters = () => {
-    setSearchTermApplied(searchTerm)
-    setCollectionNameApplied(collectionName)
-    setTokenIdApplied(tokenId)
-    setAttributesApplied(
-      attributes ? JSON.stringify(attributes.split(/[ ,]+/)) : ''
-    )
-
-    router.replace('/analytics/search', undefined, { shallow: true })
   }
 
   const handleClickNFT = (id: string) => {
@@ -133,92 +76,10 @@ export default function SearchView() {
 
   const assetArr = data?.assetGlobalSearch?.assets
 
-  const searchFilters = () => {
-    return (
-      <>
-        <Box>
-          <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-            <Text sx={{ paddingTop: [4, 0] }} color="grey-500">
-              Collection
-            </Text>
-            <InputRounded
-              placeholder="Collection"
-              value={collectionName}
-              onChange={(e) => setCollectionName(e.currentTarget.value)}
-            />
-          </Flex>
-        </Box>
-
-        <Box>
-          <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-            <Text sx={{ paddingTop: [4, 0] }} color="grey-500">
-              Token ID
-            </Text>
-            <InputRounded
-              placeholder="Token ID"
-              value={tokenId}
-              onChange={(e) => setTokenId(e.currentTarget.value)}
-            />
-          </Flex>
-        </Box>
-
-        <Box>
-          <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-            <Text sx={{ paddingTop: [4, 0] }} color="grey-500">
-              Attributes
-            </Text>
-            <InputRounded
-              placeholder="Attributes"
-              value={attributes}
-              onChange={(e) => setAttributes(e.currentTarget.value)}
-            />
-          </Flex>
-        </Box>
-
-        <Box sx={{ paddingTop: [5, 0] }}>
-          <Button capitalize onClick={handleApplyFilters}>
-            Apply Filters
-          </Button>
-        </Box>
-      </>
-    )
-  }
-
   const searchResults = () => (
     <>
-      <Flex
-        sx={{
-          position: ['static', 'static', 'static', 'sticky'],
-          top: 0,
-          alignSelf: 'flex-start',
-          flexDirection: 'column',
-          gap: 5,
-          width: '100%',
-        }}
-      >
-        {isMobile ? (
-          <>
-            <Box>
-              <Accordion isDropdown title="Search Filters">
-                {searchFilters()}
-              </Accordion>
-            </Box>
-          </>
-        ) : (
-          <>
-            <Box>
-              <Flex sx={{ flexDirection: 'column', gap: 1 }}>
-                <Flex sx={{ flexDirection: 'column', gap: 1 }}>
-                  <Text variant="h2Secondary" color="grey-500">
-                    Search Filters
-                  </Text>
-                </Flex>
-              </Flex>
-            </Box>
-            {searchFilters()}
-          </>
-        )}
-      </Flex>
+      <SearchFilterSidebar id={id} />
+
       <Flex
         sx={{
           flex: '1 auto auto',
@@ -228,8 +89,6 @@ export default function SearchView() {
       >
         <Flex sx={{ flexDirection: 'column' }}>
           <Text>Search Results</Text>
-          <Text variant="h1Primary">{collectionNameApplied}</Text>
-          <Text variant="h2Primary">{searchTermApplied}</Text>
         </Flex>
 
         {error ? (
