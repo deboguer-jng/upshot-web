@@ -589,15 +589,17 @@ export default function NFTView() {
                         </Box>
                       ))}
                     </Grid>
-                    <Flex sx={{ justifyContent: 'center', marginTop: '10px' }}>
-                      <Pagination
-                        forcePage={traitPage}
-                        pageCount={Math.ceil(traits.length / TRAIT_PAGE_SIZE)}
-                        pageRangeDisplayed={0}
-                        marginPagesDisplayed={0}
-                        onPageChange={handlePageChange}
-                      />
-                    </Flex>
+                    {(Math.ceil(traits.length / TRAIT_PAGE_SIZE) > 1) && (
+                      <Flex sx={{ justifyContent: 'center', marginTop: '10px' }}>
+                        <Pagination
+                          forcePage={traitPage}
+                          pageCount={Math.ceil(traits.length / TRAIT_PAGE_SIZE)}
+                          pageRangeDisplayed={0}
+                          marginPagesDisplayed={0}
+                          onPageChange={handlePageChange}
+                        />
+                      </Flex>
+                    )}
                   </Flex>
                 </Panel>
               </Flex>
