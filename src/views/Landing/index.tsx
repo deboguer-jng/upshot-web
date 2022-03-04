@@ -389,13 +389,13 @@ export default function LandingView() {
           </Box>
         </Grid>
 
-        <Text variant="h2Primary">Discover</Text>
+        {/* <Text variant="h2Primary">Discover</Text>
         <Text variant="xLarge" color="grey-500">
           Innovative products at the intersection of DeFi x NFTs.
-        </Text>
+        </Text> */}
 
         {/*  The content of the Discover section can be found in /src/views/Landing/content.tsx  */}
-        <Grid gap={2} columns={[1, 1, 1, 2]}>
+        {/* <Grid gap={2} columns={[1, 1, 1, 2]}>
           <Grid gap={2} sx={{ flexDirection: 'column' }}>
             <Grid gap={2} columns={[1, 1, '10fr 6fr']}>
               {renderLandingPanel(projects[0])}
@@ -428,7 +428,7 @@ export default function LandingView() {
               </Grid>
             </Grid>
           </Grid>
-        </Grid>
+        </Grid> */}
       </Container>
       <Investors />
       <Footer />
