@@ -54,8 +54,9 @@ export const Nav = () => {
   const toggleModal = () => setOpen(!open)
 
   interface InputSuggestion {
-    id: number
+    id: string | number
     name: string
+    [key: string]: any
   }
 
   const isAddress =
@@ -97,14 +98,16 @@ export const Nav = () => {
     isAddress
       ? router.push(`/analytics/user/${encodeURIComponent(navSearchTerm)}`)
       : router.push(
-          `/analytics/collection/${encodeURIComponent(suggestions[0].id)}`
+          `/search?collectionId=${encodeURIComponent(suggestions[0].id)}`
         )
   }
 
   const handleSearchSuggestionChange = (item: InputSuggestion) => {
     isAddress
       ? router.push(`/analytics/user/${encodeURIComponent(navSearchTerm)}`)
-      : router.push(`/analytics/collection/${encodeURIComponent(item.id)}`)
+      : router.push(
+          `/search?collectionId=${encodeURIComponent(suggestions[0].id)}`
+        )
   }
 
   const hideMetaMask =
