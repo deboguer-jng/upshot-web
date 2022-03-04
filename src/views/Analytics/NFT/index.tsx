@@ -1,6 +1,6 @@
 /** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
-import { imageOptimizer, useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import { imageOptimizer, Pagination, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Container } from '@upshot-tech/upshot-ui'
 import { Flex, Grid, Image, Text } from '@upshot-tech/upshot-ui'
 import {
@@ -107,6 +107,10 @@ export default function NFTView() {
   const router = useRouter()
   const { theme } = useTheme()
   const [ensName, setEnsName] = useState<string>()
+  const [traitPage, setTraitPage] = useState<number>(0)
+  const [pageTraits, setPageTraits] = useState<any[]>([])
+
+  const TRAIT_PAGE_SIZE = 4
 
   useEffect(() => {
     /* Parse assetId from router */
@@ -153,7 +157,14 @@ export default function NFTView() {
       )
 
     updateEnsName()
+    changePageTraits()
   }, [data])
+
+  useEffect(() => {
+    if (!traits) return
+
+    changePageTraits()
+  }, [traitPage])
 
   /* Load state. */
   if (loading)
@@ -204,6 +215,18 @@ export default function NFTView() {
     contractAddress,
     warningBanner,
   } = data.assetById
+
+  const changePageTraits = () => {
+    if (traits) {
+      let startingIndex = traitPage * TRAIT_PAGE_SIZE
+      let endIndex = startingIndex + TRAIT_PAGE_SIZE
+      setPageTraits(traits.slice(startingIndex, endIndex))
+    }
+  }
+
+  const handlePageChange = ({ selected }: { selected: number }) => {
+    setTraitPage(selected)
+  }
 
   const appraisalSeries = appraisalHistory.map(
     ({ timestamp, estimatedPrice }) => [
@@ -537,7 +560,7 @@ export default function NFTView() {
                   <Flex sx={{ flexDirection: 'column', gap: 4 }}>
                     <Text variant="h3Secondary">Attributes</Text>
                     <Grid columns={isMobile ? 1 : 2}>
-                      {traits.map(({ traitType, value, rarity }, idx) => (
+                      {pageTraits.map(({ traitType, value, rarity }, idx) => (
                         <Box key={idx}>
                           <Link
                             href={`/analytics/search?attributes=${value}&collection=${collection?.name}`}
@@ -565,6 +588,15 @@ export default function NFTView() {
                         </Box>
                       ))}
                     </Grid>
+                    <Flex sx={{ justifyContent: 'center', marginTop: '10px' }}>
+                      <Pagination
+                        forcePage={traitPage}
+                        pageCount={Math.ceil(traits.length / TRAIT_PAGE_SIZE)}
+                        pageRangeDisplayed={0}
+                        marginPagesDisplayed={0}
+                        onPageChange={handlePageChange}
+                      />
+                    </Flex>
                   </Flex>
                 </Panel>
               </Flex>
