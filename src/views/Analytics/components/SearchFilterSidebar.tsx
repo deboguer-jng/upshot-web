@@ -12,6 +12,7 @@ import {
   Text,
 } from '@upshot-tech/upshot-ui'
 import { ethers } from 'ethers'
+import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { parseEthString } from 'utils/number'
 
@@ -200,6 +201,7 @@ function TraitCategoryList({
 }
 
 export default function SearchFilters({ id }: { id?: number }) {
+  const router = useRouter()
   const [tokenId, setTokenId] = useState('')
   const [minPriceWei, setMinPriceWei] = useState('')
   const [maxPriceWei, setMaxPriceWei] = useState('')
@@ -238,7 +240,10 @@ export default function SearchFilters({ id }: { id?: number }) {
   const handleApplyFilters = () => {
     const traits = Object.keys(selectedTraits)
 
-    console.log({ traits, minPriceWei, maxPriceWei, tokenId, traitANDMatch })
+    router.push({
+      pathname: '/analytics/search',
+      query: { traits, minPriceWei, maxPriceWei, tokenId, traitANDMatch },
+    })
   }
 
   return (
