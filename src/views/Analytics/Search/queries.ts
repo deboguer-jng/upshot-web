@@ -8,6 +8,7 @@ export type GetAssetsSearchVars = {
   limit: number
   offset: number
   searchTerm?: string
+  collectionId?: number
   collectionName?: string
   tokenId?: string
   traits?: string
@@ -43,6 +44,7 @@ export type GetAssetsSearchData = {
 export const GET_ASSETS_SEARCH = gql`
   query GetAssetsSearch(
     $searchTerm: String
+    $collectionId: Int
     $collectionName: String
     $tokenId: String
     $traits: String
@@ -57,6 +59,7 @@ export const GET_ASSETS_SEARCH = gql`
       minPrice: $minPrice
       maxPrice: $maxPrice
       searchTerm: $searchTerm
+      collectionId: $collectionId
       collectionName: $collectionName
       traits: $traits
       tokenId: $tokenId

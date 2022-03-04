@@ -44,7 +44,9 @@ export const Nav = () => {
   const address = useAppSelector(selectAddress)
   const showSidebar = useAppSelector(selectShowSidebar)
   const ens = useAppSelector(selectEns)
-  const [navSearchTerm, setNavSearchTerm] = useState('')
+  const [navSearchTerm, setNavSearchTerm] = useState(
+    (router.query.collectionName as string) ?? ''
+  )
   const [getNavCollections, { data: navCollectionsData }] = useLazyQuery<
     GetNavBarCollectionsData,
     GetNavBarCollectionsVars
@@ -94,19 +96,26 @@ export const Nav = () => {
   const handleNavSearch = (e: React.FormEvent) => {
     e.preventDefault()
     if (!suggestions.length) return
+    setNavSearchTerm(suggestions[0].name)
 
     isAddress
       ? router.push(`/analytics/user/${encodeURIComponent(navSearchTerm)}`)
       : router.push(
-          `/search?collectionId=${encodeURIComponent(suggestions[0].id)}`
+          `/analytics/search?collectionName=${encodeURIComponent(
+            suggestions[0].name
+          )}&collectionId=${suggestions[0].id}`
         )
   }
 
   const handleSearchSuggestionChange = (item: InputSuggestion) => {
+    setNavSearchTerm(item.name)
+
     isAddress
       ? router.push(`/analytics/user/${encodeURIComponent(navSearchTerm)}`)
       : router.push(
-          `/search?collectionId=${encodeURIComponent(suggestions[0].id)}`
+          `/analytics/search?collectionName=${encodeURIComponent(
+            item.name
+          )}&collectionId=${item.id}`
         )
   }
 

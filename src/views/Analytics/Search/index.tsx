@@ -40,6 +40,8 @@ export default function SearchView() {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
 
+  const collectionIdParam = (router.query.collectionId as string) ?? ''
+
   const id = 1
 
   const chunks = {
@@ -63,7 +65,9 @@ export default function SearchView() {
     variables: {
       limit: ROW_SIZE * chunkSize,
       offset: page * ROW_SIZE * chunkSize,
+      collectionId: Number(collectionIdParam),
     },
+    skip: !collectionIdParam,
   })
 
   const handlePageChange = ({ selected }: { selected: number }) => {
