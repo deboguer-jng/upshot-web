@@ -13,6 +13,16 @@ export type TimeSeries = {
   floor: string
 }
 
+export enum TraitSortOption {
+  RARITY,
+  FLOOR,
+}
+
+export enum OrderDirection {
+  DESC,
+  ASC
+}
+
 export type GetTopCollectionsData = {
   orderedCollectionsByMetricSearch: {
     assetSets: {
@@ -751,6 +761,9 @@ export type TraitSearchData = {
       value?: string
       maxValue?: string
       rarity?: number
+      floor?: string
+      floorUsd?: string
+      image?: string
     }[]
   }
 }
@@ -761,13 +774,17 @@ export const TRAIT_SEARCH = gql`
     $offset: Int = 0
     $searchTerm: String
     $traitType: String
-    $collectionId: Int!) {
+    $collectionId: Int!
+    $orderColumn: TraitSearchSortOption
+    $orderDirection: OrderDirection) {
     traitSearch(
       limit: $limit
       offset: $offset
       searchTerm: $searchTerm
       traitType: $traitType
       collectionId: $collectionId
+      orderColumn: $orderColumn
+      orderDirection: $orderDirection
     ) {
       count
       traits {
@@ -778,6 +795,9 @@ export const TRAIT_SEARCH = gql`
         value
         maxValue
         rarity
+        floor
+        floorUsd
+        image
       }
     }
   }

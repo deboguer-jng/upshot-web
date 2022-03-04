@@ -32,7 +32,7 @@ export const traitColumns = {
     TRAIT_TYPE: 'Trait Type',
     RARITY: 'Rarity',
     FLOOR: 'Floor',
-    APPRAISAL_VALUE: 'Appraisal Value'
+    FLOOR_USD: 'Floor (USD)'
   }
 
   function TraitsTableHead({}: TraitsTableHeadProps) {
@@ -177,11 +177,11 @@ export const traitColumns = {
           {...{ }}
         >
           {data.traitSearch?.traits?.map(
-            ({ traitType, displayType, maxValue, collectionId, value, rarity }, idx) => (
+            ({ traitType, displayType, maxValue, collectionId, value, rarity, image, floor, floorUsd }, idx) => (
               <CollectionRow
                 variant="black"
                 title={value ?? '-'}
-                imageSrc={'http://res.cloudinary.com/upshot-inc/image/upload/w_340,c_lfill/v1631374109/oociokfis65nrvu0hrm2.png'}
+                imageSrc={image ?? ''}
                 key={idx}
                 defaultOpen={idx === 0 ? true : false}
               >
@@ -230,7 +230,7 @@ export const traitColumns = {
                         {traitColumns.FLOOR}
                       </Text>
                       <Text>
-                        {'-'}
+                        {floor ? 'Ξ' + floor : '-'}
                       </Text>
                     </Flex>
                     <Flex
@@ -241,7 +241,7 @@ export const traitColumns = {
                       }}
                     >
                       <Text sx={{ marginBottom: 1 }}>
-                        {traitColumns.APPRAISAL_VALUE}
+                        {traitColumns.FLOOR_USD}
                       </Text>
                       <Text>{'-'}</Text>
                     </Flex>
@@ -259,7 +259,7 @@ export const traitColumns = {
                                   ) : ('-')}
                     </TableCell>
                     <TableCell sx={{ maxWidth: 50 }}>
-                      {'-'}
+                        {floor ? 'Ξ' + floor : '-'}
                     </TableCell>
                     <TableCell sx={{ maxWidth: 50 }}>
                       {'-'}
