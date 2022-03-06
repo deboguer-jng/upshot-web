@@ -259,7 +259,7 @@ export default function NFTView() {
   return (
     <>
       <Head>
-        <title>Upshot Analytics</title>
+        <title>{name} | Upshot Analytics</title>
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:site" content="@UpshotHQ" />
         <meta name="twitter:creator" content="@UpshotHQ" />
