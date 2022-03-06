@@ -137,6 +137,7 @@ export const Nav = () => {
             <SideLink
               sx={{ fontSize: 6, fontWeight: 'heading' }}
               $isActive={router.pathname === '/analytics'}
+              onClick={handleToggleMenu}
             >
               Analytics
             </SideLink>
@@ -145,6 +146,7 @@ export const Nav = () => {
             <SideLink
               sx={{ fontSize: 6, fontWeight: 'heading' }}
               target="_blank"
+              onClick={handleToggleMenu}
             >
               API Docs
             </SideLink>
@@ -153,6 +155,7 @@ export const Nav = () => {
             <SideLink
               sx={{ fontSize: 6, fontWeight: 'heading' }}
               target="_blank"
+              onClick={handleToggleMenu}
             >
               Feedback
             </SideLink>
