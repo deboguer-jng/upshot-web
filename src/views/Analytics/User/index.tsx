@@ -1434,12 +1434,24 @@ export default function UserView() {
                                                   )}
                                                 {'TRANSFER' ===
                                                   rowData?.type && (
-                                                  <Text color="blue">
+                                                  <Text
+                                                    color="blue"
+                                                    sx={{
+                                                      overflow: 'hidden',
+                                                      textOverflow: 'ellipsis',
+                                                    }}
+                                                  >
                                                     Transfer
                                                   </Text>
                                                 )}
                                                 {'MINT' === rowData?.type && (
-                                                  <Text color="green">
+                                                  <Text
+                                                    color="green"
+                                                    sx={{
+                                                      overflow: 'hidden',
+                                                      textOverflow: 'ellipsis',
+                                                    }}
+                                                  >
                                                     Mint
                                                   </Text>
                                                 )}
@@ -1534,11 +1546,10 @@ export default function UserView() {
                                                 <a
                                                   sx={{
                                                     cursor: 'pointer',
+                                                    display: 'block',
                                                     textOverflow: 'ellipsis',
                                                     whiteSpace: 'nowrap',
-                                                    display: 'inline-block',
                                                     overflow: 'hidden',
-                                                    width: width * 0.23,
                                                     '&:hover': {
                                                       textDecoration:
                                                         'underline',
@@ -1584,6 +1595,8 @@ export default function UserView() {
                                                   href={`/analytics/user/${rowData?.txFromAddress}`}
                                                   sx={{
                                                     cursor: 'pointer',
+                                                    display: 'block',
+                                                    overflow: 'hidden',
                                                     fontSize: 2.5,
                                                     color: 'white',
                                                     textDecoration: 'none',
@@ -1597,6 +1610,11 @@ export default function UserView() {
                                                     address={
                                                       rowData?.txFromAddress
                                                     }
+                                                    sx={{
+                                                      display: 'block',
+                                                      overflow: 'hidden',
+                                                      textOverflow: 'ellipsis',
+                                                    }}
                                                   />
                                                 </a>
                                               </Grid>
@@ -1613,13 +1631,13 @@ export default function UserView() {
                                           cellDataGetter={() => {}}
                                           cellRenderer={({ rowData }) => {
                                             return (
-                                              <Grid
+                                              <TableCell
                                                 sx={{
+                                                  display: 'grid',
                                                   alignItems: 'center',
-                                                  gap: 1,
                                                   gridTemplateColumns:
                                                     '12px auto',
-                                                  overflow: 'hidden',
+                                                  gap: 1,
                                                 }}
                                               >
                                                 <Box
@@ -1634,6 +1652,8 @@ export default function UserView() {
                                                   href={`/analytics/user/${rowData?.txToAddress}`}
                                                   sx={{
                                                     cursor: 'pointer',
+                                                    display: 'block',
+                                                    overflow: 'hidden',
                                                     fontSize: 2.5,
                                                     textDecoration: 'none',
                                                     color: 'white',
@@ -1647,9 +1667,14 @@ export default function UserView() {
                                                     address={
                                                       rowData?.txToAddress
                                                     }
+                                                    sx={{
+                                                      display: 'block',
+                                                      overflow: 'hidden',
+                                                      textOverflow: 'ellipsis',
+                                                    }}
                                                   />
                                                 </a>
-                                              </Grid>
+                                              </TableCell>
                                             )
                                           }}
                                         />
@@ -1692,12 +1717,24 @@ export default function UserView() {
                                                   )}
                                                 {'TRANSFER' ===
                                                   rowData?.type && (
-                                                  <Text color="blue">
+                                                  <Text
+                                                    color="blue"
+                                                    sx={{
+                                                      overflow: 'hidden',
+                                                      textOverflow: 'ellipsis',
+                                                    }}
+                                                  >
                                                     Transfer
                                                   </Text>
                                                 )}
                                                 {'MINT' === rowData?.type && (
-                                                  <Text color="green">
+                                                  <Text
+                                                    color="green"
+                                                    sx={{
+                                                      overflow: 'hidden',
+                                                      textOverflow: 'ellipsis',
+                                                    }}
+                                                  >
                                                     Mint
                                                   </Text>
                                                 )}

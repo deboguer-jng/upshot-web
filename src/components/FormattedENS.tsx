@@ -1,9 +1,14 @@
-import { Text } from '@upshot-tech/upshot-ui'
+/** @jsxImportSource theme-ui */
 import { ethers } from 'ethers'
 import { useEffect, useState } from 'react'
+import { TextProps, Text } from 'theme-ui'
 import { fetchEns, shortenAddress } from 'utils/address'
 
-export const FormattedENS = ({ address }: { address?: string }) => {
+interface FormattedENSProps extends TextProps {
+  address?: string
+}
+
+export const FormattedENS = ({ address, ...props }: FormattedENSProps) => {
   const [formattedAddress, setFormattedAddress] = useState(
     address ? shortenAddress(address, 2, 4) : '-'
   )
@@ -25,5 +30,5 @@ export const FormattedENS = ({ address }: { address?: string }) => {
     updateEns()
   }, [address])
 
-  return <Text>{formattedAddress}</Text>
+  return <Text {...props}>{formattedAddress}</Text>
 }
