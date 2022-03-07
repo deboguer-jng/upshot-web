@@ -165,7 +165,6 @@ const updateEns = async (
   try {
     const { name } = await fetchEns(address, ethers.getDefaultProvider())
     if (!name) return
-
     setDisplayName(name)
   } catch (err) {
     console.error(err)
@@ -282,6 +281,8 @@ export default function UserView() {
   const [displayName, setDisplayName] = useState<string>()
 
   useEffect(() => {
+    if (!address) return
+
     try {
       setDisplayName(shortenAddress(address))
       setAddressFormatted(ethers.utils.getAddress(address))
