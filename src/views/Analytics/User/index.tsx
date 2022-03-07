@@ -34,33 +34,33 @@ import { Masonry, useInfiniteLoader } from 'masonic'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import {
-  Table,
-  Column,
-  AutoSizer,
-  InfiniteLoader,
-  Grid as GridVirtualized,
-} from 'react-virtualized'
 import { transparentize } from 'polished'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  AutoSizer,
+  Column,
+  Grid as GridVirtualized,
+  InfiniteLoader,
+  Table,
+} from 'react-virtualized'
 import { Label as LabelUI } from 'theme-ui'
 import { fetchEns, shortenAddress } from 'utils/address'
 import { formatCurrencyUnits, formatLargeNumber, weiToEth } from 'utils/number'
-import 'react-virtualized/styles.css'
+
 import Breadcrumbs from '../components/Breadcrumbs'
 import {
   GET_COLLECTION_ASSETS,
   GET_COLLECTOR,
+  GET_COLLECTOR_TX_HISTORY,
   GET_UNSUPPORTED_AGGREGATE_COLLECTION_STATS,
   GET_UNSUPPORTED_ASSETS,
   GET_UNSUPPORTED_COLLECTIONS,
   GET_UNSUPPORTED_FLOORS,
-  GetCollectorTxHistoryData,
-  GetCollectorTxHistoryVars,
-  GET_COLLECTOR_TX_HISTORY,
   GetCollectionAssetsData,
   GetCollectionAssetsVars,
   GetCollectorData,
+  GetCollectorTxHistoryData,
+  GetCollectorTxHistoryVars,
   GetCollectorVars,
   GetUnsupportedAggregateCollectionStatsData,
   GetUnsupportedAggregateCollectionStatsVars,
@@ -177,7 +177,7 @@ function Header({
   setDisplayName,
 }: {
   address: string
-  displayName: string
+  displayName?: string
   setDisplayName: (name: string) => void
 }) {
   const shortAddress = shortenAddress(address)
@@ -273,9 +273,11 @@ export default function UserView() {
   const address = router.query.address as string
   const shortAddress = useMemo(() => shortenAddress(address), [address])
   const loadingAddressFormatted = !addressFormatted && !errorAddress
+  const [displayName, setDisplayName] = useState<string>()
 
   useEffect(() => {
     try {
+      setDisplayName(shortenAddress(address))
       setAddressFormatted(ethers.utils.getAddress(address))
     } catch (err) {
       console.error(err)
@@ -659,9 +661,7 @@ export default function UserView() {
     data: { count, collection, ownedAppraisedValue },
   }) => {
     const formattedAppraisedValue = ownedAppraisedValue
-      ? parseFloat(
-          ethers.utils.formatEther(ownedAppraisedValue)
-        ).toFixed(2)
+      ? parseFloat(ethers.utils.formatEther(ownedAppraisedValue)).toFixed(2)
       : ownedAppraisedValue
     const price = collection.isAppraised
       ? { appraisalPrice: formattedAppraisedValue }
@@ -678,7 +678,7 @@ export default function UserView() {
           />
         )}
         <CollectionCard
-          { ...price }
+          {...price}
           hasSeeAll={count > 5}
           seeAllImageSrc={
             collection.ownerAssetsInCollection.assets[0]?.previewImageUrl
@@ -1037,22 +1037,6 @@ export default function UserView() {
       </Text> */}
     </div>
   )
-
-  const getColumnWidth = (index) => {
-    switch (index) {
-      case 0:
-        return 100
-      case 1:
-        return 200
-      case 2:
-        return 140
-      case 3:
-        return 140
-      default:
-        return 140
-    }
-  }
-  const [displayName, setDisplayName] = useState(shortAddress)
 
   return (
     <>
