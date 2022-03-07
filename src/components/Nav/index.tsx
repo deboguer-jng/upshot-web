@@ -54,8 +54,9 @@ export const Nav = () => {
   const toggleModal = () => setOpen(!open)
 
   interface InputSuggestion {
-    id: number
+    id: number | string
     name: string
+    [key: string]: any
   }
 
   const isAddress =
