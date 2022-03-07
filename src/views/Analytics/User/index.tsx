@@ -71,7 +71,10 @@ type Collection = {
   imageUrl?: string
 }
 
-function Layout({ children }: { children: React.ReactNode }) {
+function Layout({ children, title }: {
+  children: React.ReactNode,
+  title?: string
+}) {
   const { theme } = useTheme()
   const storage = globalThis?.sessionStorage
   const prevPath = storage.getItem('prevPath')
@@ -121,7 +124,7 @@ function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Head>
-        <title>Upshot Analytics</title>
+        <title>{title ? title + ' | ' : ''}Upshot Analytics</title>
       </Head>
       <Nav />
       <Container
@@ -131,40 +134,47 @@ function Layout({ children }: { children: React.ReactNode }) {
           minHeight: '100vh',
           gap: 4,
           padding: 4,
+          marginBottom: 10,
         }}
       >
         <Breadcrumbs crumbs={breadcrumbs} />
         {children}
-        <Footer />
       </Container>
+      <Footer />
     </>
   )
 }
 
-function Header({ address }: { address: string }) {
+const updateEns = async (
+  address: string,
+  setDisplayName: (name: string) => void
+) => {
+  try {
+    const { name } = await fetchEns(address, ethers.getDefaultProvider())
+    if (!name) return
+
+    setDisplayName(name)
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+function Header({ address, displayName, setDisplayName }: { 
+  address: string,
+  displayName: string,
+  setDisplayName: (name: string) => void
+}) {
   const shortAddress = shortenAddress(address)
-  const [displayName, setDisplayName] = useState(shortAddress)
 
   useEffect(() => {
     if (!address) return
-
-    const updateEns = async () => {
-      try {
-        const { name } = await fetchEns(address, ethers.getDefaultProvider())
-        if (!name) return
-
-        setDisplayName(name)
-      } catch (err) {
-        console.error(err)
-      }
-    }
 
     const storage = globalThis?.sessionStorage
     const curPath = storage.getItem('currentPath')
     if (curPath?.indexOf('userWallet=') === -1)
       storage.setItem('currentPath', `${curPath}?userWallet=${displayName}`)
 
-    updateEns()
+    updateEns(address, setDisplayName)
   }, [address, displayName])
 
   return (
@@ -959,16 +969,18 @@ export default function UserView() {
     </div>
   )
 
+  const [displayName, setDisplayName] = useState(shortAddress)
+
   return (
     <>
-      <Layout>
+      <Layout title={displayName}>
         {data?.getUser?.warningBanner && (
           <Text backgroundColor={"primary"} color="black" sx={{padding: '10px 30px', borderRadius: '10px', fontWeight: 600}}>
             Fancy! This collection contains super-rare items. Our top-tier appraisals are currently under active development.
           </Text>
         )}
         <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-          {!!address && <Header key={address} {...{ address }} />}
+          {!!address && <Header key={address} {...{ address, displayName, setDisplayName }} />}
           {/* User Description */}
           <Text color="grey-400">{data?.getUser?.bio}</Text>
 

@@ -6,18 +6,21 @@ export const MiniNFTContainer = styled(Box)`
   margin-bottom: ${({ theme }) => theme.sizes[3] + 'px'};
   gap: ${({ theme }) => theme.sizes[7] + 'px'};
   padding-bottom: ${({ theme }) => theme.sizes[5] + 'px'};
-  overflow: hidden;
+  overflow-x: auto;
+  ${({ theme: { scroll } }) => scroll.thin}
 
   @media (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    &:hover {
-      overflow-x: auto;
-      ${({ theme: { scroll } }) => scroll.thin}
+    &::-webkit-scrollbar-thumb,
+    & *::-webkit-scrollbar-thumb {
+      background-color: ${({ theme }) => theme.colors.transparent};
     }
-  }
 
-  @media (max-width: ${({ theme }) => theme.breakpoints[1]}) {
-    overflow-x: auto;
-    ${({ theme: { scroll } }) => scroll.thin}
+    &:hover {
+      &::-webkit-scrollbar-thumb,
+      & *::-webkit-scrollbar-thumb {
+        background-color: ${({ theme }) => theme.colors['grey-700']};
+      }
+    }
   }
 
   &::after {
