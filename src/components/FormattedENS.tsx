@@ -1,7 +1,7 @@
 /** @jsxImportSource theme-ui */
 import { ethers } from 'ethers'
 import { useEffect, useState } from 'react'
-import { TextProps, Text } from 'theme-ui'
+import { Text, TextProps } from 'theme-ui'
 import { fetchEns, shortenAddress } from 'utils/address'
 
 interface FormattedENSProps extends TextProps {
