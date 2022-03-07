@@ -138,6 +138,7 @@ export const Nav = () => {
   }
 
   const handleSearchSuggestionChange = (item: InputSuggestion) => {
+    handleToggleMenu()
     isAddress
       ? router.push(`/analytics/user/${encodeURIComponent(navSearchTerm)}`)
       : router.push(`/analytics/collection/${encodeURIComponent(item.id)}`)
@@ -149,6 +150,7 @@ export const Nav = () => {
 
   const handleDisconnect = () => {
     deactivate()
+    handleToggleMenu()
     dispatch(setAddress(undefined))
     dispatch(setEns({ name: undefined, avatar: undefined }))
   }
@@ -266,7 +268,10 @@ export const Nav = () => {
           onLogoClick={() => router.push('/')}
           onSearchSuggestionChange={handleSearchSuggestionChange}
           onSearchKeyUp={handleNavKeyUp}
-          onConnectClick={toggleModal}
+          onConnectClick={() => {
+            handleToggleMenu()
+            toggleModal()
+          }}
           onDisconnectClick={handleDisconnect}
           onMenuClick={handleToggleMenu}
           searchSuggestions={suggestions}
