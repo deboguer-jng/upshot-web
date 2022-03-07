@@ -68,7 +68,10 @@ function CollectionStat({
   )
 }
 
-function Layout({ children }: { children: React.ReactNode }) {
+function Layout({ children, title }: {
+  children: React.ReactNode,
+  title?: string
+}) {
   const storage = globalThis?.sessionStorage
   const prevPath = storage.getItem('prevPath')
 
@@ -106,7 +109,7 @@ function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Head>
-        <title>Upshot Analytics</title>
+        <title>{title ? title + ' | ' : ''}Upshot Analytics</title>
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:site" content="@UpshotHQ" />
         <meta name="twitter:creator" content="@UpshotHQ" />
@@ -244,7 +247,7 @@ export default function CollectionView() {
   // }
 
   return (
-    <Layout>
+    <Layout title={name}>
       <Grid columns={['1fr', '1fr', '1fr 1fr']} sx={{ gap: '40px' }}>
         <Flex sx={{ flexDirection: 'column', gap: '16px' }}>
           <Flex sx={{ gap: 6, height: 100, alignItems: 'center' }}>
