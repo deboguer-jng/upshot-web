@@ -1,6 +1,10 @@
 /** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
-import { imageOptimizer, Pagination, useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import {
+  imageOptimizer,
+  Pagination,
+  useBreakpointIndex,
+} from '@upshot-tech/upshot-ui'
 import { Container } from '@upshot-tech/upshot-ui'
 import { Flex, Grid, Image, Text } from '@upshot-tech/upshot-ui'
 import {
@@ -90,12 +94,13 @@ function Layout({ children }: { children: React.ReactNode }) {
           minHeight: '100vh',
           gap: 4,
           padding: 4,
+          marginBottom: 10,
         }}
       >
         <Breadcrumbs crumbs={breadcrumbs} />
         {children}
-        <Footer />
       </Container>
+      <Footer />
     </>
   )
 }
@@ -247,7 +252,7 @@ export default function NFTView() {
 
   const assetName = getAssetName(name, collection?.name, tokenId)
   const displayName =
-    ensName ?? shortenAddress(txHistory[0]?.txToAddress) ?? 'Unknown'
+    ensName ?? shortenAddress(txHistory?.[0]?.txToAddress) ?? 'Unknown'
 
   const image = previewImageUrl ?? mediaUrl
   const optimizedSrc = imageOptimizer(image, { width: 340 }) ?? image
@@ -258,7 +263,7 @@ export default function NFTView() {
   return (
     <>
       <Head>
-        <title>Upshot Analytics</title>
+        <title>{name} | Upshot Analytics</title>
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:site" content="@UpshotHQ" />
         <meta name="twitter:creator" content="@UpshotHQ" />
@@ -338,23 +343,22 @@ export default function NFTView() {
             )}
             <Flex sx={{ flexDirection: 'column', gap: 4 }}>
               <Text variant="h2Primary">{assetName}</Text>
-                <>
-                  <Flex sx={{ alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+              <>
+                <Flex sx={{ alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
                   {!!latestAppraisal && (
                     <Label size="md" color="blue">
                       {'Last Appraisal: Ξ' +
                         weiToEth(latestAppraisal.ethSalePrice, 3, false)}
                     </Label>
-
                   )}
 
-                    {!!rarityRank && !!collection && !!collection?.size && (
-                      <Label size="md">
-                        {'Rarity Rank: #' + rarityRank + ' / ' + collection?.size}
-                      </Label>
-                    )}
-                  </Flex>
-                  {!!latestAppraisal && (
+                  {!!rarityRank && !!collection && !!collection?.size && (
+                    <Label size="md">
+                      {'Rarity Rank: #' + rarityRank + ' / ' + collection?.size}
+                    </Label>
+                  )}
+                </Flex>
+                {!!latestAppraisal && (
                   <a
                     href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
                     target="_blank"
@@ -380,8 +384,8 @@ export default function NFTView() {
                       How did we calculate this appraisal?
                     </Box>
                   </a>
-                  )}
-                </>
+                )}
+              </>
 
               <Flex>
                 <a
@@ -501,7 +505,7 @@ export default function NFTView() {
                       <Flex sx={{ gap: [1, 1, 4], alignItems: 'center' }}>
                         <Image
                           src={
-                            txHistory[0]?.txToAddress
+                            txHistory?.[0]?.txToAddress
                               ? makeBlockie(txHistory[0].txToAddress)
                               : '/img/defaultAvatar.png'
                           }
@@ -526,7 +530,7 @@ export default function NFTView() {
                             Owned By
                           </Text>
                           <Link
-                            href={`/analytics/user/${txHistory[0]?.txToAddress}`}
+                            href={`/analytics/user/${txHistory?.[0]?.txToAddress}`}
                           >
                             <a
                               sx={{
@@ -588,15 +592,19 @@ export default function NFTView() {
                         </Box>
                       ))}
                     </Grid>
-                    <Flex sx={{ justifyContent: 'center', marginTop: '10px' }}>
-                      <Pagination
-                        forcePage={traitPage}
-                        pageCount={Math.ceil(traits.length / TRAIT_PAGE_SIZE)}
-                        pageRangeDisplayed={0}
-                        marginPagesDisplayed={0}
-                        onPageChange={handlePageChange}
-                      />
-                    </Flex>
+                    {Math.ceil(traits.length / TRAIT_PAGE_SIZE) > 1 && (
+                      <Flex
+                        sx={{ justifyContent: 'center', marginTop: '10px' }}
+                      >
+                        <Pagination
+                          forcePage={traitPage}
+                          pageCount={Math.ceil(traits.length / TRAIT_PAGE_SIZE)}
+                          pageRangeDisplayed={0}
+                          marginPagesDisplayed={0}
+                          onPageChange={handlePageChange}
+                        />
+                      </Flex>
+                    )}
                   </Flex>
                 </Panel>
               </Flex>
@@ -744,204 +752,142 @@ export default function NFTView() {
                   >
                     <Text variant="h3Secondary">Transaction History</Text>
                   </Flex>
-                  <Box
-                    css={theme.scroll.thin.styles}
-                    sx={{
-                      overflow: 'auto',
-                      height: '300px',
-                    }}
-                  >
-                    {txHistory.length > 0 && (
-                      <Table
-                        sx={{
-                          position: 'relative',
-                          borderSpacing: '0 10px',
-                        }}
-                      >
-                        <TableHead>
-                          <TableRow>
-                            <TableCell
-                              sx={{
-                                position: 'sticky',
-                                top: 0,
-                                zIndex: 2,
-                              }}
-                              backgroundColor="grey-800"
-                              color="grey-500"
-                            >
-                              Date
-                            </TableCell>
-                            {!isMobile && (
-                              <>
-                                <TableCell
-                                  sx={{
-                                    position: 'sticky',
-                                    top: 0,
-                                    zIndex: 2,
-                                  }}
-                                  backgroundColor="grey-800"
-                                  color="grey-500"
-                                >
-                                  Sender
-                                </TableCell>
-                                <TableCell
-                                  sx={{
-                                    position: 'sticky',
-                                    top: 0,
-                                    zIndex: 2,
-                                  }}
-                                  backgroundColor="grey-800"
-                                  color="grey-500"
-                                >
-                                  Recipient
-                                </TableCell>
-                              </>
-                            )}
-
-                            <TableCell
-                              sx={{
-                                position: 'sticky',
-                                top: 0,
-                                zIndex: 2,
-                              }}
-                              backgroundColor="grey-800"
-                              color="grey-500"
-                            >
-                              Sale Price
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {txHistory.map(
-                            (
-                              {
-                                type,
-                                txAt,
-                                txFromAddress,
-                                txToAddress,
-                                txHash,
-                                price,
-                                currency: { symbol, decimals },
-                              },
-                              idx
-                            ) => (
-                              <TableRow key={idx}>
-                                <TableCell sx={{ minWidth: 140 }}>
-                                  {format(txAt * 1000, 'M/d/yyyy')}
-                                </TableCell>
-                                {!isMobile && (
-                                  <>
-                                    <TableCell sx={{ minWidth: 140 }}>
-                                      <Flex
-                                        sx={{ alignItems: 'center', gap: 2 }}
-                                      >
-                                        <Box
-                                          sx={{
-                                            borderRadius: 'circle',
-                                            bg: 'yellow',
-                                            width: 3,
-                                            height: 3,
-                                          }}
-                                        />
-                                        <Link
-                                          href={`/analytics/user/${txFromAddress}`}
-                                        >
-                                          <a
-                                            sx={{
-                                              cursor: 'pointer',
-                                              '&:hover': {
-                                                textDecoration: 'underline',
-                                              },
-                                            }}
-                                          >
-                                            <FormattedENS
-                                              address={txFromAddress}
-                                            />
-                                          </a>
-                                        </Link>
-                                      </Flex>
-                                    </TableCell>
-                                    <TableCell sx={{ minWidth: 140 }}>
-                                      <Flex
-                                        sx={{ alignItems: 'center', gap: 2 }}
-                                      >
-                                        <Box
-                                          sx={{
-                                            borderRadius: 'circle',
-                                            bg: 'purple',
-                                            width: 3,
-                                            height: 3,
-                                          }}
-                                        />
-                                        <Link
-                                          href={`/analytics/user/${txToAddress}`}
-                                        >
-                                          <a
-                                            sx={{
-                                              cursor: 'pointer',
-                                              '&:hover': {
-                                                textDecoration: 'underline',
-                                              },
-                                            }}
-                                          >
-                                            <FormattedENS
-                                              address={txToAddress}
-                                            />
-                                          </a>
-                                        </Link>
-                                      </Flex>
-                                    </TableCell>
-                                  </>
-                                )}
-                                <TableCell
-                                  sx={{ minWidth: 100, color: 'pink' }}
-                                >
-                                  {'SALE' === type &&
-                                    price &&
-                                    `${formatCurrencyUnits(price, decimals)} ${
-                                      symbol ?? 'ETH'
-                                    }`}
-                                  {'TRANSFER' === type && (
-                                    <Text color="blue">Transfer</Text>
-                                  )}
-                                  {'MINT' === type && (
-                                    <Text color="green">Mint</Text>
-                                  )}
-                                  <a
-                                    href={`https://etherscan.io/tx/${txHash}`}
-                                    target="_blank"
-                                    title="Open transaction on Etherscan"
-                                    rel="noopener noreferrer nofollow"
-                                  >
-                                    <IconButton
-                                      sx={{
-                                        marginLeft: '6px;',
-                                        verticalAlign: 'middle',
-                                        opacity: 0.3,
-                                        '&:hover': {
-                                          opacity: 1,
-                                        },
-                                      }}
-                                    >
-                                      <Icon
-                                        icon="disconnect"
-                                        color="grey-500"
-                                      />
-                                    </IconButton>
-                                  </a>
-                                </TableCell>
-                              </TableRow>
-                            )
+                  {txHistory && txHistory.length > 0 && (
+                    <Table sx={{ borderSpacing: '0 10px' }}>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell color="grey-500">Date</TableCell>
+                          {!isMobile && (
+                            <>
+                              <TableCell color="grey-500">Sender</TableCell>
+                              <TableCell color="grey-500">Recipient</TableCell>
+                            </>
                           )}
-                        </TableBody>
-                      </Table>
-                    )}
-                    {txHistory.length == 0 && (
+
+                          <TableCell
+                            sx={{
+                              position: 'sticky',
+                              top: 0,
+                              zIndex: 2,
+                            }}
+                            backgroundColor="grey-800"
+                            color="grey-500"
+                          >
+                            Sale Price
+                          </TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {txHistory.map(
+                          (
+                            {
+                              type,
+                              txAt,
+                              txFromAddress,
+                              txToAddress,
+                              txHash,
+                              price,
+                              currency: { symbol, decimals },
+                            },
+                            idx
+                          ) => (
+                            <TableRow key={idx}>
+                              <TableCell sx={{ minWidth: 140 }}>
+                                {format(txAt * 1000, 'M/d/yyyy')}
+                              </TableCell>
+                              {!isMobile && (
+                                <>
+                                  <TableCell sx={{ minWidth: 140 }}>
+                                    <Flex sx={{ alignItems: 'center', gap: 2 }}>
+                                      <Box
+                                        sx={{
+                                          borderRadius: 'circle',
+                                          bg: 'yellow',
+                                          width: 3,
+                                          height: 3,
+                                        }}
+                                      />
+                                      <Link
+                                        href={`/analytics/user/${txFromAddress}`}
+                                      >
+                                        <a
+                                          sx={{
+                                            cursor: 'pointer',
+                                            '&:hover': {
+                                              textDecoration: 'underline',
+                                            },
+                                          }}
+                                        >
+                                          <FormattedENS
+                                            address={txFromAddress}
+                                          />
+                                        </a>
+                                      </Link>
+                                    </Flex>
+                                  </TableCell>
+                                  <TableCell sx={{ minWidth: 140 }}>
+                                    <Flex sx={{ alignItems: 'center', gap: 2 }}>
+                                      <Box
+                                        sx={{
+                                          borderRadius: 'circle',
+                                          bg: 'purple',
+                                          width: 3,
+                                          height: 3,
+                                        }}
+                                      />
+                                      <Link
+                                        href={`/analytics/user/${txToAddress}`}
+                                      >
+                                        <a
+                                          sx={{
+                                            cursor: 'pointer',
+                                            '&:hover': {
+                                              textDecoration: 'underline',
+                                            },
+                                          }}
+                                        >
+                                          <FormattedENS address={txToAddress} />
+                                        </a>
+                                      </Link>
+                                    </Flex>
+                                  </TableCell>
+                                </>
+                              )}
+                              <TableCell sx={{ minWidth: 100, color: 'pink' }}>
+                                {'SALE' === type &&
+                                  price &&
+                                  `${formatCurrencyUnits(price, decimals)} ${
+                                    symbol ?? 'ETH'
+                                  }`}
+                                {'TRANSFER' === type && (
+                                  <Text color="blue">Transfer</Text>
+                                )}
+                                {'MINT' === type && (
+                                  <Text color="green">Mint</Text>
+                                )}
+                                <a
+                                  href={`https://etherscan.io/tx/${txHash}`}
+                                  target="_blank"
+                                  title="Open transaction on Etherscan"
+                                  rel="noopener noreferrer nofollow"
+                                >
+                                  <IconButton>
+                                    <Icon icon="disconnect" color="grey-500" />
+                                  </IconButton>
+                                </a>
+                              </TableCell>
+                            </TableRow>
+                          )
+                        )}
+                      </TableBody>
+                    </Table>
+                  )}
+                  {!txHistory ||
+                    (txHistory.length == 0 && (
                       <Text sx={{ color: 'grey-500' }}>
                         This asset hasn’t been sold or transferred yet.
                       </Text>
-                    )}
-                  </Box>
+                    ))}
                 </Flex>
               </Box>
             </Panel>
