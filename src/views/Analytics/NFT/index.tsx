@@ -1,6 +1,10 @@
 /** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
-import { imageOptimizer, Pagination, useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import {
+  imageOptimizer,
+  Pagination,
+  useBreakpointIndex,
+} from '@upshot-tech/upshot-ui'
 import { Container } from '@upshot-tech/upshot-ui'
 import { Flex, Grid, Image, Text } from '@upshot-tech/upshot-ui'
 import {
@@ -339,23 +343,22 @@ export default function NFTView() {
             )}
             <Flex sx={{ flexDirection: 'column', gap: 4 }}>
               <Text variant="h2Primary">{assetName}</Text>
-                <>
-                  <Flex sx={{ alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+              <>
+                <Flex sx={{ alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
                   {!!latestAppraisal && (
                     <Label size="md" color="blue">
                       {'Last Appraisal: Ξ' +
                         weiToEth(latestAppraisal.ethSalePrice, 3, false)}
                     </Label>
-
                   )}
 
-                    {!!rarityRank && !!collection && !!collection?.size && (
-                      <Label size="md">
-                        {'Rarity Rank: #' + rarityRank + ' / ' + collection?.size}
-                      </Label>
-                    )}
-                  </Flex>
-                  {!!latestAppraisal && (
+                  {!!rarityRank && !!collection && !!collection?.size && (
+                    <Label size="md">
+                      {'Rarity Rank: #' + rarityRank + ' / ' + collection?.size}
+                    </Label>
+                  )}
+                </Flex>
+                {!!latestAppraisal && (
                   <a
                     href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
                     target="_blank"
@@ -381,8 +384,8 @@ export default function NFTView() {
                       How did we calculate this appraisal?
                     </Box>
                   </a>
-                  )}
-                </>
+                )}
+              </>
 
               <Flex>
                 <a
@@ -589,8 +592,10 @@ export default function NFTView() {
                         </Box>
                       ))}
                     </Grid>
-                    {(Math.ceil(traits.length / TRAIT_PAGE_SIZE) > 1) && (
-                      <Flex sx={{ justifyContent: 'center', marginTop: '10px' }}>
+                    {Math.ceil(traits.length / TRAIT_PAGE_SIZE) > 1 && (
+                      <Flex
+                        sx={{ justifyContent: 'center', marginTop: '10px' }}
+                      >
                         <Pagination
                           forcePage={traitPage}
                           pageCount={Math.ceil(traits.length / TRAIT_PAGE_SIZE)}
@@ -759,7 +764,17 @@ export default function NFTView() {
                             </>
                           )}
 
-                          <TableCell color="grey-500">Sale Price</TableCell>
+                          <TableCell
+                            sx={{
+                              position: 'sticky',
+                              top: 0,
+                              zIndex: 2,
+                            }}
+                            backgroundColor="grey-800"
+                            color="grey-500"
+                          >
+                            Sale Price
+                          </TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -856,16 +871,7 @@ export default function NFTView() {
                                   title="Open transaction on Etherscan"
                                   rel="noopener noreferrer nofollow"
                                 >
-                                  <IconButton
-                                    sx={{
-                                      marginLeft: '6px;',
-                                      verticalAlign: 'middle',
-                                      opacity: 0.3,
-                                      '&:hover': {
-                                        opacity: 1,
-                                      },
-                                    }}
-                                  >
+                                  <IconButton>
                                     <Icon icon="disconnect" color="grey-500" />
                                   </IconButton>
                                 </a>
@@ -876,11 +882,12 @@ export default function NFTView() {
                       </TableBody>
                     </Table>
                   )}
-                  {!txHistory || txHistory.length == 0 && (
-                    <Text sx={{ color: 'grey-500' }}>
-                      This asset hasn’t been sold or transferred yet.
-                    </Text>
-                  )}
+                  {!txHistory ||
+                    (txHistory.length == 0 && (
+                      <Text sx={{ color: 'grey-500' }}>
+                        This asset hasn’t been sold or transferred yet.
+                      </Text>
+                    ))}
                 </Flex>
               </Box>
             </Panel>
