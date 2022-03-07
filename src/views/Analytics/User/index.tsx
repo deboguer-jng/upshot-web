@@ -1536,7 +1536,6 @@ export default function UserView() {
                                             headerRenderer(label)
                                           }
                                           cellRenderer={({ rowData }) => {
-                                            console.log(rowData)
                                             return (
                                               <Text
                                                 sx={{
