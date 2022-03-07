@@ -594,6 +594,15 @@ export default function UserView() {
     index,
     data: { count, collection, ownedAppraisedValue },
   }) => {
+    const formattedAppraisedValue = ownedAppraisedValue
+      ? parseFloat(
+          ethers.utils.formatEther(ownedAppraisedValue)
+        ).toFixed(2)
+      : ownedAppraisedValue
+    const price = collection.isAppraised
+      ? { appraisalPrice: formattedAppraisedValue }
+      : { floorPrice: formattedAppraisedValue }
+
     return (
       <>
         {index === 0 && ( // append Supported/Unsupported checkbox before the first card
@@ -605,16 +614,10 @@ export default function UserView() {
           />
         )}
         <CollectionCard
+          { ...price }
           hasSeeAll={count > 5}
           seeAllImageSrc={
             collection.ownerAssetsInCollection.assets[0]?.previewImageUrl
-          }
-          appraisalPrice={
-            ownedAppraisedValue
-              ? parseFloat(
-                  ethers.utils.formatEther(ownedAppraisedValue)
-                ).toFixed(2)
-              : undefined
           }
           avatarImage={collection.imageUrl}
           link={`/analytics/collection/${collection.id}`}
