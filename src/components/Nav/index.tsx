@@ -8,6 +8,7 @@ import {
   Modal,
   Navbar,
   Text,
+  useBreakpointIndex,
   useTheme,
 } from '@upshot-tech/upshot-ui'
 import { useWeb3React } from '@web3-react/core'
@@ -21,7 +22,7 @@ import {
 } from 'graphql/queries'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { selectShowSidebar, setShowSidebar } from 'redux/reducers/layout'
 import {
@@ -36,6 +37,32 @@ import { shortenAddress } from 'utils/address'
 import { BetaBanner } from '../BetaBanner'
 import { Sidebar, SidebarShade, SideLink } from './Styled'
 
+function useOutsideAlerter(ref) {
+  const [status, setStatus] = useState(false)
+
+  useEffect(() => {
+    /**
+     * Alert if clicked on outside of element
+     */
+    function handleClickOutside(event) {
+      if (ref.current && !ref.current.contains(event.target)) {
+        setStatus(true)
+      } else {
+        setStatus(false)
+      }
+    }
+
+    // Bind the event listener
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      // Unbind the event listener on clean up
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [ref])
+
+  return status
+}
+
 export const Nav = () => {
   const { theme } = useTheme()
   const { activate, deactivate, connector } = useWeb3React()
@@ -43,6 +70,7 @@ export const Nav = () => {
   const dispatch = useAppDispatch()
   const address = useAppSelector(selectAddress)
   const showSidebar = useAppSelector(selectShowSidebar)
+  const sidebarRef = useRef(null)
   const ens = useAppSelector(selectEns)
   const [navSearchTerm, setNavSearchTerm] = useState('')
   const [getNavCollections, { data: navCollectionsData }] = useLazyQuery<
@@ -51,8 +79,15 @@ export const Nav = () => {
   >(GET_NAV_BAR_COLLECTIONS)
   const [open, setOpen] = useState(false)
   const modalRef = useRef<HTMLDivElement>(null)
+  const isMobile = useBreakpointIndex() <= 1
   const toggleModal = () => setOpen(!open)
+  const outsideClicked = useOutsideAlerter(sidebarRef)
 
+  useEffect(() => {
+    if (outsideClicked && !isMobile) {
+      handleToggleMenu()
+    }
+  }, [outsideClicked])
   interface InputSuggestion {
     id: number
     name: string
@@ -92,6 +127,7 @@ export const Nav = () => {
 
   const handleNavSearch = (e: React.FormEvent) => {
     e.preventDefault()
+    handleToggleMenu()
     if (!suggestions.length) return
 
     isAddress
@@ -122,7 +158,7 @@ export const Nav = () => {
   }
 
   const sidebar = (
-    <Sidebar>
+    <Sidebar ref={sidebarRef}>
       <Flex sx={{ flexDirection: 'column', gap: '32px', flexGrow: 1 }}>
         <Flex sx={{ flexDirection: 'column', gap: '32px' }}>
           <Link href="/" passHref>
@@ -176,19 +212,19 @@ export const Nav = () => {
           target="_blank"
           rel="noreferrer"
         >
-          <IconButton>
+          <IconButton onClick={handleToggleMenu}>
             <Icon color="white" icon="mirror" size={32} />
           </IconButton>
         </a>
 
         <a href="https://twitter.com/upshothq" target="_blank" rel="noreferrer">
-          <IconButton>
+          <IconButton onClick={handleToggleMenu}>
             <Icon color="white" icon="twitterCircle" size={32} />
           </IconButton>
         </a>
 
         <a href="https://discord.gg/upshot" target="_blank" rel="noreferrer">
-          <IconButton>
+          <IconButton onClick={handleToggleMenu}>
             <Icon color="white" icon="discord" size={32} />
           </IconButton>
         </a>
@@ -198,7 +234,7 @@ export const Nav = () => {
           target="_blank"
           rel="noreferrer"
         >
-          <IconButton>
+          <IconButton onClick={handleToggleMenu}>
             <Icon color="white" icon="instagramCircle" size={32} />
           </IconButton>
         </a>
