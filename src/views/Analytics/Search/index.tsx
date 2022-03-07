@@ -8,7 +8,7 @@ import { Nav } from 'components/Nav'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
 import { weiToEth } from 'utils/number'
@@ -40,9 +40,13 @@ export default function SearchView() {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
 
-  const collectionIdParam = (router.query.collectionId as string) ?? ''
+  const collectionId = router.query.collectionId
+    ? Number(router.query.collectionId)
+    : undefined
 
-  const id = 1
+  const tokenId = router.query.tokenId as string
+  const minPrice = router.query.minPrice as string
+  const maxPrice = router.query.maxPrice as string
 
   const chunks = {
     [BREAKPOINT_INDEXES.ZERO]: 2,
@@ -65,9 +69,12 @@ export default function SearchView() {
     variables: {
       limit: ROW_SIZE * chunkSize,
       offset: page * ROW_SIZE * chunkSize,
-      collectionId: Number(collectionIdParam),
+      collectionId,
+      tokenId,
+      minPrice,
+      maxPrice,
     },
-    skip: !collectionIdParam,
+    skip: !collectionId,
   })
 
   const handlePageChange = ({ selected }: { selected: number }) => {
@@ -79,132 +86,6 @@ export default function SearchView() {
   }
 
   const assetArr = data?.assetGlobalSearch?.assets
-
-  const searchResults = () => (
-    <>
-      <SearchFilterSidebar id={id} />
-
-      <Flex
-        sx={{
-          flex: '1 auto auto',
-          flexDirection: 'column',
-          gap: 4,
-        }}
-      >
-        <Flex sx={{ flexDirection: 'column' }}>
-          <Text>Search Results</Text>
-        </Flex>
-
-        {error ? (
-          <div>There was an error completing your request</div>
-        ) : data?.assetGlobalSearch?.assets.length === 0 ? (
-          <div>No results available.</div>
-        ) : (
-          <Flex
-            sx={{
-              flexDirection: 'column',
-              gap: 5,
-              alignItems: isMobile ? 'center' : 'baseline',
-            }}
-          >
-            {
-              /* Chunk results into non-wrapping rows. */
-              loading
-                ? loadArr
-                    .map((_, i) =>
-                      i % chunkSize === 0
-                        ? loadArr.slice(i, i + chunkSize)
-                        : null
-                    )
-                    .filter(Boolean)
-                    .map((items, idx) => (
-                      <Flex key={idx} sx={{ gap: 5 }}>
-                        {items?.map((_, idx) => (
-                          <BlurrySquareTemplate key={idx} />
-                        ))}
-                      </Flex>
-                    ))
-                : assetArr
-                    ?.map((_, i) =>
-                      i % chunkSize === 0
-                        ? assetArr.slice(i, i + chunkSize)
-                        : null
-                    )
-                    .filter(Boolean)
-                    .map((items, idx) => (
-                      <Flex key={idx} sx={{ gap: 5 }}>
-                        {items?.map(
-                          (
-                            {
-                              id,
-                              contractAddress,
-                              previewImageUrl,
-                              mediaUrl,
-                              name,
-                              collection,
-                              tokenId,
-                              lastSale,
-                              rarity,
-                              creatorUsername,
-                              creatorAddress,
-                            },
-                            idx
-                          ) => (
-                            <a
-                              key={idx}
-                              onClick={() => handleClickNFT(id)}
-                              style={{ cursor: 'pointer' }}
-                            >
-                              <MiniNftCard
-                                price={
-                                  lastSale?.ethSalePrice
-                                    ? weiToEth(lastSale.ethSalePrice)
-                                    : undefined
-                                }
-                                rarity={
-                                  rarity ? (rarity * 100).toFixed(2) + '%' : '-'
-                                }
-                                image={previewImageUrl ?? mediaUrl}
-                                creator={
-                                  creatorUsername ||
-                                  shortenAddress(creatorAddress, 2, 4)
-                                }
-                                pixelated={PIXELATED_CONTRACTS.includes(
-                                  contractAddress
-                                )}
-                                type="search"
-                                name={getAssetName(
-                                  name,
-                                  collection?.name,
-                                  tokenId
-                                )}
-                                link={`/analytics/collection/${collection?.id}`}
-                              />
-                            </a>
-                          )
-                        )}
-                      </Flex>
-                    ))
-            }
-          </Flex>
-        )}
-
-        <Flex sx={{ justifyContent: 'center' }}>
-          {!!data?.assetGlobalSearch?.count && (
-            <Pagination
-              forcePage={page}
-              pageCount={Math.ceil(
-                data.assetGlobalSearch.count / (chunkSize * ROW_SIZE)
-              )}
-              pageRangeDisplayed={0}
-              marginPagesDisplayed={0}
-              onPageChange={handlePageChange}
-            />
-          )}
-        </Flex>
-      </Flex>
-    </>
-  )
 
   const storage = globalThis?.sessionStorage
   const prevPath = storage.getItem('prevPath')
@@ -257,20 +138,138 @@ export default function SearchView() {
           }}
         >
           <Breadcrumbs crumbs={breadcrumbs} />
-          {!isMobile ? (
-            <Grid
-              columns={[1, 1, 3]}
+
+          <Grid
+            sx={{
+              gridTemplateColumns: ['1fr', '1fr', '300px 3fr 1fr'],
+              flexGrow: 1,
+              gap: [8, 5, 8],
+            }}
+          >
+            <SearchFilterSidebar />
+
+            <Flex
               sx={{
-                gridTemplateColumns: ['1fr', '1fr 3fr', '1fr 4fr 1fr'],
-                flexGrow: 1,
-                gap: [8, 5, 8],
+                flex: '1 auto auto',
+                flexDirection: 'column',
+                gap: 4,
               }}
             >
-              {searchResults()}
-            </Grid>
-          ) : (
-            searchResults()
-          )}
+              <Flex sx={{ flexDirection: 'column' }}>
+                <Text>Search Results</Text>
+              </Flex>
+
+              {error ? (
+                <div>There was an error completing your request</div>
+              ) : data?.assetGlobalSearch?.assets.length === 0 ? (
+                <div>No results available.</div>
+              ) : (
+                <Flex
+                  sx={{
+                    flexDirection: 'column',
+                    gap: 5,
+                    alignItems: isMobile ? 'center' : 'baseline',
+                  }}
+                >
+                  {
+                    /* Chunk results into non-wrapping rows. */
+                    loading
+                      ? loadArr
+                          .map((_, i) =>
+                            i % chunkSize === 0
+                              ? loadArr.slice(i, i + chunkSize)
+                              : null
+                          )
+                          .filter(Boolean)
+                          .map((items, idx) => (
+                            <Flex key={idx} sx={{ gap: 5 }}>
+                              {items?.map((_, idx) => (
+                                <BlurrySquareTemplate key={idx} />
+                              ))}
+                            </Flex>
+                          ))
+                      : assetArr
+                          ?.map((_, i) =>
+                            i % chunkSize === 0
+                              ? assetArr.slice(i, i + chunkSize)
+                              : null
+                          )
+                          .filter(Boolean)
+                          .map((items, idx) => (
+                            <Flex key={idx} sx={{ gap: 5 }}>
+                              {items?.map(
+                                (
+                                  {
+                                    id,
+                                    contractAddress,
+                                    previewImageUrl,
+                                    mediaUrl,
+                                    name,
+                                    collection,
+                                    tokenId,
+                                    lastSale,
+                                    rarity,
+                                    creatorUsername,
+                                    creatorAddress,
+                                  },
+                                  idx
+                                ) => (
+                                  <a
+                                    key={idx}
+                                    onClick={() => handleClickNFT(id)}
+                                    style={{ cursor: 'pointer' }}
+                                  >
+                                    <MiniNftCard
+                                      price={
+                                        lastSale?.ethSalePrice
+                                          ? weiToEth(lastSale.ethSalePrice)
+                                          : undefined
+                                      }
+                                      rarity={
+                                        rarity
+                                          ? (rarity * 100).toFixed(2) + '%'
+                                          : '-'
+                                      }
+                                      image={previewImageUrl ?? mediaUrl}
+                                      creator={
+                                        creatorUsername ||
+                                        shortenAddress(creatorAddress, 2, 4)
+                                      }
+                                      pixelated={PIXELATED_CONTRACTS.includes(
+                                        contractAddress
+                                      )}
+                                      type="search"
+                                      name={getAssetName(
+                                        name,
+                                        collection?.name,
+                                        tokenId
+                                      )}
+                                      link={`/analytics/collection/${collection?.id}`}
+                                    />
+                                  </a>
+                                )
+                              )}
+                            </Flex>
+                          ))
+                  }
+                </Flex>
+              )}
+
+              <Flex sx={{ justifyContent: 'center', width: '100%' }}>
+                {!!data?.assetGlobalSearch?.count && (
+                  <Pagination
+                    forcePage={page}
+                    pageRangeDisplayed={0}
+                    marginPagesDisplayed={isMobile ? 1 : 3}
+                    pageCount={Math.ceil(
+                      data.assetGlobalSearch.count / (chunkSize * ROW_SIZE)
+                    )}
+                    onPageChange={handlePageChange}
+                  />
+                )}
+              </Flex>
+            </Flex>
+          </Grid>
         </Container>
         <Container
           maxBreakpoint="lg"

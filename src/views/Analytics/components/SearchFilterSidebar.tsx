@@ -13,7 +13,7 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { ethers } from 'ethers'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { parseEthString } from 'utils/number'
 
 import {
@@ -22,38 +22,55 @@ import {
   GetCollectionTraitsVars,
 } from '../Collection/queries'
 
-function TokenIdInput({ onBlur }) {
+function TokenIdInput({ defaultValue, onBlur }) {
   return (
     <Flex sx={{ flexDirection: 'column', gap: 2, grow: 1 }}>
       <Text color="grey-500" sx={{ fontSize: 4, fontWeight: 'bold' }}>
         Token ID
       </Text>
-      <InputRoundedSearch fullWidth placeholder="Token ID" {...{ onBlur }} />
+      <InputRoundedSearch
+        fullWidth
+        placeholder="Token ID"
+        {...{ defaultValue, onBlur }}
+      />
     </Flex>
   )
 }
 
-function PriceInput({ onChangeMin, onChangeMax }) {
-  const [minPriceEth, setMinPriceEth] = useState('')
-  const [minPriceWei, setMinPriceWei] = useState<string>()
+function PriceInput({ minPrice, maxPrice, onChangeMin, onChangeMax }) {
+  const [minPriceEth, setMinPriceEth] = useState<string>()
+  const [maxPriceEth, setMaxPriceEth] = useState<string>()
 
-  const [maxPriceEth, setMaxPriceEth] = useState('')
-  const [maxPriceWei, setMaxPriceWei] = useState<string>()
+  useEffect(() => {
+    try {
+      setMinPriceEth(minPrice ? ethers.utils.formatEther(minPrice) : undefined)
+    } catch (err) {
+      console.error(err)
+    }
+  }, [minPrice])
+
+  useEffect(() => {
+    try {
+      setMaxPriceEth(maxPrice ? ethers.utils.formatEther(maxPrice) : undefined)
+    } catch (err) {
+      console.error(err)
+    }
+  }, [maxPrice])
 
   const handleBlurMinPrice = (e: React.FocusEvent<HTMLInputElement>) => {
     const eth = parseEthString(e.currentTarget.value, 2)
 
     setMinPriceEth(eth || '')
-    if (eth) setMinPriceWei(ethers.utils.parseEther(eth).toString())
-    onChangeMin(minPriceWei)
+    if (!Number.isNaN(Number(eth)))
+      onChangeMin(ethers.utils.parseEther(eth).toString())
   }
 
   const handleBlurMaxPrice = (e: React.FocusEvent<HTMLInputElement>) => {
     const eth = parseEthString(e.currentTarget.value, 2)
 
     setMaxPriceEth(eth || '')
-    if (eth) setMaxPriceWei(ethers.utils.parseEther(eth).toString())
-    onChangeMax(maxPriceWei)
+    if (!Number.isNaN(Number(eth)))
+      onChangeMax(ethers.utils.parseEther(eth).toString())
   }
 
   return (
@@ -161,7 +178,8 @@ function TraitCategoryList({
           justifyContent: 'space-between',
           gap: 2,
           cursor: 'pointer',
-          width: 300,
+          width: '100%',
+          minWidth: '300px',
         }}
         onClick={() => setOpen(!open)}
       >
@@ -200,20 +218,46 @@ function TraitCategoryList({
   )
 }
 
-export default function SearchFilters({ id }: { id?: number }) {
+export default function SearchFilterSidebar() {
   const router = useRouter()
+  const [collectionId, setCollectionId] = useState<number>()
+  const [collectionName, setCollectionName] = useState('')
   const [tokenId, setTokenId] = useState('')
-  const [minPriceWei, setMinPriceWei] = useState('')
-  const [maxPriceWei, setMaxPriceWei] = useState('')
+  const [minPrice, setMinPrice] = useState('')
+  const [maxPrice, setMaxPrice] = useState('')
   const [traitANDMatch, setTraitANDMatch] = useState(false)
   const [selectedTraits, setSelectedTraits] = useState({})
+
+  useEffect(() => {
+    if (!router.query) return
+
+    const collectionId = router.query.collectionId
+      ? Number(router.query.collectionId)
+      : undefined
+    setCollectionId(collectionId)
+
+    const collectionName = router.query.collectionName as string
+    setCollectionName(collectionName)
+
+    const tokenId = router.query.tokenId as string
+    setTokenId(tokenId)
+
+    const minPrice = router.query.minPrice as string
+    setMinPrice(minPrice)
+
+    const maxPrice = router.query.maxPrice as string
+    setMaxPrice(maxPrice)
+
+    const traitANDMatch = router.query.traitANDMatch === 'true'
+    setTraitANDMatch(traitANDMatch)
+  }, [router.query])
 
   const { data } = useQuery<GetCollectionTraitsData, GetCollectionTraitsVars>(
     GET_COLLECTION_TRAITS,
     {
       errorPolicy: 'all',
-      variables: { id },
-      skip: !id,
+      variables: { id: collectionId },
+      skip: !collectionId,
     }
   )
 
@@ -242,7 +286,15 @@ export default function SearchFilters({ id }: { id?: number }) {
 
     router.push({
       pathname: '/analytics/search',
-      query: { traits, minPriceWei, maxPriceWei, tokenId, traitANDMatch },
+      query: {
+        collectionId,
+        collectionName,
+        traits,
+        minPrice,
+        maxPrice,
+        tokenId,
+        traitANDMatch,
+      },
     })
   }
 
@@ -256,14 +308,17 @@ export default function SearchFilters({ id }: { id?: number }) {
       </Flex>
 
       <TokenIdInput
+        defaultValue={tokenId}
+        key={tokenId}
         onBlur={(e: React.KeyboardEvent<HTMLInputElement>) =>
           setTokenId(e.currentTarget.value)
         }
       />
 
       <PriceInput
-        onChangeMin={(minPriceWei: string) => setMinPriceWei(minPriceWei)}
-        onChangeMax={(maxPriceWei: string) => setMaxPriceWei(maxPriceWei)}
+        onChangeMin={(minPrice: string) => setMinPrice(minPrice)}
+        onChangeMax={(maxPrice: string) => setMaxPrice(maxPrice)}
+        {...{ minPrice, maxPrice }}
       />
 
       <Flex sx={{ flexDirection: 'column', gap: 2 }}>
