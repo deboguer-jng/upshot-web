@@ -32,6 +32,7 @@ export type GetCollectorData = {
           id: number
           name: string
           imageUrl: string
+          isAppraised: boolean
           ownerAssetsInCollection: {
             count: number
             assets: {
@@ -102,6 +103,7 @@ export const GET_COLLECTOR = gql`
             id
             name
             imageUrl
+            isAppraised
             ownerAssetsInCollection(
               limit: $assetLimit
               offset: $assetOffset
