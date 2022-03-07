@@ -15,7 +15,8 @@
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
     "@reduxjs/toolkit": "^1.7.2",
-    "@upshot-tech/upshot-ui": "^0.5.15",
+    "@types/react-virtualized": "^9.21.16",
+    "@upshot-tech/upshot-ui": "^0.5.17",
     "@web3-react/core": "^6.1.9",
     "@web3-react/injected-connector": "^6.0.7",
     "@web3-react/walletconnect-connector": "^7.0.2-alpha.0",
@@ -32,6 +33,7 @@
     "react-inlinesvg": "^2.3.0",
     "react-markdown": "^8.0.0",
     "react-redux": "^7.2.6",
+    "react-virtualized": "^9.22.3",
     "redux": "^4.1.2",
     "redux-persist": "^6.0.0",
     "theme-ui": "^0.13.1"

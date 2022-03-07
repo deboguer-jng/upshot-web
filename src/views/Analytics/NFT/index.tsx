@@ -263,7 +263,7 @@ export default function NFTView() {
   return (
     <>
       <Head>
-        <title>Upshot Analytics</title>
+        <title>{name} | Upshot Analytics</title>
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:site" content="@UpshotHQ" />
         <meta name="twitter:creator" content="@UpshotHQ" />
@@ -768,7 +768,17 @@ export default function NFTView() {
                             </>
                           )}
 
-                          <TableCell color="grey-500">Sale Price</TableCell>
+                          <TableCell
+                            sx={{
+                              position: 'sticky',
+                              top: 0,
+                              zIndex: 2,
+                            }}
+                            backgroundColor="grey-800"
+                            color="grey-500"
+                          >
+                            Sale Price
+                          </TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -865,16 +875,7 @@ export default function NFTView() {
                                   title="Open transaction on Etherscan"
                                   rel="noopener noreferrer nofollow"
                                 >
-                                  <IconButton
-                                    sx={{
-                                      marginLeft: '6px;',
-                                      verticalAlign: 'middle',
-                                      opacity: 0.3,
-                                      '&:hover': {
-                                        opacity: 1,
-                                      },
-                                    }}
-                                  >
+                                  <IconButton>
                                     <Icon icon="disconnect" color="grey-500" />
                                   </IconButton>
                                 </a>

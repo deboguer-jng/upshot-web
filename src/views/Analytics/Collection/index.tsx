@@ -68,7 +68,10 @@ function CollectionStat({
   )
 }
 
-function Layout({ children }: { children: React.ReactNode }) {
+function Layout({ children, title }: {
+  children: React.ReactNode,
+  title?: string
+}) {
   const storage = globalThis?.sessionStorage
   const prevPath = storage.getItem('prevPath')
 
@@ -106,7 +109,7 @@ function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Head>
-        <title>Upshot Analytics</title>
+        <title>{title ? title + ' | ' : ''}Upshot Analytics</title>
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:site" content="@UpshotHQ" />
         <meta name="twitter:creator" content="@UpshotHQ" />
@@ -213,6 +216,7 @@ export default function CollectionView() {
     data.collectionById
 
   return (
+<<<<<<< HEAD
     <Layout>
       <Flex
         sx={{ flexDirection: ['column', 'column', 'column', 'row'], gap: 4 }}
@@ -263,6 +267,39 @@ export default function CollectionView() {
                   </Text>
                 </Flex>
               </Flex>
+=======
+    <Layout title={name}>
+      <Grid columns={['1fr', '1fr', '1fr 1fr']} sx={{ gap: '40px' }}>
+        <Flex sx={{ flexDirection: 'column', gap: '16px' }}>
+          <Flex sx={{ gap: 6, height: 100, alignItems: 'center' }}>
+            <Box
+              sx={{
+                backgroundColor: '#231F20',
+                minWidth: '63px',
+                padding: isMobile ? '4px' : '8px',
+                borderRadius: '50%',
+              }}
+            >
+              <Avatar
+                size="xl"
+                sx={{
+                  width: isMobile ? '55px' : '100px',
+                  height: isMobile ? '55px' : '100px',
+                  minWidth: 'unset',
+                }}
+                src={
+                  imageOptimizer(imageUrl, {
+                    width: parseInt(theme.images.avatar.xl.size),
+                    height: parseInt(theme.images.avatar.xl.size),
+                  }) ?? imageUrl
+                }
+              />
+            </Box>
+            <Flex sx={{ flexDirection: 'column' }}>
+              <Text variant="h1Secondary" sx={{ lineHeight: '2rem' }}>
+                {name}
+              </Text>
+>>>>>>> staging
               <Text
                 variant="large"
                 sx={{ textTransform: 'uppercase', fontWeight: 400 }}

@@ -1,4 +1,5 @@
 import '@upshot-tech/upshot-ui/dist/css/typekit.css'
+import 'react-virtualized/styles.css'
 
 import { ApolloProvider } from '@apollo/client'
 import Bugsnag from '@bugsnag/js'
