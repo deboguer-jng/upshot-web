@@ -186,13 +186,18 @@ function Header({
   useEffect(() => {
     if (!address) return
 
+    updateEns(address, setDisplayName)
+  }, [address])
+
+  useEffect(() => {
+    if (!displayName) return
+
     const storage = globalThis?.sessionStorage
     const curPath = storage.getItem('currentPath')
+
     if (curPath?.indexOf('userWallet=') === -1)
       storage.setItem('currentPath', `${curPath}?userWallet=${displayName}`)
-
-    updateEns(address, setDisplayName)
-  }, [address, displayName])
+  }, [displayName])
 
   return (
     <Flex sx={{ alignItems: 'center', gap: 4 }}>
