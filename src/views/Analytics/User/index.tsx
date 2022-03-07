@@ -1,4 +1,6 @@
 /** @jsxImportSource theme-ui */
+import 'react-virtualized/styles.css'
+
 import { useQuery } from '@apollo/client'
 import { Container } from '@upshot-tech/upshot-ui'
 import { Avatar, Flex, Grid, Panel, Text } from '@upshot-tech/upshot-ui'
