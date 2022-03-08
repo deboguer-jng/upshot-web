@@ -437,6 +437,13 @@ export type GetCollectorsData = {
     owners: {
       id: number
       username: string
+      totalAssetAppraisedValueWei: string
+      mostRecentBuy: {
+        assetId: string
+        asset: {
+          name: string
+        }
+      }
       addresses: { address: string; ens: string }[]
       firstAssetPurchaseTime: number
       avgHoldTime: number
@@ -485,6 +492,13 @@ export const GET_COLLECTORS = gql`
     ) {
       count
       owners {
+        totalAssetAppraisedValueWei
+        mostRecentBuy {
+          assetId
+          asset {
+            name
+          }
+        }
         id
         username
         addresses {
