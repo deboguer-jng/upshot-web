@@ -220,12 +220,14 @@ function TraitCategoryList({
 
 export default function SearchFilterSidebar({
   collectionId: defaultCollectionId,
+  collectionName: defaultCollectionName,
 }: {
   collectionId?: number
+  collectionName?: string
 }) {
   const router = useRouter()
   const [collectionId, setCollectionId] = useState(defaultCollectionId)
-  const [collectionName, setCollectionName] = useState('')
+  const [collectionName, setCollectionName] = useState(defaultCollectionName)
   const [tokenId, setTokenId] = useState('')
   const [minPrice, setMinPrice] = useState('')
   const [maxPrice, setMaxPrice] = useState('')
@@ -241,7 +243,7 @@ export default function SearchFilterSidebar({
     if (!defaultCollectionId) setCollectionId(collectionId)
 
     const collectionName = router.query.collectionName as string
-    setCollectionName(collectionName)
+    if (!defaultCollectionName) setCollectionName(collectionName)
 
     const tokenId = router.query.tokenId as string
     setTokenId(tokenId)
@@ -257,7 +259,7 @@ export default function SearchFilterSidebar({
 
     const traitIds = [...(router.query.traits ?? [])].map((val) => Number(val))
     setTraitIds(traitIds)
-  }, [router.query, defaultCollectionId])
+  }, [router.query, defaultCollectionId, defaultCollectionName])
 
   const { data } = useQuery<GetCollectionTraitsData, GetCollectionTraitsVars>(
     GET_COLLECTION_TRAITS,

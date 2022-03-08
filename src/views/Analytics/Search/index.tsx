@@ -77,7 +77,7 @@ export default function SearchView() {
       minPrice,
       maxPrice,
       traitFilterJoin: traitANDMatch === 'true' ? 'AND' : 'OR',
-      traitIds,
+      traitIds: traitIds.length ? traitIds : undefined,
     },
     skip: !collectionId,
   })

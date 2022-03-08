@@ -223,7 +223,10 @@ export default function CollectionView() {
       <Flex
         sx={{ flexDirection: ['column', 'column', 'column', 'row'], gap: 4 }}
       >
-        <SearchFiltersSidebar collectionId={id} />
+        <SearchFiltersSidebar
+          collectionName={data?.collectionById?.name}
+          collectionId={id}
+        />
         <Flex sx={{ flexDirection: 'column', gap: 4 }}>
           <Grid columns={['1fr', '1fr', '1fr 1fr']} sx={{ gap: '40px' }}>
             <Flex sx={{ flexDirection: 'column', gap: '16px' }}>

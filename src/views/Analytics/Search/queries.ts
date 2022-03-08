@@ -12,7 +12,7 @@ export type GetAssetsSearchVars = {
   collectionName?: string
   tokenId?: string
   traits?: string
-  traitIds?: string
+  traitIds?: number[]
   minPrice?: string
   maxPrice?: string
   traitFilterJoin?: string

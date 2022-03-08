@@ -72,9 +72,7 @@ export const Nav = () => {
   const showSidebar = useAppSelector(selectShowSidebar)
   const sidebarRef = useRef(null)
   const ens = useAppSelector(selectEns)
-  const [navSearchTerm, setNavSearchTerm] = useState(
-    (router.query.collectionName as string) ?? ''
-  )
+  const [navSearchTerm, setNavSearchTerm] = useState('')
   const [getNavCollections, { data: navCollectionsData }] = useLazyQuery<
     GetNavBarCollectionsData,
     GetNavBarCollectionsVars
@@ -84,6 +82,13 @@ export const Nav = () => {
   const isMobile = useBreakpointIndex() <= 1
   const toggleModal = () => setOpen(!open)
   const outsideClicked = useOutsideAlerter(sidebarRef)
+
+  useEffect(() => {
+    if (!router.query) return
+
+    const collectionName = router.query.collectionName as string
+    setNavSearchTerm(collectionName)
+  }, [router.query])
 
   useEffect(() => {
     if (outsideClicked && !isMobile) {
