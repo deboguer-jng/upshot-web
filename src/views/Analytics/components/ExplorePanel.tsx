@@ -7,7 +7,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import Collectors from './ExplorePanel/Collectors'
 import ExploreNFTs from './ExplorePanel/NFTs'
 import TopCollections from './ExplorePanel/TopCollections'
-import TopCollectors from './ExplorePanel/TopCollectors'
 
 function searchForm(
   handleSearch,
@@ -201,10 +200,7 @@ export default function ExplorePanel({
               {...{ searchTerm, selectedColumn, sortAscending, collectionId }}
             />
           )}
-          {tab === 'Collectors' && !collectionId && (
-            <TopCollectors searchTerm={searchTerm} />
-          )}
-          {tab === 'Collectors' && !!collectionId && (
+          {tab === 'Collectors' && (
             <Collectors
               id={collectionId}
               name={collectionName}

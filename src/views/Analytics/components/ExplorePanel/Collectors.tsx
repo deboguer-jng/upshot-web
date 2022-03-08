@@ -14,6 +14,7 @@ import {
 import { PAGE_SIZE, PIXELATED_CONTRACTS } from 'constants/'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import { ethers } from 'ethers'
 
 import {
   GET_COLLECTORS,
@@ -53,6 +54,13 @@ export default function Collectors({
   const handleShowCollector = (address: string) => {
     router.push('/analytics/user/' + address)
   }
+  let collectorVars = {
+    limit: PAGE_SIZE,
+    offset: page * PAGE_SIZE,
+    searchTerm,
+  }
+  if (id) collectorVars['id'] = id
+  const isLandingPage = !id && !assetId
 
   const { loading, error, data } = assetId
     ? useQuery<GetPreviousOwnersData, GetPreviousOwnersVars>(
@@ -70,13 +78,7 @@ export default function Collectors({
       )
     : useQuery<GetCollectorsData, GetCollectorsVars>(GET_COLLECTORS, {
         errorPolicy: 'all',
-        variables: {
-          id,
-          limit: PAGE_SIZE,
-          offset: page * PAGE_SIZE,
-          searchTerm,
-        },
-        skip: !id,
+        variables: { ...collectorVars },
       })
 
   const { data: extraCollectionData } = useQuery<
@@ -125,6 +127,14 @@ export default function Collectors({
     )
   }
 
+  const formatAppraisal = appraisal => {
+    return appraisal
+      ? parseFloat(
+          ethers.utils.formatEther(appraisal)
+        ).toFixed(2)
+      : appraisal
+  }
+
   /* Load state. */
   if (loading) return <ExplorePanelSkeleton />
 
@@ -138,9 +148,25 @@ export default function Collectors({
     <>
       <CollectorAccordionHead>
         <Text>Collector</Text>
-        <Text sx={{ whiteSpace: 'nowrap' }}>{`${
-          isMobile ? '' : name
-        } Count`}</Text>
+        {
+          name &&
+            <Text sx={{ whiteSpace: 'nowrap' }}>{`${
+              isMobile ? '' : name
+              } Count`}
+            </Text>
+        }
+        {
+          !name && !isLandingPage &&
+            <Text sx={{ whiteSpace: 'nowrap' }}>
+              NFT Count
+            </Text>
+        }
+        {
+          isLandingPage &&
+            <Text sx={{ whiteSpace: 'nowrap' }}>
+              Portfolio Appraisal
+            </Text>
+        }
       </CollectorAccordionHead>
       <CollectorAccordion>
         {[...data.getOwnersByWhaleness.owners]
@@ -157,6 +183,7 @@ export default function Collectors({
                 id,
                 username,
                 addresses,
+                totalAssetAppraisedValueWei,
                 avgHoldTime,
                 firstAssetPurchaseTime,
                 ownedAssets: { count, assets },
@@ -165,12 +192,14 @@ export default function Collectors({
               idx
             ) => (
               <CollectorAccordionRow
+                isLandingPage={isLandingPage}
                 address={addresses?.[0].address}
                 onClick={() => {
                   handleShowCollector(addresses?.[0].address)
                 }}
                 firstAcquisition={firstAssetPurchaseTime}
                 collectionName={name}
+                portfolioValue={formatAppraisal(totalAssetAppraisedValueWei)}
                 extraCollections={collectionAssetCounts.map(
                   ({ count, collection: { imageUrl, name, id } }) => ({
                     id,

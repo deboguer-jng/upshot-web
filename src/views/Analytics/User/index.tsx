@@ -165,7 +165,6 @@ const updateEns = async (
   try {
     const { name } = await fetchEns(address, ethers.getDefaultProvider())
     if (!name) return
-
     setDisplayName(name)
   } catch (err) {
     console.error(err)
@@ -186,13 +185,18 @@ function Header({
   useEffect(() => {
     if (!address) return
 
+    updateEns(address, setDisplayName)
+  }, [address])
+
+  useEffect(() => {
+    if (!displayName) return
+
     const storage = globalThis?.sessionStorage
     const curPath = storage.getItem('currentPath')
+
     if (curPath?.indexOf('userWallet=') === -1)
       storage.setItem('currentPath', `${curPath}?userWallet=${displayName}`)
-
-    updateEns(address, setDisplayName)
-  }, [address, displayName])
+  }, [displayName])
 
   return (
     <Flex sx={{ alignItems: 'center', gap: 4 }}>
@@ -277,6 +281,8 @@ export default function UserView() {
   const [displayName, setDisplayName] = useState<string>()
 
   useEffect(() => {
+    if (!address) return
+
     try {
       setDisplayName(shortenAddress(address))
       setAddressFormatted(ethers.utils.getAddress(address))

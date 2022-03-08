@@ -420,85 +420,6 @@ export const GET_TREEMAP_COLLECTIONS = gql`
 `
 
 /**
- * Get Top Collectors
- * @see Top Collectors
- */
-export type GetTopCollectorsVars = {
-  limit: number
-  offset: number
-  searchTerm: string
-}
-
-export type GetTopCollectorsData = {
-  getOwnersByWhaleness: {
-    count: number
-    owners: {
-      username: string
-      addresses: { address: string; ens: string }[]
-      ownedAssets: {
-        assets: {
-          id: string
-          name: string
-          creatorAddress: string
-          creatorUsername: string
-          rarity
-          latestAppraisal: {
-            estimatedPrice: number
-          }
-          previewImageUrl: string | undefined
-          mediaUrl: string
-          tokenId
-          contractAddress: string
-          collection: {
-            id: number
-            name: string
-          }
-        }
-      }
-    }[]
-  }[]
-}
-
-export const GET_TOP_COLLECTORS = gql`
-  query GetTopCollectors($limit: Int!, $offset: Int, $searchTerm: String) {
-    getOwnersByWhaleness(
-      limit: $limit
-      offset: $offset
-      searchTerm: $searchTerm
-    ) {
-      count
-      owners {
-        username
-        addresses {
-          address
-          ens
-        }
-        ownedAssets(notable: true, limit: 10, offset: 0) {
-          assets {
-            id
-            name
-            creatorAddress
-            creatorUsername
-            rarity
-            latestAppraisal {
-              estimatedPrice
-            }
-            mediaUrl
-            tokenId
-            contractAddress
-            collection {
-              id
-              name
-            }
-            previewImageUrl
-          }
-        }
-      }
-    }
-  }
-`
-
-/**
  * Get Collectors
  * @see Collectors
  */
@@ -516,6 +437,13 @@ export type GetCollectorsData = {
     owners: {
       id: number
       username: string
+      totalAssetAppraisedValueWei: string
+      mostRecentBuy: {
+        assetId: string
+        asset: {
+          name: string
+        }
+      }
       addresses: { address: string; ens: string }[]
       firstAssetPurchaseTime: number
       avgHoldTime: number
@@ -564,6 +492,13 @@ export const GET_COLLECTORS = gql`
     ) {
       count
       owners {
+        totalAssetAppraisedValueWei
+        mostRecentBuy {
+          assetId
+          asset {
+            name
+          }
+        }
         id
         username
         addresses {
@@ -628,6 +563,7 @@ export type GetPreviousOwnersData = {
           previewImageUrl: string
         }[]
       }
+      totalAssetAppraisedValueWei: string
       extraCollections: {
         collectionAssetCounts: {
           count: number
