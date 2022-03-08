@@ -160,13 +160,13 @@ function TraitCategoryItem({
 function TraitCategoryList({
   traitType,
   traits,
-  selectedTraits,
+  traitIds,
   onToggleSelection,
 }: {
   traitType: string
   traits: { id: number; value: string }[]
   onToggleSelection: (id: number, value?: string, traitType?: string) => void
-  selectedTraits: { [id: number]: { value: string; traitType: string } }
+  traitIds: number[]
 }) {
   const [open, setOpen] = useState(false)
 
@@ -204,7 +204,7 @@ function TraitCategoryList({
       <TraitList $isExpanded={open}>
         {traits.map(({ id, value }, idx) => (
           <TraitCategoryItem
-            selected={id in selectedTraits}
+            selected={traitIds.includes(id)}
             onToggleSelection={() => {
               onToggleSelection(id, value, traitType)
             }}
@@ -226,7 +226,7 @@ export default function SearchFilterSidebar() {
   const [minPrice, setMinPrice] = useState('')
   const [maxPrice, setMaxPrice] = useState('')
   const [traitANDMatch, setTraitANDMatch] = useState(false)
-  const [selectedTraits, setSelectedTraits] = useState({})
+  const [traitIds, setTraitIds] = useState<number[]>([])
 
   useEffect(() => {
     if (!router.query) return
@@ -250,6 +250,9 @@ export default function SearchFilterSidebar() {
 
     const traitANDMatch = router.query.traitANDMatch === 'true'
     setTraitANDMatch(traitANDMatch)
+
+    const traitIds = [...(router.query.traits ?? [])].map((val) => Number(val))
+    setTraitIds(traitIds)
   }, [router.query])
 
   const { data } = useQuery<GetCollectionTraitsData, GetCollectionTraitsVars>(
@@ -263,33 +266,32 @@ export default function SearchFilterSidebar() {
 
   const traitGroups = data?.collectionById?.traitGroups ?? []
 
-  const traits = data?.collectionById?.traitGroups
-    ?.map(({ traitType, traits }) =>
-      traits.map(({ value: name, id }) => ({ name, id, traitType }))
-    )
-    .flat()
+  const traits =
+    data?.collectionById?.traitGroups
+      ?.map(({ traitType, traits }) =>
+        traits.map(({ value: name, id }) => ({ name, id, traitType }))
+      )
+      .flat() ?? []
 
-  const toggleTraitSelection = (
-    id: number,
-    value?: string,
-    traitType?: string
-  ) => {
-    const updatedTraits = { ...selectedTraits }
-    selectedTraits[id]
-      ? delete updatedTraits[id]
-      : (updatedTraits[id] = { value, traitType })
-    setSelectedTraits(updatedTraits)
+  const traitsLUT = Object.fromEntries(
+    traits.map(({ id, name, traitType }) => [id, { name, traitType }])
+  )
+
+  const toggleTraitSelection = (id: number) => {
+    setTraitIds(
+      traitIds.includes(id)
+        ? traitIds.filter((traitId) => traitId !== id)
+        : [...traitIds, id]
+    )
   }
 
   const handleApplyFilters = () => {
-    const traits = Object.keys(selectedTraits)
-
     router.push({
       pathname: '/analytics/search',
       query: {
+        traits: traitIds,
         collectionId,
         collectionName,
-        traits,
         minPrice,
         maxPrice,
         tokenId,
@@ -340,17 +342,19 @@ export default function SearchFilterSidebar() {
           />
 
           <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-            {Object.keys(selectedTraits).map((id, idx) => (
-              <LabelAttribute
-                variant="removeable"
-                key={idx}
-                expanded
-                expandedText={selectedTraits[id].traitType}
-                onRemove={() => toggleTraitSelection(Number(id))}
-              >
-                {selectedTraits[id].value}
-              </LabelAttribute>
-            ))}
+            {traitIds
+              .filter((id) => id in traitsLUT)
+              .map((id, idx) => (
+                <LabelAttribute
+                  variant="removeable"
+                  key={idx}
+                  expanded
+                  expandedText={traitsLUT[id].traitType}
+                  onRemove={() => toggleTraitSelection(Number(id))}
+                >
+                  {traitsLUT[id].name}
+                </LabelAttribute>
+              ))}
           </Flex>
 
           <Box>
@@ -363,7 +367,7 @@ export default function SearchFilterSidebar() {
             >
               {traitGroups.map(({ traitType, traits }, idx) => (
                 <TraitCategoryList
-                  {...{ traitType, traits, selectedTraits }}
+                  {...{ traitType, traits, traitIds }}
                   onToggleSelection={toggleTraitSelection}
                   key={idx}
                 />
