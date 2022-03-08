@@ -87,7 +87,7 @@ export const Nav = () => {
     if (!router.query) return
 
     const collectionName = router.query.collectionName as string
-    setNavSearchTerm(collectionName)
+    setNavSearchTerm(collectionName ?? '')
   }, [router.query])
 
   useEffect(() => {
@@ -102,7 +102,7 @@ export const Nav = () => {
   }
 
   const isAddress =
-    navSearchTerm.substring(0, 2) === '0x' && navSearchTerm.length === 42
+    navSearchTerm?.substring(0, 2) === '0x' && navSearchTerm?.length === 42
 
   const handleConnect = (provider: ConnectorName) => {
     if (
