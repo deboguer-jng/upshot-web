@@ -31,16 +31,17 @@ import { ExplorePanelSkeleton } from './NFTs'
 
 export default function TopCollectors({ searchTerm }: { searchTerm: string }) {
   const router = useRouter()
-  const breakpointIndex = useBreakpointIndex()
-  const isMobile = breakpointIndex <= 1
   const [page, setPage] = useState(0)
+  const [selectedExtraCollections, setSelectedExtraCollections] = useState({})
+  const [selectedExtraCollectionId, setSelectedExtraCollectionId] = useState<
+    number | undefined
+  >()
+  const [selectedCollectorId, setSelectedCollectorId] = useState<
+    number | undefined
+  >()
 
   const handlePageChange = ({ selected }: { selected: number }) => {
     setPage(selected)
-  }
-
-  const handleClickNFT = (id: string) => {
-    router.push('/analytics/nft/' + id)
   }
 
   const { loading, error, data } = useQuery<
@@ -76,66 +77,49 @@ export default function TopCollectors({ searchTerm }: { searchTerm: string }) {
       </CollectorAccordionHead>
       <CollectorAccordion>
         {data.getOwnersByWhaleness['owners'].map(
-          ({ username, addresses, ownedAssets }, idx) => (
+          (
+            {
+              username,
+              addresses,
+              ownedAssets,
+              avgHoldTime,
+              firstAssetPurchaseTime,
+              ownedAssets: { count, assets },
+              extraCollections: { collectionAssetCounts },
+            }, idx) => (
             <CollectorAccordionRow
               address={addresses?.[0].address}
               key={idx}
               onClick={() => handleShowCollector(addresses?.[0].address)}
               defaultOpen={idx === 0 ? true : false}
+              firstAcquisition={firstAssetPurchaseTime}
+              extraCollections={collectionAssetCounts.map(
+                ({ count, collection: { imageUrl, name, id } }) => ({
+                  id,
+                  imageUrl,
+                  name,
+                  count,
+                  pixelated: true,
+                  url: `/analytics/collection/${id}`,
+                })
+              )}
+              extraCollectionChanged={(collectionId) => {
+                setSelectedCollectorId(id)
+                setSelectedExtraCollectionId(collectionId)
+              }}
+              nftCollection={(selectedExtraCollections[id] || assets).map(
+                ({ previewImageUrl, id }) => ({
+                  id,
+                  imageUrl: previewImageUrl,
+                  url: `/analytics/nft/${id}`,
+                  pixelated: PIXELATED_CONTRACTS.includes(
+                    id.toString().split('/')[0]
+                  ),
+                  count,
+                })
+              )}
               {...{ username }}
-            >
-              <div style={{ display: 'grid' }}>
-                <Text sx={{ fontSize: 4, fontWeight: 'heading' }}>
-                  Most Notable NFTs
-                </Text>
-              </div>
-              <MiniNFTContainer onClick={(e) => e.stopPropagation()}>
-                {ownedAssets?.assets?.map(
-                  (
-                    {
-                      id,
-                      name,
-                      creatorAddress,
-                      creatorUsername,
-                      rarity,
-                      latestAppraisal,
-                      mediaUrl,
-                      tokenId,
-                      contractAddress,
-                      collection,
-                      previewImageUrl,
-                    },
-                    key
-                  ) => (
-                    <a
-                      key={key}
-                      onClick={() => handleClickNFT(id)}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      <MiniNftCard
-                        price={
-                          latestAppraisal?.estimatedPrice
-                            ? weiToEth(latestAppraisal?.estimatedPrice)
-                            : undefined
-                        }
-                        rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
-                        image={previewImageUrl ?? mediaUrl}
-                        creator={
-                          creatorUsername ||
-                          shortenAddress(creatorAddress, 2, 4)
-                        }
-                        pixelated={PIXELATED_CONTRACTS.includes(
-                          contractAddress
-                        )}
-                        type="search"
-                        name={getAssetName(name, collection?.name, tokenId)}
-                        link={`/analytics/collection/${collection?.id}`}
-                      />
-                    </a>
-                  )
-                )}
-              </MiniNFTContainer>
-            </CollectorAccordionRow>
+            />
           )
         )}
       </CollectorAccordion>

@@ -435,7 +435,10 @@ export type GetTopCollectorsData = {
     owners: {
       username: string
       addresses: { address: string; ens: string }[]
+      avgHoldTime: string
+      firstAssetPurchaseTime: string
       ownedAssets: {
+        count
         assets: {
           id: string
           name: string
@@ -454,6 +457,23 @@ export type GetTopCollectorsData = {
             name: string
           }
         }
+        extraCollections: {
+          collectionAssetCounts: {
+            count: number
+            collection: {
+              id: number
+              name: string
+              imageUrl: string
+              ownerAssetsInCollection: {
+                count: number
+                assets: {
+                  id: string
+                  previewImageUrl: string
+                }
+              }
+            }
+          }
+        }[]
       }
     }[]
   }[]
@@ -491,6 +511,23 @@ export const GET_TOP_COLLECTORS = gql`
               name
             }
             previewImageUrl
+          }
+        }
+        extraCollections(limit: 10) {
+          collectionAssetCounts {
+            count
+            collection {
+              id
+              name
+              imageUrl
+              ownerAssetsInCollection(limit: 20) {
+                count
+                assets {
+                  id
+                  previewImageUrl
+                }
+              }
+            }
           }
         }
       }
