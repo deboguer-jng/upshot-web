@@ -53,6 +53,12 @@ export default function Collectors({
   const handleShowCollector = (address: string) => {
     router.push('/analytics/user/' + address)
   }
+  let collectorVars = {
+    limit: PAGE_SIZE,
+    offset: page * PAGE_SIZE,
+    searchTerm,
+  }
+  if (id) collectorVars['id'] = id
 
   const { loading, error, data } = assetId
     ? useQuery<GetPreviousOwnersData, GetPreviousOwnersVars>(
@@ -70,14 +76,10 @@ export default function Collectors({
       )
     : useQuery<GetCollectorsData, GetCollectorsVars>(GET_COLLECTORS, {
         errorPolicy: 'all',
-        variables: {
-          id,
-          limit: PAGE_SIZE,
-          offset: page * PAGE_SIZE,
-          searchTerm,
-        },
-        skip: !id,
+        variables: { ...collectorVars },
       })
+
+      console.log(data)
 
   const { data: extraCollectionData } = useQuery<
     GetUserOwnedAssetsData,
