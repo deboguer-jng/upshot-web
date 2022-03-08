@@ -563,6 +563,7 @@ export type GetPreviousOwnersData = {
           previewImageUrl: string
         }[]
       }
+      totalAssetAppraisedValueWei: string
       extraCollections: {
         collectionAssetCounts: {
           count: number
