@@ -22,6 +22,13 @@ export type GetAssetData = {
     creatorUsername: string
     creatorAvatar: string
     warningBanner: boolean
+    listPrice?: string
+    listPriceUsd?: string
+    listMarketplace?: string
+    listUrl?: string
+    listTimestamp?: number
+    listExpiration?: number
+    listAppraisalRatio?: number
     collection?: {
       id: number
       name: string
@@ -85,6 +92,13 @@ export const GET_ASSET = gql`
       creatorUsername
       creatorAvatar
       warningBanner
+      listPrice
+      listPriceUsd
+      listMarketplace
+      listUrl
+      listTimestamp
+      listExpiration
+      listAppraisalRatio
       collection {
         id
         name
