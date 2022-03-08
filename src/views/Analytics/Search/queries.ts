@@ -14,6 +14,7 @@ export type GetAssetsSearchVars = {
   traits?: string
   minPrice?: string
   maxPrice?: string
+  traitFilterJoin?: string
 }
 
 export type GetAssetsSearchData = {
@@ -52,6 +53,7 @@ export const GET_ASSETS_SEARCH = gql`
     $minPrice: String
     $maxPrice: String
     $offset: Int
+    $traitFilterJoin: String
   ) {
     assetGlobalSearch(
       limit: $limit
@@ -63,6 +65,7 @@ export const GET_ASSETS_SEARCH = gql`
       collectionName: $collectionName
       traits: $traits
       tokenId: $tokenId
+      traitFilterJoin: $traitFilterJoin
     ) {
       count
       assets {
