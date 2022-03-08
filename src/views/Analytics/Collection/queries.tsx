@@ -95,3 +95,4 @@ export const GET_ALL_COLLECTION_SALES = gql`
     }
   }
 `
+

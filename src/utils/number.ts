@@ -90,6 +90,18 @@ export const getPriceChangeLabel = (val: number | null) => {
 }
 
 /**
+ * Get underpriced/overpriced label.
+ *
+ * @returns + prefixed percent if positive, - prefixed percent if negative.
+ */
+ export const getUnderOverPricedLabel = (val: number | null) => {
+  if (val === undefined || val === null) return '-'
+
+  const percentChange = Math.abs(val).toFixed(2) + '%'
+  return val > 0 ? percentChange + ' (underpriced)' : percentChange + ' (overpriced)'
+}
+
+/**
  * Format commas
  *
  * @param value

@@ -221,6 +221,13 @@ export type GetExploreNFTsData = {
       }
       lastAppraisalWeiPrice: string
       lastAppraisalSaleRatio: number
+      listPrice
+      listPriceUsd
+      listUrl
+      listMarketplace
+      listTimestamp
+      listExpiration
+      listAppraisalRatio
     }[]
   }
 }
@@ -257,6 +264,13 @@ export const GET_EXPLORE_NFTS = gql`
         }
         lastAppraisalWeiPrice
         lastAppraisalSaleRatio
+        listPrice
+        listPriceUsd
+        listUrl
+        listMarketplace
+        listTimestamp
+        listExpiration
+        listAppraisalRatio
       }
     }
   }
