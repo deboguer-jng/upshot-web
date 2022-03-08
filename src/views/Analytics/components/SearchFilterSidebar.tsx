@@ -257,7 +257,7 @@ export default function SearchFilterSidebar({
 
     const traitIds = [...(router.query.traits ?? [])].map((val) => Number(val))
     setTraitIds(traitIds)
-  }, [router.query])
+  }, [router.query, defaultCollectionId])
 
   const { data } = useQuery<GetCollectionTraitsData, GetCollectionTraitsVars>(
     GET_COLLECTION_TRAITS,

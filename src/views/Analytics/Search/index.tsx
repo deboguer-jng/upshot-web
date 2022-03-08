@@ -48,6 +48,7 @@ export default function SearchView() {
   const minPrice = router.query.minPrice as string
   const maxPrice = router.query.maxPrice as string
   const traitANDMatch = router.query.traitANDMatch as string
+  const traitIds = [...(router.query.traits ?? [])].map((val) => Number(val))
 
   const chunks = {
     [BREAKPOINT_INDEXES.ZERO]: 2,
@@ -76,6 +77,7 @@ export default function SearchView() {
       minPrice,
       maxPrice,
       traitFilterJoin: traitANDMatch === 'true' ? 'AND' : 'OR',
+      traitIds,
     },
     skip: !collectionId,
   })
