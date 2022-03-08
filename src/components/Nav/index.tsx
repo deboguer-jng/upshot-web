@@ -91,11 +91,7 @@ export const Nav = () => {
     }
   }, [outsideClicked])
   interface InputSuggestion {
-<<<<<<< HEAD
-    id: string | number
-=======
     id: number | string
->>>>>>> staging
     name: string
     [key: string]: any
   }
@@ -148,12 +144,7 @@ export const Nav = () => {
   }
 
   const handleSearchSuggestionChange = (item: InputSuggestion) => {
-<<<<<<< HEAD
-    setNavSearchTerm(item.name)
-
-=======
     handleToggleMenu()
->>>>>>> staging
     isAddress
       ? router.push(`/analytics/user/${encodeURIComponent(navSearchTerm)}`)
       : router.push(
