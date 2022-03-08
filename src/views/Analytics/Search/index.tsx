@@ -60,6 +60,7 @@ export default function SearchView() {
 
   const chunkSize = chunks[breakpointIndex]
   const loadArr = [...new Array(ROW_SIZE * chunkSize)]
+  const searchQueryParam = (router.query.query as string) ?? ''
 
   const { loading, error, data } = useQuery<
     GetAssetsSearchData,
@@ -111,7 +112,9 @@ export default function SearchView() {
   return (
     <>
       <Head>
-        <title>{searchTerm} | Upshot Analytics</title>
+        <title>
+          {searchQueryParam ? searchQueryParam + ' | ' : ''}Upshot Analytics
+        </title>
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:site" content="@UpshotHQ" />
         <meta name="twitter:creator" content="@UpshotHQ" />
