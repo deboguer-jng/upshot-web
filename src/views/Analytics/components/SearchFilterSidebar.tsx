@@ -141,15 +141,21 @@ function TraitCategoryItem({
   children,
   onToggleSelection,
   selected,
+  rarity,
 }: {
   children: React.ReactNode
   onToggleSelection: () => void
   selected: boolean
+  rarity?: number
 }) {
   return (
     <LabelAttribute
       onClick={onToggleSelection}
       transparent={!selected}
+      variant={rarity ? 'percentage' : 'regular'}
+      percentage={rarity ? ((100 - rarity * 100)
+        .toFixed(2)
+        .toString()) : ''}
       style={{ cursor: 'pointer', textTransform: 'capitalize' }}
     >
       {children}
@@ -164,8 +170,8 @@ function TraitCategoryList({
   onToggleSelection,
 }: {
   traitType: string
-  traits: { id: number; value: string }[]
-  onToggleSelection: (id: number, value?: string, traitType?: string) => void
+  traits: { id: number; value: string, rarity: number }[]
+  onToggleSelection: (id: number, value?: string, traitType?: string, rarity?: number) => void
   traitIds: number[]
 }) {
   const [open, setOpen] = useState(false)
@@ -202,13 +208,14 @@ function TraitCategoryList({
         />
       </Flex>
       <TraitList $isExpanded={open}>
-        {traits.map(({ id, value }, idx) => (
+        {traits.map(({ id, value, rarity }, idx) => (
           <TraitCategoryItem
             selected={traitIds.includes(id)}
             onToggleSelection={() => {
               onToggleSelection(id, value, traitType)
             }}
             key={idx}
+            rarity={rarity}
           >
             {value}
           </TraitCategoryItem>
@@ -275,12 +282,12 @@ export default function SearchFilterSidebar({
   const traits =
     data?.collectionById?.traitGroups
       ?.map(({ traitType, traits }) =>
-        traits.map(({ value: name, id }) => ({ name, id, traitType }))
+        traits.map(({ value: name, id, rarity }) => ({ name, id, traitType, rarity }))
       )
       .flat() ?? []
 
   const traitsLUT = Object.fromEntries(
-    traits.map(({ id, name, traitType }) => [id, { name, traitType }])
+    traits.map(({ id, name, traitType, rarity }) => [id, { name, traitType, rarity }])
   )
 
   const toggleTraitSelection = (id: number) => {

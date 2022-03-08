@@ -110,6 +110,7 @@ export type GetCollectionTraitsData = {
       traits: {
         id: number
         value: string
+        rarity: number
       }[]
     }[]
   }
@@ -123,6 +124,7 @@ export const GET_COLLECTION_TRAITS = gql`
         traits(limit: 1000, offset: 0) {
           id
           value
+          rarity
         }
       }
     }
