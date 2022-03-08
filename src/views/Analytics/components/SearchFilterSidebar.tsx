@@ -218,9 +218,13 @@ function TraitCategoryList({
   )
 }
 
-export default function SearchFilterSidebar() {
+export default function SearchFilterSidebar({
+  collectionId: defaultCollectionId,
+}: {
+  collectionId?: number
+}) {
   const router = useRouter()
-  const [collectionId, setCollectionId] = useState<number>()
+  const [collectionId, setCollectionId] = useState(defaultCollectionId)
   const [collectionName, setCollectionName] = useState('')
   const [tokenId, setTokenId] = useState('')
   const [minPrice, setMinPrice] = useState('')
@@ -234,7 +238,7 @@ export default function SearchFilterSidebar() {
     const collectionId = router.query.collectionId
       ? Number(router.query.collectionId)
       : undefined
-    setCollectionId(collectionId)
+    if (!defaultCollectionId) setCollectionId(collectionId)
 
     const collectionName = router.query.collectionName as string
     setCollectionName(collectionName)
