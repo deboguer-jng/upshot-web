@@ -42,7 +42,7 @@ export const listedNftColumns = {
   LAST_APPRAISAL_PRICE: 'Last Appraisal',
   LIST_PRICE: 'List Price',
   LIST_TIMESTAMP: 'Listed',
-  LIST_APPRAISAL_RATIO: 'List Price/Appraisal',
+  LIST_APPRAISAL_RATIO: '% Difference',
 }
 
 function ListedNFTTableHead({
@@ -284,7 +284,10 @@ export default function ExploreListedNFTs({
                     <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
                       {listedNftColumns.LAST_APPRAISAL_PRICE}
                     </Text>
-                    <Text>
+                    <Text                       
+                        sx={{
+                        color: 'blue',
+                      }}>
                         {lastAppraisalWeiPrice
                             ? weiToEth(lastAppraisalWeiPrice)
                             : '-'}
@@ -348,7 +351,7 @@ export default function ExploreListedNFTs({
                 </Grid>
               ) : (
                 <>
-                  <TableCell sx={{ maxWidth: 100 }}>
+                  <TableCell sx={{ maxWidth: 100, color: 'blue' }}>
                   {lastAppraisalWeiPrice
                       ? weiToEth(lastAppraisalWeiPrice)
                       : '-'}
