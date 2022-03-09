@@ -21,6 +21,7 @@ import ExplorePanel from 'views/Analytics/components/ExplorePanel'
 import TopSellingNFTs from 'views/Analytics/components/TopSellingNFTs'
 
 import Breadcrumbs from '../components/Breadcrumbs'
+import { DescriptionWrapper } from '../components/Styled'
 import { GET_COLLECTION, GetCollectionData, GetCollectionVars } from './queries'
 
 interface CollectionStatProps {
@@ -68,8 +69,11 @@ function CollectionStat({
   )
 }
 
-function Layout({ children, title }: {
-  children: React.ReactNode,
+function Layout({
+  children,
+  title,
+}: {
+  children: React.ReactNode
   title?: string
 }) {
   const storage = globalThis?.sessionStorage
@@ -249,7 +253,9 @@ export default function CollectionView() {
   return (
     <Layout title={name}>
       <Grid columns={['1fr', '1fr', '1fr 1fr']} sx={{ gap: '40px' }}>
-        <Flex sx={{ flexDirection: 'column', gap: '16px' }}>
+        <Flex
+          sx={{ flexDirection: 'column', gap: '16px', height: 'fit-content' }}
+        >
           <Flex sx={{ gap: 6, height: 100, alignItems: 'center' }}>
             <Box
               sx={{
@@ -392,35 +398,25 @@ export default function CollectionView() {
             /> */}
           </Grid>
         </Flex>
-        <Flex sx={{ flexDirection: 'column', paddingTop: isMobile ? 0 : 116 }}>
+        <Flex
+          sx={{
+            flexDirection: 'column',
+            gap: '16px',
+            paddingTop: isMobile ? 0 : 116,
+          }}
+        >
           {description && (
             <Text variant="large" sx={{ textTransform: 'uppercase' }}>
               About
             </Text>
           )}
-          <Text
-            color="grey-300"
-            onClick={() => {
-              setDescriptionOpen(!descriptionOpen)
-            }}
-            sx={{
-              lineHeight: 1.4,
-              cursor: 'pointer',
-              textOverflow: 'ellipsis',
-              overflow: 'hidden',
-              height: descriptionOpen ? 'auto' : '150px',
-              WebkitLineClamp: !descriptionOpen ? 6 : 'none',
-              display: '-webkit-box',
-              WebkitBoxOrient: 'vertical',
-              '& a': { color: 'white' },
-            }}
-          >
+          <DescriptionWrapper color="grey-300">
             {(
               <ReactMarkdown allowedElements={['a', 'p']}>
                 {description}
               </ReactMarkdown>
             ) ?? 'No information.'}
-          </Text>
+          </DescriptionWrapper>
         </Flex>
       </Grid>
       <Text
