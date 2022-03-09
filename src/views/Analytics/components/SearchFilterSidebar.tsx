@@ -22,7 +22,7 @@ import {
   GetCollectionTraitsVars,
 } from '../Collection/queries'
 
-function TokenIdInput({ defaultValue, onBlur, onKeyPress }) {
+function TokenIdInput({ defaultValue, onBlur, onSubmit }) {
   return (
     <Flex sx={{ flexDirection: 'column', gap: 2, grow: 1 }}>
       <Text color="grey-500" sx={{ fontSize: 4, fontWeight: 'bold' }}>
@@ -31,13 +31,22 @@ function TokenIdInput({ defaultValue, onBlur, onKeyPress }) {
       <InputRoundedSearch
         fullWidth
         placeholder="Token ID"
-        {...{ defaultValue, onBlur, onKeyPress }}
+        onKeyPress={(e) => {
+          if (e.key === 'Enter') onSubmit?.(e.currentTarget.value)
+        }}
+        {...{ defaultValue, onBlur }}
       />
     </Flex>
   )
 }
 
-function PriceInput({ minPrice, maxPrice, onChangeMin, onChangeMax }) {
+function PriceInput({
+  minPrice,
+  maxPrice,
+  onChangeMin,
+  onChangeMax,
+  onSubmit,
+}) {
   const [minPriceEth, setMinPriceEth] = useState<string>()
   const [maxPriceEth, setMaxPriceEth] = useState<string>()
 
@@ -84,12 +93,31 @@ function PriceInput({ minPrice, maxPrice, onChangeMin, onChangeMax }) {
           value={minPriceEth}
           onBlur={handleBlurMinPrice}
           onChange={(e) => setMinPriceEth(e.currentTarget.value)}
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              const minPriceWei = ethers.utils
+                .parseEther(e.currentTarget.value ?? '0')
+                .toString()
+              const maxPriceWei = ethers.utils.parseEther(maxPriceEth ?? '0')
+              onSubmit?.(minPriceWei, maxPriceWei)
+            }
+          }}
         />
         <InputRounded
           placeholder="Ξ Max"
           value={maxPriceEth}
           onBlur={handleBlurMaxPrice}
           onChange={(e) => setMaxPriceEth(e.currentTarget.value)}
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              const minPriceWei = ethers.utils.parseEther(minPriceEth ?? '0')
+              const maxPriceWei = ethers.utils
+                .parseEther(e.currentTarget.value ?? '0')
+                .toString()
+
+              onSubmit?.(minPriceWei, maxPriceWei)
+            }
+          }}
         />
       </Flex>
     </Flex>
@@ -351,16 +379,17 @@ export default function SearchFilterSidebar({
         onBlur={(e: React.KeyboardEvent<HTMLInputElement>) =>
           setTokenId(e.currentTarget.value)
         }
-        onKeyPress={(e) => {
-          if (e.key === 'Enter') {
-            handleApplyFilters({ tokenId: e.target.value })
-          }
+        onSubmit={(tokenId) => {
+          handleApplyFilters({ tokenId })
         }}
       />
 
       <PriceInput
         onChangeMin={(minPrice: string) => setMinPrice(minPrice)}
         onChangeMax={(maxPrice: string) => setMaxPrice(maxPrice)}
+        onSubmit={(minPrice, maxPrice) => {
+          handleApplyFilters({ minPrice, maxPrice })
+        }}
         {...{ minPrice, maxPrice }}
       />
 
