@@ -22,7 +22,7 @@ import {
   GetCollectionTraitsVars,
 } from '../Collection/queries'
 
-function TokenIdInput({ defaultValue, onBlur }) {
+function TokenIdInput({ defaultValue, onBlur, onKeyPress }) {
   return (
     <Flex sx={{ flexDirection: 'column', gap: 2, grow: 1 }}>
       <Text color="grey-500" sx={{ fontSize: 4, fontWeight: 'bold' }}>
@@ -31,7 +31,7 @@ function TokenIdInput({ defaultValue, onBlur }) {
       <InputRoundedSearch
         fullWidth
         placeholder="Token ID"
-        {...{ defaultValue, onBlur }}
+        {...{ defaultValue, onBlur, onKeyPress }}
       />
     </Flex>
   )
@@ -351,6 +351,11 @@ export default function SearchFilterSidebar({
         onBlur={(e: React.KeyboardEvent<HTMLInputElement>) =>
           setTokenId(e.currentTarget.value)
         }
+        onKeyPress={(e) => {
+          if (e.key === 'Enter') {
+            handleApplyFilters({ tokenId: e.target.value })
+          }
+        }}
       />
 
       <PriceInput
