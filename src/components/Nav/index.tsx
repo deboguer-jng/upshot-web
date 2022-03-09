@@ -136,15 +136,13 @@ export const Nav = () => {
   const handleNavSearch = (e: React.FormEvent) => {
     e.preventDefault()
     handleToggleMenu()
-    if (!suggestions.length) return
-    setNavSearchTerm(suggestions[0].name)
 
     isAddress
       ? router.push(`/analytics/user/${encodeURIComponent(navSearchTerm)}`)
       : router.push(
-          `/analytics/search?collectionName=${encodeURIComponent(
-            suggestions[0].name
-          )}&collectionId=${suggestions[0].id}`
+          `/analytics/search?collectionSearch=${encodeURIComponent(
+            navSearchTerm
+          )}`
         )
   }
 
