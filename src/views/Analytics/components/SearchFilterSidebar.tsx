@@ -115,11 +115,19 @@ function AttributeSearch({ suggestions, onSuggestionSelect }) {
     <InputRoundedSearch
       fullWidth
       placeholder="Press ↩ to add attributes"
-      suggestions={suggestionsFiltered}
+      suggestions={value ? suggestionsFiltered : []}
       onChange={handleChange}
       onSuggestionSelect={({ id, name, traitType }) => {
         setValue('')
         onSuggestionSelect?.(id, name, traitType)
+      }}
+      onKeyPress={(e) => {
+        if (e.key === 'Enter' && suggestionsFiltered.length > 0) {
+          setValue('')
+          const { id, name, traitType } = suggestionsFiltered[0]
+          onSuggestionSelect?.(id, name, traitType)
+          setSuggestionsFiltered(suggestions)
+        }
       }}
       {...{ value }}
     />
@@ -153,9 +161,7 @@ function TraitCategoryItem({
       onClick={onToggleSelection}
       transparent={!selected}
       variant={rarity ? 'percentage' : 'regular'}
-      percentage={rarity ? ((100 - rarity * 100)
-        .toFixed(2)
-        .toString()) : ''}
+      percentage={rarity ? (100 - rarity * 100).toFixed(2).toString() : ''}
       style={{ cursor: 'pointer', textTransform: 'capitalize' }}
     >
       {children}
@@ -170,8 +176,13 @@ function TraitCategoryList({
   onToggleSelection,
 }: {
   traitType: string
-  traits: { id: number; value: string, rarity: number }[]
-  onToggleSelection: (id: number, value?: string, traitType?: string, rarity?: number) => void
+  traits: { id: number; value: string; rarity: number }[]
+  onToggleSelection: (
+    id: number,
+    value?: string,
+    traitType?: string,
+    rarity?: number
+  ) => void
   traitIds: number[]
 }) {
   const [open, setOpen] = useState(false)
@@ -282,12 +293,20 @@ export default function SearchFilterSidebar({
   const traits =
     data?.collectionById?.traitGroups
       ?.map(({ traitType, traits }) =>
-        traits.map(({ value: name, id, rarity }) => ({ name, id, traitType, rarity }))
+        traits.map(({ value: name, id, rarity }) => ({
+          name,
+          id,
+          traitType,
+          rarity,
+        }))
       )
       .flat() ?? []
 
   const traitsLUT = Object.fromEntries(
-    traits.map(({ id, name, traitType, rarity }) => [id, { name, traitType, rarity }])
+    traits.map(({ id, name, traitType, rarity }) => [
+      id,
+      { name, traitType, rarity },
+    ])
   )
 
   const toggleTraitSelection = (id: number) => {
