@@ -22,7 +22,7 @@ import {
   GetCollectionTraitsVars,
 } from '../Collection/queries'
 
-function TokenIdInput({ defaultValue, onBlur }) {
+function TokenIdInput({ defaultValue, onBlur, onSubmit }) {
   return (
     <Flex sx={{ flexDirection: 'column', gap: 2, grow: 1 }}>
       <Text color="grey-500" sx={{ fontSize: 4, fontWeight: 'bold' }}>
@@ -31,13 +31,22 @@ function TokenIdInput({ defaultValue, onBlur }) {
       <InputRoundedSearch
         fullWidth
         placeholder="Token ID"
+        onKeyPress={(e) => {
+          if (e.key === 'Enter') onSubmit?.(e.currentTarget.value)
+        }}
         {...{ defaultValue, onBlur }}
       />
     </Flex>
   )
 }
 
-function PriceInput({ minPrice, maxPrice, onChangeMin, onChangeMax }) {
+function PriceInput({
+  minPrice,
+  maxPrice,
+  onChangeMin,
+  onChangeMax,
+  onSubmit,
+}) {
   const [minPriceEth, setMinPriceEth] = useState<string>()
   const [maxPriceEth, setMaxPriceEth] = useState<string>()
 
@@ -84,12 +93,31 @@ function PriceInput({ minPrice, maxPrice, onChangeMin, onChangeMax }) {
           value={minPriceEth}
           onBlur={handleBlurMinPrice}
           onChange={(e) => setMinPriceEth(e.currentTarget.value)}
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              const minPriceWei = ethers.utils
+                .parseEther(e.currentTarget.value ?? '0')
+                .toString()
+              const maxPriceWei = ethers.utils.parseEther(maxPriceEth ?? '0')
+              onSubmit?.(minPriceWei, maxPriceWei)
+            }
+          }}
         />
         <InputRounded
           placeholder="Ξ Max"
           value={maxPriceEth}
           onBlur={handleBlurMaxPrice}
           onChange={(e) => setMaxPriceEth(e.currentTarget.value)}
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              const minPriceWei = ethers.utils.parseEther(minPriceEth ?? '0')
+              const maxPriceWei = ethers.utils
+                .parseEther(e.currentTarget.value ?? '0')
+                .toString()
+
+              onSubmit?.(minPriceWei, maxPriceWei)
+            }
+          }}
         />
       </Flex>
     </Flex>
@@ -115,11 +143,19 @@ function AttributeSearch({ suggestions, onSuggestionSelect }) {
     <InputRoundedSearch
       fullWidth
       placeholder="Press ↩ to add attributes"
-      suggestions={suggestionsFiltered}
+      suggestions={value ? suggestionsFiltered : []}
       onChange={handleChange}
       onSuggestionSelect={({ id, name, traitType }) => {
         setValue('')
         onSuggestionSelect?.(id, name, traitType)
+      }}
+      onKeyPress={(e) => {
+        if (e.key === 'Enter' && suggestionsFiltered.length > 0) {
+          setValue('')
+          const { id, name, traitType } = suggestionsFiltered[0]
+          onSuggestionSelect?.(id, name, traitType)
+          setSuggestionsFiltered(suggestions)
+        }
       }}
       {...{ value }}
     />
@@ -153,9 +189,7 @@ function TraitCategoryItem({
       onClick={onToggleSelection}
       transparent={!selected}
       variant={rarity ? 'percentage' : 'regular'}
-      percentage={rarity ? ((100 - rarity * 100)
-        .toFixed(2)
-        .toString()) : ''}
+      percentage={rarity ? (100 - rarity * 100).toFixed(2).toString() : ''}
       style={{ cursor: 'pointer', textTransform: 'capitalize' }}
     >
       {children}
@@ -170,8 +204,13 @@ function TraitCategoryList({
   onToggleSelection,
 }: {
   traitType: string
-  traits: { id: number; value: string, rarity: number }[]
-  onToggleSelection: (id: number, value?: string, traitType?: string, rarity?: number) => void
+  traits: { id: number; value: string; rarity: number }[]
+  onToggleSelection: (
+    id: number,
+    value?: string,
+    traitType?: string,
+    rarity?: number
+  ) => void
   traitIds: number[]
 }) {
   const [open, setOpen] = useState(false)
@@ -264,7 +303,9 @@ export default function SearchFilterSidebar({
     const traitANDMatch = router.query.traitANDMatch === 'true'
     setTraitANDMatch(traitANDMatch)
 
-    const traitIds = [...(router.query.traits ?? [])].map((val) => Number(val))
+    const traitIds = [router.query?.traits ?? []]
+      .flat()
+      .map((val) => Number(val))
     setTraitIds(traitIds)
   }, [router.query, defaultCollectionId, defaultCollectionName])
 
@@ -282,23 +323,23 @@ export default function SearchFilterSidebar({
   const traits =
     data?.collectionById?.traitGroups
       ?.map(({ traitType, traits }) =>
-        traits.map(({ value: name, id, rarity }) => ({ name, id, traitType, rarity }))
+        traits.map(({ value: name, id, rarity }) => ({
+          name,
+          id,
+          traitType,
+          rarity,
+        }))
       )
       .flat() ?? []
 
   const traitsLUT = Object.fromEntries(
-    traits.map(({ id, name, traitType, rarity }) => [id, { name, traitType, rarity }])
+    traits.map(({ id, name, traitType, rarity }) => [
+      id,
+      { name, traitType, rarity },
+    ])
   )
 
-  const toggleTraitSelection = (id: number) => {
-    setTraitIds(
-      traitIds.includes(id)
-        ? traitIds.filter((traitId) => traitId !== id)
-        : [...traitIds, id]
-    )
-  }
-
-  const handleApplyFilters = () => {
+  const handleApplyFilters = (query = {}) => {
     router.push({
       pathname: '/analytics/search',
       query: {
@@ -309,8 +350,18 @@ export default function SearchFilterSidebar({
         maxPrice,
         tokenId,
         traitANDMatch,
+        ...query,
       },
     })
+  }
+
+  const toggleTraitSelection = (id: number) => {
+    const selection = traitIds.includes(id)
+      ? traitIds.filter((traitId) => traitId !== id)
+      : [...traitIds, id]
+    setTraitIds(selection)
+
+    handleApplyFilters({ traits: selection })
   }
 
   return (
@@ -328,11 +379,17 @@ export default function SearchFilterSidebar({
         onBlur={(e: React.KeyboardEvent<HTMLInputElement>) =>
           setTokenId(e.currentTarget.value)
         }
+        onSubmit={(tokenId) => {
+          handleApplyFilters({ tokenId })
+        }}
       />
 
       <PriceInput
         onChangeMin={(minPrice: string) => setMinPrice(minPrice)}
         onChangeMax={(maxPrice: string) => setMaxPrice(maxPrice)}
+        onSubmit={(minPrice, maxPrice) => {
+          handleApplyFilters({ minPrice, maxPrice })
+        }}
         {...{ minPrice, maxPrice }}
       />
 
@@ -344,7 +401,10 @@ export default function SearchFilterSidebar({
         <Flex sx={{ flexDirection: 'column', gap: 4 }}>
           <LabeledSwitch
             on={traitANDMatch}
-            onToggle={() => setTraitANDMatch(!traitANDMatch)}
+            onToggle={() => {
+              handleApplyFilters({ traitANDMatch: !traitANDMatch })
+              setTraitANDMatch(!traitANDMatch)
+            }}
             labelOff="Contains any"
             labelOn="Contains all"
           />
