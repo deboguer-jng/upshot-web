@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client'
+import { useLazyQuery, useQuery } from '@apollo/client'
 import styled from '@emotion/styled'
 import {
   Box,
@@ -13,14 +13,77 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { ethers } from 'ethers'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { parseEthString } from 'utils/number'
 
+import {
+  GET_NAV_BAR_COLLECTIONS,
+  GetNavBarCollectionsData,
+  GetNavBarCollectionsVars,
+} from '../../../graphql/queries'
 import {
   GET_COLLECTION_TRAITS,
   GetCollectionTraitsData,
   GetCollectionTraitsVars,
 } from '../Collection/queries'
+
+function CollectionNameInput() {
+  const [id, setId] = useState<number>()
+  const [name, setName] = useState('')
+  const [nameFilter, setNameFilter] = useState('')
+
+  const [getCollections, { data }] = useLazyQuery<
+    GetNavBarCollectionsData,
+    GetNavBarCollectionsVars
+  >(GET_NAV_BAR_COLLECTIONS)
+
+  const suggestions = useMemo(() => {
+    const suggestions = data?.collections?.assetSets ?? []
+
+    return suggestions.filter(({ name }) =>
+      name.toLowerCase().includes(nameFilter.toLowerCase())
+    )
+  }, [data, nameFilter])
+
+  const handleKeyUp = () => {
+    if (data?.collections?.assetSets?.length) return
+
+    getCollections({ variables: { limit: 1000 } })
+  }
+
+  const handleSelect = ({ id, name }) => {
+    setId(id)
+    setName(name)
+    setNameFilter('')
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (!suggestions.length) return
+    const { id, name } = suggestions[0]
+    setId(id)
+    setName(name)
+    setNameFilter('')
+  }
+
+  return (
+    <Flex sx={{ flexDirection: 'column', gap: 2, grow: 1 }}>
+      <Text color="grey-500" sx={{ fontSize: 4, fontWeight: 'bold' }}>
+        Collection
+      </Text>
+      <form onSubmit={handleSubmit}>
+        <InputRoundedSearch
+          fullWidth
+          placeholder="Collections"
+          onChange={(e) => setNameFilter(e.currentTarget.value)}
+          onKeyUp={handleKeyUp}
+          onSuggestionSelect={handleSelect}
+          {...{ suggestions }}
+        />
+      </form>
+    </Flex>
+  )
+}
 
 function TokenIdInput({ defaultValue, onBlur, onSubmit }) {
   return (
@@ -373,82 +436,90 @@ export default function SearchFilterSidebar({
         </Text>
       </Flex>
 
-      <TokenIdInput
-        defaultValue={tokenId}
-        key={tokenId}
-        onBlur={(e: React.KeyboardEvent<HTMLInputElement>) =>
-          setTokenId(e.currentTarget.value)
-        }
-        onSubmit={(tokenId) => {
-          handleApplyFilters({ tokenId })
-        }}
-      />
-
-      <PriceInput
-        onChangeMin={(minPrice: string) => setMinPrice(minPrice)}
-        onChangeMax={(maxPrice: string) => setMaxPrice(maxPrice)}
-        onSubmit={(minPrice, maxPrice) => {
-          handleApplyFilters({ minPrice, maxPrice })
-        }}
-        {...{ minPrice, maxPrice }}
-      />
-
-      <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-        <Text color="grey-500" sx={{ fontSize: 4, fontWeight: 'bold' }}>
-          {name} Attributes
-        </Text>
-
-        <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-          <LabeledSwitch
-            on={traitANDMatch}
-            onToggle={() => {
-              handleApplyFilters({ traitANDMatch: !traitANDMatch })
-              setTraitANDMatch(!traitANDMatch)
+      {!!collectionId ? (
+        <>
+          <TokenIdInput
+            defaultValue={tokenId}
+            key={tokenId}
+            onBlur={(e: React.KeyboardEvent<HTMLInputElement>) =>
+              setTokenId(e.currentTarget.value)
+            }
+            onSubmit={(tokenId) => {
+              handleApplyFilters({ tokenId })
             }}
-            labelOff="Contains any"
-            labelOn="Contains all"
           />
 
-          <AttributeSearch
-            suggestions={traits}
-            onSuggestionSelect={toggleTraitSelection}
+          <PriceInput
+            onChangeMin={(minPrice: string) => setMinPrice(minPrice)}
+            onChangeMax={(maxPrice: string) => setMaxPrice(maxPrice)}
+            onSubmit={(minPrice: string, maxPrice: string) => {
+              handleApplyFilters({ minPrice, maxPrice })
+            }}
+            {...{ minPrice, maxPrice }}
           />
 
           <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-            {traitIds
-              .filter((id) => id in traitsLUT)
-              .map((id, idx) => (
-                <LabelAttribute
-                  variant="removeable"
-                  key={idx}
-                  expanded
-                  expandedText={traitsLUT[id].traitType}
-                  onRemove={() => toggleTraitSelection(Number(id))}
-                >
-                  {traitsLUT[id].name}
-                </LabelAttribute>
-              ))}
-          </Flex>
+            <Text color="grey-500" sx={{ fontSize: 4, fontWeight: 'bold' }}>
+              {name} Attributes
+            </Text>
 
-          <Box>
-            <Flex
-              sx={{
-                display: 'inline-flex',
-                gap: 4,
-                flexDirection: 'column',
-              }}
-            >
-              {traitGroups.map(({ traitType, traits }, idx) => (
-                <TraitCategoryList
-                  {...{ traitType, traits, traitIds }}
-                  onToggleSelection={toggleTraitSelection}
-                  key={idx}
-                />
-              ))}
+            <Flex sx={{ flexDirection: 'column', gap: 4 }}>
+              <LabeledSwitch
+                on={traitANDMatch}
+                onToggle={() => {
+                  handleApplyFilters({ traitANDMatch: !traitANDMatch })
+                  setTraitANDMatch(!traitANDMatch)
+                }}
+                labelOff="Contains any"
+                labelOn="Contains all"
+              />
+
+              <AttributeSearch
+                suggestions={traits}
+                onSuggestionSelect={toggleTraitSelection}
+              />
+
+              <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+                {traitIds
+                  .filter((id) => id in traitsLUT)
+                  .map((id, idx) => (
+                    <LabelAttribute
+                      variant="removeable"
+                      key={idx}
+                      expanded
+                      expandedText={traitsLUT[id].traitType}
+                      onRemove={() => toggleTraitSelection(Number(id))}
+                    >
+                      {traitsLUT[id].name}
+                    </LabelAttribute>
+                  ))}
+              </Flex>
+
+              <Box>
+                <Flex
+                  sx={{
+                    display: 'inline-flex',
+                    gap: 4,
+                    flexDirection: 'column',
+                  }}
+                >
+                  {traitGroups.map(({ traitType, traits }, idx) => (
+                    <TraitCategoryList
+                      {...{ traitType, traits, traitIds }}
+                      onToggleSelection={toggleTraitSelection}
+                      key={idx}
+                    />
+                  ))}
+                </Flex>
+              </Box>
             </Flex>
-          </Box>
-        </Flex>
-      </Flex>
+          </Flex>
+        </>
+      ) : (
+        <>
+          <CollectionNameInput />
+        </>
+      )}
 
       <Flex sx={{ justifyContent: 'flex-end' }}>
         <Button capitalize onClick={handleApplyFilters}>
