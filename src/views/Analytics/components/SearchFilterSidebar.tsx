@@ -275,7 +275,9 @@ export default function SearchFilterSidebar({
     const traitANDMatch = router.query.traitANDMatch === 'true'
     setTraitANDMatch(traitANDMatch)
 
-    const traitIds = [...(router.query.traits ?? [])].map((val) => Number(val))
+    const traitIds = [router.query?.traits ?? []]
+      .flat()
+      .map((val) => Number(val))
     setTraitIds(traitIds)
   }, [router.query, defaultCollectionId, defaultCollectionName])
 
@@ -309,15 +311,7 @@ export default function SearchFilterSidebar({
     ])
   )
 
-  const toggleTraitSelection = (id: number) => {
-    setTraitIds(
-      traitIds.includes(id)
-        ? traitIds.filter((traitId) => traitId !== id)
-        : [...traitIds, id]
-    )
-  }
-
-  const handleApplyFilters = () => {
+  const handleApplyFilters = (query = {}) => {
     router.push({
       pathname: '/analytics/search',
       query: {
@@ -328,8 +322,18 @@ export default function SearchFilterSidebar({
         maxPrice,
         tokenId,
         traitANDMatch,
+        ...query,
       },
     })
+  }
+
+  const toggleTraitSelection = (id: number) => {
+    const selection = traitIds.includes(id)
+      ? traitIds.filter((traitId) => traitId !== id)
+      : [...traitIds, id]
+    setTraitIds(selection)
+
+    handleApplyFilters({ traits: selection })
   }
 
   return (
