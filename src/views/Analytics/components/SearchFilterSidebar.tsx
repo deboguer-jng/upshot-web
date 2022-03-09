@@ -401,7 +401,10 @@ export default function SearchFilterSidebar({
         <Flex sx={{ flexDirection: 'column', gap: 4 }}>
           <LabeledSwitch
             on={traitANDMatch}
-            onToggle={() => setTraitANDMatch(!traitANDMatch)}
+            onToggle={() => {
+              handleApplyFilters({ traitANDMatch: !traitANDMatch })
+              setTraitANDMatch(!traitANDMatch)
+            }}
             labelOff="Contains any"
             labelOn="Contains all"
           />
