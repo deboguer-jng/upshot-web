@@ -279,16 +279,6 @@ export default function NFTView() {
         />
       </Head>
       <Layout>
-        {warningBanner && !isFloor && !name.includes('punk') && (
-          <Text
-            backgroundColor={'primary'}
-            color="black"
-            sx={{ padding: '10px 30px', borderRadius: '10px', fontWeight: 600 }}
-          >
-            Fancy! This is a super-rare item. Our top-tier appraisals are
-            currently under active development.
-          </Text>
-        )}
         <Grid
           columns={[1, 1, 1, 2]}
           sx={{
@@ -628,7 +618,24 @@ export default function NFTView() {
                     <Flex sx={{ padding: '20px', paddingBottom: 0 }}>
                       <Text variant="h3Secondary">Pricing History</Text>
                     </Flex>
-
+                    {warningBanner &&
+                      !isFloor &&
+                      collection?.name !== 'CryptoPunks' && (
+                        <Text
+                          backgroundColor={'primary'}
+                          color="black"
+                          sx={{
+                            marginX: '20px',
+                            marginTop: '20px',
+                            padding: '10px',
+                            borderRadius: '10px',
+                            fontWeight: 600,
+                          }}
+                        >
+                          This is a valuable item. Our top-tier appraisals are
+                          under active development.
+                        </Text>
+                      )}
                     <Flex sx={{ gap: '40px', flexGrow: 1, padding: '20px' }}>
                       {appraisalHistory?.length > 0 && (
                         <Flex sx={{ flexDirection: 'column' }}>

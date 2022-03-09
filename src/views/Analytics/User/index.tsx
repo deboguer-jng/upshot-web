@@ -1048,7 +1048,7 @@ export default function UserView() {
   return (
     <>
       <Layout title={displayName}>
-        {data?.getUser?.warningBanner && (
+        {/* {data?.getUser?.warningBanner && (
           <Text
             backgroundColor={'primary'}
             color="black"
@@ -1057,7 +1057,7 @@ export default function UserView() {
             Fancy! This collection contains super-rare items. Our top-tier
             appraisals are currently under active development.
           </Text>
-        )}
+        )} */}
         <Flex sx={{ flexDirection: 'column', gap: 4 }}>
           {!!address && (
             <Header
