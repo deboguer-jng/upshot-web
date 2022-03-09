@@ -129,7 +129,7 @@ function Layout({
       </Head>
       <Nav />
       <Container
-        maxBreakpoint="lg"
+        maxBreakpoint="xxl"
         sx={{
           flexDirection: 'column',
           minHeight: '100vh',
@@ -221,7 +221,10 @@ export default function CollectionView() {
   return (
     <Layout>
       <Flex
-        sx={{ flexDirection: ['column', 'column', 'column', 'row'], gap: 4 }}
+        sx={{
+          flexDirection: ['column', 'column', 'column', 'row'],
+          gap: '58px',
+        }}
       >
         <SearchFiltersSidebar
           collectionName={data?.collectionById?.name}
