@@ -427,6 +427,16 @@ export default function SearchFilterSidebar({
     handleApplyFilters({ traits: selection })
   }
 
+  const formatTraitLabel = ({ name, traitType }) => {
+    if (
+      ['true', 'false'].includes(name.toLowerCase()) ||
+      !Number.isNaN(Number(name))
+    ) {
+      return `${traitType}: ${name}`
+    }
+    return name
+  }
+
   return (
     <Flex sx={{ minWidth: 300, flexDirection: 'column', gap: 8 }}>
       <Flex sx={{ alignItems: 'center', gap: 4 }}>
@@ -486,11 +496,9 @@ export default function SearchFilterSidebar({
                     <LabelAttribute
                       variant="removeable"
                       key={idx}
-                      expanded
-                      expandedText={traitsLUT[id].traitType}
                       onRemove={() => toggleTraitSelection(Number(id))}
                     >
-                      {traitsLUT[id].name}
+                      {formatTraitLabel(traitsLUT[id])}
                     </LabelAttribute>
                   ))}
               </Flex>
