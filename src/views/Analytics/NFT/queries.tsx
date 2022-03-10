@@ -65,7 +65,6 @@ export type GetAssetData = {
       txAt: number
       txFromAddress: string
       txToAddress: string
-      txHash: string
       txToUser: {
         addresses: {
           address: string
@@ -78,6 +77,7 @@ export type GetAssetData = {
           ens: string
         }[]
       }
+      txHash: string
     }[]
   }
 }
