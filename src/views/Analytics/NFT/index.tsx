@@ -35,7 +35,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { shortenAddress } from 'utils/address'
+import { extractEns, shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
 import { getPriceChangeColor } from 'utils/color'
 import { formatCommas, formatCurrencyUnits, weiToEth } from 'utils/number'
@@ -237,7 +237,8 @@ export default function NFTView() {
 
   const assetName = getAssetName(name, collection?.name, tokenId)
   const displayName =
-    txHistory?.[0]?.txToUser?.addresses?.[0]?.ens ?? shortenAddress(txHistory?.[0]?.txToAddress) ?? 'Unknown'
+    extractEns(txHistory?.[0]?.txToUser?.addresses, txHistory?.[0]?.txToAddress)
+      ?? shortenAddress(txHistory?.[0]?.txToAddress) ?? 'Unknown'
 
   const image = previewImageUrl ?? mediaUrl
   const optimizedSrc = imageOptimizer(image, { width: 340 }) ?? image
@@ -813,7 +814,7 @@ export default function NFTView() {
                                           }}
                                         >
                                           <Text>
-                                            {txToUser?.addresses?.[0]?.ens ?? shortenAddress(txFromAddress, 2, 4)}
+                                            {extractEns(txFromUser?.addresses, txFromAddress) ?? shortenAddress(txFromAddress, 2, 4)}
                                           </Text>
                                         </a>
                                       </Link>
@@ -841,7 +842,7 @@ export default function NFTView() {
                                           }}
                                         >
                                           <Text>
-                                            {txFromUser?.addresses?.[0]?.ens ?? shortenAddress(txFromAddress, 2, 4)}
+                                            {extractEns(txToUser?.addresses, txToAddress) ?? shortenAddress(txToAddress, 2, 4)}
                                           </Text>
                                         </a>
                                       </Link>

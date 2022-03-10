@@ -68,13 +68,15 @@ export type GetAssetData = {
       txHash: string
       txToUser: {
         addresses: {
+          address: string
           ens: string
-        }
+        }[]
       }
       txFromUser: {
         addresses: {
+          address: string
           ens: string
-        }
+        }[]
       }
     }[]
   }
@@ -143,11 +145,13 @@ export const GET_ASSET = gql`
         txHash
         txToUser {
           addresses {
+            address
             ens
           }
         }
         txFromUser {
           addresses {
+            address
             ens
           }
         }
