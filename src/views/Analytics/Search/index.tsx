@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import { Icon, IconButton, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Container } from '@upshot-tech/upshot-ui'
 import { Flex, Grid, MiniNftCard, Text } from '@upshot-tech/upshot-ui'
 import { BlurrySquareTemplate, Pagination } from '@upshot-tech/upshot-ui'
@@ -7,6 +7,7 @@ import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import Head from 'next/head'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { shortenAddress } from 'utils/address'
@@ -43,6 +44,10 @@ export default function SearchView() {
 
   const collectionId = router.query.collectionId
     ? Number(router.query.collectionId)
+    : undefined
+
+  const collectionName = router.query.collectionName
+    ? router.query.collectionName
     : undefined
 
   const tokenId = router.query.tokenId as string
@@ -179,6 +184,26 @@ export default function SearchView() {
               }}
             >
               <Flex sx={{ flexDirection: 'column' }}>
+              {collectionName && collectionId && (
+                <Flex sx={{ flexDirection: 'row', alignItems: 'center', marginBottom: '5' }}>
+                  <Text variant="h2Primary">{collectionName}</Text>
+                  <Link href={`/analytics/collection/${collectionId}`}>
+                  <a  style={{ textDecoration: 'none' }}>
+                    <IconButton
+                      sx={{
+                        marginLeft: '6px;',
+                        verticalAlign: 'middle',
+                      }}
+                    >
+                      <Icon
+                        icon="arrowStylizedRight"
+                        color='grey-500'
+                      />
+                    </IconButton>
+                  </a>
+                  </Link>
+                </Flex>
+              )}
                 <Text>Search Results</Text>
               </Flex>
 
