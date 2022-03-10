@@ -27,9 +27,11 @@ import {
   GetCollectionTraitsVars,
 } from '../Collection/queries'
 
-function CollectionNameInput() {
-  const [id, setId] = useState<number>()
-  const [name, setName] = useState('')
+function CollectionNameInput({
+  onSelect,
+}: {
+  onSelect: ({ collectionId: number, collectionName: string }) => void
+}) {
   const [nameFilter, setNameFilter] = useState('')
 
   const [getCollections, { data }] = useLazyQuery<
@@ -52,18 +54,16 @@ function CollectionNameInput() {
   }
 
   const handleSelect = ({ id, name }) => {
-    setId(id)
-    setName(name)
     setNameFilter('')
+    onSelect?.({ collectionId: id, collectionName: name })
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
     if (!suggestions.length) return
     const { id, name } = suggestions[0]
-    setId(id)
-    setName(name)
     setNameFilter('')
+    onSelect?.({ collectionId: id, collectionName: name })
   }
 
   return (
@@ -525,7 +525,7 @@ export default function SearchFilterSidebar({
         </>
       ) : (
         <>
-          <CollectionNameInput />
+          <CollectionNameInput onSelect={handleApplyFilters} />
         </>
       )}
 
