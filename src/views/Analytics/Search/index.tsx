@@ -8,11 +8,12 @@ import { Nav } from 'components/Nav'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
 import { weiToEth } from 'utils/number'
 
+import TopCollections from '../../Analytics/components/ExplorePanel/TopCollections'
 import Breadcrumbs from '../components/Breadcrumbs'
 import SearchFilterSidebar from '../components/SearchFilterSidebar'
 import {
@@ -49,6 +50,13 @@ export default function SearchView() {
   const maxPrice = router.query.maxPrice as string
   const traitANDMatch = router.query.traitANDMatch as string
   const traitIds = [router.query?.traits ?? []].flat().map((val) => Number(val))
+  const collectionSearch = router.query.collectionSearch as string
+  const [selectedColumn, setSelectedColumn] = useState<number>(0)
+  const [sortAscending, setSortAscending] = useState(false)
+
+  // Used to wait for the router to mount before showing collectors.
+  const [ready, setReady] = useState(false)
+  useEffect(() => setReady(true), [])
 
   const chunks = {
     [BREAKPOINT_INDEXES.ZERO]: 2,
@@ -88,6 +96,14 @@ export default function SearchView() {
 
   const handleClickNFT = (id: string) => {
     router.push('/analytics/nft/' + id)
+  }
+
+  const handleChangeSelection = (columnIdx: number) => {
+    if (columnIdx === selectedColumn) {
+      setSortAscending(!sortAscending)
+    }
+
+    setSelectedColumn(columnIdx)
   }
 
   const assetArr = data?.assetGlobalSearch?.assets
@@ -178,9 +194,18 @@ export default function SearchView() {
                     alignItems: isMobile ? 'center' : 'baseline',
                   }}
                 >
+                  {!collectionId && ready && (
+                    <TopCollections
+                      variant="normal"
+                      searchTerm={collectionSearch}
+                      {...{ selectedColumn, sortAscending }}
+                      onChangeSelection={handleChangeSelection}
+                    />
+                  )}
+
                   {
                     /* Chunk results into non-wrapping rows. */
-                    loading
+                    loading && collectionId
                       ? loadArr
                           .map((_, i) =>
                             i % chunkSize === 0
@@ -285,9 +310,9 @@ export default function SearchView() {
             gap: 4,
             padding: 4,
           }}
-        >
-          <Footer />
-        </Container>
+        ></Container>
+
+        <Footer />
       </Flex>
     </>
   )

@@ -87,11 +87,12 @@ export const Nav = () => {
     if (!router.query) return
 
     const collectionName = router.query.collectionName as string
-    setNavSearchTerm(collectionName ?? '')
+    const collectionSearch = router.query.collectionSearch as string
+    setNavSearchTerm(collectionSearch ?? collectionName ?? '')
   }, [router.query])
 
   useEffect(() => {
-    if (outsideClicked && !isMobile) {
+    if (outsideClicked && !isMobile && showSidebar) {
       handleToggleMenu()
     }
   }, [outsideClicked])
@@ -135,21 +136,20 @@ export const Nav = () => {
 
   const handleNavSearch = (e: React.FormEvent) => {
     e.preventDefault()
-    handleToggleMenu()
-    if (!suggestions.length) return
-    setNavSearchTerm(suggestions[0].name)
+    if (showSidebar) handleToggleMenu()
+    ;(document.activeElement as HTMLElement).blur()
 
     isAddress
       ? router.push(`/analytics/user/${encodeURIComponent(navSearchTerm)}`)
       : router.push(
-          `/analytics/search?collectionName=${encodeURIComponent(
-            suggestions[0].name
-          )}&collectionId=${suggestions[0].id}`
+          `/analytics/search?collectionSearch=${encodeURIComponent(
+            navSearchTerm
+          )}`
         )
   }
 
   const handleSearchSuggestionChange = (item: InputSuggestion) => {
-    handleToggleMenu()
+    if (showSidebar) handleToggleMenu()
     isAddress
       ? router.push(`/analytics/user/${encodeURIComponent(navSearchTerm)}`)
       : router.push(
@@ -165,7 +165,7 @@ export const Nav = () => {
 
   const handleDisconnect = () => {
     deactivate()
-    handleToggleMenu()
+    if (showSidebar) handleToggleMenu()
     dispatch(setAddress(undefined))
     dispatch(setEns({ name: undefined, avatar: undefined }))
   }
@@ -284,7 +284,7 @@ export const Nav = () => {
           onSearchSuggestionChange={handleSearchSuggestionChange}
           onSearchKeyUp={handleNavKeyUp}
           onConnectClick={() => {
-            handleToggleMenu()
+            if (showSidebar) handleToggleMenu()
             toggleModal()
           }}
           onDisconnectClick={handleDisconnect}
