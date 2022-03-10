@@ -8,11 +8,18 @@ import { Nav } from 'components/Nav'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import { shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
 import { weiToEth } from 'utils/number'
 
+import { PAGE_SIZE } from '../../../constants'
+import { collectionColumns } from '../../Analytics/components/ExplorePanel/TopCollections'
+import {
+  GET_EXPLORE_COLLECTIONS,
+  GetExploreCollectionsData,
+  GetExploreCollectionsVars,
+} from '../../Analytics/queries'
 import Breadcrumbs from '../components/Breadcrumbs'
 import SearchFilterSidebar from '../components/SearchFilterSidebar'
 import {
@@ -36,6 +43,8 @@ enum BREAKPOINT_INDEXES {
 export default function SearchView() {
   const router = useRouter()
   const [page, setPage] = useState(0)
+  const [sortAscending, setSortAscending] = useState(false)
+  const [selectedColumn, setSelectedColumn] = useState(0)
 
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
@@ -49,6 +58,7 @@ export default function SearchView() {
   const maxPrice = router.query.maxPrice as string
   const traitANDMatch = router.query.traitANDMatch as string
   const traitIds = [router.query?.traits ?? []].flat().map((val) => Number(val))
+  const collectionSearch = router.query.collectionSearch as string
 
   const chunks = {
     [BREAKPOINT_INDEXES.ZERO]: 2,
@@ -81,6 +91,23 @@ export default function SearchView() {
     },
     skip: !collectionId,
   })
+
+  const { data: dataResults } = useQuery<
+    GetExploreCollectionsData,
+    GetExploreCollectionsVars
+  >(GET_EXPLORE_COLLECTIONS, {
+    errorPolicy: 'ignore',
+    variables: {
+      orderColumn: Object.keys(collectionColumns)[selectedColumn],
+      orderDirection: sortAscending ? 'ASC' : 'DESC',
+      limit: PAGE_SIZE,
+      offset: page * PAGE_SIZE,
+      name: collectionSearch,
+    },
+    skip: !collectionSearch,
+  })
+
+  console.log(dataResults)
 
   const handlePageChange = ({ selected }: { selected: number }) => {
     setPage(selected)

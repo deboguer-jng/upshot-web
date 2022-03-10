@@ -87,7 +87,8 @@ export const Nav = () => {
     if (!router.query) return
 
     const collectionName = router.query.collectionName as string
-    setNavSearchTerm(collectionName ?? '')
+    const collectionSearch = router.query.collectionSearch as string
+    setNavSearchTerm(collectionSearch ?? collectionName ?? '')
   }, [router.query])
 
   useEffect(() => {
@@ -136,6 +137,7 @@ export const Nav = () => {
   const handleNavSearch = (e: React.FormEvent) => {
     e.preventDefault()
     handleToggleMenu()
+    ;(document.activeElement as HTMLElement).blur()
 
     isAddress
       ? router.push(`/analytics/user/${encodeURIComponent(navSearchTerm)}`)
