@@ -142,7 +142,6 @@ export const GET_ASSET = gql`
         txAt
         txFromAddress
         txToAddress
-        txHash
         txToUser {
           addresses {
             address
@@ -155,6 +154,7 @@ export const GET_ASSET = gql`
             ens
           }
         }
+        txHash
       }
     }
   }
