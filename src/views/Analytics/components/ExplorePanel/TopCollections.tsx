@@ -352,7 +352,7 @@ export default function ExploreCollections({
         )}
       </CollectionItemsWrapper>
 
-      <Flex sx={{ justifyContent: 'center', marginTop: '10px' }}>
+      <Flex sx={{ justifyContent: 'center', marginTop: '10px', width: '100%' }}>
         <Pagination
           forcePage={page}
           pageCount={Math.ceil(data.searchCollectionByMetric.count / PAGE_SIZE)}
