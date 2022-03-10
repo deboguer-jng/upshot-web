@@ -204,10 +204,12 @@ const CollectionItemsWrapper = ({
  */
 export default function ExploreCollections({
   searchTerm = '',
+  variant = 'black',
   selectedColumn,
   sortAscending,
   onChangeSelection,
 }: {
+  variant?: 'black' | 'dark' | 'normal'
   searchTerm?: string
   selectedColumn: number
   sortAscending: boolean
@@ -265,7 +267,6 @@ export default function ExploreCollections({
         {data.searchCollectionByMetric.assetSets.map(
           ({ id, name, imageUrl, latestStats }, idx) => (
             <CollectionRow
-              variant="black"
               title={name}
               imageSrc={imageUrl!}
               key={idx}
@@ -274,6 +275,7 @@ export default function ExploreCollections({
               volume={
                 isMobile ? weiToEth(latestStats?.pastWeekWeiVolume, 0) : null
               }
+              {...{ variant }}
             >
               {isMobile ? (
                 <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>

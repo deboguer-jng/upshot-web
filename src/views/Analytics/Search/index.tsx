@@ -13,13 +13,7 @@ import { shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
 import { weiToEth } from 'utils/number'
 
-import { PAGE_SIZE } from '../../../constants'
-import { collectionColumns } from '../../Analytics/components/ExplorePanel/TopCollections'
-import {
-  GET_EXPLORE_COLLECTIONS,
-  GetExploreCollectionsData,
-  GetExploreCollectionsVars,
-} from '../../Analytics/queries'
+import TopCollections from '../../Analytics/components/ExplorePanel/TopCollections'
 import Breadcrumbs from '../components/Breadcrumbs'
 import SearchFilterSidebar from '../components/SearchFilterSidebar'
 import {
@@ -43,8 +37,6 @@ enum BREAKPOINT_INDEXES {
 export default function SearchView() {
   const router = useRouter()
   const [page, setPage] = useState(0)
-  const [sortAscending, setSortAscending] = useState(false)
-  const [selectedColumn, setSelectedColumn] = useState(0)
 
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
@@ -91,23 +83,6 @@ export default function SearchView() {
     },
     skip: !collectionId,
   })
-
-  const { data: dataResults } = useQuery<
-    GetExploreCollectionsData,
-    GetExploreCollectionsVars
-  >(GET_EXPLORE_COLLECTIONS, {
-    errorPolicy: 'ignore',
-    variables: {
-      orderColumn: Object.keys(collectionColumns)[selectedColumn],
-      orderDirection: sortAscending ? 'ASC' : 'DESC',
-      limit: PAGE_SIZE,
-      offset: page * PAGE_SIZE,
-      name: collectionSearch,
-    },
-    skip: !collectionSearch,
-  })
-
-  console.log(dataResults)
 
   const handlePageChange = ({ selected }: { selected: number }) => {
     setPage(selected)
@@ -205,6 +180,14 @@ export default function SearchView() {
                     alignItems: isMobile ? 'center' : 'baseline',
                   }}
                 >
+                  <TopCollections
+                    variant="normal"
+                    selectedColumn={0}
+                    searchTerm="crypto"
+                    sortAscending={false}
+                    onChangeSelection={() => {}}
+                  />
+
                   {
                     /* Chunk results into non-wrapping rows. */
                     loading
