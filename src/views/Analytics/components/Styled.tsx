@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { Box } from '@upshot-tech/upshot-ui'
+import { Box, Text } from '@upshot-tech/upshot-ui'
 
 export const MiniNFTContainer = styled(Box)`
   display: flex;
@@ -27,5 +27,21 @@ export const MiniNFTContainer = styled(Box)`
     display: block;
     content: '';
     min-width: 86px;
+  }
+`
+
+export const DescriptionWrapper = styled(Text)`
+  line-height: 1.4;
+  overflow: auto;
+  height: 148px;
+  flex-grow: 1;
+  ${({ theme }) => theme.scroll.thin};
+
+  & a {
+    color: white;
+  }
+
+  & p {
+    margin-top: 0;
   }
 `

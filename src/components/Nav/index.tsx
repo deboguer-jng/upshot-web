@@ -92,7 +92,7 @@ export const Nav = () => {
   }, [router.query])
 
   useEffect(() => {
-    if (outsideClicked && !isMobile) {
+    if (outsideClicked && !isMobile && showSidebar) {
       handleToggleMenu()
     }
   }, [outsideClicked])
@@ -136,7 +136,7 @@ export const Nav = () => {
 
   const handleNavSearch = (e: React.FormEvent) => {
     e.preventDefault()
-    handleToggleMenu()
+    if (showSidebar) handleToggleMenu()
     ;(document.activeElement as HTMLElement).blur()
 
     isAddress
@@ -149,7 +149,7 @@ export const Nav = () => {
   }
 
   const handleSearchSuggestionChange = (item: InputSuggestion) => {
-    handleToggleMenu()
+    if (showSidebar) handleToggleMenu()
     isAddress
       ? router.push(`/analytics/user/${encodeURIComponent(navSearchTerm)}`)
       : router.push(
@@ -165,7 +165,7 @@ export const Nav = () => {
 
   const handleDisconnect = () => {
     deactivate()
-    handleToggleMenu()
+    if (showSidebar) handleToggleMenu()
     dispatch(setAddress(undefined))
     dispatch(setEns({ name: undefined, avatar: undefined }))
   }
@@ -284,7 +284,7 @@ export const Nav = () => {
           onSearchSuggestionChange={handleSearchSuggestionChange}
           onSearchKeyUp={handleNavKeyUp}
           onConnectClick={() => {
-            handleToggleMenu()
+            if (showSidebar) handleToggleMenu()
             toggleModal()
           }}
           onDisconnectClick={handleDisconnect}
