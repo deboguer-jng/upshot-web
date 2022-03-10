@@ -21,6 +21,7 @@ import TopSellingNFTs from 'views/Analytics/components/TopSellingNFTs'
 
 import Breadcrumbs from '../components/Breadcrumbs'
 import SearchFiltersSidebar from '../components/SearchFilterSidebar'
+import { DescriptionWrapper } from '../components/Styled'
 import { GET_COLLECTION, GetCollectionData, GetCollectionVars } from './queries'
 
 interface CollectionStatProps {
@@ -129,7 +130,7 @@ function Layout({
       </Head>
       <Nav />
       <Container
-        maxBreakpoint="lg"
+        maxBreakpoint="xxl"
         sx={{
           flexDirection: 'column',
           minHeight: '100vh',
@@ -219,9 +220,12 @@ export default function CollectionView() {
     data.collectionById
 
   return (
-    <Layout>
+    <Layout title={name}>
       <Flex
-        sx={{ flexDirection: ['column', 'column', 'column', 'row'], gap: 4 }}
+        sx={{
+          flexDirection: ['column', 'column', 'column', 'row'],
+          gap: '58px',
+        }}
       >
         <SearchFiltersSidebar
           collectionName={data?.collectionById?.name}
@@ -372,39 +376,31 @@ export default function CollectionView() {
                   label="Weekly Volume"
                 />
                 <CollectionStat value={size} label="NFTs in Collection" />
+                {/* <CollectionStat
+              value={numCollectors ? numCollectors.toString() : '-'}
+              label="Collectors"
+            /> */}
               </Grid>
             </Flex>
             <Flex
-              sx={{ flexDirection: 'column', paddingTop: isMobile ? 0 : 116 }}
+              sx={{
+                flexDirection: 'column',
+                gap: '16px',
+                paddingTop: isMobile ? 0 : 116,
+              }}
             >
               {description && (
                 <Text variant="large" sx={{ textTransform: 'uppercase' }}>
                   About
                 </Text>
               )}
-              <Text
-                color="grey-300"
-                onClick={() => {
-                  setDescriptionOpen(!descriptionOpen)
-                }}
-                sx={{
-                  lineHeight: 1.4,
-                  cursor: 'pointer',
-                  textOverflow: 'ellipsis',
-                  overflow: 'hidden',
-                  height: descriptionOpen ? 'auto' : '150px',
-                  WebkitLineClamp: !descriptionOpen ? 6 : 'none',
-                  display: '-webkit-box',
-                  WebkitBoxOrient: 'vertical',
-                  '& a': { color: 'white' },
-                }}
-              >
+              <DescriptionWrapper color="grey-300">
                 {(
                   <ReactMarkdown allowedElements={['a', 'p']}>
                     {description}
                   </ReactMarkdown>
                 ) ?? 'No information.'}
-              </Text>
+              </DescriptionWrapper>
             </Flex>
           </Grid>
           <Text
