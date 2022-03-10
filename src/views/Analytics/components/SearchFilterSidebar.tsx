@@ -3,10 +3,12 @@ import styled from '@emotion/styled'
 import {
   Box,
   Button,
+  Checkbox,
   Flex,
   Icon,
   InputRounded,
   InputRoundedSearch,
+  Label,
   LabelAttribute,
   LabeledSwitch,
   Text,
@@ -14,6 +16,7 @@ import {
 import { ethers } from 'ethers'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
+import { Label as LabelUI } from 'theme-ui'
 import { parseEthString } from 'utils/number'
 
 import {
@@ -106,9 +109,11 @@ function TokenIdInput({ defaultValue, onBlur, onSubmit }) {
 function PriceInput({
   minPrice,
   maxPrice,
+  listedOnly,
   onChangeMin,
   onChangeMax,
   onSubmit,
+  onToggleListed,
 }) {
   const [minPriceEth, setMinPriceEth] = useState<string>()
   const [maxPriceEth, setMaxPriceEth] = useState<string>()
@@ -146,43 +151,59 @@ function PriceInput({
   }
 
   return (
-    <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+    <Flex sx={{ flexDirection: 'column', gap: 3 }}>
       <Text color="grey-500" sx={{ fontSize: 4, fontWeight: 'bold' }}>
-        Price Range
+        Listings
       </Text>
-      <Flex sx={{ gap: 4 }}>
-        <InputRounded
-          placeholder="Ξ Min"
-          value={minPriceEth}
-          onBlur={handleBlurMinPrice}
-          onChange={(e) => setMinPriceEth(e.currentTarget.value)}
-          onKeyPress={(e) => {
-            if (e.key === 'Enter') {
-              const minPriceWei = ethers.utils
-                .parseEther(e.currentTarget.value ?? '0')
-                .toString()
-              const maxPriceWei = ethers.utils.parseEther(maxPriceEth ?? '0')
-              onSubmit?.(minPriceWei, maxPriceWei)
-            }
-          }}
+      <LabelUI sx={{ alignItems: 'center', marginBottom: 2 }}>
+        <Checkbox
+          readOnly
+          checked={listedOnly}
+          sx={{ cursor: 'pointer' }}
+          onClick={() => onToggleListed(!listedOnly)}
         />
-        <InputRounded
-          placeholder="Ξ Max"
-          value={maxPriceEth}
-          onBlur={handleBlurMaxPrice}
-          onChange={(e) => setMaxPriceEth(e.currentTarget.value)}
-          onKeyPress={(e) => {
-            if (e.key === 'Enter') {
-              const minPriceWei = ethers.utils.parseEther(minPriceEth ?? '0')
-              const maxPriceWei = ethers.utils
-                .parseEther(e.currentTarget.value ?? '0')
-                .toString()
+        <Text color="grey-500">Show only listed assets</Text>
+      </LabelUI>
+      {listedOnly && (
+        <>
+          <Text color="grey-500" sx={{ fontSize: 2, fontWeight: 'bold' }}>
+            Price Range
+          </Text>
+          <Flex sx={{ gap: 4 }}>
+            <InputRounded
+              placeholder="Ξ Min"
+              value={minPriceEth}
+              onBlur={handleBlurMinPrice}
+              onChange={(e) => setMinPriceEth(e.currentTarget.value)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  const minPriceWei = ethers.utils
+                    .parseEther(e.currentTarget.value ?? '0')
+                    .toString()
+                  const maxPriceWei = ethers.utils.parseEther(maxPriceEth ?? '0')
+                  onSubmit?.(minPriceWei, maxPriceWei)
+                }
+              }}
+            />
+            <InputRounded
+              placeholder="Ξ Max"
+              value={maxPriceEth}
+              onBlur={handleBlurMaxPrice}
+              onChange={(e) => setMaxPriceEth(e.currentTarget.value)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  const minPriceWei = ethers.utils.parseEther(minPriceEth ?? '0')
+                  const maxPriceWei = ethers.utils
+                    .parseEther(e.currentTarget.value ?? '0')
+                    .toString()
 
-              onSubmit?.(minPriceWei, maxPriceWei)
-            }
-          }}
-        />
-      </Flex>
+                  onSubmit?.(minPriceWei, maxPriceWei)
+                }
+              }}
+            />
+          </Flex>
+        </>
+      )}
     </Flex>
   )
 }
@@ -342,6 +363,7 @@ export default function SearchFilterSidebar({
   const [maxPrice, setMaxPrice] = useState('')
   const [traitANDMatch, setTraitANDMatch] = useState(false)
   const [traitIds, setTraitIds] = useState<number[]>([])
+  const [listedOnly, setListedOnly] = useState(false)
 
   useEffect(() => {
     if (!router.query) return
@@ -365,6 +387,9 @@ export default function SearchFilterSidebar({
 
     const traitANDMatch = router.query.traitANDMatch === 'true'
     setTraitANDMatch(traitANDMatch)
+
+    const listedOnly = router.query.listedOnly === 'true'
+    setListedOnly(listedOnly)
 
     const traitIds = [router.query?.traits ?? []]
       .flat()
@@ -413,6 +438,7 @@ export default function SearchFilterSidebar({
         maxPrice,
         tokenId,
         traitANDMatch,
+        listedOnly,
         ...query,
       },
     })
@@ -460,12 +486,16 @@ export default function SearchFilterSidebar({
           />
 
           <PriceInput
+            onToggleListed={() => {
+              handleApplyFilters({ listedOnly: !listedOnly })
+              setListedOnly(!listedOnly)
+            }}
             onChangeMin={(minPrice: string) => setMinPrice(minPrice)}
             onChangeMax={(maxPrice: string) => setMaxPrice(maxPrice)}
             onSubmit={(minPrice: string, maxPrice: string) => {
               handleApplyFilters({ minPrice, maxPrice })
             }}
-            {...{ minPrice, maxPrice }}
+            {...{ listedOnly, minPrice, maxPrice }}
           />
 
           <Flex sx={{ flexDirection: 'column', gap: 2 }}>

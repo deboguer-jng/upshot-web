@@ -54,6 +54,7 @@ export default function SearchView() {
   const minPrice = router.query.minPrice as string
   const maxPrice = router.query.maxPrice as string
   const traitANDMatch = router.query.traitANDMatch as string
+  const listedOnly = router.query.listedOnly as string
   const traitIds = [router.query?.traits ?? []].flat().map((val) => Number(val))
   const collectionSearch = router.query.collectionSearch as string
   const [selectedColumn, setSelectedColumn] = useState<number>(0)
@@ -91,6 +92,7 @@ export default function SearchView() {
       maxPrice,
       traitFilterJoin: traitANDMatch === 'true' ? 'AND' : 'OR',
       traitIds: traitIds.length ? traitIds : undefined,
+      listed: listedOnly === 'true' ? true : false,
     },
     skip: !collectionId,
   })
@@ -204,7 +206,7 @@ export default function SearchView() {
                   </Link>
                 </Flex>
               )}
-                <Text>Search Results</Text>
+                {data?.assetGlobalSearch?.count && (<Text>{data?.assetGlobalSearch?.count} results found</Text>)}
               </Flex>
 
               {error ? (
