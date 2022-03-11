@@ -12,6 +12,7 @@ import {
   LabelAttribute,
   LabeledSwitch,
   Text,
+  useBreakpointIndex,
 } from '@upshot-tech/upshot-ui'
 import { ethers } from 'ethers'
 import { useRouter } from 'next/router'
@@ -364,6 +365,8 @@ export default function SearchFilterSidebar({
   const [traitANDMatch, setTraitANDMatch] = useState(false)
   const [traitIds, setTraitIds] = useState<number[]>([])
   const [listedOnly, setListedOnly] = useState(false)
+  const breakpointIndex = useBreakpointIndex()
+  const isMobile = breakpointIndex <= 1
 
   useEffect(() => {
     if (!router.query) return
@@ -465,12 +468,16 @@ export default function SearchFilterSidebar({
 
   return (
     <Flex sx={{ minWidth: 300, flexDirection: 'column', gap: 8 }}>
-      <Flex sx={{ alignItems: 'center', gap: 4 }}>
-        <Icon icon="filter" size={24} color="white" />
-        <Text color="white" sx={{ fontSize: 4, fontWeight: 'bold' }}>
-          Search Filters
-        </Text>
-      </Flex>
+      {
+        !isMobile && (
+          <Flex sx={{ alignItems: 'center', gap: 4 }}>
+            <Icon icon="filter" size={24} color="white" />
+            <Text color="white" sx={{ fontSize: 4, fontWeight: 'bold' }}>
+              Search Filters
+            </Text>
+          </Flex>
+        )
+      }  
 
       {!!collectionId ? (
         <>
