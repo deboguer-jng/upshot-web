@@ -106,10 +106,10 @@ export type GetTraitStatsVars = {
 export type GetTraitStatsData = {
   traitStats: {
     traits: {
-      value
-      traitType
-      rarity
-      floor
+      value: string
+      traitType: string
+      rarity: number
+      floor: string
     }[]
   }
 }
