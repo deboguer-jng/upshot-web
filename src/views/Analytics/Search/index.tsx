@@ -22,6 +22,7 @@ import {
   GetAssetsSearchData,
   GetAssetsSearchVars,
 } from './queries'
+import TraitStats from './TraitStats'
 
 const ROW_SIZE = 4
 
@@ -59,6 +60,17 @@ export default function SearchView() {
   const collectionSearch = router.query.collectionSearch as string
   const [selectedColumn, setSelectedColumn] = useState<number>(0)
   const [sortAscending, setSortAscending] = useState(false)
+
+  // Trait stats
+  const [selectedTraitsColumn, setSelectedTraitsColumn] = useState<number>(0)
+  const [sortTraitsAscending, setSortTraitsAscending] = useState(false)
+  const handleChangeTraitsSelection = (columnIdx: number) => {
+    if (columnIdx === selectedTraitsColumn) {
+      setSortTraitsAscending(!sortTraitsAscending)
+    }
+
+    setSelectedTraitsColumn(columnIdx)
+  }
 
   // Used to wait for the router to mount before showing collectors.
   const [ready, setReady] = useState(false)
@@ -186,27 +198,38 @@ export default function SearchView() {
               }}
             >
               <Flex sx={{ flexDirection: 'column' }}>
-              {collectionName && collectionId && (
-                <Flex sx={{ flexDirection: 'row', alignItems: 'center', marginBottom: '5' }}>
-                  <Text variant="h2Primary">{collectionName}</Text>
-                  <Link href={`/analytics/collection/${collectionId}`}>
-                  <a  style={{ textDecoration: 'none' }}>
-                    <IconButton
-                      sx={{
-                        marginLeft: '6px;',
-                        verticalAlign: 'middle',
-                      }}
-                    >
-                      <Icon
-                        icon="arrowStylizedRight"
-                        color='grey-500'
-                      />
-                    </IconButton>
-                  </a>
-                  </Link>
-                </Flex>
-              )}
-                {data?.assetGlobalSearch?.count && (<Text>{data?.assetGlobalSearch?.count} results found</Text>)}
+                {collectionName && collectionId && (
+                  <Flex
+                    sx={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      marginBottom: '5',
+                    }}
+                  >
+                    <Text variant="h2Primary">{collectionName}</Text>
+                    <Link href={`/analytics/collection/${collectionId}`}>
+                      <a style={{ textDecoration: 'none' }}>
+                        <IconButton
+                          sx={{
+                            marginLeft: '6px;',
+                            verticalAlign: 'middle',
+                          }}
+                        >
+                          <Icon icon="arrowStylizedRight" color="grey-500" />
+                        </IconButton>
+                      </a>
+                    </Link>
+                  </Flex>
+                )}
+                <TraitStats
+                  selectedColumn={selectedTraitsColumn}
+                  sortAscending={sortTraitsAscending}
+                  onChangeSelection={handleChangeTraitsSelection}
+                  {...{ traitIds }}
+                />
+                {data?.assetGlobalSearch?.count && (
+                  <Text>{data?.assetGlobalSearch?.count} results found</Text>
+                )}
               </Flex>
 
               {error ? (
