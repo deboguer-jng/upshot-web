@@ -95,3 +95,34 @@ export const GET_ASSETS_SEARCH = gql`
     }
   }
 `
+/**
+ * Trait Statistics
+ * @see TraitStats
+ */
+export type GetTraitStatsVars = {
+  traitIds?: number[]
+}
+
+export type GetTraitStatsData = {
+  traitStats: {
+    traits: {
+      value
+      traitType
+      rarity
+      floor
+    }[]
+  }
+}
+
+export const GET_TRAIT_STATS = gql`
+  query GetTraitStats($traitIds: [Int]) {
+    traitStats(traitIds: $traitIds) {
+      traits {
+        value
+        traitType
+        rarity
+        floor
+      }
+    }
+  }
+`

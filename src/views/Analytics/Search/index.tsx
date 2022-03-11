@@ -194,7 +194,7 @@ export default function SearchView() {
               sx={{
                 flex: '1 auto auto',
                 flexDirection: 'column',
-                gap: 4,
+                gap: 6,
               }}
             >
               <Flex sx={{ flexDirection: 'column' }}>
@@ -221,15 +221,13 @@ export default function SearchView() {
                     </Link>
                   </Flex>
                 )}
+
                 <TraitStats
                   selectedColumn={selectedTraitsColumn}
                   sortAscending={sortTraitsAscending}
                   onChangeSelection={handleChangeTraitsSelection}
                   {...{ traitIds }}
                 />
-                {data?.assetGlobalSearch?.count && (
-                  <Text>{data?.assetGlobalSearch?.count} results found</Text>
-                )}
               </Flex>
 
               {error ? (
@@ -252,7 +250,9 @@ export default function SearchView() {
                       onChangeSelection={handleChangeSelection}
                     />
                   )}
-
+                  {data?.assetGlobalSearch?.count && (
+                    <Text>{data?.assetGlobalSearch?.count} results found</Text>
+                  )}
                   {
                     /* Chunk results into non-wrapping rows. */
                     loading && collectionId

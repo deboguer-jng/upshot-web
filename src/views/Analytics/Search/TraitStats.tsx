@@ -6,7 +6,7 @@ import {
   useBreakpointIndex,
 } from '@upshot-tech/upshot-ui'
 import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
-import { Pagination, useTheme } from '@upshot-tech/upshot-ui'
+import { useTheme } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Grid, Text } from '@upshot-tech/upshot-ui'
 import {
   TableBody,
@@ -14,7 +14,25 @@ import {
   TableHead,
   TableRow,
 } from '@upshot-tech/upshot-ui'
-import React, { useState } from 'react'
+import React from 'react'
+
+import { ExplorePanelSkeleton } from '../../Analytics/components/ExplorePanel/NFTs'
+import {
+  GET_TRAIT_STATS,
+  GetTraitStatsData,
+  GetTraitStatsVars,
+} from './queries'
+
+export enum ETraitStatSearchOrder {
+  TRAIT,
+  TRAIT_TYPE,
+  RARITY,
+  FLOOR,
+}
+
+export type OrderedTraitStatColumns = {
+  [key in keyof typeof ETraitStatSearchOrder]: string
+}
 
 interface TraitStatsHeadProps extends React.HTMLAttributes<HTMLElement> {
   /**
@@ -31,7 +49,12 @@ interface TraitStatsHeadProps extends React.HTMLAttributes<HTMLElement> {
   onChangeSelection?: (colIdx: number) => void
 }
 
-export const columns = ['Trait Type', 'Rarity', 'Floor']
+export const traitStatsColumns: OrderedTraitStatColumns = {
+  TRAIT: 'Trait',
+  TRAIT_TYPE: 'Trait Type',
+  RARITY: 'Rarity',
+  FLOOR: 'Floor',
+}
 
 function TraitStatsHead({
   selectedColumn,
@@ -49,40 +72,13 @@ function TraitStatsHead({
         <Box>
           <Flex sx={{ justifyContent: 'space-between', padding: 2 }}>
             <Text></Text>
-            <Text>MOBILE: A</Text>
+            <Text>{traitStatsColumns.TRAIT_TYPE}</Text>
           </Flex>
         </Box>
       ) : (
         <TableHead>
           <TableRow>
-            <TableCell
-              color="grey-500"
-              sx={{
-                cursor: 'pointer',
-                color: selectedColumn === 0 ? 'white' : null,
-                transition: 'default',
-                userSelect: 'none',
-                width: '100% !important',
-                '& svg path': {
-                  transition: 'default',
-                  '&:nth-of-type(1)': {
-                    fill:
-                      selectedColumn === 0 && sortAscending
-                        ? 'white'
-                        : theme.rawColors['grey-500'],
-                  },
-                  '&:nth-of-type(2)': {
-                    fill:
-                      !sortAscending && selectedColumn === 0
-                        ? 'white'
-                        : theme.rawColors['grey-500'],
-                  },
-                },
-              }}
-            >
-              {/* Unsortable name column */}
-            </TableCell>
-            {columns.map((col, idx) => (
+            {Object.values(traitStatsColumns).map((col, idx) => (
               <TableCell
                 key={idx}
                 color="grey-500"
@@ -130,10 +126,7 @@ function TraitStatsHead({
   )
 }
 
-const CollectionItemsWrapper = ({
-  children,
-  ...props
-}: TraitStatsHeadProps) => {
+const TraitStatsWrapper = ({ children, ...props }: TraitStatsHeadProps) => {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
 
@@ -154,9 +147,6 @@ const CollectionItemsWrapper = ({
   )
 }
 
-/**
- *Default render function
- */
 export default function TraitStats({
   traitIds,
   selectedColumn,
@@ -170,65 +160,93 @@ export default function TraitStats({
 }) {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
-  const [page, setPage] = useState(0)
 
-  const handlePageChange = ({ selected }: { selected: number }) => {
-    setPage(selected)
-  }
+  const { loading, data } = useQuery<GetTraitStatsData, GetTraitStatsVars>(
+    GET_TRAIT_STATS,
+    {
+      errorPolicy: 'ignore',
+      variables: {
+        traitIds,
+      },
+    }
+  )
+
+  /* Loading state. */
+  if (loading)
+    return (
+      <ExplorePanelSkeleton>
+        <TraitStatsHead {...{ selectedColumn, sortAscending }} />
+      </ExplorePanelSkeleton>
+    )
+
+  if (!data?.traitStats.traits.length) return null
 
   return (
     <>
-      <CollectionItemsWrapper
+      <Text variant="h3Primary">Trait Stats</Text>
+
+      <TraitStatsWrapper
         {...{ selectedColumn, sortAscending, onChangeSelection }}
       >
-        <CollectionRow
-          title="title"
-          onClick={() => {}}
-          defaultOpen={true}
-          variant="normal"
-        >
-          {isMobile ? (
-            <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>
-              <Flex
-                sx={{
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <Text sx={{ marginBottom: 1 }}>1</Text>
-                <Text>2</Text>
-                <Text>3</Text>
-              </Flex>
-              <Flex
-                sx={{
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <Text sx={{ marginBottom: 1 }}>3</Text>
-              </Flex>
-            </Grid>
-          ) : (
-            <>
-              <TableCell sx={{ maxWidth: 50 }}>x</TableCell>
-              <TableCell sx={{ maxWidth: 50 }}>y</TableCell>
-              <TableCell sx={{ maxWidth: 50 }}>z</TableCell>
-            </>
-          )}
-        </CollectionRow>
-      </CollectionItemsWrapper>
-
-      <Flex sx={{ justifyContent: 'center', marginTop: '10px', width: '100%' }}>
-        <Pagination
-          forcePage={page}
-          pageCount={0}
-          pageRangeDisplayed={0}
-          marginPagesDisplayed={0}
-          onPageChange={handlePageChange}
-        />
-      </Flex>
+        {data?.traitStats?.traits.map(
+          ({ value, traitType, rarity, floor }, idx) => (
+            <CollectionRow
+              title={value}
+              key={idx}
+              defaultOpen={idx === 0 ? true : false}
+              variant="normal"
+              subtitle={isMobile ? traitType : null}
+            >
+              {isMobile ? (
+                <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>
+                  <Flex
+                    sx={{
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text sx={{ marginBottom: 1 }}>
+                      {traitStatsColumns.TRAIT_TYPE}
+                    </Text>
+                    <Text>{traitType}</Text>
+                  </Flex>
+                  <Flex
+                    sx={{
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text sx={{ marginBottom: 1 }}>
+                      {traitStatsColumns.FLOOR}
+                    </Text>
+                    <Text>{floor}</Text>
+                  </Flex>
+                  <Flex
+                    sx={{
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text sx={{ textAlign: 'center', marginBottom: 1 }}>
+                      {traitStatsColumns.RARITY}
+                    </Text>
+                    <Text>{rarity}</Text>
+                  </Flex>
+                </Grid>
+              ) : (
+                <>
+                  <TableCell sx={{ maxWidth: 50 }}>{traitType}</TableCell>
+                  <TableCell sx={{ maxWidth: 50 }}>{rarity}</TableCell>
+                  <TableCell sx={{ maxWidth: 50 }}>{floor}</TableCell>
+                </>
+              )}
+            </CollectionRow>
+          )
+        )}
+      </TraitStatsWrapper>
     </>
   )
 }
