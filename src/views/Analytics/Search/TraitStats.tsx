@@ -23,7 +23,7 @@ import {
   GetTraitStatsVars,
 } from './queries'
 
-export enum ETraitStatSearchOrder {
+export enum ETraitStatsOrder {
   TRAIT,
   TRAIT_TYPE,
   RARITY,
@@ -31,7 +31,7 @@ export enum ETraitStatSearchOrder {
 }
 
 export type OrderedTraitStatColumns = {
-  [key in keyof typeof ETraitStatSearchOrder]: string
+  [key in keyof typeof ETraitStatsOrder]: string
 }
 
 interface TraitStatsHeadProps extends React.HTMLAttributes<HTMLElement> {
