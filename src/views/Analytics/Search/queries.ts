@@ -101,6 +101,8 @@ export const GET_ASSETS_SEARCH = gql`
  */
 export type GetTraitStatsVars = {
   traitIds?: number[]
+  orderColumn?: string
+  orderDirection?: string
 }
 
 export type GetTraitStatsData = {
@@ -115,8 +117,16 @@ export type GetTraitStatsData = {
 }
 
 export const GET_TRAIT_STATS = gql`
-  query GetTraitStats($traitIds: [Int]) {
-    traitStats(traitIds: $traitIds) {
+  query GetTraitStats(
+    $traitIds: [Int]
+    $orderColumn: ETraitStatSearchOrder
+    $orderDirection: OrderDirection
+  ) {
+    traitStats(
+      traitIds: $traitIds
+      orderColumn: $orderColumn
+      orderDirection: $orderDirection
+    ) {
       traits {
         value
         traitType

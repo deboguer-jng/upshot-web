@@ -167,6 +167,8 @@ export default function TraitStats({
       errorPolicy: 'ignore',
       variables: {
         traitIds,
+        orderColumn: Object.keys(traitStatsColumns)[selectedColumn],
+        orderDirection: sortAscending ? 'ASC' : 'DESC',
       },
     }
   )
