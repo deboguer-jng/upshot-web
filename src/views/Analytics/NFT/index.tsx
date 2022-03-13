@@ -543,7 +543,11 @@ export default function NFTView() {
                       {pageTraits.map(({ traitType, value, rarity }, idx) => (
                         <Box key={idx}>
                           <Link
-                            href={`/analytics/search?attributes=${value}&collection=${collection?.name}`}
+                            href={`/analytics/search?attributes=${value}&collectionId=${
+                              collection?.id
+                            }&collectionName=${encodeURIComponent(
+                              collection?.name ?? ''
+                            )}`}
                             key={idx}
                           >
                             <a

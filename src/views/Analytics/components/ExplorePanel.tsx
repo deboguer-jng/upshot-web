@@ -186,7 +186,12 @@ export default function ExplorePanel({
   }, [tab])
 
   return (
-    <Panel>
+    <Panel
+      sx={{
+        marginLeft: isMobile ? '-1rem' : 0,
+        marginRight: isMobile ? '-1rem' : 0,
+      }}
+    >
       <Flex sx={{ flexDirection: 'column', gap: 4, position: 'relative' }}>
         <ExplorePanelHead
           onChangeTab={(tab) => setTab(tab)}
