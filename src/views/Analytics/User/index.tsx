@@ -968,19 +968,19 @@ export default function UserView() {
   }
   // pre-calculate portfolio appraisal values
   const calculatedTotalAssetAppraisedValueWei = data?.getUser
-    ?.totalAssetAppraisedValueWei
+    ?.ownedAppraisalValue?.appraisalWei
     ? (
         parseFloat(
-          ethers.utils.formatEther(data.getUser.totalAssetAppraisedValueWei)
+          ethers.utils.formatEther(data.getUser.ownedAppraisalValue.appraisalWei)
         ) + unsupportedAggregateCollectionStatFloorEth
       ).toFixed(2)
     : '-'
 
   const calculatedTotalAssetAppraisedValueUsd = data?.getUser
-    ?.totalAssetAppraisedValueUsd
+    ?.ownedAppraisalValue?.appraisalUsd
     ? formatLargeNumber(
         Number(
-          formatCurrencyUnits(data.getUser.totalAssetAppraisedValueUsd, 6)
+          formatCurrencyUnits(data.getUser.ownedAppraisalValue.appraisalUsd, 6)
         ) + unsupportedAggregateCollectionStatFloorUsd
       )
     : '-'
@@ -1007,10 +1007,10 @@ export default function UserView() {
           display: 'block',
         }}
       >
-        {data?.getUser?.totalAssetAppraisedValueWei ? 'Ξ' : ''}
+        {data?.getUser?.ownedAppraisalValue?.appraisalWei ? 'Ξ' : ''}
         {calculatedTotalAssetAppraisedValueWei}
       </Text>
-      {!!data?.getUser?.totalAssetAppraisedValueUsd && (
+      {!!data?.getUser?.ownedAppraisalValue?.appraisalUsd && (
         <Text
           color="blue"
           sx={{
@@ -1019,7 +1019,7 @@ export default function UserView() {
             display: 'block',
           }}
         >
-          {data?.getUser?.totalAssetAppraisedValueUsd ? '~ $' : ''}
+          {data?.getUser?.ownedAppraisalValue?.appraisalUsd ? '~ $' : ''}
           {calculatedTotalAssetAppraisedValueUsd}
         </Text>
       )}
@@ -1102,7 +1102,7 @@ export default function UserView() {
                               marginRight: '2px',
                             }}
                           >
-                            {data?.getUser?.totalAssetAppraisedValueWei
+                            {data?.getUser?.ownedAppraisalValue?.appraisalWei
                               ? 'Ξ'
                               : ''}
                           </Text>

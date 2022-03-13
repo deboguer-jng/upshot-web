@@ -183,7 +183,7 @@ export default function Collectors({
                 id,
                 username,
                 addresses,
-                totalAssetAppraisedValueWei,
+                ownedAppraisalValue,
                 avgHoldTime,
                 firstAssetPurchaseTime,
                 ownedAssets: { count, assets },
@@ -199,7 +199,7 @@ export default function Collectors({
                 }}
                 firstAcquisition={firstAssetPurchaseTime}
                 collectionName={name}
-                portfolioValue={formatAppraisal(totalAssetAppraisedValueWei)}
+                portfolioValue={formatAppraisal(ownedAppraisalValue?.appraisalWei)}
                 extraCollections={collectionAssetCounts.map(
                   ({ count, collection: { imageUrl, name, id } }) => ({
                     id,

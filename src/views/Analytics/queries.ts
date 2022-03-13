@@ -437,7 +437,9 @@ export type GetCollectorsData = {
     owners: {
       id: number
       username: string
-      totalAssetAppraisedValueWei: string
+      ownedAppraisalValue: {
+        appraisalWei: string
+      }
       mostRecentBuy: {
         assetId: string
         asset: {
@@ -492,7 +494,9 @@ export const GET_COLLECTORS = gql`
     ) {
       count
       owners {
-        totalAssetAppraisedValueWei
+        ownedAppraisalValue {
+          appraisalWei
+        }
         mostRecentBuy {
           assetId
           asset {
@@ -563,7 +567,9 @@ export type GetPreviousOwnersData = {
           previewImageUrl: string
         }[]
       }
-      totalAssetAppraisedValueWei: string
+      ownedAppraisalValue: {
+        appraisalWei: string
+      }
       extraCollections: {
         collectionAssetCounts: {
           count: number
