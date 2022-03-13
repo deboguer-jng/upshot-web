@@ -34,9 +34,5 @@ export const extractEns = (
 ) => {
   if (typeof addresses === 'undefined')
     return null
-  for (let index = 0; index < address.length; index++) {
-    if (addresses[index].address === address)
-      return addresses[index].ens
-  }
-  return null
+  return addresses.find(addresses => addresses.address === address)?.ens
 }
