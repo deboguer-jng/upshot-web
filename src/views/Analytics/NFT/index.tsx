@@ -211,6 +211,9 @@ export default function NFTView() {
     tokenId,
     traits,
     lastSale,
+    lastAppraisalWeiPrice,
+    lastAppraisalUsdPrice,
+    lastAppraisalAt,
     latestAppraisal,
     txHistory,
     appraisalHistory,
@@ -335,10 +338,10 @@ export default function NFTView() {
               <Text variant="h2Primary">{assetName}</Text>
               <>
                 <Flex sx={{ alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
-                  {!!latestAppraisal && (
+                  {!!lastAppraisalWeiPrice && (
                     <Label size="md" color="blue">
                       {'Last Appraisal: Ξ' +
-                        weiToEth(latestAppraisal.ethSalePrice, 3, false)}
+                        weiToEth(lastAppraisalWeiPrice, 3, false)}
                     </Label>
                   )}
 
@@ -348,7 +351,7 @@ export default function NFTView() {
                     </Label>
                   )}
                 </Flex>
-                {!!latestAppraisal && (
+                {!!lastAppraisalWeiPrice && (
                   <a
                     href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
                     target="_blank"
@@ -668,9 +671,9 @@ export default function NFTView() {
                                     3,
                                     false
                                   )
-                                : latestAppraisal?.ethSalePrice
+                                : lastAppraisalWeiPrice
                                 ? weiToEth(
-                                    latestAppraisal.ethSalePrice,
+                                    lastAppraisalWeiPrice,
                                     3,
                                     false
                                   )
@@ -690,9 +693,9 @@ export default function NFTView() {
                               </Label>
                             )}
                           </Flex>
-                          {!!latestAppraisal?.usdSalePrice &&
+                          {!!lastAppraisalUsdPrice &&
                             !Number.isNaN(
-                              parseFloat(latestAppraisal?.usdSalePrice)
+                              parseFloat(lastAppraisalUsdPrice)
                             ) && (
                               <Label
                                 color="white"
@@ -704,7 +707,7 @@ export default function NFTView() {
                                 }}
                               >
                                 {formatCommas(
-                                  Number(latestAppraisal.usdSalePrice) / 1e6
+                                  Number(lastAppraisalUsdPrice) / 1e6
                                 )}
                               </Label>
                             )}
@@ -718,9 +721,9 @@ export default function NFTView() {
                                     .timestamp * 1000,
                                   'LLL dd yyyy hh:mm'
                                 )
-                              : latestAppraisal?.timestamp
+                              : lastAppraisalAt
                               ? format(
-                                  latestAppraisal.timestamp * 1000,
+                                  lastAppraisalAt * 1000,
                                   'LLL dd yyyy hh:mm'
                                 )
                               : '-'}
