@@ -130,7 +130,7 @@ function Layout({
       </Head>
       <Nav />
       <Container
-        maxBreakpoint="xxl"
+        maxBreakpoint="lg"
         sx={{
           flexDirection: 'column',
           minHeight: '100vh',
