@@ -71,10 +71,6 @@ function TraitStatsHead({
       {isMobile ? (
         <Box>
           <Flex sx={{ justifyContent: 'space-between', padding: 2 }}>
-            <Text></Text>
-            <Text sx={{ textTransform: 'capitalize' }}>
-              {traitStatsColumns.TYPE}
-            </Text>
           </Flex>
         </Box>
       ) : (
