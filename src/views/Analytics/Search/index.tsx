@@ -217,6 +217,9 @@ export default function SearchView() {
               }}
             >
               <Flex sx={{ flexDirection: 'column' }}>
+                {data?.assetGlobalSearch?.count && (
+                  <Text>{data?.assetGlobalSearch?.count} {data?.assetGlobalSearch?.count === 1 ? 'result' : 'results'} found</Text>
+                )}
                 {collectionName && collectionId && (
                   <Flex
                     sx={{
@@ -263,6 +266,7 @@ export default function SearchView() {
                     alignItems: isMobile ? 'center' : 'baseline',
                   }}
                 >
+                  <Text variant="h3Primary">NFTs</Text>
                   {!collectionId && ready && (
                     <TopCollections
                       variant="normal"
@@ -270,9 +274,6 @@ export default function SearchView() {
                       {...{ selectedColumn, sortAscending }}
                       onChangeSelection={handleChangeSelection}
                     />
-                  )}
-                  {data?.assetGlobalSearch?.count && (
-                    <Text>{data?.assetGlobalSearch?.count} results found</Text>
                   )}
                   {
                     /* Chunk results into non-wrapping rows. */
