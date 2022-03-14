@@ -96,3 +96,37 @@ export const GET_ALL_COLLECTION_SALES = gql`
   }
 `
 
+/**
+ * Get Collection Traits
+ */
+export type GetCollectionTraitsVars = {
+  id?: number
+}
+
+export type GetCollectionTraitsData = {
+  collectionById: {
+    traitGroups: {
+      traitType: string
+      traits: {
+        id: number
+        value: string
+        rarity: number
+      }[]
+    }[]
+  }
+}
+
+export const GET_COLLECTION_TRAITS = gql`
+  query GetCollectionById($id: Int!) {
+    collectionById(id: $id) {
+      traitGroups {
+        traitType
+        traits(limit: 1000, offset: 0) {
+          id
+          value
+          rarity
+        }
+      }
+    }
+  }
+`

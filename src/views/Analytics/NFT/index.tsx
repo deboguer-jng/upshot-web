@@ -26,7 +26,6 @@ import {
   TableRow,
 } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
-import { FormattedENS } from 'components/FormattedENS'
 import { Nav } from 'components/Nav'
 import { ART_BLOCKS_CONTRACTS, PIXELATED_CONTRACTS } from 'constants/'
 import { format } from 'date-fns'
@@ -36,7 +35,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { fetchEns, shortenAddress } from 'utils/address'
+import { extractEns, shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
 import { getPriceChangeColor } from 'utils/color'
 import { formatCommas, formatCurrencyUnits, weiToEth } from 'utils/number'
@@ -111,7 +110,6 @@ export default function NFTView() {
   const isMobile = breakpointIndex <= 1
   const router = useRouter()
   const { theme } = useTheme()
-  const [ensName, setEnsName] = useState<string>()
   const [traitPage, setTraitPage] = useState<number>(0)
   const [pageTraits, setPageTraits] = useState<any[]>([])
 
@@ -141,18 +139,6 @@ export default function NFTView() {
   useEffect(() => {
     if (!data?.assetById) return
 
-    const updateEnsName = async () => {
-      try {
-        const { name } = await fetchEns(
-          txHistory[0].txToAddress,
-          ethers.getDefaultProvider()
-        )
-        setEnsName(name)
-      } catch (err) {
-        console.error(err)
-      }
-    }
-
     const storage = globalThis?.sessionStorage
     const curPath = storage.getItem('currentPath')
     if (curPath?.indexOf('nftName=') === -1)
@@ -161,7 +147,6 @@ export default function NFTView() {
         `${curPath}?nftName=${data?.assetById.name}`
       )
 
-    updateEnsName()
     changePageTraits()
   }, [data])
 
@@ -211,6 +196,9 @@ export default function NFTView() {
     tokenId,
     traits,
     lastSale,
+    lastAppraisalWeiPrice,
+    lastAppraisalUsdPrice,
+    lastAppraisalAt,
     latestAppraisal,
     txHistory,
     appraisalHistory,
@@ -252,7 +240,8 @@ export default function NFTView() {
 
   const assetName = getAssetName(name, collection?.name, tokenId)
   const displayName =
-    ensName ?? shortenAddress(txHistory?.[0]?.txToAddress) ?? 'Unknown'
+    extractEns(txHistory?.[0]?.txToUser?.addresses, txHistory?.[0]?.txToAddress)
+      ?? shortenAddress(txHistory?.[0]?.txToAddress) ?? 'Unknown'
 
   const image = previewImageUrl ?? mediaUrl
   const optimizedSrc = imageOptimizer(image, { width: 340 }) ?? image
@@ -279,16 +268,6 @@ export default function NFTView() {
         />
       </Head>
       <Layout>
-        {warningBanner && !isFloor && !name.includes('punk') && (
-          <Text
-            backgroundColor={'primary'}
-            color="black"
-            sx={{ padding: '10px 30px', borderRadius: '10px', fontWeight: 600 }}
-          >
-            Fancy! This is a super-rare item. Our top-tier appraisals are
-            currently under active development.
-          </Text>
-        )}
         <Grid
           columns={[1, 1, 1, 2]}
           sx={{
@@ -345,10 +324,10 @@ export default function NFTView() {
               <Text variant="h2Primary">{assetName}</Text>
               <>
                 <Flex sx={{ alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
-                  {!!latestAppraisal && (
+                  {!!lastAppraisalWeiPrice && (
                     <Label size="md" color="blue">
                       {'Last Appraisal: Ξ' +
-                        weiToEth(latestAppraisal.ethSalePrice, 3, false)}
+                        weiToEth(lastAppraisalWeiPrice, 3, false)}
                     </Label>
                   )}
 
@@ -358,7 +337,7 @@ export default function NFTView() {
                     </Label>
                   )}
                 </Flex>
-                {!!latestAppraisal && (
+                {!!lastAppraisalWeiPrice && (
                   <a
                     href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
                     target="_blank"
@@ -567,7 +546,11 @@ export default function NFTView() {
                       {pageTraits.map(({ traitType, value, rarity }, idx) => (
                         <Box key={idx}>
                           <Link
-                            href={`/analytics/search?attributes=${value}&collection=${collection?.name}`}
+                            href={`/analytics/search?attributes=${value}&collectionId=${
+                              collection?.id
+                            }&collectionName=${encodeURIComponent(
+                              collection?.name ?? ''
+                            )}`}
                             key={idx}
                           >
                             <a
@@ -628,7 +611,24 @@ export default function NFTView() {
                     <Flex sx={{ padding: '20px', paddingBottom: 0 }}>
                       <Text variant="h3Secondary">Pricing History</Text>
                     </Flex>
-
+                    {warningBanner &&
+                      !isFloor &&
+                      collection?.name !== 'CryptoPunks' && (
+                        <Text
+                          backgroundColor={'primary'}
+                          color="black"
+                          sx={{
+                            marginX: '20px',
+                            marginTop: '20px',
+                            padding: '10px',
+                            borderRadius: '10px',
+                            fontWeight: 600,
+                          }}
+                        >
+                          This is a valuable item. Our top-tier appraisals are
+                          under active development.
+                        </Text>
+                      )}
                     <Flex sx={{ gap: '40px', flexGrow: 1, padding: '20px' }}>
                       {appraisalHistory?.length > 0 && (
                         <Flex sx={{ flexDirection: 'column' }}>
@@ -657,9 +657,9 @@ export default function NFTView() {
                                     3,
                                     false
                                   )
-                                : latestAppraisal?.ethSalePrice
+                                : lastAppraisalWeiPrice
                                 ? weiToEth(
-                                    latestAppraisal.ethSalePrice,
+                                    lastAppraisalWeiPrice,
                                     3,
                                     false
                                   )
@@ -679,9 +679,9 @@ export default function NFTView() {
                               </Label>
                             )}
                           </Flex>
-                          {!!latestAppraisal?.usdSalePrice &&
+                          {!!lastAppraisalUsdPrice &&
                             !Number.isNaN(
-                              parseFloat(latestAppraisal?.usdSalePrice)
+                              parseFloat(lastAppraisalUsdPrice)
                             ) && (
                               <Label
                                 color="white"
@@ -693,7 +693,7 @@ export default function NFTView() {
                                 }}
                               >
                                 {formatCommas(
-                                  Number(latestAppraisal.usdSalePrice) / 1e6
+                                  Number(lastAppraisalUsdPrice) / 1e6
                                 )}
                               </Label>
                             )}
@@ -707,9 +707,9 @@ export default function NFTView() {
                                     .timestamp * 1000,
                                   'LLL dd yyyy hh:mm'
                                 )
-                              : latestAppraisal?.timestamp
+                              : lastAppraisalAt
                               ? format(
-                                  latestAppraisal.timestamp * 1000,
+                                  lastAppraisalAt * 1000,
                                   'LLL dd yyyy hh:mm'
                                 )
                               : '-'}
@@ -786,6 +786,8 @@ export default function NFTView() {
                               txFromAddress,
                               txToAddress,
                               txHash,
+                              txToUser,
+                              txFromUser,
                               price,
                               currency: { symbol, decimals },
                             },
@@ -818,9 +820,9 @@ export default function NFTView() {
                                             },
                                           }}
                                         >
-                                          <FormattedENS
-                                            address={txFromAddress}
-                                          />
+                                          <Text>
+                                            {extractEns(txFromUser?.addresses, txFromAddress) ?? shortenAddress(txFromAddress, 2, 4)}
+                                          </Text>
                                         </a>
                                       </Link>
                                     </Flex>
@@ -846,7 +848,9 @@ export default function NFTView() {
                                             },
                                           }}
                                         >
-                                          <FormattedENS address={txToAddress} />
+                                          <Text>
+                                            {extractEns(txToUser?.addresses, txToAddress) ?? shortenAddress(txToAddress, 2, 4)}
+                                          </Text>
                                         </a>
                                       </Link>
                                     </Flex>
