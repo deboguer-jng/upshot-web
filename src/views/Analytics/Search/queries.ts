@@ -111,10 +111,11 @@ export type GetTraitStatsData = {
   collectionById: {
     traitGroups: {
       traits: {
-        value
-        traitType
-        rarity
-        floor
+        id: number
+        value: string
+        traitType: string
+        rarity: number
+        floor: string
       }[]
     }[]
   }
@@ -136,6 +137,7 @@ export const GET_TRAIT_STATS = gql`
           orderColumn: $orderColumn
           orderDirection: $orderDirection
         ) {
+          id
           value
           traitType
           rarity

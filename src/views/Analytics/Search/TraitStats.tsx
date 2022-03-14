@@ -16,7 +16,7 @@ import {
 } from '@upshot-tech/upshot-ui'
 import React from 'react'
 
-import { ExplorePanelSkeleton } from '../../Analytics/components/ExplorePanel/NFTs'
+import { weiToEth } from '../../../utils/number'
 import {
   GET_TRAIT_STATS,
   GetTraitStatsData,
@@ -72,7 +72,9 @@ function TraitStatsHead({
         <Box>
           <Flex sx={{ justifyContent: 'space-between', padding: 2 }}>
             <Text></Text>
-            <Text>{traitStatsColumns.TYPE}</Text>
+            <Text sx={{ textTransform: 'capitalize' }}>
+              {traitStatsColumns.TYPE}
+            </Text>
           </Flex>
         </Box>
       ) : (
@@ -163,13 +165,12 @@ export default function TraitStats({
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
 
-  const { loading, data } = useQuery<GetTraitStatsData, GetTraitStatsVars>(
+  const { data } = useQuery<GetTraitStatsData, GetTraitStatsVars>(
     GET_TRAIT_STATS,
     {
       errorPolicy: 'ignore',
       variables: {
         collectionId,
-        traitIds,
         limit: 1000,
         offset: 0,
         orderColumn: Object.keys(traitStatsColumns)[selectedColumn],
@@ -178,19 +179,12 @@ export default function TraitStats({
     }
   )
 
-  /* Loading state. */
-  if (loading)
-    return (
-      <ExplorePanelSkeleton>
-        <TraitStatsHead {...{ selectedColumn, sortAscending }} />
-      </ExplorePanelSkeleton>
-    )
-
   if (!data?.collectionById?.traitGroups?.length) return null
 
   const traits = data.collectionById.traitGroups
     .map(({ traits }) => traits)
     .flat()
+    .filter(({ id }) => traitIds.includes(id))
 
   return (
     <>
@@ -231,7 +225,7 @@ export default function TraitStats({
                   <Text sx={{ marginBottom: 1 }}>
                     {traitStatsColumns.FLOOR}
                   </Text>
-                  <Text>{floor}</Text>
+                  <Text>{floor ? weiToEth(floor) : '-'}</Text>
                 </Flex>
                 <Flex
                   sx={{
@@ -248,9 +242,13 @@ export default function TraitStats({
               </Grid>
             ) : (
               <>
-                <TableCell sx={{ maxWidth: 50 }}>{traitType}</TableCell>
+                <TableCell sx={{ maxWidth: 50, textTransform: 'capitalize' }}>
+                  {traitType}
+                </TableCell>
                 <TableCell sx={{ maxWidth: 50 }}>{rarity}</TableCell>
-                <TableCell sx={{ maxWidth: 50 }}>{floor}</TableCell>
+                <TableCell sx={{ maxWidth: 50, textTransform: 'capitalize' }}>
+                  {floor ? weiToEth(floor) : '-'}
+                </TableCell>
               </>
             )}
           </CollectionRow>

@@ -69,7 +69,7 @@ export default function SearchView() {
   const [sortAscending, setSortAscending] = useState(false)
 
   // Trait stats
-  const [selectedTraitsColumn, setSelectedTraitsColumn] = useState<number>(0)
+  const [selectedTraitsColumn, setSelectedTraitsColumn] = useState<number>(3)
   const [sortTraitsAscending, setSortTraitsAscending] = useState(false)
   const handleChangeTraitsSelection = (columnIdx: number) => {
     if (columnIdx === selectedTraitsColumn) {
