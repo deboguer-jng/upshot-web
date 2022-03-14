@@ -100,38 +100,47 @@ export const GET_ASSETS_SEARCH = gql`
  * @see TraitStats
  */
 export type GetTraitStatsVars = {
-  traitIds?: number[]
+  collectionId: number
   orderColumn?: string
   orderDirection?: string
+  limit?: number
+  offset?: number
 }
 
 export type GetTraitStatsData = {
-  traitStats: {
-    traits: {
-      value: string
-      traitType: string
-      rarity: number
-      floor: string
+  collectionById: {
+    traitGroups: {
+      traits: {
+        value
+        traitType
+        rarity
+        floor
+      }[]
     }[]
   }
 }
 
 export const GET_TRAIT_STATS = gql`
   query GetTraitStats(
-    $traitIds: [Int]
+    $collectionId: Int!
     $orderColumn: TraitSearchSortOption
     $orderDirection: OrderDirection
+    $limit: Int
+    $offset: Int
   ) {
-    traitStats(
-      traitIds: $traitIds
-      orderColumn: $orderColumn
-      orderDirection: $orderDirection
-    ) {
-      traits {
-        value
-        traitType
-        rarity
-        floor
+    collectionById(id: $collectionId) {
+      traitGroups {
+        traits(
+          limit: $limit
+          offset: $offset
+          orderColumn: $orderColumn
+          orderDirection: $orderDirection
+        ) {
+          value
+          traitType
+          rarity
+          floor
+        }
       }
     }
   }

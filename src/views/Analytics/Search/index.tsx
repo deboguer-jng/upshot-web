@@ -241,12 +241,14 @@ export default function SearchView() {
                   </Flex>
                 )}
 
-                <TraitStats
-                  selectedColumn={selectedTraitsColumn}
-                  sortAscending={sortTraitsAscending}
-                  onChangeSelection={handleChangeTraitsSelection}
-                  {...{ traitIds }}
-                />
+                {!!collectionId && traitIds.length > 0 && (
+                  <TraitStats
+                    selectedColumn={selectedTraitsColumn}
+                    sortAscending={sortTraitsAscending}
+                    onChangeSelection={handleChangeTraitsSelection}
+                    {...{ collectionId, traitIds }}
+                  />
+                )}
               </Flex>
 
               {error ? (

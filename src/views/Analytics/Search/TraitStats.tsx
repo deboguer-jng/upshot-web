@@ -148,11 +148,13 @@ const TraitStatsWrapper = ({ children, ...props }: TraitStatsHeadProps) => {
 }
 
 export default function TraitStats({
+  collectionId,
   traitIds,
   selectedColumn,
   sortAscending,
   onChangeSelection,
 }: {
+  collectionId: number
   traitIds: number[]
   selectedColumn: number
   sortAscending: boolean
@@ -166,7 +168,10 @@ export default function TraitStats({
     {
       errorPolicy: 'ignore',
       variables: {
+        collectionId,
         traitIds,
+        limit: 1000,
+        offset: 0,
         orderColumn: Object.keys(traitStatsColumns)[selectedColumn],
         orderDirection: sortAscending ? 'ASC' : 'DESC',
       },
@@ -181,7 +186,11 @@ export default function TraitStats({
       </ExplorePanelSkeleton>
     )
 
-  if (!data?.traitStats.traits.length) return null
+  if (!data?.collectionById?.traitGroups?.length) return null
+
+  const traits = data.collectionById.traitGroups
+    .map(({ traits }) => traits)
+    .flat()
 
   return (
     <>
@@ -190,64 +199,62 @@ export default function TraitStats({
       <TraitStatsWrapper
         {...{ selectedColumn, sortAscending, onChangeSelection }}
       >
-        {data?.traitStats?.traits.map(
-          ({ value, traitType, rarity, floor }, idx) => (
-            <CollectionRow
-              title={value}
-              key={idx}
-              defaultOpen={idx === 0 ? true : false}
-              variant="normal"
-              subtitle={isMobile ? traitType : undefined}
-            >
-              {isMobile ? (
-                <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>
-                  <Flex
-                    sx={{
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Text sx={{ marginBottom: 1 }}>
-                      {traitStatsColumns.TYPE}
-                    </Text>
-                    <Text>{traitType}</Text>
-                  </Flex>
-                  <Flex
-                    sx={{
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Text sx={{ marginBottom: 1 }}>
-                      {traitStatsColumns.FLOOR}
-                    </Text>
-                    <Text>{floor}</Text>
-                  </Flex>
-                  <Flex
-                    sx={{
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Text sx={{ textAlign: 'center', marginBottom: 1 }}>
-                      {traitStatsColumns.RARITY}
-                    </Text>
-                    <Text>{rarity}</Text>
-                  </Flex>
-                </Grid>
-              ) : (
-                <>
-                  <TableCell sx={{ maxWidth: 50 }}>{traitType}</TableCell>
-                  <TableCell sx={{ maxWidth: 50 }}>{rarity}</TableCell>
-                  <TableCell sx={{ maxWidth: 50 }}>{floor}</TableCell>
-                </>
-              )}
-            </CollectionRow>
-          )
-        )}
+        {traits.map(({ value, traitType, rarity, floor }, idx) => (
+          <CollectionRow
+            title={value}
+            key={idx}
+            defaultOpen={idx === 0 ? true : false}
+            variant="normal"
+            subtitle={isMobile ? traitType : undefined}
+          >
+            {isMobile ? (
+              <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>
+                <Flex
+                  sx={{
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Text sx={{ marginBottom: 1, textTransform: 'capitalize' }}>
+                    {traitStatsColumns.TYPE}
+                  </Text>
+                  <Text sx={{ textTransform: 'capitalize' }}>{traitType}</Text>
+                </Flex>
+                <Flex
+                  sx={{
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Text sx={{ marginBottom: 1 }}>
+                    {traitStatsColumns.FLOOR}
+                  </Text>
+                  <Text>{floor}</Text>
+                </Flex>
+                <Flex
+                  sx={{
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Text sx={{ textAlign: 'center', marginBottom: 1 }}>
+                    {traitStatsColumns.RARITY}
+                  </Text>
+                  <Text>{rarity}</Text>
+                </Flex>
+              </Grid>
+            ) : (
+              <>
+                <TableCell sx={{ maxWidth: 50 }}>{traitType}</TableCell>
+                <TableCell sx={{ maxWidth: 50 }}>{rarity}</TableCell>
+                <TableCell sx={{ maxWidth: 50 }}>{floor}</TableCell>
+              </>
+            )}
+          </CollectionRow>
+        ))}
       </TraitStatsWrapper>
     </>
   )
