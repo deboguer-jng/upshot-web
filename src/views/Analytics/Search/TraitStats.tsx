@@ -76,6 +76,7 @@ function TraitStatsHead({
       ) : (
         <TableHead>
           <TableRow>
+            <TableCell></TableCell>
             {Object.values(traitStatsColumns).map((col, idx) => (
               <TableCell
                 key={idx}
