@@ -204,10 +204,12 @@ const CollectionItemsWrapper = ({
  */
 export default function ExploreCollections({
   searchTerm = '',
+  variant = 'black',
   selectedColumn,
   sortAscending,
   onChangeSelection,
 }: {
+  variant?: 'black' | 'dark' | 'normal'
   searchTerm?: string
   selectedColumn: number
   sortAscending: boolean
@@ -265,15 +267,15 @@ export default function ExploreCollections({
         {data.searchCollectionByMetric.assetSets.map(
           ({ id, name, imageUrl, latestStats }, idx) => (
             <CollectionRow
-              variant="black"
               title={name}
               imageSrc={imageUrl!}
               key={idx}
               onClick={() => handleShowCollection(id)}
               defaultOpen={idx === 0 ? true : false}
-              volume={
+              subtitle={
                 isMobile ? weiToEth(latestStats?.pastWeekWeiVolume, 0) : null
               }
+              {...{ variant }}
             >
               {isMobile ? (
                 <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>
@@ -350,7 +352,7 @@ export default function ExploreCollections({
         )}
       </CollectionItemsWrapper>
 
-      <Flex sx={{ justifyContent: 'center', marginTop: '10px' }}>
+      <Flex sx={{ justifyContent: 'center', marginTop: '10px', width: '100%' }}>
         <Pagination
           forcePage={page}
           pageCount={Math.ceil(data.searchCollectionByMetric.count / PAGE_SIZE)}
