@@ -189,12 +189,13 @@ export default function TraitStats({
       <TraitStatsWrapper
         {...{ selectedColumn, sortAscending, onChangeSelection }}
       >
-        {traits.map(({ value, traitType, rarity, floor }, idx) => (
+        {traits.map(({ value, traitType, rarity, floor, image }, idx) => (
           <CollectionRow
             title={value}
             key={idx}
             defaultOpen={idx === 0 ? true : false}
             variant="normal"
+            imageSrc={image ?? ''}
             subtitle={isMobile ? traitType : undefined}
           >
             {isMobile ? (

@@ -116,6 +116,7 @@ export type GetTraitStatsData = {
         traitType: string
         rarity: number
         floor: string
+        image: string
       }[]
     }[]
   }
@@ -142,6 +143,7 @@ export const GET_TRAIT_STATS = gql`
           traitType
           rarity
           floor
+          image
         }
       }
     }
