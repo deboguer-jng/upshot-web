@@ -119,7 +119,7 @@ export type GetTraitStatsData = {
 export const GET_TRAIT_STATS = gql`
   query GetTraitStats(
     $traitIds: [Int]
-    $orderColumn: ETraitStatSearchOrder
+    $orderColumn: TraitSearchSortOption
     $orderDirection: OrderDirection
   ) {
     traitStats(

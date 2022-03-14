@@ -24,8 +24,8 @@ import {
 } from './queries'
 
 export enum ETraitStatsOrder {
-  TRAIT,
-  TRAIT_TYPE,
+  VALUE,
+  TYPE,
   RARITY,
   FLOOR,
 }
@@ -50,8 +50,8 @@ interface TraitStatsHeadProps extends React.HTMLAttributes<HTMLElement> {
 }
 
 export const traitStatsColumns: OrderedTraitStatColumns = {
-  TRAIT: 'Trait',
-  TRAIT_TYPE: 'Trait Type',
+  VALUE: 'Trait',
+  TYPE: 'Trait Type',
   RARITY: 'Rarity',
   FLOOR: 'Floor',
 }
@@ -72,7 +72,7 @@ function TraitStatsHead({
         <Box>
           <Flex sx={{ justifyContent: 'space-between', padding: 2 }}>
             <Text></Text>
-            <Text>{traitStatsColumns.TRAIT_TYPE}</Text>
+            <Text>{traitStatsColumns.TYPE}</Text>
           </Flex>
         </Box>
       ) : (
@@ -197,7 +197,7 @@ export default function TraitStats({
               key={idx}
               defaultOpen={idx === 0 ? true : false}
               variant="normal"
-              subtitle={isMobile ? traitType : null}
+              subtitle={isMobile ? traitType : undefined}
             >
               {isMobile ? (
                 <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>
@@ -209,7 +209,7 @@ export default function TraitStats({
                     }}
                   >
                     <Text sx={{ marginBottom: 1 }}>
-                      {traitStatsColumns.TRAIT_TYPE}
+                      {traitStatsColumns.TYPE}
                     </Text>
                     <Text>{traitType}</Text>
                   </Flex>
