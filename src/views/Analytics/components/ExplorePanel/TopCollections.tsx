@@ -272,7 +272,7 @@ export default function ExploreCollections({
               key={idx}
               onClick={() => handleShowCollection(id)}
               defaultOpen={idx === 0 ? true : false}
-              volume={
+              subtitle={
                 isMobile ? weiToEth(latestStats?.pastWeekWeiVolume, 0) : null
               }
               {...{ variant }}
