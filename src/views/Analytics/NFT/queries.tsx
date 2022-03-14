@@ -34,12 +34,11 @@ export type GetAssetData = {
       confidence: number
       timestamp: number
     }
+    lastAppraisalWeiPrice: string
+    lastAppraisalUsdPrice: string
+    lastAppraisalAt: number
     latestAppraisal?: {
-      ethSalePrice: string
-      usdSalePrice: string
-      confidence: number
       medianRelativeError: number
-      timestamp: number
     }
     firstSale?: {
       estimatedPrice: string
@@ -65,6 +64,18 @@ export type GetAssetData = {
       txAt: number
       txFromAddress: string
       txToAddress: string
+      txToUser: {
+        addresses: {
+          address: string
+          ens: string
+        }[]
+      }
+      txFromUser: {
+        addresses: {
+          address: string
+          ens: string
+        }[]
+      }
       txHash: string
     }[]
   }
@@ -97,14 +108,11 @@ export const GET_ASSET = gql`
         confidence
         timestamp
       }
+      lastAppraisalWeiPrice
+      lastAppraisalUsdPrice
+      lastAppraisalAt
       latestAppraisal {
-        ethSalePrice
-        usdSalePrice
-        confidence
-        low
-        high
         medianRelativeError
-        timestamp
       }
       firstSale {
         estimatedPrice
@@ -130,6 +138,18 @@ export const GET_ASSET = gql`
         txAt
         txFromAddress
         txToAddress
+        txToUser {
+          addresses {
+            address
+            ens
+          }
+        }
+        txFromUser {
+          addresses {
+            address
+            ens
+          }
+        }
         txHash
       }
     }

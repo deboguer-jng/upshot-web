@@ -25,7 +25,6 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { imageOptimizer, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
-import { FormattedENS } from 'components/FormattedENS'
 import { Nav } from 'components/Nav'
 import { OPENSEA_REFERRAL_LINK, PIXELATED_CONTRACTS } from 'constants/'
 import { format, formatDistance } from 'date-fns'
@@ -45,7 +44,7 @@ import {
   Table,
 } from 'react-virtualized'
 import { Label as LabelUI } from 'theme-ui'
-import { fetchEns, shortenAddress } from 'utils/address'
+import { extractEns, shortenAddress } from 'utils/address'
 import { formatCurrencyUnits, formatLargeNumber, weiToEth } from 'utils/number'
 
 import Breadcrumbs from '../components/Breadcrumbs'
@@ -158,35 +157,14 @@ function Layout({
   )
 }
 
-const updateEns = async (
-  address: string,
-  setDisplayName: (name: string) => void
-) => {
-  try {
-    const { name } = await fetchEns(address, ethers.getDefaultProvider())
-    if (!name) return
-    setDisplayName(name)
-  } catch (err) {
-    console.error(err)
-  }
-}
-
 function Header({
   address,
   displayName,
-  setDisplayName,
 }: {
   address: string
   displayName?: string
-  setDisplayName: (name: string) => void
 }) {
   const shortAddress = shortenAddress(address)
-
-  useEffect(() => {
-    if (!address) return
-
-    updateEns(address, setDisplayName)
-  }, [address])
 
   useEffect(() => {
     if (!displayName) return
@@ -278,13 +256,11 @@ export default function UserView() {
   const address = router.query.address as string
   const shortAddress = useMemo(() => shortenAddress(address), [address])
   const loadingAddressFormatted = !addressFormatted && !errorAddress
-  const [displayName, setDisplayName] = useState<string>()
 
   useEffect(() => {
     if (!address) return
 
     try {
-      setDisplayName(shortenAddress(address))
       setAddressFormatted(ethers.utils.getAddress(address))
     } catch (err) {
       console.error(err)
@@ -968,19 +944,19 @@ export default function UserView() {
   }
   // pre-calculate portfolio appraisal values
   const calculatedTotalAssetAppraisedValueWei = data?.getUser
-    ?.totalAssetAppraisedValueWei
+    ?.ownedAppraisalValue?.appraisalWei
     ? (
         parseFloat(
-          ethers.utils.formatEther(data.getUser.totalAssetAppraisedValueWei)
+          ethers.utils.formatEther(data.getUser.ownedAppraisalValue.appraisalWei)
         ) + unsupportedAggregateCollectionStatFloorEth
       ).toFixed(2)
     : '-'
 
   const calculatedTotalAssetAppraisedValueUsd = data?.getUser
-    ?.totalAssetAppraisedValueUsd
+    ?.ownedAppraisalValue?.appraisalUsd
     ? formatLargeNumber(
         Number(
-          formatCurrencyUnits(data.getUser.totalAssetAppraisedValueUsd, 6)
+          formatCurrencyUnits(data.getUser.ownedAppraisalValue.appraisalUsd, 6)
         ) + unsupportedAggregateCollectionStatFloorUsd
       )
     : '-'
@@ -1007,10 +983,10 @@ export default function UserView() {
           display: 'block',
         }}
       >
-        {data?.getUser?.totalAssetAppraisedValueWei ? 'Ξ' : ''}
+        {data?.getUser?.ownedAppraisalValue?.appraisalWei ? 'Ξ' : ''}
         {calculatedTotalAssetAppraisedValueWei}
       </Text>
-      {!!data?.getUser?.totalAssetAppraisedValueUsd && (
+      {!!data?.getUser?.ownedAppraisalValue?.appraisalUsd && (
         <Text
           color="blue"
           sx={{
@@ -1019,7 +995,7 @@ export default function UserView() {
             display: 'block',
           }}
         >
-          {data?.getUser?.totalAssetAppraisedValueUsd ? '~ $' : ''}
+          {data?.getUser?.ownedAppraisalValue?.appraisalUsd ? '~ $' : ''}
           {calculatedTotalAssetAppraisedValueUsd}
         </Text>
       )}
@@ -1047,22 +1023,22 @@ export default function UserView() {
 
   return (
     <>
-      <Layout title={displayName}>
+      <Layout title={ extractEns(data?.getUser?.addresses, address) ?? shortAddress}>
         {data?.getUser?.warningBanner && (
           <Text
             backgroundColor={'primary'}
             color="black"
             sx={{ padding: '10px 30px', borderRadius: '10px', fontWeight: 600 }}
           >
-            Fancy! This collection contains super-rare items. Our top-tier
-            appraisals are currently under active development.
+            This is a valuable item. Our top-tier appraisals are under active
+            development.
           </Text>
         )}
         <Flex sx={{ flexDirection: 'column', gap: 4 }}>
           {!!address && (
             <Header
               key={address}
-              {...{ address, displayName, setDisplayName }}
+              {...{ address, displayName: extractEns(data?.getUser?.addresses, address) ?? shortAddress }}
             />
           )}
           {/* User Description */}
@@ -1102,7 +1078,7 @@ export default function UserView() {
                               marginRight: '2px',
                             }}
                           >
-                            {data?.getUser?.totalAssetAppraisedValueWei
+                            {data?.getUser?.ownedAppraisalValue?.appraisalWei
                               ? 'Ξ'
                               : ''}
                           </Text>
@@ -1622,16 +1598,15 @@ export default function UserView() {
                                                     },
                                                   }}
                                                 >
-                                                  <FormattedENS
-                                                    address={
-                                                      rowData?.txFromAddress
-                                                    }
+                                                  <Text
                                                     sx={{
                                                       display: 'block',
                                                       overflow: 'hidden',
                                                       textOverflow: 'ellipsis',
                                                     }}
-                                                  />
+                                                  >
+                                                    {extractEns(rowData?.txFromUser?.addresses, rowData?.txFromAddress) ?? rowData?.txFromAddress}
+                                                  </Text>
                                                 </a>
                                               </Grid>
                                             )
@@ -1679,16 +1654,15 @@ export default function UserView() {
                                                     },
                                                   }}
                                                 >
-                                                  <FormattedENS
-                                                    address={
-                                                      rowData?.txToAddress
-                                                    }
+                                                  <Text
                                                     sx={{
                                                       display: 'block',
                                                       overflow: 'hidden',
                                                       textOverflow: 'ellipsis',
                                                     }}
-                                                  />
+                                                  >
+                                                    {extractEns(rowData?.txToUser?.addresses, rowData?.txToAddress) ?? rowData?.txToAddress}
+                                                  </Text>
                                                 </a>
                                               </TableCell>
                                             )

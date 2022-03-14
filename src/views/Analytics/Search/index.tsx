@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client'
 import { Icon, IconButton, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Container } from '@upshot-tech/upshot-ui'
-import { Flex, Grid, MiniNftCard, Text } from '@upshot-tech/upshot-ui'
+import { Flex, Grid, MiniNftCard, Text, Box, Accordion } from '@upshot-tech/upshot-ui'
 import { BlurrySquareTemplate, Pagination } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
@@ -188,7 +188,19 @@ export default function SearchView() {
               gap: [8, 5, 8],
             }}
           >
+          {isMobile ? (
+            <>
+              <Box>
+                <Accordion isDropdown title="Search Filters">
+                  <Box sx={{paddingTop: 4}}>  
+                    <SearchFilterSidebar />
+                  </Box>
+                </Accordion>
+              </Box>
+            </>
+          ) : (
             <SearchFilterSidebar />
+          )}
 
             <Flex
               sx={{
