@@ -235,7 +235,7 @@ export default function TraitStats({
                   <Text sx={{ textAlign: 'center', marginBottom: 1 }}>
                     {traitStatsColumns.RARITY}
                   </Text>
-                  <Text>{rarity}</Text>
+                  <Text>{rarity ? (100 - rarity * 100).toFixed(2).toString() + '%' : '-'}</Text>
                 </Flex>
               </Grid>
             ) : (
@@ -243,7 +243,7 @@ export default function TraitStats({
                 <TableCell sx={{ maxWidth: 50, textTransform: 'capitalize' }}>
                   {traitType}
                 </TableCell>
-                <TableCell sx={{ maxWidth: 50 }}>{rarity}</TableCell>
+                <TableCell sx={{ maxWidth: 50 }}>{rarity ? (100 - rarity * 100).toFixed(2).toString() + '%' : '-'}</TableCell>
                 <TableCell sx={{ maxWidth: 50, textTransform: 'capitalize' }}>
                   {floor ? weiToEth(floor) : '-'}
                 </TableCell>
