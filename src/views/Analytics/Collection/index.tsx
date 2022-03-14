@@ -6,10 +6,11 @@ import {
   useBreakpointIndex,
 } from '@upshot-tech/upshot-ui'
 import { Container, Flex, Grid, Label } from '@upshot-tech/upshot-ui'
-import { Avatar, Text } from '@upshot-tech/upshot-ui'
+import { Avatar, Button, Icon, Text } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import Head from 'next/head'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useMemo, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
@@ -20,7 +21,6 @@ import ExplorePanel from 'views/Analytics/components/ExplorePanel'
 import TopSellingNFTs from 'views/Analytics/components/TopSellingNFTs'
 
 import Breadcrumbs from '../components/Breadcrumbs'
-import SearchFiltersSidebar from '../components/SearchFilterSidebar'
 import { DescriptionWrapper } from '../components/Styled'
 import { GET_COLLECTION, GetCollectionData, GetCollectionVars } from './queries'
 
@@ -375,9 +375,34 @@ export default function CollectionView() {
             sx={{
               flexDirection: 'column',
               gap: '16px',
-              paddingTop: isMobile ? 0 : 116,
             }}
           >
+            <Box
+              sx={{
+                minHeight: isMobile ? 0 : 100,
+                marginBottom: isMobile ? 5 : 0,
+                width: isMobile ? '100%' : 'auto',
+              }}
+            >
+              <Link
+                passHref
+                href={`/analytics/search/?collectionId=${id}&collectionName=${encodeURIComponent(
+                  data.collectionById.name
+                )}`}
+              >
+                <Button
+                  icon={<Icon icon="search" />}
+                  sx={{
+                    width: isMobile ? '100%' : 'auto',
+                    '&:not(:hover) svg': {
+                      path: { fill: '#000 !important' },
+                    },
+                  }}
+                >
+                  Search Within Collection
+                </Button>
+              </Link>
+            </Box>
             {description && (
               <Text variant="large" sx={{ textTransform: 'uppercase' }}>
                 About
