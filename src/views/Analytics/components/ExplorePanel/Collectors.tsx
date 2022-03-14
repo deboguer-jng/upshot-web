@@ -27,6 +27,7 @@ import {
   GetUserOwnedAssetsData,
   GetUserOwnedAssetsVars,
 } from '../../queries'
+import { shortenAddress } from 'utils/address'
 
 export default function Collectors({
   id,
@@ -227,7 +228,8 @@ export default function Collectors({
                 )}
                 key={idx}
                 defaultOpen={idx === 0 ? true : false}
-                {...{ username, count, avgHoldTime }}
+                displayName={addresses[0].ens ?? shortenAddress(addresses[0].address)}
+                {...{ count, avgHoldTime }}
               />
             )
           )}

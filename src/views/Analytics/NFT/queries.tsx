@@ -64,6 +64,18 @@ export type GetAssetData = {
       txAt: number
       txFromAddress: string
       txToAddress: string
+      txToUser: {
+        addresses: {
+          address: string
+          ens: string
+        }[]
+      }
+      txFromUser: {
+        addresses: {
+          address: string
+          ens: string
+        }[]
+      }
       txHash: string
     }[]
   }
@@ -126,6 +138,18 @@ export const GET_ASSET = gql`
         txAt
         txFromAddress
         txToAddress
+        txToUser {
+          addresses {
+            address
+            ens
+          }
+        }
+        txFromUser {
+          addresses {
+            address
+            ens
+          }
+        }
         txHash
       }
     }
