@@ -217,29 +217,41 @@ export default function SearchView() {
               }}
             >
               <Flex sx={{ flexDirection: 'column' }}>
-              {data?.assetGlobalSearch?.count && (
-                <Text>{data?.assetGlobalSearch?.count} {data?.assetGlobalSearch?.count === 1 ? 'result' : 'results'} found</Text>
-              )}
-              {(collectionName || assetArr?.[0]?.collection?.name) && collectionId && (
-                <Flex sx={{ flexDirection: 'row', alignItems: 'center', marginBottom: '5' }}>
-                  <Text variant="h2Primary">{collectionName ?? assetArr?.[0]?.collection?.name}</Text>
-                  <Link href={`/analytics/collection/${collectionId}`}>
-                  <a  style={{ textDecoration: 'none' }}>
-                    <IconButton
+                {!!data?.assetGlobalSearch?.count && (
+                  <Text>
+                    {data?.assetGlobalSearch?.count}{' '}
+                    {data?.assetGlobalSearch?.count === 1
+                      ? 'result'
+                      : 'results'}{' '}
+                    found
+                  </Text>
+                )}
+                {(collectionName || assetArr?.[0]?.collection?.name) &&
+                  collectionId && (
+                    <Flex
                       sx={{
-                        marginLeft: '6px;',
-                        verticalAlign: 'middle',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        marginBottom: '5',
                       }}
                     >
-                      <Icon
-                        icon="arrowStylizedRight"
-                        color='grey-500'
-                      />
-                    </IconButton>
-                  </a>
-                  </Link>
-                </Flex>
-              )}
+                      <Text variant="h2Primary">
+                        {collectionName ?? assetArr?.[0]?.collection?.name}
+                      </Text>
+                      <Link href={`/analytics/collection/${collectionId}`}>
+                        <a style={{ textDecoration: 'none' }}>
+                          <IconButton
+                            sx={{
+                              marginLeft: '6px;',
+                              verticalAlign: 'middle',
+                            }}
+                          >
+                            <Icon icon="arrowStylizedRight" color="grey-500" />
+                          </IconButton>
+                        </a>
+                      </Link>
+                    </Flex>
+                  )}
 
                 {!!collectionId && traitIds.length > 0 && (
                   <TraitStats
@@ -263,9 +275,7 @@ export default function SearchView() {
                     alignItems: isMobile ? 'center' : 'baseline',
                   }}
                 >
-                  {!!collectionId && (
-                    <Text variant="h3Primary">NFTs</Text>
-                  )}
+                  {!!collectionId && <Text variant="h3Primary">NFTs</Text>}
                   {!collectionId && ready && (
                     <TopCollections
                       variant="normal"
