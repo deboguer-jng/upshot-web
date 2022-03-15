@@ -13,6 +13,16 @@ export type TimeSeries = {
   floor: string
 }
 
+export enum TraitSortOption {
+  RARITY,
+  FLOOR,
+}
+
+export enum OrderDirection {
+  DESC,
+  ASC
+}
+
 export type GetTopCollectionsData = {
   orderedCollectionsByMetricSearch: {
     assetSets: {
@@ -664,6 +674,75 @@ export const GET_USER_OWNED_ASSETS = gql`
           id
           previewImageUrl
         }
+      }
+    }
+  }
+`
+
+/**
+ * Get ungrouped traits
+ */
+
+ export type TraitSearchVars = {
+  limit?: number
+  offset?: number
+  searchTerm?: string
+  traitType?: string
+  collectionId: number
+  orderColumn?: string
+  orderDirection?: string
+}
+
+export type TraitSearchData = {
+  traitSearch: {
+    count?: number
+    traits?: {
+      id: number
+      description?: string
+      traitType?: string
+      displayType?: string
+      collectionId?: number
+      value?: string
+      maxValue?: string
+      rarity?: number
+      floor?: string
+      floorUsd?: string
+      image?: string
+    }[]
+  }
+}
+
+export const TRAIT_SEARCH = gql`
+  query TraitSearch(
+    $limit: Int = 10
+    $offset: Int = 0
+    $searchTerm: String
+    $traitType: String
+    $collectionId: Int!
+    $orderColumn: TraitSearchSortOption
+    $orderDirection: OrderDirection) {
+    traitSearch(
+      limit: $limit
+      offset: $offset
+      searchTerm: $searchTerm
+      traitType: $traitType
+      collectionId: $collectionId
+      orderColumn: $orderColumn
+      orderDirection: $orderDirection
+    ) {
+      count
+      traits {
+        id
+        traitType
+        displayType
+        maxValue
+        collectionId
+        value
+        maxValue
+        rarity
+        floor
+        floorUsd
+        image
       }
     }
   }
