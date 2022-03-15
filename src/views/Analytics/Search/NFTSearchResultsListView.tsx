@@ -70,6 +70,7 @@ function NFTSearchResultsHead({
       {isMobile ? (
         <Box>
           <Flex sx={{ justifyContent: 'space-between', padding: 2 }}>
+              <Text></Text>
           </Flex>
         </Box>
       ) : (

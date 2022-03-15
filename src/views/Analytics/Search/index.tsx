@@ -297,14 +297,13 @@ export default function SearchView() {
 
               {error ? (
                 <div>There was an error completing your request</div>
-              ) : data?.assetGlobalSearch?.assets.length === 0 ? (
+              ) : data?.assetGlobalSearch?.count === 0 ? (
                 <div>No results available.</div>
               ) : (
                 <Flex
                   sx={{
                     flexDirection: 'column',
                     gap: 5,
-                    alignItems: isMobile ? 'center' : 'baseline',
                   }}
                 >
                   {!!collectionId && (
