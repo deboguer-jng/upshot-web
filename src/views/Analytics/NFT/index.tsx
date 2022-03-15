@@ -427,7 +427,7 @@ export default function NFTView() {
                   sx={{ width: '100%' }}
                   listPriceUSD={Number(formatCurrencyUnits(listPriceUsd, 6))}
                   listAppraisalPercentage={listAppraisalRatio}
-                  marketplaceName={listMarketplace}
+                  marketplaceName={listUrl.includes("larvalabs.com") ? "Larva Labs" : listMarketplace}
                   marketplaceUrl={listUrl}
                 />
             )}
