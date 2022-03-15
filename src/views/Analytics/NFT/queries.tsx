@@ -45,6 +45,7 @@ export type GetAssetData = {
     }
     avgResalePrice: string
     traits: {
+      id: number
       displayType: string
       traitType: string
       value: string
@@ -119,6 +120,7 @@ export const GET_ASSET = gql`
       }
       avgResalePrice
       traits {
+        id
         displayType
         traitType
         value

@@ -547,10 +547,10 @@ export default function NFTView() {
                   <Flex sx={{ flexDirection: 'column', gap: 4 }}>
                     <Text variant="h3Secondary">Attributes</Text>
                     <Grid columns={isMobile ? 1 : 2}>
-                      {pageTraits.map(({ traitType, value, rarity }, idx) => (
+                      {pageTraits.map(({ id, traitType, value, rarity }, idx) => (
                         <Box key={idx}>
                           <Link
-                            href={`/analytics/search?attributes=${value}&collectionId=${
+                            href={`/analytics/search?traits=${id}&collectionId=${
                               collection?.id
                             }&collectionName=${encodeURIComponent(
                               collection?.name ?? ''
