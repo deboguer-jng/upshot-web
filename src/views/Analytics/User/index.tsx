@@ -947,7 +947,9 @@ export default function UserView() {
     ?.ownedAppraisalValue?.appraisalWei
     ? (
         parseFloat(
-          ethers.utils.formatEther(data.getUser.ownedAppraisalValue.appraisalWei)
+          ethers.utils.formatEther(
+            data.getUser.ownedAppraisalValue.appraisalWei
+          )
         ) + unsupportedAggregateCollectionStatFloorEth
       ).toFixed(2)
     : '-'
@@ -1023,22 +1025,28 @@ export default function UserView() {
 
   return (
     <>
-      <Layout title={ extractEns(data?.getUser?.addresses, address) ?? shortAddress}>
+      <Layout
+        title={extractEns(data?.getUser?.addresses, address) ?? shortAddress}
+      >
         {data?.getUser?.warningBanner && (
           <Text
             backgroundColor={'primary'}
             color="black"
             sx={{ padding: '10px 30px', borderRadius: '10px', fontWeight: 600 }}
           >
-            This is a valuable item. Our top-tier appraisals are under active
-            development.
+            This portfolio contains a valuable item. Our top-tier appraisals are
+            under active development.
           </Text>
         )}
         <Flex sx={{ flexDirection: 'column', gap: 4 }}>
           {!!address && (
             <Header
               key={address}
-              {...{ address, displayName: extractEns(data?.getUser?.addresses, address) ?? shortAddress }}
+              {...{
+                address,
+                displayName:
+                  extractEns(data?.getUser?.addresses, address) ?? shortAddress,
+              }}
             />
           )}
           {/* User Description */}
@@ -1605,7 +1613,11 @@ export default function UserView() {
                                                       textOverflow: 'ellipsis',
                                                     }}
                                                   >
-                                                    {extractEns(rowData?.txFromUser?.addresses, rowData?.txFromAddress) ?? rowData?.txFromAddress}
+                                                    {extractEns(
+                                                      rowData?.txFromUser
+                                                        ?.addresses,
+                                                      rowData?.txFromAddress
+                                                    ) ?? rowData?.txFromAddress}
                                                   </Text>
                                                 </a>
                                               </Grid>
@@ -1661,7 +1673,11 @@ export default function UserView() {
                                                       textOverflow: 'ellipsis',
                                                     }}
                                                   >
-                                                    {extractEns(rowData?.txToUser?.addresses, rowData?.txToAddress) ?? rowData?.txToAddress}
+                                                    {extractEns(
+                                                      rowData?.txToUser
+                                                        ?.addresses,
+                                                      rowData?.txToAddress
+                                                    ) ?? rowData?.txToAddress}
                                                   </Text>
                                                 </a>
                                               </TableCell>
