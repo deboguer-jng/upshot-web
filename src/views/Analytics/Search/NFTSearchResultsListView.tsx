@@ -217,6 +217,7 @@ export default function NFTSearchResults({
       >
         {assetArr.map(({            
             id,
+            tokenId,
             previewImageUrl,
             name,
             lastSale,
@@ -225,7 +226,7 @@ export default function NFTSearchResults({
             listAppraisalRatio,
         }, idx) => (
           <CollectionRow
-            title={name}
+            title={tokenId ? '#' + tokenId : name}
             key={idx}
             defaultOpen={idx === 0 ? true : false}
             variant="normal"

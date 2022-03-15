@@ -307,14 +307,15 @@ export default function SearchView() {
                   }}
                 >
                   {!!collectionId && (
-                    <Flex sx={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                    <Flex sx={{ width: '100%', flexDirection: 'row', gap: 6, alignItems: 'center'}}>
                       <Text variant="h3Primary">NFTs</Text>
                       <Flex sx={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
-                        <IconButton onClick={() => toggleListView(true)}>
-                          <Icon color="primary" icon={listView ? "listViewSelected" : "listView"} size={32} />
-                        </IconButton>
+                        <Text variant="large" color="grey-600" sx={{ marginRight: 2 }}>View as</Text>
                         <IconButton onClick={() => toggleListView(false)}>
-                          <Icon color="primary" icon={listView ? "gridView" : "gridViewSelected"} size={32} />
+                          <Icon color="grey-500" icon={listView ? "gridView" : "gridViewSelected"} size={32} />
+                        </IconButton>
+                        <IconButton onClick={() => toggleListView(true)}>
+                          <Icon color="grey-500" icon={listView ? "listViewSelected" : "listView"} size={32} />
                         </IconButton>
                       </Flex>
                     </Flex>
