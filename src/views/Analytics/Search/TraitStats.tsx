@@ -71,6 +71,10 @@ function TraitStatsHead({
       {isMobile ? (
         <Box>
           <Flex sx={{ justifyContent: 'space-between', padding: 2 }}>
+            <Text></Text>
+            <Text sx={{ textTransform: 'capitalize' }}>
+              {traitStatsColumns.TYPE}
+            </Text>
           </Flex>
         </Box>
       ) : (
@@ -81,28 +85,11 @@ function TraitStatsHead({
               <TableCell
                 key={idx}
                 color="grey-500"
-                onClick={() => onChangeSelection?.(idx)}
                 sx={{
-                  cursor: 'pointer',
-                  color: selectedColumn === idx ? 'white' : null,
+                  color: null,
                   transition: 'default',
                   userSelect: 'none',
                   minWidth: 100,
-                  '& svg path': {
-                    transition: 'default',
-                    '&:nth-child(1)': {
-                      fill:
-                        selectedColumn === idx && sortAscending
-                          ? 'white'
-                          : theme.rawColors['grey-500'],
-                    },
-                    '&:nth-child(2)': {
-                      fill:
-                        !sortAscending && selectedColumn === idx
-                          ? 'white'
-                          : theme.rawColors['grey-500'],
-                    },
-                  },
                 }}
               >
                 <Flex sx={{ alignItems: 'center' }}>
@@ -114,7 +101,6 @@ function TraitStatsHead({
                   >
                     {col}
                   </Flex>
-                  <Icon icon="tableSort" height={16} width={16} />
                 </Flex>
               </TableCell>
             ))}
