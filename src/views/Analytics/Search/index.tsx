@@ -1,7 +1,14 @@
 import { useQuery } from '@apollo/client'
 import { Icon, IconButton, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Container } from '@upshot-tech/upshot-ui'
-import { Accordion,Box, Flex, Grid, MiniNftCard, Text } from '@upshot-tech/upshot-ui'
+import {
+  Accordion,
+  Box,
+  Flex,
+  Grid,
+  MiniNftCard,
+  Text,
+} from '@upshot-tech/upshot-ui'
 import { BlurrySquareTemplate, Pagination } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
@@ -22,6 +29,7 @@ import {
   GetAssetsSearchData,
   GetAssetsSearchVars,
 } from './queries'
+import TraitStats from './TraitStats'
 
 const ROW_SIZE = 4
 
@@ -59,6 +67,17 @@ export default function SearchView() {
   const collectionSearch = router.query.collectionSearch as string
   const [selectedColumn, setSelectedColumn] = useState<number>(0)
   const [sortAscending, setSortAscending] = useState(false)
+
+  // Trait stats
+  const [selectedTraitsColumn, setSelectedTraitsColumn] = useState<number>(3)
+  const [sortTraitsAscending, setSortTraitsAscending] = useState(false)
+  const handleChangeTraitsSelection = (columnIdx: number) => {
+    if (columnIdx === selectedTraitsColumn) {
+      setSortTraitsAscending(!sortTraitsAscending)
+    }
+
+    setSelectedTraitsColumn(columnIdx)
+  }
 
   // Used to wait for the router to mount before showing collectors.
   const [ready, setReady] = useState(false)
@@ -176,28 +195,31 @@ export default function SearchView() {
               gap: [8, 5, 8],
             }}
           >
-          {isMobile ? (
-            <>
-              <Box>
-                <Accordion isDropdown title="Search Filters">
-                  <Box sx={{paddingTop: 4}}>  
-                    <SearchFilterSidebar />
-                  </Box>
-                </Accordion>
-              </Box>
-            </>
-          ) : (
-            <SearchFilterSidebar />
-          )}
+            {isMobile ? (
+              <>
+                <Box>
+                  <Accordion isDropdown title="Search Filters">
+                    <Box sx={{ paddingTop: 4 }}>
+                      <SearchFilterSidebar />
+                    </Box>
+                  </Accordion>
+                </Box>
+              </>
+            ) : (
+              <SearchFilterSidebar />
+            )}
 
             <Flex
               sx={{
                 flex: '1 auto auto',
                 flexDirection: 'column',
-                gap: 4,
+                gap: 6,
               }}
             >
               <Flex sx={{ flexDirection: 'column' }}>
+              {data?.assetGlobalSearch?.count && (
+                <Text>{data?.assetGlobalSearch?.count} {data?.assetGlobalSearch?.count === 1 ? 'result' : 'results'} found</Text>
+              )}
               {(collectionName || assetArr?.[0]?.collection?.name) && collectionId && (
                 <Flex sx={{ flexDirection: 'row', alignItems: 'center', marginBottom: '5' }}>
                   <Text variant="h2Primary">{collectionName ?? assetArr?.[0]?.collection?.name}</Text>
@@ -218,7 +240,15 @@ export default function SearchView() {
                   </Link>
                 </Flex>
               )}
-                {data?.assetGlobalSearch?.count && (<Text>{data?.assetGlobalSearch?.count} results found</Text>)}
+
+                {!!collectionId && traitIds.length > 0 && (
+                  <TraitStats
+                    selectedColumn={selectedTraitsColumn}
+                    sortAscending={sortTraitsAscending}
+                    onChangeSelection={handleChangeTraitsSelection}
+                    {...{ collectionId, traitIds }}
+                  />
+                )}
               </Flex>
 
               {error ? (
@@ -233,6 +263,9 @@ export default function SearchView() {
                     alignItems: isMobile ? 'center' : 'baseline',
                   }}
                 >
+                  {!!collectionId && (
+                    <Text variant="h3Primary">NFTs</Text>
+                  )}
                   {!collectionId && ready && (
                     <TopCollections
                       variant="normal"
@@ -241,7 +274,6 @@ export default function SearchView() {
                       onChangeSelection={handleChangeSelection}
                     />
                   )}
-
                   {
                     /* Chunk results into non-wrapping rows. */
                     loading && collectionId
