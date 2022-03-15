@@ -1,6 +1,7 @@
 /** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
 import {
+  BuyNowPanel,
   imageOptimizer,
   Pagination,
   useBreakpointIndex,
@@ -207,6 +208,13 @@ export default function NFTView() {
     creatorUsername,
     contractAddress,
     warningBanner,
+    listPrice,
+    listPriceUsd,
+    listMarketplace,
+    listUrl,
+    listTimestamp,
+    listExpiration,
+    listAppraisalRatio,
   } = data.assetById
 
   const changePageTraits = () => {
@@ -421,6 +429,17 @@ export default function NFTView() {
           </Flex>
 
           <Flex sx={{ flexDirection: 'column', gap: 4 }}>
+          {listPrice && listPriceUsd && listMarketplace && listUrl && listAppraisalRatio && (
+                <BuyNowPanel
+                  variant="wide"
+                  listPriceETH={Number(parseFloat(ethers.utils.formatEther(listPrice)).toFixed(2))}
+                  sx={{ width: '100%' }}
+                  listPriceUSD={Number(formatCurrencyUnits(listPriceUsd, 6))}
+                  listAppraisalPercentage={listAppraisalRatio}
+                  marketplaceName={listUrl.includes("larvalabs.com") ? "Larva Labs" : listMarketplace}
+                  marketplaceUrl={listUrl}
+                />
+            )}
             <Flex
               sx={{
                 gap: 4,
