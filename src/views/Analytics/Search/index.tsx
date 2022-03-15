@@ -312,10 +312,10 @@ export default function SearchView() {
                       <Flex sx={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
                         <Text variant="large" color="grey-600" sx={{ marginRight: 2 }}>View as</Text>
                         <IconButton onClick={() => toggleListView(false)}>
-                          <Icon color="grey-500" icon={listView ? "gridView" : "gridViewSelected"} size={32} />
+                          <Icon color={listView ? "grey-700" : "grey-300"} icon={"gridViewV2"} size={32} />
                         </IconButton>
                         <IconButton onClick={() => toggleListView(true)}>
-                          <Icon color="grey-500" icon={listView ? "listViewSelected" : "listView"} size={32} />
+                          <Icon color={listView ? "grey-300" : "grey-700"} icon={"listViewV2"} size={32} />
                         </IconButton>
                       </Flex>
                     </Flex>
