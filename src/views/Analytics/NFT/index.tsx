@@ -253,6 +253,32 @@ export default function NFTView() {
     ? image
     : optimizedSrc
 
+    // Generate content for tooltip
+    const AppraisalTooltipContent = (
+      <div style={{ textAlign: 'left' }}>
+        <Text
+          color='grey-400'
+          sx={{
+            fontSize: 3,
+            lineHeight: 1.3,
+            display: 'block',
+            marginBottom: 2
+          }}
+        >
+          How are our appraisals calculated?
+        </Text>
+        <Text
+          sx={{
+            fontSize: 3,
+            lineHeight: 1.3,
+            display: 'block',
+          }}
+        >
+          Our appraisals combine on-chain data (like transactions, collections, traits, metadata, and rarity) with off-chain data (like bid/ask spread, market behaviors, etc) with a little Upshot magic.
+        </Text>
+      </div>
+    )
+
   return (
     <>
       <Head>
@@ -329,10 +355,16 @@ export default function NFTView() {
               <>
                 <Flex sx={{ alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
                   {!!lastAppraisalWeiPrice && (
+                    <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
                     <Label size="md" color="blue">
                       {'Last Appraisal: Ξ' +
                         weiToEth(lastAppraisalWeiPrice, 3, false)}
                     </Label>
+                    <Tooltip
+                            tooltip={AppraisalTooltipContent}
+                            sx={{ marginLeft: '5px' }}
+                          />
+                    </Flex>
                   )}
 
                   {!!rarityRank && !!collection && !!collection?.size && (
@@ -341,33 +373,6 @@ export default function NFTView() {
                     </Label>
                   )}
                 </Flex>
-                {!!lastAppraisalWeiPrice && (
-                  <a
-                    href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
-                    target="_blank"
-                    sx={{ textDecoration: 'none' }}
-                    rel="noreferrer"
-                  >
-                    <Box
-                      sx={{
-                        cursor: 'pointer',
-                        width: '100%',
-                        borderRadius: '10px',
-                        color: theme.colors.primary,
-                        border: '1px solid',
-                        padding: '10px',
-                        borderColor: theme.colors.primary,
-                        textDecoration: 'none',
-                        fontSize: '12px',
-                        '&:hover': {
-                          background: theme.colors['grey-800'],
-                        },
-                      }}
-                    >
-                      How did we calculate this appraisal?
-                    </Box>
-                  </a>
-                )}
               </>
 
               <Flex>
