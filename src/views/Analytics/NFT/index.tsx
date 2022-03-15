@@ -240,8 +240,12 @@ export default function NFTView() {
 
   const assetName = getAssetName(name, collection?.name, tokenId)
   const displayName =
-    extractEns(txHistory?.[0]?.txToUser?.addresses, txHistory?.[0]?.txToAddress)
-      ?? shortenAddress(txHistory?.[0]?.txToAddress) ?? 'Unknown'
+    extractEns(
+      txHistory?.[0]?.txToUser?.addresses,
+      txHistory?.[0]?.txToAddress
+    ) ??
+    shortenAddress(txHistory?.[0]?.txToAddress) ??
+    'Unknown'
 
   const image = previewImageUrl ?? mediaUrl
   const optimizedSrc = imageOptimizer(image, { width: 340 }) ?? image
@@ -658,11 +662,7 @@ export default function NFTView() {
                                     false
                                   )
                                 : lastAppraisalWeiPrice
-                                ? weiToEth(
-                                    lastAppraisalWeiPrice,
-                                    3,
-                                    false
-                                  )
+                                ? weiToEth(lastAppraisalWeiPrice, 3, false)
                                 : '-'}
                             </Label>
 
@@ -821,7 +821,15 @@ export default function NFTView() {
                                           }}
                                         >
                                           <Text>
-                                            {extractEns(txFromUser?.addresses, txFromAddress) ?? shortenAddress(txFromAddress, 2, 4)}
+                                            {extractEns(
+                                              txFromUser?.addresses,
+                                              txFromAddress
+                                            ) ??
+                                              shortenAddress(
+                                                txFromAddress,
+                                                2,
+                                                4
+                                              )}
                                           </Text>
                                         </a>
                                       </Link>
@@ -849,7 +857,11 @@ export default function NFTView() {
                                           }}
                                         >
                                           <Text>
-                                            {extractEns(txToUser?.addresses, txToAddress) ?? shortenAddress(txToAddress, 2, 4)}
+                                            {extractEns(
+                                              txToUser?.addresses,
+                                              txToAddress
+                                            ) ??
+                                              shortenAddress(txToAddress, 2, 4)}
                                           </Text>
                                         </a>
                                       </Link>
