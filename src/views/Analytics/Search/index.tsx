@@ -142,7 +142,7 @@ export default function SearchView() {
       maxPrice,
       traitFilterJoin: traitANDMatch === 'true' ? 'AND' : 'OR',
       traitIds: traitIds.length ? traitIds : undefined,
-      listed: listedOnly === 'true' ? true : false,
+      listed: listedOnly === 'true' ? true : undefined,
       orderColumn: Object.keys(nftSearchResultsColumns)[selectedNFTColumn],
       orderDirection: sortNFTsAscending ? 'ASC' : 'DESC',
     },
