@@ -132,6 +132,24 @@ export default function SearchView() {
     setSelectedColumn(columnIdx)
   }
 
+  const handleApplySearch = ({ query }) => {
+    setPage(0)
+    router.push({
+      pathname: '/analytics/search',
+      query: {
+        traits: traitIds,
+        collectionId,
+        collectionName,
+        minPrice,
+        maxPrice,
+        tokenId,
+        traitANDMatch,
+        listedOnly,
+        ...query,
+      },
+    })
+  }
+
   const assetArr = data?.assetGlobalSearch?.assets
 
   const storage = globalThis?.sessionStorage
@@ -200,13 +218,13 @@ export default function SearchView() {
                 <Box>
                   <Accordion isDropdown title="Search Filters">
                     <Box sx={{ paddingTop: 4 }}>
-                      <SearchFilterSidebar />
+                      <SearchFilterSidebar onApply={handleApplySearch} />
                     </Box>
                   </Accordion>
                 </Box>
               </>
             ) : (
-              <SearchFilterSidebar />
+              <SearchFilterSidebar onApply={handleApplySearch} />
             )}
 
             <Flex
