@@ -48,7 +48,7 @@ export const traitColumns = {
     TYPE: 'Trait Type',
     RARITY: 'Rarity',
     FLOOR: 'Floor',
-    FLOOR_USD: 'Floor (USD)'
+    FLOORUSD: 'Floor (USD)'
   }
 
   function TraitsTableHead({  
@@ -210,7 +210,7 @@ export const traitColumns = {
             offset: page * PAGE_SIZE,
             searchTerm,
             traitType,
-            orderColumn: Object.keys(traitColumns)[selectedColumn == 3 ? 2 : selectedColumn],
+            orderColumn: Object.keys(traitColumns)[selectedColumn],
             orderDirection: sortAscending ? 'ASC' : 'DESC',
           },
           skip: !collectionId,
@@ -310,7 +310,7 @@ export const traitColumns = {
                       }}
                     >
                       <Text sx={{ marginBottom: 1 }}>
-                        {traitColumns.FLOOR_USD}
+                        {traitColumns.FLOORUSD}
                       </Text>
                       <Text>{floorUsd ? '$' + formatLargeNumber(Number(formatCurrencyUnits(floorUsd, 6))) : '-'}</Text>
                     </Flex>
