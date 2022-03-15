@@ -377,8 +377,9 @@ export default function CollectionView() {
               gap: '16px',
             }}
           >
-            <Box
+            <Flex
               sx={{
+                justifyContent: 'flex-end',
                 minHeight: isMobile ? 0 : 100,
                 marginBottom: isMobile ? 5 : 0,
                 width: isMobile ? '100%' : 'auto',
@@ -405,7 +406,7 @@ export default function CollectionView() {
                   Search within collection
                 </Button>
               </Link>
-            </Box>
+            </Flex>
             {description && (
               <Text variant="large" sx={{ textTransform: 'uppercase' }}>
                 About
