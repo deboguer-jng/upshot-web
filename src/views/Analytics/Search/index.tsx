@@ -136,17 +136,7 @@ export default function SearchView() {
     setPage(0)
     router.push({
       pathname: '/analytics/search',
-      query: {
-        traits: traitIds,
-        collectionId,
-        collectionName,
-        minPrice,
-        maxPrice,
-        tokenId,
-        traitANDMatch,
-        listedOnly,
-        ...query,
-      },
+      query,
     })
   }
 
