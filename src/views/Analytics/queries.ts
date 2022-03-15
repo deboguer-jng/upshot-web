@@ -732,6 +732,7 @@ export const TRAIT_SEARCH = gql`
     ) {
       count
       traits {
+        id
         traitType
         displayType
         maxValue

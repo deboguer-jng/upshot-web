@@ -18,6 +18,7 @@ import {
   useTheme,
 } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE, PIXELATED_CONTRACTS } from 'constants/'
+import router from 'next/router'
 import { useEffect, useState } from 'react'
 import { formatCurrencyUnits, formatLargeNumber, weiToEth } from 'utils/number'
 
@@ -166,6 +167,12 @@ export const traitColumns = {
       </>
     )
   }
+
+  const handleRedirectToSearch = (traitId?: number, collectionId?: number) => {
+    router.push(`/analytics/search?traits=${traitId}&collectionId=${
+      collectionId
+    }`)
+  }
   
   /**
    *Default render function
@@ -238,13 +245,14 @@ export const traitColumns = {
           {...{ selectedColumn, sortAscending, onChangeSelection }}
         >
           {data.traitSearch?.traits?.map(
-            ({ traitType, displayType, maxValue, collectionId, value, rarity, image, floor, floorUsd }, idx) => (
+            ({ id, traitType, displayType, maxValue, collectionId, value, rarity, image, floor, floorUsd }, idx) => (
               <CollectionRow
                 variant="black"
                 title={value ?? '-'}
                 imageSrc={image ?? ''}
                 key={idx}
                 defaultOpen={idx === 0 ? true : false}
+                onClick={() => handleRedirectToSearch(id, collectionId)}
               >
                 {isMobile ? (
                   <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>
