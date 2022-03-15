@@ -86,7 +86,13 @@ export default forwardRef(function CollectionPanel(
     : { justifyContent: 'flex-end', alignItems: 'stretch' }
 
   return (
-    <Panel {...{ ref, ...props }}>
+    <Panel
+      {...{ ref, ...props }}
+      sx={{
+        marginLeft: isMobile ? '-1rem' : 0,
+        marginRight: isMobile ? '-1rem' : 0,
+      }}
+    >
       <Flex sx={{ flexDirection: 'column', gap: 4 }}>
         <Flex
           sx={{

@@ -84,7 +84,15 @@ export const Nav = () => {
   const outsideClicked = useOutsideAlerter(sidebarRef)
 
   useEffect(() => {
-    if (outsideClicked && !isMobile) {
+    if (!router.query) return
+
+    const collectionName = router.query.collectionName as string
+    const collectionSearch = router.query.collectionSearch as string
+    setNavSearchTerm(collectionSearch ?? collectionName ?? '')
+  }, [router.query])
+
+  useEffect(() => {
+    if (outsideClicked && !isMobile && showSidebar) {
       handleToggleMenu()
     }
   }, [outsideClicked])
@@ -95,7 +103,7 @@ export const Nav = () => {
   }
 
   const isAddress =
-    navSearchTerm.substring(0, 2) === '0x' && navSearchTerm.length === 42
+    navSearchTerm?.substring(0, 2) === '0x' && navSearchTerm?.length === 42
 
   const handleConnect = (provider: ConnectorName) => {
     if (
@@ -128,21 +136,27 @@ export const Nav = () => {
 
   const handleNavSearch = (e: React.FormEvent) => {
     e.preventDefault()
-    handleToggleMenu()
-    if (!suggestions.length) return
+    if (showSidebar) handleToggleMenu()
+    ;(document.activeElement as HTMLElement).blur()
 
     isAddress
       ? router.push(`/analytics/user/${encodeURIComponent(navSearchTerm)}`)
       : router.push(
-          `/analytics/collection/${encodeURIComponent(suggestions[0].id)}`
+          `/analytics/search?collectionSearch=${encodeURIComponent(
+            navSearchTerm
+          )}`
         )
   }
 
   const handleSearchSuggestionChange = (item: InputSuggestion) => {
-    handleToggleMenu()
+    if (showSidebar) handleToggleMenu()
     isAddress
       ? router.push(`/analytics/user/${encodeURIComponent(navSearchTerm)}`)
-      : router.push(`/analytics/collection/${encodeURIComponent(item.id)}`)
+      : router.push(
+          `/analytics/search?collectionName=${encodeURIComponent(
+            item.name
+          )}&collectionId=${item.id}`
+        )
   }
 
   const hideMetaMask =
@@ -151,7 +165,7 @@ export const Nav = () => {
 
   const handleDisconnect = () => {
     deactivate()
-    handleToggleMenu()
+    if (showSidebar) handleToggleMenu()
     dispatch(setAddress(undefined))
     dispatch(setEns({ name: undefined, avatar: undefined }))
   }
@@ -270,7 +284,7 @@ export const Nav = () => {
           onSearchSuggestionChange={handleSearchSuggestionChange}
           onSearchKeyUp={handleNavKeyUp}
           onConnectClick={() => {
-            handleToggleMenu()
+            if (showSidebar) handleToggleMenu()
             toggleModal()
           }}
           onDisconnectClick={handleDisconnect}

@@ -22,24 +22,17 @@ export function shortenAddress(
 }
 
 /**
- * Fetch ENS
+ * Extract ENS
  *
- * Looks up the ENS name & avatar.
+ * Extract ENS from addresses array
  *
- * @returns Promise<EnsDetails>
+ * @returns string
  */
-export const fetchEns = async (address: string, provider: any) => {
-  const ens: EnsDetails = { name: undefined, avatar: undefined }
-
-  if (!provider) return ens
-
-  /* Reverse lookup of ENS name via address */
-  try {
-    ens.name = await provider.lookupAddress(address)
-  } catch (err) {
-    console.error(err)
-    return ens
-  }
-
-  return ens
+export const extractEns = (
+   addresses: {address: string, ens: string}[] | undefined,
+   address: string
+) => {
+  if (typeof addresses === 'undefined')
+    return null
+  return addresses.find(addresses => addresses.address === address)?.ens
 }
