@@ -15,12 +15,18 @@ export type GetCollectorVars = {
 
 export type GetCollectorData = {
   getUser: {
-    totalAssetAppraisedValueUsd: string
-    totalAssetAppraisedValueWei: string
+    ownedAppraisalValue: {
+      appraisalWei: string
+      appraisalUsd: string
+    }
     firstAssetPurchaseTime: number
     bio: string
     numAssets: number
     warningBanner: boolean
+    addresses: {
+      address: string
+      ens: string
+    }[]
     extraCollections: {
       count: number
       collectionAssetCounts: {
@@ -65,12 +71,18 @@ export const GET_COLLECTOR = gql`
     $assetOffset: Int!
   ) {
     getUser(userId: $userId, address: $address) {
-      totalAssetAppraisedValueUsd
-      totalAssetAppraisedValueWei
+      ownedAppraisalValue {
+        appraisalWei
+        appraisalUsd
+      }
       firstAssetPurchaseTime
       bio
       numAssets
       warningBanner
+      addresses {
+        address
+        ens
+      }
       extraCollections(limit: $collectionLimit, offset: $collectionOffset) {
         count
         collectionAssetCounts {
@@ -126,6 +138,18 @@ export type GetCollectorTxHistoryData = {
         txAt: number
         txFromAddress: string
         txToAddress: string
+        txToUser: {
+          addresses: {
+            address: string
+            ens: string
+          }[]
+        }
+        txFromUser: {
+          addresses: {
+            address: string
+            ens: string
+          }[]
+        }
         txHash: string
         price: string
         asset: {
@@ -156,6 +180,18 @@ export const GET_COLLECTOR_TX_HISTORY = gql`
           txAt
           txFromAddress
           txToAddress
+          txToUser {
+            addresses {
+              address
+              ens
+            }
+          }
+          txFromUser {
+            addresses {
+              address
+              ens
+            }
+          }
           txHash
           price
           asset {

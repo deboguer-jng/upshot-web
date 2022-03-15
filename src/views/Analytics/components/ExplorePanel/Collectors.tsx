@@ -27,6 +27,7 @@ import {
   GetUserOwnedAssetsData,
   GetUserOwnedAssetsVars,
 } from '../../queries'
+import { shortenAddress } from 'utils/address'
 
 export default function Collectors({
   id,
@@ -183,7 +184,7 @@ export default function Collectors({
                 id,
                 username,
                 addresses,
-                totalAssetAppraisedValueWei,
+                ownedAppraisalValue,
                 avgHoldTime,
                 firstAssetPurchaseTime,
                 ownedAssets: { count, assets },
@@ -199,7 +200,7 @@ export default function Collectors({
                 }}
                 firstAcquisition={firstAssetPurchaseTime}
                 collectionName={name}
-                portfolioValue={formatAppraisal(totalAssetAppraisedValueWei)}
+                portfolioValue={formatAppraisal(ownedAppraisalValue?.appraisalWei)}
                 extraCollections={collectionAssetCounts.map(
                   ({ count, collection: { imageUrl, name, id } }) => ({
                     id,
@@ -227,7 +228,8 @@ export default function Collectors({
                 )}
                 key={idx}
                 defaultOpen={idx === 0 ? true : false}
-                {...{ username, count, avgHoldTime }}
+                displayName={addresses[0].ens ?? shortenAddress(addresses[0].address)}
+                {...{ count, avgHoldTime }}
               />
             )
           )}
