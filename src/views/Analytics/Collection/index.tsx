@@ -394,12 +394,15 @@ export default function CollectionView() {
                   icon={<Icon icon="search" />}
                   sx={{
                     width: isMobile ? '100%' : 'auto',
+                    '& span': {
+                      textTransform: 'none',
+                    },
                     '&:not(:hover) svg': {
                       path: { fill: '#000 !important' },
                     },
                   }}
                 >
-                  Search Within Collection
+                  Search within collection
                 </Button>
               </Link>
             </Box>
