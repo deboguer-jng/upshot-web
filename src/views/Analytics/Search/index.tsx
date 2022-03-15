@@ -24,6 +24,7 @@ import { weiToEth } from 'utils/number'
 import TopCollections from '../../Analytics/components/ExplorePanel/TopCollections'
 import Breadcrumbs from '../components/Breadcrumbs'
 import SearchFilterSidebar from '../components/SearchFilterSidebar'
+import NFTSearchResults, { NFTSearchResultsSkeleton } from './NFTSearchResultsListView'
 import {
   GET_ASSETS_SEARCH,
   GetAssetsSearchData,
@@ -32,6 +33,24 @@ import {
 import TraitStats from './TraitStats'
 
 const ROW_SIZE = 4
+
+export enum ENFTSearchResultsOrder {
+  LAST_SALE_PRICE,
+  LAST_APPRAISAL_PRICE,
+  LIST_PRICE,
+  LIST_APPRAISAL_RATIO,
+}
+
+export type OrderedNFTSearchResultsColumns = {
+  [key in keyof typeof ENFTSearchResultsOrder]: string
+}
+
+export const nftSearchResultsColumns: OrderedNFTSearchResultsColumns = {
+  LAST_SALE_PRICE: 'Last Sale Price',
+  LAST_APPRAISAL_PRICE: 'Last Appraisal',
+  LIST_PRICE: 'List Price',
+  LIST_APPRAISAL_RATIO: 'List Price/Appraisal'
+}
 
 enum BREAKPOINT_INDEXES {
   ZERO = 0,
@@ -80,6 +99,17 @@ export default function SearchView() {
     setSelectedTraitsColumn(columnIdx)
   }
 
+    // NFT Search Results
+    const [selectedNFTColumn, setSelectedNFTColumn] = useState<number>(3)
+    const [sortNFTsAscending, setSortNFTsAscending] = useState(false)
+    const handleChangeNFTColumnSelection = (columnIdx: number) => {
+      if (columnIdx === selectedNFTColumn) {
+        setSortNFTsAscending(!sortNFTsAscending)
+      }
+  
+      setSelectedNFTColumn(columnIdx)
+    }
+
   // Used to wait for the router to mount before showing collectors.
   const [ready, setReady] = useState(false)
   useEffect(() => setReady(true), [])
@@ -113,6 +143,8 @@ export default function SearchView() {
       traitFilterJoin: traitANDMatch === 'true' ? 'AND' : 'OR',
       traitIds: traitIds.length ? traitIds : undefined,
       listed: listedOnly === 'true' ? true : false,
+      orderColumn: Object.keys(nftSearchResultsColumns)[selectedNFTColumn],
+      orderDirection: sortNFTsAscending ? 'ASC' : 'DESC',
     },
     skip: !collectionId,
   })
@@ -294,8 +326,10 @@ export default function SearchView() {
                   )}
                   {
                     /* Chunk results into non-wrapping rows. */
-                    loading && collectionId
-                      ? loadArr
+                    loading && collectionId ?
+                      listView ? 
+                        <NFTSearchResultsSkeleton columns={nftSearchResultsColumns} selectedColumn={selectedNFTColumn} sortAscending={sortNFTsAscending} />
+                      : loadArr
                           .map((_, i) =>
                             i % chunkSize === 0
                               ? loadArr.slice(i, i + chunkSize)
@@ -309,6 +343,8 @@ export default function SearchView() {
                               ))}
                             </Flex>
                           ))
+                      : assetArr && listView ? 
+                      (<NFTSearchResults assetArr={assetArr} columns={nftSearchResultsColumns} selectedColumn={selectedNFTColumn} sortAscending={sortNFTsAscending} onChangeSelection={handleChangeNFTColumnSelection} /> )
                       : assetArr
                           ?.map((_, i) =>
                             i % chunkSize === 0
