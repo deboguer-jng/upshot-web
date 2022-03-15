@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client'
 import { Icon, IconButton, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Container } from '@upshot-tech/upshot-ui'
-import { Flex, Grid, MiniNftCard, Text, Box, Accordion } from '@upshot-tech/upshot-ui'
+import { Accordion,Box, Flex, Grid, MiniNftCard, Text } from '@upshot-tech/upshot-ui'
 import { BlurrySquareTemplate, Pagination } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
@@ -198,9 +198,9 @@ export default function SearchView() {
               }}
             >
               <Flex sx={{ flexDirection: 'column' }}>
-              {collectionName && collectionId && (
+              {(collectionName || assetArr?.[0]?.collection?.name) && collectionId && (
                 <Flex sx={{ flexDirection: 'row', alignItems: 'center', marginBottom: '5' }}>
-                  <Text variant="h2Primary">{collectionName}</Text>
+                  <Text variant="h2Primary">{collectionName ?? assetArr?.[0]?.collection?.name}</Text>
                   <Link href={`/analytics/collection/${collectionId}`}>
                   <a  style={{ textDecoration: 'none' }}>
                     <IconButton
