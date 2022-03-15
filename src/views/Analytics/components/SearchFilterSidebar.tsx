@@ -392,11 +392,15 @@ export default function SearchFilterSidebar({
     const maxPrice = router.query.maxPrice as string
     setMaxPrice(maxPrice)
 
-    const traitANDMatch = router.query.traitANDMatch === 'true'
-    setTraitANDMatch(traitANDMatch)
+    if (router.query.traitANDMatch) {
+      const traitANDMatch = router.query.traitANDMatch === 'true'
+      setTraitANDMatch(traitANDMatch)
+    }
 
-    const listedOnly = router.query.listedOnly === 'true'
-    setListedOnly(listedOnly)
+    if (router.query.listedOnly) {
+      const listedOnly = router.query.listedOnly === 'true'
+      setListedOnly(listedOnly)
+    }
 
     const traitIds = [router.query?.traits ?? []]
       .flat()
