@@ -6,6 +6,7 @@ import {
   CollectorAccordion,
   Flex,
   Grid,
+  Icon,
   Pagination,
   Skeleton,
   TableBody,
@@ -14,9 +15,11 @@ import {
   TableRow,
   Text,
   useBreakpointIndex,
+  useTheme,
 } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE, PIXELATED_CONTRACTS } from 'constants/'
 import { useEffect, useState } from 'react'
+import { formatCurrencyUnits, formatLargeNumber, weiToEth } from 'utils/number'
 
 import {
   TRAIT_SEARCH,
@@ -26,18 +29,35 @@ import {
 import { ExplorePanelSkeleton } from './NFTs'
 
 interface TraitsTableHeadProps extends React.HTMLAttributes<HTMLElement> {
+  /**
+   * The current selected column index used for sorting.
+   */
+    selectedColumn: number
+    /**
+    * Request the results in ascending order.
+    */
+    sortAscending: boolean
+    /**
+    * Handler for selection change
+    */
+    onChangeSelection?: (colIdx: number) => void
 }
 
 export const traitColumns = {
-    TRAIT_TYPE: 'Trait Type',
+    TYPE: 'Trait Type',
     RARITY: 'Rarity',
     FLOOR: 'Floor',
     FLOOR_USD: 'Floor (USD)'
   }
 
-  function TraitsTableHead({}: TraitsTableHeadProps) {
+  function TraitsTableHead({  
+    selectedColumn,
+    sortAscending,
+    onChangeSelection,
+  }: TraitsTableHeadProps) {
     const breakpointIndex = useBreakpointIndex()
     const isMobile = breakpointIndex <= 1
+    const { theme } = useTheme()
   
     return (
       <>
@@ -51,8 +71,24 @@ export const traitColumns = {
                 color="grey-500"
                 sx={{
                   cursor: 'pointer',
-                  transition: 'default',
+                  color: selectedColumn === 0 ? 'white' : null,
                   userSelect: 'none',
+                  transition: 'default',
+                  '& svg path': {
+                    transition: 'default',
+                    '&:nth-of-type(1)': {
+                      fill:
+                        selectedColumn === 0 && sortAscending
+                          ? 'white'
+                          : theme.rawColors['grey-500'],
+                    },
+                    '&:nth-of-type(2)': {
+                      fill:
+                        !sortAscending && selectedColumn === 0
+                          ? 'white'
+                          : theme.rawColors['grey-500'],
+                    },
+                  },
                 }}
               >
               </TableCell>
@@ -60,15 +96,31 @@ export const traitColumns = {
                 <TableCell
                   key={idx}
                   color="grey-500"
+                  onClick={() => onChangeSelection?.(idx)}
                   colSpan={
                     idx === Object.values(traitColumns).length - 1 ? 2 : 1
                   }
                   sx={{
                     cursor: 'pointer',
-                    color: null,
+                    color: selectedColumn === idx ? 'white' : null,
                     transition: 'default',
                     userSelect: 'none',
                     minWidth: 100,
+                    '& svg path': {
+                      transition: 'default',
+                      '&:nth-child(1)': {
+                        fill:
+                          selectedColumn === idx && sortAscending
+                            ? 'white'
+                            : theme.rawColors['grey-500'],
+                      },
+                      '&:nth-child(2)': {
+                        fill:
+                          !sortAscending && selectedColumn === idx
+                            ? 'white'
+                            : theme.rawColors['grey-500'],
+                      },
+                    },
                   }}
                 >
                   <Flex sx={{ alignItems: 'center' }}>
@@ -80,6 +132,7 @@ export const traitColumns = {
                     >
                       {col}
                     </Flex>
+                    <Icon icon="tableSort" height={16} width={16} />
                   </Flex>
                 </TableCell>
               ))}
@@ -121,10 +174,16 @@ export const traitColumns = {
     collectionId,
     traitType,
     searchTerm = '',
+    selectedColumn,
+    sortAscending,
+    onChangeSelection,
   }: {
     collectionId: number
     traitType?: string
     searchTerm?: string
+    selectedColumn: number
+    sortAscending: boolean
+    onChangeSelection: (colIdx: number) => void
   }) {
     const breakpointIndex = useBreakpointIndex()
     const isMobile = breakpointIndex <= 1
@@ -144,6 +203,8 @@ export const traitColumns = {
             offset: page * PAGE_SIZE,
             searchTerm,
             traitType,
+            orderColumn: Object.keys(traitColumns)[selectedColumn == 3 ? 2 : selectedColumn],
+            orderDirection: sortAscending ? 'ASC' : 'DESC',
           },
           skip: !collectionId,
         }
@@ -157,7 +218,7 @@ export const traitColumns = {
     if (loading)
       return (
         <ExplorePanelSkeleton>
-          <TraitsTableHead {...{ }} />
+          <TraitsTableHead {...{ selectedColumn, sortAscending }} />
         </ExplorePanelSkeleton>
       )
   
@@ -174,7 +235,7 @@ export const traitColumns = {
     return (
       <>
         <TraitsWrapper
-          {...{ }}
+          {...{ selectedColumn, sortAscending, onChangeSelection }}
         >
           {data.traitSearch?.traits?.map(
             ({ traitType, displayType, maxValue, collectionId, value, rarity, image, floor, floorUsd }, idx) => (
@@ -195,7 +256,7 @@ export const traitColumns = {
                       }}
                     >
                       <Text sx={{ marginBottom: 1 }}>
-                        {traitColumns.TRAIT_TYPE}
+                        {traitColumns.TYPE}
                       </Text>
                       <Text>
                         {dataCheck(traitType)}
@@ -230,7 +291,7 @@ export const traitColumns = {
                         {traitColumns.FLOOR}
                       </Text>
                       <Text>
-                        {floor ? 'Ξ' + floor : '-'}
+                        {floor ? weiToEth(floor) : '-'}
                       </Text>
                     </Flex>
                     <Flex
@@ -243,7 +304,7 @@ export const traitColumns = {
                       <Text sx={{ marginBottom: 1 }}>
                         {traitColumns.FLOOR_USD}
                       </Text>
-                      <Text>{'-'}</Text>
+                      <Text>{floorUsd ? '$' + formatLargeNumber(Number(formatCurrencyUnits(floorUsd, 6))) : '-'}</Text>
                     </Flex>
                   </Grid>
                 ) : (
@@ -259,10 +320,10 @@ export const traitColumns = {
                                   ) : ('-')}
                     </TableCell>
                     <TableCell sx={{ maxWidth: 50 }}>
-                        {floor ? 'Ξ' + floor : '-'}
+                        {floor ? weiToEth(floor) : '-'}
                     </TableCell>
                     <TableCell sx={{ maxWidth: 50 }}>
-                      {'-'}
+                      {floorUsd ? '$' + formatLargeNumber(Number(formatCurrencyUnits(floorUsd, 6))) : '-'}
                     </TableCell>
                   </>
                 )}

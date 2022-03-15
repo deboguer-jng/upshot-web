@@ -184,7 +184,11 @@ export default function ExplorePanel({
 
   useEffect(() => {
     // Reset sort + selection on new tab selection.
-    setSelectedColumn(0)
+    if (tab === 'Traits') {
+      setSelectedColumn(1)
+    } else {
+      setSelectedColumn(0)
+    }
     setSortAscending(false)
   }, [tab])
 
@@ -209,7 +213,7 @@ export default function ExplorePanel({
             />
           )}
           {tab === 'Traits' && !!collectionId && (
-            <Traits collectionId={collectionId} searchTerm={searchTerm} />
+            <Traits onChangeSelection={handleChangeSelection} {...{ searchTerm, selectedColumn, sortAscending, collectionId }} />
           )}
           {tab === 'Collectors' && !collectionId && (
             <Collectors searchTerm={searchTerm} />

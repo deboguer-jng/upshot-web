@@ -689,6 +689,8 @@ export const GET_USER_OWNED_ASSETS = gql`
   searchTerm?: string
   traitType?: string
   collectionId: number
+  orderColumn?: string
+  orderDirection?: string
 }
 
 export type TraitSearchData = {
