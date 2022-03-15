@@ -254,8 +254,12 @@ export default function SearchView() {
               }}
             >
               <Flex sx={{ flexDirection: 'column' }}>
-                {data?.assetGlobalSearch?.count && (
+                {data?.assetGlobalSearch?.count ? (
                   <Text>{data?.assetGlobalSearch?.count} {data?.assetGlobalSearch?.count === 1 ? 'result' : 'results'} found</Text>
+                ) : loading ? (
+                  <Text>Loading results...</Text>
+                ) : (
+                  <></>
                 )}
                 {collectionName && collectionId && (
                   <Flex
