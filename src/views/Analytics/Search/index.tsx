@@ -67,6 +67,7 @@ export default function SearchView() {
   const collectionSearch = router.query.collectionSearch as string
   const [selectedColumn, setSelectedColumn] = useState<number>(0)
   const [sortAscending, setSortAscending] = useState(false)
+  const [listView, setListView] = useState(false)
 
   // Trait stats
   const [selectedTraitsColumn, setSelectedTraitsColumn] = useState<number>(3)
@@ -130,6 +131,10 @@ export default function SearchView() {
     }
 
     setSelectedColumn(columnIdx)
+  }
+
+  const toggleListView = (switchToListView: boolean) => {
+    setListView(switchToListView)
   }
 
   const assetArr = data?.assetGlobalSearch?.assets
@@ -266,7 +271,19 @@ export default function SearchView() {
                     alignItems: isMobile ? 'center' : 'baseline',
                   }}
                 >
-                  <Text variant="h3Primary">NFTs</Text>
+                  {!!collectionId && (
+                    <Flex sx={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                      <Text variant="h3Primary">NFTs</Text>
+                      <Flex sx={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
+                        <IconButton onClick={() => toggleListView(true)}>
+                          <Icon color="primary" icon={listView ? "listViewSelected" : "listView"} size={32} />
+                        </IconButton>
+                        <IconButton onClick={() => toggleListView(false)}>
+                          <Icon color="primary" icon={listView ? "gridView" : "gridViewSelected"} size={32} />
+                        </IconButton>
+                      </Flex>
+                    </Flex>
+                  )}
                   {!collectionId && ready && (
                     <TopCollections
                       variant="normal"
