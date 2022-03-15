@@ -181,7 +181,9 @@ function PriceInput({
                   const minPriceWei = ethers.utils
                     .parseEther(e.currentTarget.value ?? '0')
                     .toString()
-                  const maxPriceWei = ethers.utils.parseEther(maxPriceEth ?? '0')
+                  const maxPriceWei = ethers.utils.parseEther(
+                    maxPriceEth ?? '0'
+                  )
                   onSubmit?.(minPriceWei, maxPriceWei)
                 }
               }}
@@ -193,7 +195,9 @@ function PriceInput({
               onChange={(e) => setMaxPriceEth(e.currentTarget.value)}
               onKeyPress={(e) => {
                 if (e.key === 'Enter') {
-                  const minPriceWei = ethers.utils.parseEther(minPriceEth ?? '0')
+                  const minPriceWei = ethers.utils.parseEther(
+                    minPriceEth ?? '0'
+                  )
                   const maxPriceWei = ethers.utils
                     .parseEther(e.currentTarget.value ?? '0')
                     .toString()
