@@ -366,7 +366,7 @@ export default function SearchFilterSidebar({
   const [tokenId, setTokenId] = useState('')
   const [minPrice, setMinPrice] = useState('')
   const [maxPrice, setMaxPrice] = useState('')
-  const [traitANDMatch, setTraitANDMatch] = useState(false)
+  const [traitANDMatch, setTraitANDMatch] = useState(true)
   const [traitIds, setTraitIds] = useState<number[]>([])
   const [listedOnly, setListedOnly] = useState(false)
   const breakpointIndex = useBreakpointIndex()
@@ -472,16 +472,14 @@ export default function SearchFilterSidebar({
 
   return (
     <Flex sx={{ minWidth: 300, flexDirection: 'column', gap: 8 }}>
-      {
-        !isMobile && (
-          <Flex sx={{ alignItems: 'center', gap: 4 }}>
-            <Icon icon="filter" size={24} color="white" />
-            <Text color="white" sx={{ fontSize: 4, fontWeight: 'bold' }}>
-              Search Filters
-            </Text>
-          </Flex>
-        )
-      }  
+      {!isMobile && (
+        <Flex sx={{ alignItems: 'center', gap: 4 }}>
+          <Icon icon="filter" size={24} color="white" />
+          <Text color="white" sx={{ fontSize: 4, fontWeight: 'bold' }}>
+            Search Filters
+          </Text>
+        </Flex>
+      )}
 
       {!!collectionId ? (
         <>
