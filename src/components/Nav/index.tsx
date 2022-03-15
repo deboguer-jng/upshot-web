@@ -152,11 +152,7 @@ export const Nav = () => {
     if (showSidebar) handleToggleMenu()
     isAddress
       ? router.push(`/analytics/user/${encodeURIComponent(navSearchTerm)}`)
-      : router.push(
-          `/analytics/search?collectionName=${encodeURIComponent(
-            item.name
-          )}&collectionId=${item.id}`
-        )
+      : router.push(`/analytics/collection/${item.id}`)
   }
 
   const hideMetaMask =
