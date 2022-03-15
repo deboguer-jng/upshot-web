@@ -4,6 +4,7 @@ import {
   imageOptimizer,
   Pagination,
   useBreakpointIndex,
+  AppraisalsCopy,
 } from '@upshot-tech/upshot-ui'
 import { Container } from '@upshot-tech/upshot-ui'
 import { Flex, Grid, Image, Text } from '@upshot-tech/upshot-ui'
@@ -349,31 +350,7 @@ export default function NFTView() {
                   )}
                 </Flex>
                 {!!latestAppraisal && (
-                  <a
-                    href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
-                    target="_blank"
-                    sx={{ textDecoration: 'none' }}
-                    rel="noreferrer"
-                  >
-                    <Box
-                      sx={{
-                        cursor: 'pointer',
-                        width: '100%',
-                        borderRadius: '10px',
-                        color: theme.colors.primary,
-                        border: '1px solid',
-                        padding: '10px',
-                        borderColor: theme.colors.primary,
-                        textDecoration: 'none',
-                        fontSize: '12px',
-                        '&:hover': {
-                          background: theme.colors['grey-800'],
-                        },
-                      }}
-                    >
-                      How did we calculate this appraisal?
-                    </Box>
-                  </a>
+                  <AppraisalsCopy link="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104" />
                 )}
               </>
 
