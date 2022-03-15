@@ -1,25 +1,22 @@
 import { useQuery } from '@apollo/client'
-import { useBreakpointIndex, useTheme } from '@upshot-tech/upshot-ui'
-import { Button, Container } from '@upshot-tech/upshot-ui'
-import { Box, Flex, Grid, MiniNftCard, Text } from '@upshot-tech/upshot-ui'
-import {
-  Accordion,
-  BlurrySquareTemplate,
-  InputRounded,
-  Pagination,
-} from '@upshot-tech/upshot-ui'
+import { Icon, IconButton, useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import { Container } from '@upshot-tech/upshot-ui'
+import { Flex, Grid, MiniNftCard, Text, Box, Accordion } from '@upshot-tech/upshot-ui'
+import { BlurrySquareTemplate, Pagination } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import { PIXELATED_CONTRACTS } from 'constants/'
-import { ethers } from 'ethers'
 import Head from 'next/head'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
-import { parseEthString, weiToEth } from 'utils/number'
+import { weiToEth } from 'utils/number'
 
+import TopCollections from '../../Analytics/components/ExplorePanel/TopCollections'
 import Breadcrumbs from '../components/Breadcrumbs'
+import SearchFilterSidebar from '../components/SearchFilterSidebar'
 import {
   GET_ASSETS_SEARCH,
   GetAssetsSearchData,
@@ -39,28 +36,33 @@ enum BREAKPOINT_INDEXES {
 }
 
 export default function SearchView() {
-  const { theme } = useTheme()
   const router = useRouter()
   const [page, setPage] = useState(0)
-  const collectionParam = (router.query.collection as string) ?? ''
-  const queryParam = (router.query.query as string) ?? ''
-  const attributesParam = (router.query.attributes as string) ?? ''
-
-  // @todo Replace these states refs
-  const [searchTerm, setSearchTerm] = useState(queryParam)
-  const [searchTermApplied, setSearchTermApplied] = useState(queryParam)
-
-  const [tokenId, setTokenId] = useState('')
-  const [tokenIdApplied, setTokenIdApplied] = useState('')
-  const [attributes, setAttributes] = useState(attributesParam)
-  const [attributesApplied, setAttributesApplied] = useState('')
-
-  const [collectionName, setCollectionName] = useState(collectionParam)
-  const [collectionNameApplied, setCollectionNameApplied] =
-    useState(collectionParam)
 
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
+
+  const collectionId = router.query.collectionId
+    ? Number(router.query.collectionId)
+    : undefined
+
+  const collectionName = router.query.collectionName
+    ? router.query.collectionName
+    : undefined
+
+  const tokenId = router.query.tokenId as string
+  const minPrice = router.query.minPrice as string
+  const maxPrice = router.query.maxPrice as string
+  const traitANDMatch = router.query.traitANDMatch as string
+  const listedOnly = router.query.listedOnly as string
+  const traitIds = [router.query?.traits ?? []].flat().map((val) => Number(val))
+  const collectionSearch = router.query.collectionSearch as string
+  const [selectedColumn, setSelectedColumn] = useState<number>(0)
+  const [sortAscending, setSortAscending] = useState(false)
+
+  // Used to wait for the router to mount before showing collectors.
+  const [ready, setReady] = useState(false)
+  useEffect(() => setReady(true), [])
 
   const chunks = {
     [BREAKPOINT_INDEXES.ZERO]: 2,
@@ -74,6 +76,7 @@ export default function SearchView() {
 
   const chunkSize = chunks[breakpointIndex]
   const loadArr = [...new Array(ROW_SIZE * chunkSize)]
+  const searchQueryParam = (router.query.query as string) ?? ''
 
   const { loading, error, data } = useQuery<
     GetAssetsSearchData,
@@ -83,265 +86,34 @@ export default function SearchView() {
     variables: {
       limit: ROW_SIZE * chunkSize,
       offset: page * ROW_SIZE * chunkSize,
-      searchTerm: searchTermApplied,
-      collectionName: collectionNameApplied,
-      traits: attributesApplied,
-      tokenId: tokenIdApplied,
+      collectionId,
+      tokenId,
+      minPrice,
+      maxPrice,
+      traitFilterJoin: traitANDMatch === 'true' ? 'AND' : 'OR',
+      traitIds: traitIds.length ? traitIds : undefined,
+      listed: listedOnly === 'true' ? true : false,
     },
+    skip: !collectionId,
   })
-
-  useEffect(() => {
-    if (!collectionParam) return
-
-    setCollectionName(collectionParam)
-    setCollectionNameApplied(collectionParam)
-  }, [collectionParam])
-
-  useEffect(() => {
-    if (!queryParam) return
-
-    setSearchTermApplied(queryParam)
-    setSearchTerm(queryParam)
-  }, [queryParam])
-
-  useEffect(() => {
-    if (!attributesParam) return
-    setAttributes(attributesParam)
-    setAttributesApplied(
-      attributesParam ? JSON.stringify(attributesParam.split(',')) : ''
-    )
-  }, [attributesParam])
 
   const handlePageChange = ({ selected }: { selected: number }) => {
     setPage(selected)
-  }
-
-  const handleApplyFilters = () => {
-    setSearchTermApplied(searchTerm)
-    setCollectionNameApplied(collectionName)
-    setTokenIdApplied(tokenId)
-    setAttributesApplied(
-      attributes ? JSON.stringify(attributes.split(/[ ,]+/)) : ''
-    )
-
-    router.replace('/analytics/search', undefined, { shallow: true })
   }
 
   const handleClickNFT = (id: string) => {
     router.push('/analytics/nft/' + id)
   }
 
-  const assetArr = data?.assetGlobalSearch?.assets
+  const handleChangeSelection = (columnIdx: number) => {
+    if (columnIdx === selectedColumn) {
+      setSortAscending(!sortAscending)
+    }
 
-  const searchFilters = () => {
-    return (
-      <>
-        <Box>
-          <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-            <Text sx={{ paddingTop: [4, 0] }} color="grey-500">
-              Collection
-            </Text>
-            <InputRounded
-              placeholder="Collection"
-              value={collectionName}
-              onChange={(e) => setCollectionName(e.currentTarget.value)}
-            />
-          </Flex>
-        </Box>
-
-        <Box>
-          <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-            <Text sx={{ paddingTop: [4, 0] }} color="grey-500">
-              Token ID
-            </Text>
-            <InputRounded
-              placeholder="Token ID"
-              value={tokenId}
-              onChange={(e) => setTokenId(e.currentTarget.value)}
-            />
-          </Flex>
-        </Box>
-
-        <Box>
-          <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-            <Text sx={{ paddingTop: [4, 0] }} color="grey-500">
-              Attributes
-            </Text>
-            <InputRounded
-              placeholder="Attributes"
-              value={attributes}
-              onChange={(e) => setAttributes(e.currentTarget.value)}
-            />
-          </Flex>
-        </Box>
-
-        <Box sx={{ paddingTop: [5, 0] }}>
-          <Button capitalize onClick={handleApplyFilters}>
-            Apply Filters
-          </Button>
-        </Box>
-      </>
-    )
+    setSelectedColumn(columnIdx)
   }
 
-  const searchResults = () => (
-    <>
-      <Flex
-        sx={{
-          position: ['static', 'static', 'static', 'sticky'],
-          top: 0,
-          alignSelf: 'flex-start',
-          flexDirection: 'column',
-          gap: 5,
-          width: '100%',
-        }}
-      >
-        {isMobile ? (
-          <>
-            <Box>
-              <Accordion isDropdown title="Search Filters">
-                {searchFilters()}
-              </Accordion>
-            </Box>
-          </>
-        ) : (
-          <>
-            <Box>
-              <Flex sx={{ flexDirection: 'column', gap: 1 }}>
-                <Flex sx={{ flexDirection: 'column', gap: 1 }}>
-                  <Text variant="h2Secondary" color="grey-500">
-                    Search Filters
-                  </Text>
-                </Flex>
-              </Flex>
-            </Box>
-            {searchFilters()}
-          </>
-        )}
-      </Flex>
-      <Flex
-        sx={{
-          flex: '1 auto auto',
-          flexDirection: 'column',
-          gap: 4,
-        }}
-      >
-        <Flex sx={{ flexDirection: 'column' }}>
-          <Text>Search Results</Text>
-          <Text variant="h1Primary">{collectionNameApplied}</Text>
-          <Text variant="h2Primary">{searchTermApplied}</Text>
-        </Flex>
-
-        {error ? (
-          <div>There was an error completing your request</div>
-        ) : data?.assetGlobalSearch?.assets.length === 0 ? (
-          <div>No results available.</div>
-        ) : (
-          <Flex
-            sx={{
-              flexDirection: 'column',
-              gap: 5,
-              alignItems: isMobile ? 'center' : 'baseline',
-            }}
-          >
-            {
-              /* Chunk results into non-wrapping rows. */
-              loading
-                ? loadArr
-                    .map((_, i) =>
-                      i % chunkSize === 0
-                        ? loadArr.slice(i, i + chunkSize)
-                        : null
-                    )
-                    .filter(Boolean)
-                    .map((items, idx) => (
-                      <Flex key={idx} sx={{ gap: 5 }}>
-                        {items?.map((_, idx) => (
-                          <BlurrySquareTemplate key={idx} />
-                        ))}
-                      </Flex>
-                    ))
-                : assetArr
-                    ?.map((_, i) =>
-                      i % chunkSize === 0
-                        ? assetArr.slice(i, i + chunkSize)
-                        : null
-                    )
-                    .filter(Boolean)
-                    .map((items, idx) => (
-                      <Flex key={idx} sx={{ gap: 5 }}>
-                        {items?.map(
-                          (
-                            {
-                              id,
-                              contractAddress,
-                              previewImageUrl,
-                              mediaUrl,
-                              name,
-                              collection,
-                              tokenId,
-                              lastSale,
-                              rarity,
-                              creatorUsername,
-                              creatorAddress,
-                            },
-                            idx
-                          ) => (
-                            <a
-                              key={idx}
-                              onClick={() => handleClickNFT(id)}
-                              style={{ cursor: 'pointer' }}
-                            >
-                              <MiniNftCard
-                                price={
-                                  lastSale?.ethSalePrice
-                                    ? weiToEth(lastSale.ethSalePrice)
-                                    : undefined
-                                }
-                                rarity={
-                                  rarity ? (rarity * 100).toFixed(2) + '%' : '-'
-                                }
-                                image={previewImageUrl ?? mediaUrl}
-                                creator={
-                                  creatorUsername ||
-                                  shortenAddress(creatorAddress, 2, 4)
-                                }
-                                pixelated={PIXELATED_CONTRACTS.includes(
-                                  contractAddress
-                                )}
-                                type="search"
-                                name={getAssetName(
-                                  name,
-                                  collection?.name,
-                                  tokenId
-                                )}
-                                link={`/analytics/collection/${collection?.id}`}
-                              />
-                            </a>
-                          )
-                        )}
-                      </Flex>
-                    ))
-            }
-          </Flex>
-        )}
-
-        <Flex sx={{ justifyContent: 'center' }}>
-          {!!data?.assetGlobalSearch?.count && (
-            <Pagination
-              forcePage={page}
-              pageCount={Math.ceil(
-                data.assetGlobalSearch.count / (chunkSize * ROW_SIZE)
-              )}
-              pageRangeDisplayed={0}
-              marginPagesDisplayed={0}
-              onPageChange={handlePageChange}
-            />
-          )}
-        </Flex>
-      </Flex>
-    </>
-  )
+  const assetArr = data?.assetGlobalSearch?.assets
 
   const storage = globalThis?.sessionStorage
   const prevPath = storage.getItem('prevPath')
@@ -367,7 +139,9 @@ export default function SearchView() {
   return (
     <>
       <Head>
-        <title>Upshot Analytics</title>
+        <title>
+          {searchQueryParam ? searchQueryParam + ' | ' : ''}Upshot Analytics
+        </title>
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:site" content="@UpshotHQ" />
         <meta name="twitter:creator" content="@UpshotHQ" />
@@ -394,20 +168,179 @@ export default function SearchView() {
           }}
         >
           <Breadcrumbs crumbs={breadcrumbs} />
-          {!isMobile ? (
-            <Grid
-              columns={[1, 1, 3]}
+
+          <Grid
+            sx={{
+              gridTemplateColumns: ['1fr', '1fr', '300px 3fr 1fr'],
+              flexGrow: 1,
+              gap: [8, 5, 8],
+            }}
+          >
+          {isMobile ? (
+            <>
+              <Box>
+                <Accordion isDropdown title="Search Filters">
+                  <Box sx={{paddingTop: 4}}>  
+                    <SearchFilterSidebar />
+                  </Box>
+                </Accordion>
+              </Box>
+            </>
+          ) : (
+            <SearchFilterSidebar />
+          )}
+
+            <Flex
               sx={{
-                gridTemplateColumns: ['1fr', '1fr 3fr', '1fr 4fr 1fr'],
-                flexGrow: 1,
-                gap: [8, 5, 8],
+                flex: '1 auto auto',
+                flexDirection: 'column',
+                gap: 4,
               }}
             >
-              {searchResults()}
-            </Grid>
-          ) : (
-            searchResults()
-          )}
+              <Flex sx={{ flexDirection: 'column' }}>
+              {collectionName && collectionId && (
+                <Flex sx={{ flexDirection: 'row', alignItems: 'center', marginBottom: '5' }}>
+                  <Text variant="h2Primary">{collectionName}</Text>
+                  <Link href={`/analytics/collection/${collectionId}`}>
+                  <a  style={{ textDecoration: 'none' }}>
+                    <IconButton
+                      sx={{
+                        marginLeft: '6px;',
+                        verticalAlign: 'middle',
+                      }}
+                    >
+                      <Icon
+                        icon="arrowStylizedRight"
+                        color='grey-500'
+                      />
+                    </IconButton>
+                  </a>
+                  </Link>
+                </Flex>
+              )}
+                {data?.assetGlobalSearch?.count && (<Text>{data?.assetGlobalSearch?.count} results found</Text>)}
+              </Flex>
+
+              {error ? (
+                <div>There was an error completing your request</div>
+              ) : data?.assetGlobalSearch?.assets.length === 0 ? (
+                <div>No results available.</div>
+              ) : (
+                <Flex
+                  sx={{
+                    flexDirection: 'column',
+                    gap: 5,
+                    alignItems: isMobile ? 'center' : 'baseline',
+                  }}
+                >
+                  {!collectionId && ready && (
+                    <TopCollections
+                      variant="normal"
+                      searchTerm={collectionSearch}
+                      {...{ selectedColumn, sortAscending }}
+                      onChangeSelection={handleChangeSelection}
+                    />
+                  )}
+
+                  {
+                    /* Chunk results into non-wrapping rows. */
+                    loading && collectionId
+                      ? loadArr
+                          .map((_, i) =>
+                            i % chunkSize === 0
+                              ? loadArr.slice(i, i + chunkSize)
+                              : null
+                          )
+                          .filter(Boolean)
+                          .map((items, idx) => (
+                            <Flex key={idx} sx={{ gap: 5 }}>
+                              {items?.map((_, idx) => (
+                                <BlurrySquareTemplate key={idx} />
+                              ))}
+                            </Flex>
+                          ))
+                      : assetArr
+                          ?.map((_, i) =>
+                            i % chunkSize === 0
+                              ? assetArr.slice(i, i + chunkSize)
+                              : null
+                          )
+                          .filter(Boolean)
+                          .map((items, idx) => (
+                            <Flex key={idx} sx={{ gap: 5 }}>
+                              {items?.map(
+                                (
+                                  {
+                                    id,
+                                    contractAddress,
+                                    previewImageUrl,
+                                    mediaUrl,
+                                    name,
+                                    collection,
+                                    tokenId,
+                                    lastSale,
+                                    rarity,
+                                    creatorUsername,
+                                    creatorAddress,
+                                  },
+                                  idx
+                                ) => (
+                                  <a
+                                    key={idx}
+                                    onClick={() => handleClickNFT(id)}
+                                    style={{ cursor: 'pointer' }}
+                                  >
+                                    <MiniNftCard
+                                      price={
+                                        lastSale?.ethSalePrice
+                                          ? weiToEth(lastSale.ethSalePrice)
+                                          : undefined
+                                      }
+                                      rarity={
+                                        rarity
+                                          ? (rarity * 100).toFixed(2) + '%'
+                                          : '-'
+                                      }
+                                      image={previewImageUrl ?? mediaUrl}
+                                      creator={
+                                        creatorUsername ||
+                                        shortenAddress(creatorAddress, 2, 4)
+                                      }
+                                      pixelated={PIXELATED_CONTRACTS.includes(
+                                        contractAddress
+                                      )}
+                                      type="search"
+                                      name={getAssetName(
+                                        name,
+                                        collection?.name,
+                                        tokenId
+                                      )}
+                                      link={`/analytics/collection/${collection?.id}`}
+                                    />
+                                  </a>
+                                )
+                              )}
+                            </Flex>
+                          ))
+                  }
+                </Flex>
+              )}
+
+              <Flex sx={{ justifyContent: 'center', width: '100%' }}>
+                {!!data?.assetGlobalSearch?.count && (
+                  <Pagination
+                    forcePage={page}
+                    pageRangeDisplayed={0}
+                    marginPagesDisplayed={isMobile ? 1 : 3}
+                    pageCount={Math.ceil(
+                      data.assetGlobalSearch.count / (chunkSize * ROW_SIZE)
+                    )}
+                    onPageChange={handlePageChange}
+                  />
+                )}
+              </Flex>
+            </Flex>
+          </Grid>
         </Container>
         <Container
           maxBreakpoint="lg"
@@ -416,9 +349,9 @@ export default function SearchView() {
             gap: 4,
             padding: 4,
           }}
-        >
-          <Footer />
-        </Container>
+        ></Container>
+
+        <Footer />
       </Flex>
     </>
   )

@@ -7,7 +7,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import Collectors from './ExplorePanel/Collectors'
 import ExploreNFTs from './ExplorePanel/NFTs'
 import TopCollections from './ExplorePanel/TopCollections'
-import TopCollectors from './ExplorePanel/TopCollectors'
 import Traits from './ExplorePanel/Traits'
 
 function searchForm(
@@ -190,7 +189,12 @@ export default function ExplorePanel({
   }, [tab])
 
   return (
-    <Panel>
+    <Panel
+      sx={{
+        marginLeft: isMobile ? '-1rem' : 0,
+        marginRight: isMobile ? '-1rem' : 0,
+      }}
+    >
       <Flex sx={{ flexDirection: 'column', gap: 4, position: 'relative' }}>
         <ExplorePanelHead
           onChangeTab={(tab) => setTab(tab)}
@@ -208,7 +212,7 @@ export default function ExplorePanel({
             <Traits collectionId={collectionId} searchTerm={searchTerm} />
           )}
           {tab === 'Collectors' && !collectionId && (
-            <TopCollectors searchTerm={searchTerm} />
+            <Collectors searchTerm={searchTerm} />
           )}
           {tab === 'Collectors' && !!collectionId && (
             <Collectors

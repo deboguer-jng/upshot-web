@@ -8,6 +8,7 @@ import {
   Modal,
   Navbar,
   Text,
+  useBreakpointIndex,
   useTheme,
 } from '@upshot-tech/upshot-ui'
 import { useWeb3React } from '@web3-react/core'
@@ -21,7 +22,7 @@ import {
 } from 'graphql/queries'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { selectShowSidebar, setShowSidebar } from 'redux/reducers/layout'
 import {
@@ -36,6 +37,32 @@ import { shortenAddress } from 'utils/address'
 import { BetaBanner } from '../BetaBanner'
 import { Sidebar, SidebarShade, SideLink } from './Styled'
 
+function useOutsideAlerter(ref) {
+  const [status, setStatus] = useState(false)
+
+  useEffect(() => {
+    /**
+     * Alert if clicked on outside of element
+     */
+    function handleClickOutside(event) {
+      if (ref.current && !ref.current.contains(event.target)) {
+        setStatus(true)
+      } else {
+        setStatus(false)
+      }
+    }
+
+    // Bind the event listener
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      // Unbind the event listener on clean up
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [ref])
+
+  return status
+}
+
 export const Nav = () => {
   const { theme } = useTheme()
   const { activate, deactivate, connector } = useWeb3React()
@@ -43,6 +70,7 @@ export const Nav = () => {
   const dispatch = useAppDispatch()
   const address = useAppSelector(selectAddress)
   const showSidebar = useAppSelector(selectShowSidebar)
+  const sidebarRef = useRef(null)
   const ens = useAppSelector(selectEns)
   const [navSearchTerm, setNavSearchTerm] = useState('')
   const [getNavCollections, { data: navCollectionsData }] = useLazyQuery<
@@ -51,15 +79,31 @@ export const Nav = () => {
   >(GET_NAV_BAR_COLLECTIONS)
   const [open, setOpen] = useState(false)
   const modalRef = useRef<HTMLDivElement>(null)
+  const isMobile = useBreakpointIndex() <= 1
   const toggleModal = () => setOpen(!open)
+  const outsideClicked = useOutsideAlerter(sidebarRef)
 
+  useEffect(() => {
+    if (!router.query) return
+
+    const collectionName = router.query.collectionName as string
+    const collectionSearch = router.query.collectionSearch as string
+    setNavSearchTerm(collectionSearch ?? collectionName ?? '')
+  }, [router.query])
+
+  useEffect(() => {
+    if (outsideClicked && !isMobile && showSidebar) {
+      handleToggleMenu()
+    }
+  }, [outsideClicked])
   interface InputSuggestion {
-    id: number
+    id: number | string
     name: string
+    [key: string]: any
   }
 
   const isAddress =
-    navSearchTerm.substring(0, 2) === '0x' && navSearchTerm.length === 42
+    navSearchTerm?.substring(0, 2) === '0x' && navSearchTerm?.length === 42
 
   const handleConnect = (provider: ConnectorName) => {
     if (
@@ -92,19 +136,27 @@ export const Nav = () => {
 
   const handleNavSearch = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!suggestions.length) return
+    if (showSidebar) handleToggleMenu()
+    ;(document.activeElement as HTMLElement).blur()
 
     isAddress
       ? router.push(`/analytics/user/${encodeURIComponent(navSearchTerm)}`)
       : router.push(
-          `/analytics/collection/${encodeURIComponent(suggestions[0].id)}`
+          `/analytics/search?collectionSearch=${encodeURIComponent(
+            navSearchTerm
+          )}`
         )
   }
 
   const handleSearchSuggestionChange = (item: InputSuggestion) => {
+    if (showSidebar) handleToggleMenu()
     isAddress
       ? router.push(`/analytics/user/${encodeURIComponent(navSearchTerm)}`)
-      : router.push(`/analytics/collection/${encodeURIComponent(item.id)}`)
+      : router.push(
+          `/analytics/search?collectionName=${encodeURIComponent(
+            item.name
+          )}&collectionId=${item.id}`
+        )
   }
 
   const hideMetaMask =
@@ -113,6 +165,7 @@ export const Nav = () => {
 
   const handleDisconnect = () => {
     deactivate()
+    if (showSidebar) handleToggleMenu()
     dispatch(setAddress(undefined))
     dispatch(setEns({ name: undefined, avatar: undefined }))
   }
@@ -122,7 +175,7 @@ export const Nav = () => {
   }
 
   const sidebar = (
-    <Sidebar>
+    <Sidebar ref={sidebarRef}>
       <Flex sx={{ flexDirection: 'column', gap: '32px', flexGrow: 1 }}>
         <Flex sx={{ flexDirection: 'column', gap: '32px' }}>
           <Link href="/" passHref>
@@ -137,6 +190,7 @@ export const Nav = () => {
             <SideLink
               sx={{ fontSize: 6, fontWeight: 'heading' }}
               $isActive={router.pathname === '/analytics'}
+              onClick={handleToggleMenu}
             >
               Analytics
             </SideLink>
@@ -145,6 +199,7 @@ export const Nav = () => {
             <SideLink
               sx={{ fontSize: 6, fontWeight: 'heading' }}
               target="_blank"
+              onClick={handleToggleMenu}
             >
               API Docs
             </SideLink>
@@ -153,6 +208,7 @@ export const Nav = () => {
             <SideLink
               sx={{ fontSize: 6, fontWeight: 'heading' }}
               target="_blank"
+              onClick={handleToggleMenu}
             >
               Feedback
             </SideLink>
@@ -173,19 +229,19 @@ export const Nav = () => {
           target="_blank"
           rel="noreferrer"
         >
-          <IconButton>
+          <IconButton onClick={handleToggleMenu}>
             <Icon color="white" icon="mirror" size={32} />
           </IconButton>
         </a>
 
         <a href="https://twitter.com/upshothq" target="_blank" rel="noreferrer">
-          <IconButton>
+          <IconButton onClick={handleToggleMenu}>
             <Icon color="white" icon="twitterCircle" size={32} />
           </IconButton>
         </a>
 
         <a href="https://discord.gg/upshot" target="_blank" rel="noreferrer">
-          <IconButton>
+          <IconButton onClick={handleToggleMenu}>
             <Icon color="white" icon="discord" size={32} />
           </IconButton>
         </a>
@@ -195,7 +251,7 @@ export const Nav = () => {
           target="_blank"
           rel="noreferrer"
         >
-          <IconButton>
+          <IconButton onClick={handleToggleMenu}>
             <Icon color="white" icon="instagramCircle" size={32} />
           </IconButton>
         </a>
@@ -227,7 +283,10 @@ export const Nav = () => {
           onLogoClick={() => router.push('/')}
           onSearchSuggestionChange={handleSearchSuggestionChange}
           onSearchKeyUp={handleNavKeyUp}
-          onConnectClick={toggleModal}
+          onConnectClick={() => {
+            if (showSidebar) handleToggleMenu()
+            toggleModal()
+          }}
           onDisconnectClick={handleDisconnect}
           onMenuClick={handleToggleMenu}
           searchSuggestions={suggestions}
