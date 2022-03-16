@@ -8,7 +8,6 @@ import {
   Icon,
   InputRounded,
   InputRoundedSearch,
-  Label,
   LabelAttribute,
   LabeledSwitch,
   Text,
