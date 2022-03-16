@@ -12,9 +12,10 @@ import {
   useBreakpointIndex,
 } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE, PIXELATED_CONTRACTS } from 'constants/'
+import { ethers } from 'ethers'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { ethers } from 'ethers'
+import { shortenAddress } from 'utils/address'
 
 import {
   GET_COLLECTORS,
@@ -27,7 +28,6 @@ import {
   GetUserOwnedAssetsData,
   GetUserOwnedAssetsVars,
 } from '../../queries'
-import { shortenAddress } from 'utils/address'
 
 export default function Collectors({
   id,
@@ -128,11 +128,9 @@ export default function Collectors({
     )
   }
 
-  const formatAppraisal = appraisal => {
+  const formatAppraisal = (appraisal) => {
     return appraisal
-      ? parseFloat(
-          ethers.utils.formatEther(appraisal)
-        ).toFixed(2)
+      ? parseFloat(ethers.utils.formatEther(appraisal)).toFixed(2)
       : appraisal
   }
 
@@ -149,25 +147,17 @@ export default function Collectors({
     <>
       <CollectorAccordionHead>
         <Text>Collector</Text>
-        {
-          name &&
-            <Text sx={{ whiteSpace: 'nowrap' }}>{`${
-              isMobile ? '' : name
-              } Count`}
-            </Text>
-        }
-        {
-          !name && !isLandingPage &&
-            <Text sx={{ whiteSpace: 'nowrap' }}>
-              NFT Count
-            </Text>
-        }
-        {
-          isLandingPage &&
-            <Text sx={{ whiteSpace: 'nowrap' }}>
-              Portfolio Appraisal
-            </Text>
-        }
+        {name && (
+          <Text sx={{ whiteSpace: 'nowrap' }}>
+            {`${isMobile ? '' : name} Count`}
+          </Text>
+        )}
+        {!name && !isLandingPage && (
+          <Text sx={{ whiteSpace: 'nowrap' }}>NFT Count</Text>
+        )}
+        {isLandingPage && (
+          <Text sx={{ whiteSpace: 'nowrap' }}>Portfolio Appraisal</Text>
+        )}
       </CollectorAccordionHead>
       <CollectorAccordion>
         {[...data.getOwnersByWhaleness.owners]
@@ -200,7 +190,9 @@ export default function Collectors({
                 }}
                 firstAcquisition={firstAssetPurchaseTime}
                 collectionName={name}
-                portfolioValue={formatAppraisal(ownedAppraisalValue?.appraisalWei)}
+                portfolioValue={formatAppraisal(
+                  ownedAppraisalValue?.appraisalWei
+                )}
                 extraCollections={collectionAssetCounts.map(
                   ({ count, collection: { imageUrl, name, id } }) => ({
                     id,
@@ -228,7 +220,9 @@ export default function Collectors({
                 )}
                 key={idx}
                 defaultOpen={idx === 0 ? true : false}
-                displayName={addresses[0].ens ?? shortenAddress(addresses[0].address)}
+                displayName={
+                  addresses[0].ens ?? shortenAddress(addresses[0].address)
+                }
                 {...{ count, avgHoldTime }}
               />
             )

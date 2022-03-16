@@ -46,8 +46,9 @@ export default function TopCollectionsCharts({
 }: TopCollectionsChartsProps) {
   const currentDate = Date.now()
   const before7Daysdate = currentDate - 1000 * 60 * 60 * 24 * 7 // extract 7 days in millisec
+  const before90Daysdate = currentDate - 1000 * 60 * 60 * 24 * 90 // extract 90 days in millisec
   const minTimestamp =
-    metric === 'VOLUME' ? Math.floor(before7Daysdate / 1000) : 0
+    metric === 'VOLUME' ? Math.floor(before90Daysdate / 1000) : 0
 
   const { loading, error, data } = useQuery<
     GetTopCollectionsData,

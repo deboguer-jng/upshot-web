@@ -8,7 +8,6 @@ import {
   Icon,
   InputRounded,
   InputRoundedSearch,
-  Label,
   LabelAttribute,
   LabeledSwitch,
   Text,
@@ -181,7 +180,9 @@ function PriceInput({
                   const minPriceWei = ethers.utils
                     .parseEther(e.currentTarget.value ?? '0')
                     .toString()
-                  const maxPriceWei = ethers.utils.parseEther(maxPriceEth ?? '0')
+                  const maxPriceWei = ethers.utils.parseEther(
+                    maxPriceEth ?? '0'
+                  )
                   onSubmit?.(minPriceWei, maxPriceWei)
                 }
               }}
@@ -193,7 +194,9 @@ function PriceInput({
               onChange={(e) => setMaxPriceEth(e.currentTarget.value)}
               onKeyPress={(e) => {
                 if (e.key === 'Enter') {
-                  const minPriceWei = ethers.utils.parseEther(minPriceEth ?? '0')
+                  const minPriceWei = ethers.utils.parseEther(
+                    minPriceEth ?? '0'
+                  )
                   const maxPriceWei = ethers.utils
                     .parseEther(e.currentTarget.value ?? '0')
                     .toString()
@@ -352,9 +355,11 @@ function TraitCategoryList({
 export default function SearchFilterSidebar({
   collectionId: defaultCollectionId,
   collectionName: defaultCollectionName,
+  onApply,
 }: {
   collectionId?: number
   collectionName?: string
+  onApply?: ({ query }) => void
 }) {
   const router = useRouter()
   const [collectionId, setCollectionId] = useState(defaultCollectionId)
@@ -362,7 +367,7 @@ export default function SearchFilterSidebar({
   const [tokenId, setTokenId] = useState('')
   const [minPrice, setMinPrice] = useState('')
   const [maxPrice, setMaxPrice] = useState('')
-  const [traitANDMatch, setTraitANDMatch] = useState(false)
+  const [traitANDMatch, setTraitANDMatch] = useState(true)
   const [traitIds, setTraitIds] = useState<number[]>([])
   const [listedOnly, setListedOnly] = useState(false)
   const breakpointIndex = useBreakpointIndex()
@@ -388,11 +393,15 @@ export default function SearchFilterSidebar({
     const maxPrice = router.query.maxPrice as string
     setMaxPrice(maxPrice)
 
-    const traitANDMatch = router.query.traitANDMatch === 'true'
-    setTraitANDMatch(traitANDMatch)
+    if (router.query.traitANDMatch) {
+      const traitANDMatch = router.query.traitANDMatch === 'true'
+      setTraitANDMatch(traitANDMatch)
+    }
 
-    const listedOnly = router.query.listedOnly === 'true'
-    setListedOnly(listedOnly)
+    if (router.query.listedOnly) {
+      const listedOnly = router.query.listedOnly === 'true'
+      setListedOnly(listedOnly)
+    }
 
     const traitIds = [router.query?.traits ?? []]
       .flat()
@@ -431,8 +440,7 @@ export default function SearchFilterSidebar({
   )
 
   const handleApplyFilters = (query = {}) => {
-    router.push({
-      pathname: '/analytics/search',
+    onApply?.({
       query: {
         traits: traitIds,
         collectionId,
@@ -468,16 +476,14 @@ export default function SearchFilterSidebar({
 
   return (
     <Flex sx={{ minWidth: 300, flexDirection: 'column', gap: 8 }}>
-      {
-        !isMobile && (
-          <Flex sx={{ alignItems: 'center', gap: 4 }}>
-            <Icon icon="filter" size={24} color="white" />
-            <Text color="white" sx={{ fontSize: 4, fontWeight: 'bold' }}>
-              Search Filters
-            </Text>
-          </Flex>
-        )
-      }  
+      {!isMobile && (
+        <Flex sx={{ alignItems: 'center', gap: 4 }}>
+          <Icon icon="filter" size={24} color="white" />
+          <Text color="white" sx={{ fontSize: 4, fontWeight: 'bold' }}>
+            Search Filters
+          </Text>
+        </Flex>
+      )}
 
       {!!collectionId ? (
         <>

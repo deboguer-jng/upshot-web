@@ -1,9 +1,11 @@
 /** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
 import {
+  BuyNowPanel,
   imageOptimizer,
   Pagination,
   useBreakpointIndex,
+  AppraisalsCopy,
 } from '@upshot-tech/upshot-ui'
 import { Container } from '@upshot-tech/upshot-ui'
 import { Flex, Grid, Image, Text } from '@upshot-tech/upshot-ui'
@@ -207,6 +209,13 @@ export default function NFTView() {
     creatorUsername,
     contractAddress,
     warningBanner,
+    listPrice,
+    listPriceUsd,
+    listMarketplace,
+    listUrl,
+    listTimestamp,
+    listExpiration,
+    listAppraisalRatio,
   } = data.assetById
 
   const changePageTraits = () => {
@@ -240,8 +249,12 @@ export default function NFTView() {
 
   const assetName = getAssetName(name, collection?.name, tokenId)
   const displayName =
-    extractEns(txHistory?.[0]?.txToUser?.addresses, txHistory?.[0]?.txToAddress)
-      ?? shortenAddress(txHistory?.[0]?.txToAddress) ?? 'Unknown'
+    extractEns(
+      txHistory?.[0]?.txToUser?.addresses,
+      txHistory?.[0]?.txToAddress
+    ) ??
+    shortenAddress(txHistory?.[0]?.txToAddress) ??
+    'Unknown'
 
   const image = previewImageUrl ?? mediaUrl
   const optimizedSrc = imageOptimizer(image, { width: 340 }) ?? image
@@ -325,10 +338,14 @@ export default function NFTView() {
               <>
                 <Flex sx={{ alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
                   {!!lastAppraisalWeiPrice && (
-                    <Label size="md" color="blue">
-                      {'Last Appraisal: Ξ' +
-                        weiToEth(lastAppraisalWeiPrice, 3, false)}
-                    </Label>
+                    <Flex
+                      sx={{ alignItems: 'center', justifyContent: 'center' }}
+                    >
+                      <Label size="md" color="blue">
+                        {'Last Appraisal: Ξ' +
+                          weiToEth(lastAppraisalWeiPrice, 3, false)}
+                      </Label>
+                    </Flex>
                   )}
 
                   {!!rarityRank && !!collection && !!collection?.size && (
@@ -338,31 +355,7 @@ export default function NFTView() {
                   )}
                 </Flex>
                 {!!lastAppraisalWeiPrice && (
-                  <a
-                    href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
-                    target="_blank"
-                    sx={{ textDecoration: 'none' }}
-                    rel="noreferrer"
-                  >
-                    <Box
-                      sx={{
-                        cursor: 'pointer',
-                        width: '100%',
-                        borderRadius: '10px',
-                        color: theme.colors.primary,
-                        border: '1px solid',
-                        padding: '10px',
-                        borderColor: theme.colors.primary,
-                        textDecoration: 'none',
-                        fontSize: '12px',
-                        '&:hover': {
-                          background: theme.colors['grey-800'],
-                        },
-                      }}
-                    >
-                      How did we calculate this appraisal?
-                    </Box>
-                  </a>
+                  <AppraisalsCopy link="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104" />
                 )}
               </>
 
@@ -412,6 +405,27 @@ export default function NFTView() {
           </Flex>
 
           <Flex sx={{ flexDirection: 'column', gap: 4 }}>
+            {listPrice &&
+              listPriceUsd &&
+              listMarketplace &&
+              listUrl &&
+              listAppraisalRatio && (
+                <BuyNowPanel
+                  variant="wide"
+                  listPriceETH={Number(
+                    parseFloat(ethers.utils.formatEther(listPrice)).toFixed(2)
+                  )}
+                  sx={{ width: '100%' }}
+                  listPriceUSD={Number(formatCurrencyUnits(listPriceUsd, 6))}
+                  listAppraisalPercentage={listAppraisalRatio}
+                  marketplaceName={
+                    listUrl.includes('larvalabs.com')
+                      ? 'Larva Labs'
+                      : listMarketplace
+                  }
+                  marketplaceUrl={listUrl}
+                />
+              )}
             <Flex
               sx={{
                 gap: 4,
@@ -543,37 +557,39 @@ export default function NFTView() {
                   <Flex sx={{ flexDirection: 'column', gap: 4 }}>
                     <Text variant="h3Secondary">Attributes</Text>
                     <Grid columns={isMobile ? 1 : 2}>
-                      {pageTraits.map(({ traitType, value, rarity }, idx) => (
-                        <Box key={idx}>
-                          <Link
-                            href={`/analytics/search?attributes=${value}&collectionId=${
-                              collection?.id
-                            }&collectionName=${encodeURIComponent(
-                              collection?.name ?? ''
-                            )}`}
-                            key={idx}
-                          >
-                            <a
-                              sx={{
-                                textDecoration: 'none',
-                                cursor: 'pointer',
-                              }}
+                      {pageTraits.map(
+                        ({ id, traitType, value, rarity }, idx) => (
+                          <Box key={idx}>
+                            <Link
+                              href={`/analytics/search?traits=${id}&collectionId=${
+                                collection?.id
+                              }&collectionName=${encodeURIComponent(
+                                collection?.name ?? ''
+                              )}`}
+                              key={idx}
                             >
-                              <LabelAttribute
-                                expanded={true}
-                                expandedText={traitType ? traitType : 'Trait'}
-                                variant="percentage"
-                                percentage={(100 - rarity * 100)
-                                  .toFixed(2)
-                                  .toString()}
-                                hasHover
+                              <a
+                                sx={{
+                                  textDecoration: 'none',
+                                  cursor: 'pointer',
+                                }}
                               >
-                                {value}
-                              </LabelAttribute>
-                            </a>
-                          </Link>
-                        </Box>
-                      ))}
+                                <LabelAttribute
+                                  expanded={true}
+                                  expandedText={traitType ? traitType : 'Trait'}
+                                  variant="percentage"
+                                  percentage={(100 - rarity * 100)
+                                    .toFixed(2)
+                                    .toString()}
+                                  hasHover
+                                >
+                                  {value}
+                                </LabelAttribute>
+                              </a>
+                            </Link>
+                          </Box>
+                        )
+                      )}
                     </Grid>
                     {Math.ceil(traits.length / TRAIT_PAGE_SIZE) > 1 && (
                       <Flex
@@ -658,11 +674,7 @@ export default function NFTView() {
                                     false
                                   )
                                 : lastAppraisalWeiPrice
-                                ? weiToEth(
-                                    lastAppraisalWeiPrice,
-                                    3,
-                                    false
-                                  )
+                                ? weiToEth(lastAppraisalWeiPrice, 3, false)
                                 : '-'}
                             </Label>
 
@@ -821,7 +833,15 @@ export default function NFTView() {
                                           }}
                                         >
                                           <Text>
-                                            {extractEns(txFromUser?.addresses, txFromAddress) ?? shortenAddress(txFromAddress, 2, 4)}
+                                            {extractEns(
+                                              txFromUser?.addresses,
+                                              txFromAddress
+                                            ) ??
+                                              shortenAddress(
+                                                txFromAddress,
+                                                2,
+                                                4
+                                              )}
                                           </Text>
                                         </a>
                                       </Link>
@@ -849,7 +869,11 @@ export default function NFTView() {
                                           }}
                                         >
                                           <Text>
-                                            {extractEns(txToUser?.addresses, txToAddress) ?? shortenAddress(txToAddress, 2, 4)}
+                                            {extractEns(
+                                              txToUser?.addresses,
+                                              txToAddress
+                                            ) ??
+                                              shortenAddress(txToAddress, 2, 4)}
                                           </Text>
                                         </a>
                                       </Link>
