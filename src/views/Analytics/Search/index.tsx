@@ -165,9 +165,17 @@ export default function SearchView() {
     setSelectedColumn(columnIdx)
   }
 
+
   const toggleListView = (switchToListView: boolean) => {
     setListView(switchToListView)
   }
+  
+  const handleApplySearch = ({ query }) => {
+    setPage(0)
+    router.push({
+      pathname: '/analytics/search',
+      query,
+    })
 
   const assetArr = data?.assetGlobalSearch?.assets
 
@@ -237,13 +245,13 @@ export default function SearchView() {
                 <Box>
                   <Accordion isDropdown title="Search Filters">
                     <Box sx={{ paddingTop: 4 }}>
-                      <SearchFilterSidebar />
+                      <SearchFilterSidebar onApply={handleApplySearch} />
                     </Box>
                   </Accordion>
                 </Box>
               </>
             ) : (
-              <SearchFilterSidebar />
+              <SearchFilterSidebar onApply={handleApplySearch} />
             )}
 
             <Flex
@@ -284,6 +292,7 @@ export default function SearchView() {
                     </Link>
                   </Flex>
                 )}
+
 
                 {!!collectionId && traitIds.length > 0 && (
                   <TraitStats
