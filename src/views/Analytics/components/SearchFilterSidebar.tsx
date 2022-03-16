@@ -8,7 +8,6 @@ import {
   Icon,
   InputRounded,
   InputRoundedSearch,
-  Label,
   LabelAttribute,
   LabeledSwitch,
   Text,
@@ -356,9 +355,11 @@ function TraitCategoryList({
 export default function SearchFilterSidebar({
   collectionId: defaultCollectionId,
   collectionName: defaultCollectionName,
+  onApply,
 }: {
   collectionId?: number
   collectionName?: string
+  onApply?: ({ query }) => void
 }) {
   const router = useRouter()
   const [collectionId, setCollectionId] = useState(defaultCollectionId)
@@ -439,8 +440,7 @@ export default function SearchFilterSidebar({
   )
 
   const handleApplyFilters = (query = {}) => {
-    router.push({
-      pathname: '/analytics/search',
+    onApply?.({
       query: {
         traits: traitIds,
         collectionId,
