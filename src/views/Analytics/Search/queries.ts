@@ -95,3 +95,57 @@ export const GET_ASSETS_SEARCH = gql`
     }
   }
 `
+/**
+ * Trait Statistics
+ * @see TraitStats
+ */
+export type GetTraitStatsVars = {
+  collectionId: number
+  orderColumn?: string
+  orderDirection?: string
+  limit?: number
+  offset?: number
+}
+
+export type GetTraitStatsData = {
+  collectionById: {
+    traitGroups: {
+      traits: {
+        id: number
+        value: string
+        traitType: string
+        rarity: number
+        floor: string
+        image: string
+      }[]
+    }[]
+  }
+}
+
+export const GET_TRAIT_STATS = gql`
+  query GetTraitStats(
+    $collectionId: Int!
+    $orderColumn: TraitSearchSortOption
+    $orderDirection: OrderDirection
+    $limit: Int
+    $offset: Int
+  ) {
+    collectionById(id: $collectionId) {
+      traitGroups {
+        traits(
+          limit: $limit
+          offset: $offset
+          orderColumn: $orderColumn
+          orderDirection: $orderDirection
+        ) {
+          id
+          value
+          traitType
+          rarity
+          floor
+          image
+        }
+      }
+    }
+  }
+`

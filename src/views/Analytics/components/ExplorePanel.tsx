@@ -7,6 +7,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import Collectors from './ExplorePanel/Collectors'
 import ExploreNFTs from './ExplorePanel/NFTs'
 import TopCollections from './ExplorePanel/TopCollections'
+import Traits from './ExplorePanel/Traits'
 
 function searchForm(
   handleSearch,
@@ -79,6 +80,8 @@ function ExplorePanelHead({
   if (!router.pathname.includes('/collection'))
     // if page is not collection page
     dropdownOptions.push('Collections')
+  if (router.pathname.includes('/collection'))
+    dropdownOptions.push('Traits')
 
   return (
     <>
@@ -164,7 +167,7 @@ export default function ExplorePanel({
 
   const [searchTerm, setSearchTerm] = useState('')
   const [tab, setTab] = useState(
-    router.pathname.includes('/collection') ? 'NFTs' : 'Collections'
+    router.pathname.includes('/collection') ? 'Traits' : 'Collections'
   )
   const [selectedColumn, setSelectedColumn] = useState<number>(0)
   const [sortAscending, setSortAscending] = useState(false)
@@ -181,7 +184,11 @@ export default function ExplorePanel({
 
   useEffect(() => {
     // Reset sort + selection on new tab selection.
-    setSelectedColumn(0)
+    if (tab === 'Traits') {
+      setSelectedColumn(1)
+    } else {
+      setSelectedColumn(0)
+    }
     setSortAscending(false)
   }, [tab])
 
@@ -205,7 +212,13 @@ export default function ExplorePanel({
               {...{ searchTerm, selectedColumn, sortAscending, collectionId }}
             />
           )}
-          {tab === 'Collectors' && (
+          {tab === 'Traits' && !!collectionId && (
+            <Traits onChangeSelection={handleChangeSelection} {...{ searchTerm, selectedColumn, sortAscending, collectionId }} />
+          )}
+          {tab === 'Collectors' && !collectionId && (
+            <Collectors searchTerm={searchTerm} />
+          )}
+          {tab === 'Collectors' && !!collectionId && (
             <Collectors
               id={collectionId}
               name={collectionName}
