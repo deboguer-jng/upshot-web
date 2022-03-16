@@ -262,34 +262,6 @@ export default function NFTView() {
     ? image
     : optimizedSrc
 
-  // Generate content for tooltip
-  const AppraisalTooltipContent = (
-    <div style={{ textAlign: 'left' }}>
-      <Text
-        color="grey-400"
-        sx={{
-          fontSize: 3,
-          lineHeight: 1.3,
-          display: 'block',
-          marginBottom: 2,
-        }}
-      >
-        How are our appraisals calculated?
-      </Text>
-      <Text
-        sx={{
-          fontSize: 3,
-          lineHeight: 1.3,
-          display: 'block',
-        }}
-      >
-        Our appraisals combine on-chain data (like transactions, collections,
-        traits, metadata, and rarity) with off-chain data (like bid/ask spread,
-        market behaviors, etc) with a little Upshot magic.
-      </Text>
-    </div>
-  )
-
   return (
     <>
       <Head>
@@ -373,10 +345,6 @@ export default function NFTView() {
                         {'Last Appraisal: Ξ' +
                           weiToEth(lastAppraisalWeiPrice, 3, false)}
                       </Label>
-                      <Tooltip
-                        tooltip={AppraisalTooltipContent}
-                        sx={{ marginLeft: '5px' }}
-                      />
                     </Flex>
                   )}
 
