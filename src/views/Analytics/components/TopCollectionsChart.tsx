@@ -1,15 +1,19 @@
 import { useQuery } from '@apollo/client'
 import { Chart } from '@upshot-tech/upshot-ui'
+import { PAGE_SIZE } from 'constants/'
 import { ethers } from 'ethers'
+import { useState } from 'react'
 import { weiToEth } from 'utils/number'
 
 import {
+  ETimeWindow,
   GET_TOP_COLLECTIONS,
   GetTopCollectionsData,
   GetTopCollectionsVars,
   TimeSeries,
 } from '../queries'
 import { METRIC } from './ButtonTabs'
+import { OrderedAssetColumns } from './ExplorePanel/TopCollections'
 
 interface TopCollectionsChartsProps {
   metric: METRIC
@@ -18,21 +22,27 @@ interface TopCollectionsChartsProps {
 }
 
 const timeSeriesKeys = {
-  AVERAGE: 'average',
-  VOLUME: 'volume',
+  PAST_WEEK_AVERAGE: 'average',
+  PAST_WEEK_VOLUME: 'volume',
   FLOOR: 'floor',
 }
 
 const athKeys = {
-  AVERAGE: 'athAverageWeeklyWei',
-  VOLUME: 'athVolumeWeeklyWei',
+  PAST_WEEK_AVERAGE: 'athAverageWeeklyWei',
+  PAST_WEEK_VOLUME: 'athVolumeWeeklyWei',
   FLOOR: 'athFloor',
 }
 
 const atlKeys = {
-  AVERAGE: 'atlAverageWeeklyWei',
-  VOLUME: 'atlVolumeWeeklyWei',
+  PAST_WEEK_AVERAGE: 'atlAverageWeeklyWei',
+  PAST_WEEK_VOLUME: 'atlVolumeWeeklyWei',
   FLOOR: 'atlFloor',
+}
+
+export const collectionChartColumns: Partial<OrderedAssetColumns> = {
+  PAST_WEEK_VOLUME: 'Weekly Volume',
+  PAST_WEEK_AVERAGE: 'Average Price',
+  FLOOR: 'Floor Price',
 }
 
 const floorCheck = (val) => {
@@ -44,25 +54,29 @@ export default function TopCollectionsCharts({
   selectedCollections,
   onClose,
 }: TopCollectionsChartsProps) {
+  const [page, setPage] = useState(0)
   const currentDate = Date.now()
   const before7Daysdate = currentDate - 1000 * 60 * 60 * 24 * 7 // extract 7 days in millisec
   const before90Daysdate = currentDate - 1000 * 60 * 60 * 24 * 90 // extract 90 days in millisec
   const minTimestamp =
-    metric === 'VOLUME' ? Math.floor(before90Daysdate / 1000) : 0
+    metric === 'PAST_WEEK_VOLUME' ? Math.floor(before90Daysdate / 1000) : 0
 
   const { loading, error, data } = useQuery<
     GetTopCollectionsData,
     GetTopCollectionsVars
   >(GET_TOP_COLLECTIONS, {
-    errorPolicy: 'all',
+    errorPolicy: 'ignore',
     variables: {
-      metric,
-      stringifiedCollectionIds: selectedCollections.length
-        ? `[${selectedCollections.join(',')}]`
-        : undefined,
+      orderColumn: metric,
+      orderDirection: 'ASC',
+      limit: PAGE_SIZE,
+      offset: page * PAGE_SIZE,
+      ids: selectedCollections ?? [],
       minTimestamp: minTimestamp,
+      windowSize: 'WEEK',
     },
   })
+
   /* Load state. */
   if (loading) return <Chart loading />
 
@@ -70,13 +84,13 @@ export default function TopCollectionsCharts({
   // if (error) return <Chart error />
 
   /* No results state. */
-  if (!data?.orderedCollectionsByMetricSearch?.assetSets?.length)
+  if (!data?.searchCollectionByMetric?.assetSets?.length)
     return <Chart noData />
 
   /* No selected state. */
   if (!selectedCollections.length) return <Chart noSelected />
 
-  const assetSets = data.orderedCollectionsByMetricSearch.assetSets.filter(
+  const assetSets = data.searchCollectionByMetric.assetSets.filter(
     ({ timeSeries }) => timeSeries?.length
   )
   if (!assetSets?.length) return <Chart noData />
@@ -129,7 +143,7 @@ export default function TopCollectionsCharts({
         /* priceUsd: 10, */
         // priceChange,
         volume:
-          metric === 'VOLUME' && latestStats?.pastWeekWeiVolume
+          metric === 'PAST_WEEK_VOLUME' && latestStats?.pastWeekWeiVolume
             ? parseFloat(weiToEth(latestStats?.pastWeekWeiVolume, 2, false))
             : 0,
         data: data.map((val, i) =>

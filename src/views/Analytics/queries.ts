@@ -1,11 +1,5 @@
 import { gql } from '@apollo/client'
 
-/**
- * Get top collections
- * @see TopCollectionsChart
- */
-export type GetTopCollectionsVars = {}
-
 export type TimeSeries = {
   timestamp: number
   average: string
@@ -23,126 +17,13 @@ export enum OrderDirection {
   ASC
 }
 
-export type GetTopCollectionsData = {
-  orderedCollectionsByMetricSearch: {
-    assetSets: {
-      name: string
-      id: number
-      athAverageDailyWei: {
-        value: string
-      }
-      atlAverageDailyWei: {
-        value: string
-      }
-      athAverageWeeklyWei: {
-        value: string
-      }
-      atlAverageWeeklyWei: {
-        value: string
-      }
-      athVolumeDailyWei: {
-        value: string
-      }
-      atlVolumeDailyWei: {
-        value: string
-      }
-      athVolumeWeeklyWei: {
-        value: string
-      }
-      atlVolumeWeeklyWei: {
-        value: string
-      }
-      athFloor: {
-        value: string
-      }
-      atlFloor: {
-        value: string
-      }
-      latestStats: {
-        volume: string
-        weekCapChange: number
-        pastWeekWeiVolume: string
-        floor: number
-        pastDayWeiAverage: string
-        pastDayWeiVolume: string
-      }
-      timeSeries?: TimeSeries[]
-    }[]
-  }
+export enum ETimeWindow {
+  HOUR,
+  DAY,
+  WEEK,
+  MONTH,
+  ALLTIME
 }
-
-export const GET_TOP_COLLECTIONS = gql`
-  query GetTopCollections(
-    $metric: EOrderedAssetSetMetric!
-    $stringifiedCollectionIds: String
-    $minTimestamp: Int!
-  ) {
-    orderedCollectionsByMetricSearch(
-      metric: $metric
-      stringifiedCollectionIds: $stringifiedCollectionIds
-      limit: 5
-      windowSize: WEEK
-    ) {
-      assetSets {
-        name
-        id
-        latestStats {
-          volume
-        }
-        athAverageDailyWei {
-          value
-        }
-        atlAverageDailyWei {
-          value
-        }
-        athAverageWeeklyWei {
-          value
-        }
-        atlAverageWeeklyWei {
-          value
-        }
-        athVolumeDailyWei {
-          value
-        }
-        atlVolumeDailyWei {
-          value
-        }
-        athVolumeWeeklyWei {
-          value
-        }
-        atlVolumeWeeklyWei {
-          value
-        }
-        athFloor {
-          value
-        }
-        atlFloor {
-          value
-        }
-        athFloor {
-          value
-        }
-        atlFloor {
-          value
-        }
-        timeSeries(minTimestamp: $minTimestamp, windowSize: WEEK) {
-          timestamp
-          average
-          volume
-          floor
-        }
-        latestStats {
-          volume
-          weekCapChange
-          pastWeekWeiVolume
-          floor
-          pastDayWeiAverage
-          pastDayWeiVolume
-        }
-      }
-    }
-  }
-`
 
 /**
  * Collection Avg. Price
@@ -312,6 +193,7 @@ export type GetExploreCollectionsVars = {
   limit: number
   offset: number
   name?: string
+  ids?: number[]
 }
 
 export type GetExploreCollectionsData = {
@@ -357,6 +239,112 @@ export const GET_EXPLORE_COLLECTIONS = gql`
           floor
           pastDayWeiAverage
           pastWeekWeiVolume
+          weekFloorChange
+        }
+      }
+    }
+  }
+`
+
+/**
+ * Top-level home page chart
+ * @see TopCollectionsChart
+ */
+
+ export type GetTopCollectionsVars = {
+  orderColumn?: string
+  orderDirection?: string
+  limit?: number
+  offset?: number
+  name?: string
+  ids?: number[]
+  minTimestamp?: number
+  maxTimestamp?: number
+  windowSize?: string
+}
+
+export type GetTopCollectionsData = {
+  searchCollectionByMetric: {
+    count: number
+    assetSets: {
+      id: number
+      name: string
+      imageUrl?: string
+      latestStats: {
+        floor: string
+        pastDayWeiAverage: string
+        pastWeekWeiAverage: string
+        pastDayWeiVolume: string
+        pastWeekWeiVolume: string
+        weekFloorChange: number
+      }
+      timeSeries?: {
+        timestamp?: number
+        floor?: string
+        ceil?: string
+        average?: string
+        volume?: string
+        marketCap?: string
+        usdFloor?: string
+        usdCeil?: string
+        usdAverage?: string
+        usdVolume?: string
+        usdMarketCap?: string
+        weekCapChange?: number
+        weekFloorChange?: number
+      }[]
+    }[]
+  }
+}
+
+export const GET_TOP_COLLECTIONS = gql`
+  query GetTopCollections(
+    $orderColumn: EAssetSetStatSearchOrder!
+    $orderDirection: OrderDirection!
+    $limit: Int!
+    $offset: Int!
+    $name: String
+    $ids: [Int!]
+    $minTimestamp: Int = 0
+    $maxTimestamp: Int
+    $windowSize: ETimeWindow = DAY
+  ) {
+    searchCollectionByMetric(
+      searchArgs: {
+        orderColumn: $orderColumn
+        orderDirection: $orderDirection
+        limit: $limit
+        offset: $offset
+        name: $name
+        ids: $ids
+      }
+    ) {
+      count
+      assetSets {
+        id
+        name
+        imageUrl
+        latestStats {
+          floor
+          pastDayWeiAverage
+          pastWeekWeiAverage
+          pastDayWeiVolume
+          pastWeekWeiVolume
+          weekFloorChange
+        }
+        timeSeries(minTimestamp: $minTimestamp, maxTimestamp: $maxTimestamp, windowSize: $windowSize) {
+          timestamp
+          floor
+          ceil
+          average
+          volume
+          marketCap
+          usdFloor
+          usdCeil
+          usdAverage
+          usdVolume
+          usdMarketCap
+          weekCapChange
           weekFloorChange
         }
       }

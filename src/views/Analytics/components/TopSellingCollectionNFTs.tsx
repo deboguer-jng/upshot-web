@@ -18,10 +18,10 @@ import { shortenAddress } from 'utils/address'
 import { weiToEth } from 'utils/number'
 
 import {
-  GET_COLLECTION_AVG_PRICE,
+  GET_TOP_COLLECTIONS,
   GET_TOP_SALES,
-  GetCollectionAvgPriceData,
-  GetCollectionAvgPriceVars,
+  GetTopCollectionsData,
+  GetTopCollectionsVars,
   GetTopSalesData,
   GetTopSalesVars,
 } from '../queries'
@@ -120,6 +120,7 @@ export default function TopSellingCollectionNFTs({
   collectionId?: number
 }) {
   const router = useRouter()
+  const [page, setPage] = useState(0)
   const [period, setPeriod] = useState('1 day')
   const [topSellingType, setTopSellingType] = useState('NFTs')
   const breakpointIndex = useBreakpointIndex()
@@ -136,21 +137,24 @@ export default function TopSellingCollectionNFTs({
     }
   ) // Using `all` to include data with errors.
 
-  const {
-    loading: collectionLoading,
-    error: collectionError,
-    data: collectionData,
-  } = useQuery<GetCollectionAvgPriceData, GetCollectionAvgPriceVars>(
-    GET_COLLECTION_AVG_PRICE,
-    {
-      variables: {
-        metric: 'VOLUME',
-        windowSize:
-          period === '1 day' ? 'DAY' : period === '1 week' ? 'WEEK' : 'MONTH',
-        limit: 10,
-      },
-    }
-  )
+
+  const { 
+    loading: collectionLoading, 
+    error: collectionError, 
+    data: collectionData
+  } = useQuery<
+    GetTopCollectionsData,
+    GetTopCollectionsVars
+  >(GET_TOP_COLLECTIONS, {
+    errorPolicy: 'all',
+    variables: {
+      orderColumn: 'PAST_WEEK_VOLUME',
+      orderDirection: 'DESC',
+      limit: 100,
+      offset: page * 100,
+      windowSize: period === '1 day' ? 'DAY' : period === '1 week' ? 'WEEK' : 'MONTH',
+    },
+  })
 
   const handleClickNFT = (id: string) => {
     router.push('/analytics/nft/' + id)
@@ -188,8 +192,8 @@ export default function TopSellingCollectionNFTs({
 
   if (
     !data?.topSales.length ||
-    !collectionData?.orderedCollectionsByMetricSearch?.assetSets.length
-  )
+    !collectionData?.searchCollectionByMetric?.assetSets.length
+  ) {
     return (
       <Flex
         sx={{
@@ -206,6 +210,7 @@ export default function TopSellingCollectionNFTs({
         <text sx={{ paddingTop: '80px' }}>No results available. </text>
       </Flex>
     )
+  }
 
   const getSalesNumber = (state) => {
     switch (period) {
@@ -288,7 +293,7 @@ export default function TopSellingCollectionNFTs({
             </>
           ) : (
             <>
-              {collectionData?.orderedCollectionsByMetricSearch.assetSets.map(
+              {collectionData?.searchCollectionByMetric.assetSets.map(
                 ({ id, name, imageUrl, latestStats }) => (
                   <Link key={id} href={`/analytics/collection/${id}`}>
                     <a style={{ textDecoration: 'none' }}>

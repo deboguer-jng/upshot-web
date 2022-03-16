@@ -4,8 +4,8 @@ import { useState } from 'react'
 
 export const METRICS = {
   FLOOR: 'Floor Price',
-  VOLUME: 'Weekly Volume',
-  AVERAGE: 'Average Price',
+  PAST_WEEK_VOLUME: 'Weekly Volume',
+  PAST_WEEK_AVERAGE: 'Average Price',
 }
 
 export type METRIC = keyof typeof METRICS
