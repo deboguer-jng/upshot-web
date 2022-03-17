@@ -8,14 +8,15 @@ import {
   Icon,
   useTheme,
 } from '@upshot-tech/upshot-ui'
+import { PAGE_SIZE } from 'constants/'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { weiToEth } from 'utils/number'
 
 import {
-  GET_COLLECTION_AVG_PRICE,
-  GetCollectionAvgPriceData,
-  GetCollectionAvgPriceVars,
+  GET_COLLECTIONS_BY_METRIC,
+  GetCollectionsByMetricData,
+  GetCollectionsByMetricVars,
 } from '../queries'
 import { METRIC } from './ButtonTabs'
 import CollectionPanel from './CollectionPanel'
@@ -38,6 +39,7 @@ export default function CollectionAvgPricePanel({
   colorCycleIndex,
 }: CollectionAvgPricePanelProps) {
   const { theme } = useTheme()
+  const [page, setPage] = useState(0)
   const searchTermRef = useRef<HTMLInputElement | null>(null)
   const [searchTermApplied, setSearchTermApplied] = useState('')
 
@@ -48,13 +50,15 @@ export default function CollectionAvgPricePanel({
   }
 
   const { loading, error, data } = useQuery<
-    GetCollectionAvgPriceData,
-    GetCollectionAvgPriceVars
-  >(GET_COLLECTION_AVG_PRICE, {
+    GetCollectionsByMetricData,
+    GetCollectionsByMetricVars
+  >(GET_COLLECTIONS_BY_METRIC, {
     errorPolicy: 'all',
     variables: {
+      orderColumn: metric,
+      orderDirection: 'DESC',
       limit: 100,
-      metric,
+      offset: page * 100,
       name: searchTermApplied,
     },
   })
@@ -69,11 +73,11 @@ export default function CollectionAvgPricePanel({
   }, [data])
 
   const title =
-    metric === 'VOLUME'
+    metric === 'PAST_WEEK_VOLUME'
       ? 'Collections by Weekly Volume'
-      : `Collections by ${
-          metric.charAt(0) + metric.slice(1).toLowerCase()
-        } Price`
+      : metric === 'PAST_WEEK_AVERAGE' ?
+      'Collections by Average Price'
+      : 'Collections by Floor Price'
   const subtitle =
     'Select collections to add them to the chart, or click icons to see more'
 
@@ -101,7 +105,7 @@ export default function CollectionAvgPricePanel({
       </CollectionPanel>
     )
 
-  if (!data?.orderedCollectionsByMetricSearch.assetSets.length)
+  if (!data?.searchCollectionByMetric.assetSets.length)
     return (
       <CollectionPanel {...{ title, subtitle }}>
         No results available.
@@ -116,7 +120,7 @@ export default function CollectionAvgPricePanel({
       onSearch={handleSearch}
       {...{ title, subtitle }}
     >
-      {data.orderedCollectionsByMetricSearch.assetSets.map(
+      {data.searchCollectionByMetric.assetSets.map(
         ({ id, name, imageUrl, latestStats }, index) => {
           const underglow = selectedCollections.includes(id)
             ? (selectedCollectionsColors[
@@ -201,9 +205,9 @@ function printMetricData(
   metric: METRIC,
   data: { average?: string; floor?: string; volume?: string }
 ) {
-  if (metric === 'VOLUME' && data['volume']) {
+  if (metric === 'PAST_WEEK_VOLUME' && data['volume']) {
     return weiToEth(data['volume']) ?? '-'
-  } else if (metric === 'AVERAGE' && data['average']) {
+  } else if (metric === 'PAST_WEEK_AVERAGE' && data['average']) {
     return weiToEth(data['average']) ?? '-'
   } else if (metric === 'FLOOR' && data['floor']) {
     return weiToEth(data['floor']) ?? '-'
