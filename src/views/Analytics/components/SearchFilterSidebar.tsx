@@ -356,10 +356,12 @@ export default function SearchFilterSidebar({
   collectionId: defaultCollectionId,
   collectionName: defaultCollectionName,
   onApply,
+  onHideFilters,
 }: {
   collectionId?: number
   collectionName?: string
   onApply?: ({ query }) => void
+  onHideFilters?: () => void
 }) {
   const router = useRouter()
   const [collectionId, setCollectionId] = useState(defaultCollectionId)
@@ -474,6 +476,11 @@ export default function SearchFilterSidebar({
     return name
   }
 
+  const handleApplyFiltersClick = () => {
+    handleApplyFilters()
+    onHideFilters?.()
+  }
+
   return (
     <Flex sx={{ minWidth: 300, flexDirection: 'column', gap: 8 }}>
       {!isMobile && (
@@ -573,7 +580,7 @@ export default function SearchFilterSidebar({
       )}
 
       <Flex sx={{ justifyContent: 'flex-end' }}>
-        <Button capitalize onClick={handleApplyFilters}>
+        <Button capitalize onClick={handleApplyFiltersClick}>
           Apply Filters
         </Button>
       </Flex>

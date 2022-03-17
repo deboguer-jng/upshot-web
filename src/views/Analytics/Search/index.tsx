@@ -135,7 +135,6 @@ export default function SearchView() {
 
   const handleApplySearch = ({ query }) => {
     setPage(0)
-    setOpenMobileFilters(false)
     router.push({
       pathname: '/analytics/search',
       query,
@@ -216,7 +215,10 @@ export default function SearchView() {
                     onClose={() => setOpenMobileFilters(false)}
                   >
                     <Box sx={{ paddingTop: 4 }}>
-                      <SearchFilterSidebar onApply={handleApplySearch} />
+                      <SearchFilterSidebar
+                        onHideFilters={() => setOpenMobileFilters(false)}
+                        onApply={handleApplySearch}
+                      />
                     </Box>
                   </Accordion>
                 </Box>
