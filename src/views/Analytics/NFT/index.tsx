@@ -5,6 +5,7 @@ import {
   imageOptimizer,
   Pagination,
   useBreakpointIndex,
+  AppraisalsCopy,
 } from '@upshot-tech/upshot-ui'
 import { Container } from '@upshot-tech/upshot-ui'
 import { Flex, Grid, Image, Text } from '@upshot-tech/upshot-ui'
@@ -261,32 +262,6 @@ export default function NFTView() {
     ? image
     : optimizedSrc
 
-    // Generate content for tooltip
-    const AppraisalTooltipContent = (
-      <div style={{ textAlign: 'left' }}>
-        <Text
-          color='grey-400'
-          sx={{
-            fontSize: 3,
-            lineHeight: 1.3,
-            display: 'block',
-            marginBottom: 2
-          }}
-        >
-          How are our appraisals calculated?
-        </Text>
-        <Text
-          sx={{
-            fontSize: 3,
-            lineHeight: 1.3,
-            display: 'block',
-          }}
-        >
-          Our appraisals combine on-chain data (like transactions, collections, traits, metadata, and rarity) with off-chain data (like bid/ask spread, market behaviors, etc) with a little Upshot magic.
-        </Text>
-      </div>
-    )
-
   return (
     <>
       <Head>
@@ -361,26 +336,34 @@ export default function NFTView() {
             <Flex sx={{ flexDirection: 'column', gap: 4 }}>
               <Text variant="h2Primary">{assetName}</Text>
               <>
-                <Flex sx={{ alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+                <Flex sx={{ alignItems: 'center', gap: 3, flexWrap: 'wrap' }}>
                   {!!lastAppraisalWeiPrice && (
-                    <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
-                    <Label size="md" color="blue">
-                      {'Last Appraisal: Ξ' +
-                        weiToEth(lastAppraisalWeiPrice, 3, false)}
-                    </Label>
-                    <Tooltip
-                            tooltip={AppraisalTooltipContent}
-                            sx={{ marginLeft: '5px' }}
-                          />
+                    <Flex
+                      sx={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: 1,
+                      }}
+                    >
+                      <Text color="blue" sx={{ border: 'none', fontSize: 16 }}>
+                        {'Ξ' + weiToEth(lastAppraisalWeiPrice, 3, false)}
+                      </Text>
+                      <Icon icon="upshot" size={18} color="primary" />
                     </Flex>
                   )}
 
                   {!!rarityRank && !!collection && !!collection?.size && (
-                    <Label size="md">
-                      {'Rarity Rank: #' + rarityRank + ' / ' + collection?.size}
-                    </Label>
+                    <Flex sx={{ gap: 1 }}>
+                      <Text color="grey-300">
+                        {'Rank ' + rarityRank + ' / '}
+                      </Text>
+                      <Text color="grey-500">{collection?.size}</Text>
+                    </Flex>
                   )}
                 </Flex>
+                {!!lastAppraisalWeiPrice && (
+                  <AppraisalsCopy link="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104" />
+                )}
               </>
 
               <Flex>
@@ -429,17 +412,27 @@ export default function NFTView() {
           </Flex>
 
           <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-          {listPrice && listPriceUsd && listMarketplace && listUrl && listAppraisalRatio && (
+            {listPrice &&
+              listPriceUsd &&
+              listMarketplace &&
+              listUrl &&
+              listAppraisalRatio && (
                 <BuyNowPanel
                   variant="wide"
-                  listPriceETH={Number(parseFloat(ethers.utils.formatEther(listPrice)).toFixed(2))}
+                  listPriceETH={Number(
+                    parseFloat(ethers.utils.formatEther(listPrice)).toFixed(2)
+                  )}
                   sx={{ width: '100%' }}
                   listPriceUSD={Number(formatCurrencyUnits(listPriceUsd, 6))}
                   listAppraisalPercentage={listAppraisalRatio}
-                  marketplaceName={listUrl.includes("larvalabs.com") ? "Larva Labs" : listMarketplace}
+                  marketplaceName={
+                    listUrl.includes('larvalabs.com')
+                      ? 'Larva Labs'
+                      : listMarketplace
+                  }
                   marketplaceUrl={listUrl}
                 />
-            )}
+              )}
             <Flex
               sx={{
                 gap: 4,
@@ -571,37 +564,39 @@ export default function NFTView() {
                   <Flex sx={{ flexDirection: 'column', gap: 4 }}>
                     <Text variant="h3Secondary">Attributes</Text>
                     <Grid columns={isMobile ? 1 : 2}>
-                      {pageTraits.map(({ id, traitType, value, rarity }, idx) => (
-                        <Box key={idx}>
-                          <Link
-                            href={`/analytics/search?traits=${id}&collectionId=${
-                              collection?.id
-                            }&collectionName=${encodeURIComponent(
-                              collection?.name ?? ''
-                            )}`}
-                            key={idx}
-                          >
-                            <a
-                              sx={{
-                                textDecoration: 'none',
-                                cursor: 'pointer',
-                              }}
+                      {pageTraits.map(
+                        ({ id, traitType, value, rarity }, idx) => (
+                          <Box key={idx}>
+                            <Link
+                              href={`/analytics/search?traits=${id}&collectionId=${
+                                collection?.id
+                              }&collectionName=${encodeURIComponent(
+                                collection?.name ?? ''
+                              )}`}
+                              key={idx}
                             >
-                              <LabelAttribute
-                                expanded={true}
-                                expandedText={traitType ? traitType : 'Trait'}
-                                variant="percentage"
-                                percentage={(100 - rarity * 100)
-                                  .toFixed(2)
-                                  .toString()}
-                                hasHover
+                              <a
+                                sx={{
+                                  textDecoration: 'none',
+                                  cursor: 'pointer',
+                                }}
                               >
-                                {value}
-                              </LabelAttribute>
-                            </a>
-                          </Link>
-                        </Box>
-                      ))}
+                                <LabelAttribute
+                                  expanded={true}
+                                  expandedText={traitType ? traitType : 'Trait'}
+                                  variant="percentage"
+                                  percentage={(100 - rarity * 100)
+                                    .toFixed(2)
+                                    .toString()}
+                                  hasHover
+                                >
+                                  {value}
+                                </LabelAttribute>
+                              </a>
+                            </Link>
+                          </Box>
+                        )
+                      )}
                     </Grid>
                     {Math.ceil(traits.length / TRAIT_PAGE_SIZE) > 1 && (
                       <Flex
