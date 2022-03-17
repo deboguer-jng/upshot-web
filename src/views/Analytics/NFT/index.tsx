@@ -336,22 +336,29 @@ export default function NFTView() {
             <Flex sx={{ flexDirection: 'column', gap: 4 }}>
               <Text variant="h2Primary">{assetName}</Text>
               <>
-                <Flex sx={{ alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+                <Flex sx={{ alignItems: 'center', gap: 3, flexWrap: 'wrap' }}>
                   {!!lastAppraisalWeiPrice && (
                     <Flex
-                      sx={{ alignItems: 'center', justifyContent: 'center' }}
+                      sx={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: 1,
+                      }}
                     >
-                      <Label size="md" color="blue">
-                        {'Last Appraisal: Ξ' +
-                          weiToEth(lastAppraisalWeiPrice, 3, false)}
-                      </Label>
+                      <Text color="blue" sx={{ border: 'none', fontSize: 16 }}>
+                        {'Ξ' + weiToEth(lastAppraisalWeiPrice, 3, false)}
+                      </Text>
+                      <Icon icon="upshot" size={18} color="primary" />
                     </Flex>
                   )}
 
                   {!!rarityRank && !!collection && !!collection?.size && (
-                    <Label size="md">
-                      {'Rarity Rank: #' + rarityRank + ' / ' + collection?.size}
-                    </Label>
+                    <Flex sx={{ gap: 1 }}>
+                      <Text color="grey-300">
+                        {'Rank ' + rarityRank + ' / '}
+                      </Text>
+                      <Text color="grey-500">{collection?.size}</Text>
+                    </Flex>
                   )}
                 </Flex>
                 {!!lastAppraisalWeiPrice && (
