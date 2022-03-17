@@ -157,8 +157,8 @@ export default function TopCollectionsCharts({
         currentFloor: latestStats?.floor
           ? weiToEth(latestStats?.floor.toString(), 4, false)
           : null,
-        currentAvg: latestStats?.pastDayWeiAverage
-          ? weiToEth(latestStats?.pastDayWeiAverage.toString(), 4, false)
+        currentAvg: latestStats?.pastWeekWeiAverage
+          ? weiToEth(latestStats?.pastWeekWeiAverage.toString(), 4, false)
           : null,
         currentVolume: latestStats?.pastWeekWeiVolume
           ? weiToEth(latestStats?.pastWeekWeiVolume.toString(), 4, false)

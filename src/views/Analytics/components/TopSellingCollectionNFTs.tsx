@@ -18,10 +18,10 @@ import { shortenAddress } from 'utils/address'
 import { weiToEth } from 'utils/number'
 
 import {
-  GET_TOP_COLLECTIONS,
+  GET_COLLECTIONS_BY_METRIC,
   GET_TOP_SALES,
-  GetTopCollectionsData,
-  GetTopCollectionsVars,
+  GetCollectionsByMetricData,
+  GetCollectionsByMetricVars,
   GetTopSalesData,
   GetTopSalesVars,
 } from '../queries'
@@ -143,16 +143,15 @@ export default function TopSellingCollectionNFTs({
     error: collectionError, 
     data: collectionData
   } = useQuery<
-    GetTopCollectionsData,
-    GetTopCollectionsVars
-  >(GET_TOP_COLLECTIONS, {
+    GetCollectionsByMetricData,
+    GetCollectionsByMetricVars
+  >(GET_COLLECTIONS_BY_METRIC, {
     errorPolicy: 'all',
     variables: {
       orderColumn: 'PAST_WEEK_VOLUME',
       orderDirection: 'DESC',
       limit: 100,
       offset: page * 100,
-      windowSize: period === '1 day' ? 'DAY' : period === '1 week' ? 'WEEK' : 'MONTH',
     },
   })
 

@@ -26,63 +26,6 @@ export enum ETimeWindow {
 }
 
 /**
- * Collection Avg. Price
- * @see CollectionAvgPricePanel
- */
-export type GetCollectionAvgPriceVars = {
-  metric: string
-  limit: number
-  name?: string
-  windowSize?: string
-}
-
-export type GetCollectionAvgPriceData = {
-  orderedCollectionsByMetricSearch: {
-    assetSets: {
-      id: number
-      name?: string
-      imageUrl?: string
-      latestStats: {
-        floor: string
-        pastDayWeiAverage: string
-        pastDayWeiVolume: string
-        pastWeekWeiAverage: string
-        pastWeekWeiVolume: string
-        pastMonthNumTxs: number
-      }
-    }[]
-  }
-}
-
-export const GET_COLLECTION_AVG_PRICE = gql`
-  query GetCollectionAvgPrice(
-    $metric: EOrderedAssetSetMetric!
-    $limit: Int!
-    $name: String
-  ) {
-    orderedCollectionsByMetricSearch(
-      metric: $metric
-      limit: $limit
-      name: $name
-    ) {
-      assetSets {
-        id
-        name
-        imageUrl
-        latestStats {
-          floor
-          pastDayWeiAverage
-          pastDayWeiVolume
-          pastWeekWeiAverage
-          pastWeekWeiVolume
-          pastMonthNumTxs
-        }
-      }
-    }
-  }
-`
-
-/**
  * Explore NFTs
  * @see ExplorePanel
  */
@@ -247,6 +190,74 @@ export const GET_EXPLORE_COLLECTIONS = gql`
 `
 
 /**
+ * Collection Avg. Price
+ * @see CollectionAvgPricePanel
+ */
+ export type GetCollectionsByMetricVars = {
+  orderColumn?: string
+  orderDirection?: string
+  limit?: number
+  offset?: number
+  name?: string
+  ids?: number[]
+}
+
+export type GetCollectionsByMetricData = {
+  searchCollectionByMetric: {
+    count: number
+    assetSets: {
+      id: number
+      name: string
+      imageUrl?: string
+      latestStats: {
+        floor: string
+        pastDayWeiAverage: string
+        pastWeekWeiAverage: string
+        pastDayWeiVolume: string
+        pastWeekWeiVolume: string
+        weekFloorChange: number
+      }
+    }[]
+  }
+}
+
+export const GET_COLLECTIONS_BY_METRIC = gql`
+  query GetCollectionsByMetric(
+    $orderColumn: EAssetSetStatSearchOrder!
+    $orderDirection: OrderDirection!
+    $limit: Int!
+    $offset: Int!
+    $name: String
+    $ids: [Int!]
+  ) {
+    searchCollectionByMetric(
+      searchArgs: {
+        orderColumn: $orderColumn
+        orderDirection: $orderDirection
+        limit: $limit
+        offset: $offset
+        name: $name
+        ids: $ids
+      }
+    ) {
+      assetSets {
+        id
+        name
+        imageUrl
+        latestStats {
+          floor
+          pastDayWeiAverage
+          pastDayWeiVolume
+          pastWeekWeiAverage
+          pastWeekWeiVolume
+          pastMonthNumTxs
+        }
+      }
+    }
+  }
+`
+
+/**
  * Top-level home page chart
  * @see TopCollectionsChart
  */
@@ -307,7 +318,7 @@ export const GET_TOP_COLLECTIONS = gql`
     $ids: [Int!]
     $minTimestamp: Int = 0
     $maxTimestamp: Int
-    $windowSize: ETimeWindow = DAY
+    $windowSize: ETimeWindow = WEEK
   ) {
     searchCollectionByMetric(
       searchArgs: {

@@ -14,9 +14,9 @@ import { useEffect, useRef, useState } from 'react'
 import { weiToEth } from 'utils/number'
 
 import {
-  GET_TOP_COLLECTIONS,
-  GetTopCollectionsData,
-  GetTopCollectionsVars,
+  GET_COLLECTIONS_BY_METRIC,
+  GetCollectionsByMetricData,
+  GetCollectionsByMetricVars,
 } from '../queries'
 import { METRIC } from './ButtonTabs'
 import CollectionPanel from './CollectionPanel'
@@ -50,9 +50,9 @@ export default function CollectionAvgPricePanel({
   }
 
   const { loading, error, data } = useQuery<
-    GetTopCollectionsData,
-    GetTopCollectionsVars
-  >(GET_TOP_COLLECTIONS, {
+    GetCollectionsByMetricData,
+    GetCollectionsByMetricVars
+  >(GET_COLLECTIONS_BY_METRIC, {
     errorPolicy: 'all',
     variables: {
       orderColumn: metric,
