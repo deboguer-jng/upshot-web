@@ -199,9 +199,9 @@ export default function SearchView() {
 
           <Grid
             sx={{
-              gridTemplateColumns: ['1fr', '1fr', '300px 3fr 1fr'],
+              gridTemplateColumns: ['1fr', '1fr', '1fr', '300px 3fr 1fr'],
               flexGrow: 1,
-              gap: [8, 5, 8],
+              gap: [5, 5, 5, 8],
             }}
           >
             {isMobile ? (
