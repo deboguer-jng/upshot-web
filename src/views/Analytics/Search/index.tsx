@@ -402,15 +402,6 @@ export default function SearchView() {
             </Flex>
           </Grid>
         </Container>
-        <Container
-          maxBreakpoint="lg"
-          sx={{
-            flexDirection: 'column',
-            gap: 4,
-            padding: 4,
-          }}
-        ></Container>
-
         <Footer />
       </Flex>
     </>
