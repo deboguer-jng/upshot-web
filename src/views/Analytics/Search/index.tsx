@@ -67,6 +67,7 @@ export default function SearchView() {
   const collectionSearch = router.query.collectionSearch as string
   const [selectedColumn, setSelectedColumn] = useState<number>(0)
   const [sortAscending, setSortAscending] = useState(false)
+  const [openMobileFilters, setOpenMobileFilters] = useState(false)
 
   // Trait stats
   const [selectedTraitsColumn, setSelectedTraitsColumn] = useState<number>(3)
@@ -134,6 +135,7 @@ export default function SearchView() {
 
   const handleApplySearch = ({ query }) => {
     setPage(0)
+    setOpenMobileFilters(false)
     router.push({
       pathname: '/analytics/search',
       query,
@@ -206,7 +208,13 @@ export default function SearchView() {
             {isMobile ? (
               <>
                 <Box>
-                  <Accordion isDropdown title="Search Filters">
+                  <Accordion
+                    isDropdown
+                    title="Search Filters"
+                    open={openMobileFilters}
+                    onClick={() => setOpenMobileFilters(!openMobileFilters)}
+                    onClose={() => setOpenMobileFilters(false)}
+                  >
                     <Box sx={{ paddingTop: 4 }}>
                       <SearchFilterSidebar onApply={handleApplySearch} />
                     </Box>
