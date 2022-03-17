@@ -292,17 +292,8 @@ export type GetTopCollectionsData = {
       timeSeries?: {
         timestamp?: number
         floor?: string
-        ceil?: string
         average?: string
         volume?: string
-        marketCap?: string
-        usdFloor?: string
-        usdCeil?: string
-        usdAverage?: string
-        usdVolume?: string
-        usdMarketCap?: string
-        weekCapChange?: number
-        weekFloorChange?: number
       }[]
     }[]
   }
@@ -346,17 +337,8 @@ export const GET_TOP_COLLECTIONS = gql`
         timeSeries(minTimestamp: $minTimestamp, maxTimestamp: $maxTimestamp, windowSize: $windowSize) {
           timestamp
           floor
-          ceil
           average
           volume
-          marketCap
-          usdFloor
-          usdCeil
-          usdAverage
-          usdVolume
-          usdMarketCap
-          weekCapChange
-          weekFloorChange
         }
       }
     }
