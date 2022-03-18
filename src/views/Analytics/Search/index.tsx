@@ -295,8 +295,8 @@ export default function SearchView() {
                     <TopCollections
                       variant="normal"
                       searchTerm={collectionSearch}
-                      {...{ selectedColumn, sortAscending }}
                       onChangeSelection={handleChangeSelection}
+                      {...{ selectedColumn, sortAscending }}
                     />
                   )}
                   {
