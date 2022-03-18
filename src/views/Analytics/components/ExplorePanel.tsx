@@ -5,6 +5,7 @@ import router from 'next/router'
 import React, { useEffect, useRef, useState } from 'react'
 
 import Collectors from './ExplorePanel/Collectors'
+import ExploreListedNFTs from './ExplorePanel/ListedNFTs'
 import ExploreNFTs from './ExplorePanel/NFTs'
 import TopCollections from './ExplorePanel/TopCollections'
 import Traits from './ExplorePanel/Traits'
@@ -76,7 +77,7 @@ function ExplorePanelHead({
     onSearch?.(searchTermRef?.current?.value ?? '')
   }
 
-  const dropdownOptions = ['NFTs', 'Collectors']
+  const dropdownOptions = ['Listed NFTs', 'NFTs', 'Collectors']
   if (!router.pathname.includes('/collection'))
     // if page is not collection page
     dropdownOptions.push('Collections')
@@ -167,7 +168,7 @@ export default function ExplorePanel({
 
   const [searchTerm, setSearchTerm] = useState('')
   const [tab, setTab] = useState(
-    router.pathname.includes('/collection') ? 'Traits' : 'Collections'
+    router.pathname.includes('/collection') ? 'Listed NFTs' : 'Collections'
   )
   const [selectedColumn, setSelectedColumn] = useState<number>(0)
   const [sortAscending, setSortAscending] = useState(false)
@@ -184,8 +185,8 @@ export default function ExplorePanel({
 
   useEffect(() => {
     // Reset sort + selection on new tab selection.
-    if (tab === 'Traits') {
-      setSelectedColumn(1)
+    if (tab == 'Listed NFTs') {
+      setSelectedColumn(3)
     } else {
       setSelectedColumn(0)
     }
@@ -206,6 +207,12 @@ export default function ExplorePanel({
           {...{ searchTerm, tab }}
         />
         <Box sx={{ paddingTop: isMobile ? '110px' : '70px' }}>
+          {tab === 'Listed NFTs' && (
+            <ExploreListedNFTs
+              onChangeSelection={handleChangeSelection}
+              {...{ searchTerm, selectedColumn, sortAscending, collectionId }}
+            />
+          )}
           {tab === 'NFTs' && (
             <ExploreNFTs
               onChangeSelection={handleChangeSelection}
