@@ -223,6 +223,11 @@ export default function ExploreCollections({
     setPage(selected)
   }
 
+  const handleChangeSelection = (colIdx: number) => {
+    onChangeSelection(colIdx)
+    setPage(0)
+  }
+
   const { loading, error, data } = useQuery<
     GetExploreCollectionsData,
     GetExploreCollectionsVars
@@ -262,7 +267,8 @@ export default function ExploreCollections({
   return (
     <>
       <CollectionItemsWrapper
-        {...{ selectedColumn, sortAscending, onChangeSelection }}
+        onChangeSelection={handleChangeSelection}
+        {...{ selectedColumn, sortAscending }}
       >
         {data.searchCollectionByMetric.assetSets.map(
           ({ id, name, imageUrl, latestStats }, idx) => (
