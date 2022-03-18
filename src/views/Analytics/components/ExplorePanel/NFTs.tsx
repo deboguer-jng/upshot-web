@@ -208,6 +208,11 @@ export default function ExploreNFTs({
     setPage(selected)
   }
 
+  const handleChangeSelection = (colIdx: number) => {
+    onChangeSelection(colIdx)
+    setPage(0)
+  }
+
   const { loading, error, data } = useQuery<
     GetExploreNFTsData,
     GetExploreNFTsVars
@@ -244,7 +249,8 @@ export default function ExploreNFTs({
   return (
     <>
       <NFTItemsWrapper
-        {...{ selectedColumn, sortAscending, onChangeSelection }}
+        onChangeSelection={handleChangeSelection}
+        {...{ selectedColumn, sortAscending }}
       >
         {data.assetGlobalSearch.assets.map(
           (
@@ -332,9 +338,7 @@ export default function ExploreNFTs({
                     </Text>
                     <Text
                       sx={{
-                        color: getPriceChangeColor(
-                          lastAppraisalSaleRatio
-                        ),
+                        color: getPriceChangeColor(lastAppraisalSaleRatio),
                       }}
                     >
                       {getPriceChangeLabel(lastAppraisalSaleRatio)}

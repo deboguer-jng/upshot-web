@@ -87,14 +87,15 @@ function ListedNFTTableHead({
                   },
                 },
               }}
-            >
-            </TableCell>
+            ></TableCell>
             {Object.values(listedNftColumns).map((col, idx) => (
               <TableCell
                 key={idx}
                 color="grey-500"
                 onClick={() => onChangeSelection?.(idx)}
-                colSpan={idx === Object.values(listedNftColumns).length - 1 ? 2 : 1}
+                colSpan={
+                  idx === Object.values(listedNftColumns).length - 1 ? 2 : 1
+                }
                 sx={{
                   cursor: 'pointer',
                   color: selectedColumn === idx ? 'white' : null,
@@ -207,6 +208,11 @@ export default function ExploreListedNFTs({
     setPage(selected)
   }
 
+  const handleChangeSelection = (colIdx: number) => {
+    onChangeSelection(colIdx)
+    setPage(0)
+  }
+
   const { loading, error, data } = useQuery<
     GetExploreNFTsData,
     GetExploreNFTsVars
@@ -243,7 +249,8 @@ export default function ExploreListedNFTs({
   return (
     <>
       <NFTItemsWrapper
-        {...{ selectedColumn, sortAscending, onChangeSelection }}
+        onChangeSelection={handleChangeSelection}
+        {...{ selectedColumn, sortAscending }}
       >
         {data.assetGlobalSearch.assets.map(
           (
@@ -284,13 +291,14 @@ export default function ExploreListedNFTs({
                     <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
                       {listedNftColumns.LAST_APPRAISAL_PRICE}
                     </Text>
-                    <Text                       
-                        sx={{
+                    <Text
+                      sx={{
                         color: 'blue',
-                      }}>
-                        {lastAppraisalWeiPrice
-                            ? weiToEth(lastAppraisalWeiPrice)
-                            : '-'}
+                      }}
+                    >
+                      {lastAppraisalWeiPrice
+                        ? weiToEth(lastAppraisalWeiPrice)
+                        : '-'}
                     </Text>
                   </Flex>
                   <Flex
@@ -303,11 +311,7 @@ export default function ExploreListedNFTs({
                     <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
                       {listedNftColumns.LIST_PRICE}
                     </Text>
-                    <Text>
-                      {listPrice
-                        ? weiToEth(listPrice)
-                        : '-'}
-                    </Text>
+                    <Text>{listPrice ? weiToEth(listPrice) : '-'}</Text>
                   </Flex>
                   <Flex
                     sx={{
@@ -321,10 +325,8 @@ export default function ExploreListedNFTs({
                     </Text>
                     <Text>
                       {listTimestamp
-                        ? formatDistance(
-                            listTimestamp * 1000,
-                            new Date()
-                          ) + ' ago'
+                        ? formatDistance(listTimestamp * 1000, new Date()) +
+                          ' ago'
                         : '-'}
                     </Text>
                   </Flex>
@@ -340,9 +342,7 @@ export default function ExploreListedNFTs({
                     </Text>
                     <Text
                       sx={{
-                        color: getPriceChangeColor(
-                          listAppraisalRatio
-                        ),
+                        color: getPriceChangeColor(listAppraisalRatio),
                       }}
                     >
                       {getUnderOverPricedLabel(listAppraisalRatio)}
@@ -352,22 +352,18 @@ export default function ExploreListedNFTs({
               ) : (
                 <>
                   <TableCell sx={{ maxWidth: 100, color: 'blue' }}>
-                  {lastAppraisalWeiPrice
+                    {lastAppraisalWeiPrice
                       ? weiToEth(lastAppraisalWeiPrice)
                       : '-'}
                   </TableCell>
                   <TableCell sx={{ maxWidth: 100 }}>
-                    {listPrice
-                        ? weiToEth(listPrice)
-                        : '-'}
+                    {listPrice ? weiToEth(listPrice) : '-'}
                   </TableCell>
                   <TableCell sx={{ maxWidth: 100 }}>
                     {listTimestamp
-                        ? formatDistance(
-                            listTimestamp * 1000,
-                            new Date()
-                          ) + ' ago'
-                        : '-'}
+                      ? formatDistance(listTimestamp * 1000, new Date()) +
+                        ' ago'
+                      : '-'}
                   </TableCell>
                   <TableCell
                     sx={{
