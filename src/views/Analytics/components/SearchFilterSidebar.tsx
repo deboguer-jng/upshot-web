@@ -206,7 +206,7 @@ function PriceInput({
               value={minPriceEth}
               onBlur={handleBlurMinPrice}
               onChange={(e) => setMinPriceEth(e.currentTarget.value)}
-              onKeyPress={(e) => 
+              onKeyPress={(e) =>
                 priceKeyPress(e.currentTarget.value, maxPriceEth, e, onSubmit)}
             />
             <InputRounded
@@ -214,7 +214,8 @@ function PriceInput({
               value={maxPriceEth}
               onBlur={handleBlurMaxPrice}
               onChange={(e) => setMaxPriceEth(e.currentTarget.value)}
-              onKeyPress={(e) => priceKeyPress(minPriceEth, e.currentTarget.value, e, onSubmit)}
+              onKeyPress={(e) =>
+                priceKeyPress(minPriceEth, e.currentTarget.value, e, onSubmit)}
             />
           </Flex>
         </>
