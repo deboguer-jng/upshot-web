@@ -80,7 +80,7 @@ function CollectionTableHead({
   return (
     <>
       {isMobile ? (
-        <Box>
+        <Box sx={{ width: '100%', paddingRight: '44px' }}>
           <Flex sx={{ justifyContent: 'space-between', padding: 2 }}>
             <Text></Text>
             <Text>{collectionColumns.PAST_WEEK_VOLUME}</Text>
@@ -187,7 +187,7 @@ const CollectionItemsWrapper = ({
       {isMobile ? (
         <>
           <CollectionTableHead {...props} />
-          <CollectorAccordion>{children}</CollectorAccordion>
+          <CollectorAccordion fullWidth>{children}</CollectorAccordion>
         </>
       ) : (
         <CollectionTable>
@@ -275,6 +275,7 @@ export default function ExploreCollections({
               subtitle={
                 isMobile ? weiToEth(latestStats?.pastWeekWeiVolume, 0) : null
               }
+              fullWidth={isMobile}
               {...{ variant }}
             >
               {isMobile ? (
