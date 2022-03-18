@@ -81,8 +81,7 @@ function ExplorePanelHead({
   if (!router.pathname.includes('/collection'))
     // if page is not collection page
     dropdownOptions.push('Collections')
-  if (router.pathname.includes('/collection'))
-    dropdownOptions.push('Traits')
+  if (router.pathname.includes('/collection')) dropdownOptions.push('Traits')
 
   return (
     <>
@@ -94,7 +93,7 @@ function ExplorePanelHead({
           gap: 1,
           position: 'absolute',
           width: '100%',
-          height: open ? '200px' : 'auto',
+          height: open ? '250px' : 'auto',
           zIndex: 2,
           background: `linear-gradient(
               180deg,
@@ -220,7 +219,10 @@ export default function ExplorePanel({
             />
           )}
           {tab === 'Traits' && !!collectionId && (
-            <Traits onChangeSelection={handleChangeSelection} {...{ searchTerm, selectedColumn, sortAscending, collectionId }} />
+            <Traits
+              onChangeSelection={handleChangeSelection}
+              {...{ searchTerm, selectedColumn, sortAscending, collectionId }}
+            />
           )}
           {tab === 'Collectors' && !collectionId && (
             <Collectors searchTerm={searchTerm} />
