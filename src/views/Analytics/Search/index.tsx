@@ -233,13 +233,17 @@ export default function SearchView() {
             }}
           >
             <Flex sx={{ flexDirection: 'column' }}>
-              {!!data?.assetGlobalSearch?.count && (
-                <Text>
-                  {data?.assetGlobalSearch?.count}{' '}
-                  {data?.assetGlobalSearch?.count === 1 ? 'result' : 'results'}{' '}
-                  found
-                </Text>
-              )}
+              <Box sx={{ height: '18px' }}>
+                {!!data?.assetGlobalSearch?.count && (
+                  <Text>
+                    {data?.assetGlobalSearch?.count}{' '}
+                    {data?.assetGlobalSearch?.count === 1
+                      ? 'result'
+                      : 'results'}{' '}
+                    found
+                  </Text>
+                )}
+              </Box>
               {(collectionName || assetArr?.[0]?.collection?.name) &&
                 collectionId && (
                   <Flex
