@@ -177,12 +177,29 @@ function PriceInput({
               onChange={(e) => setMinPriceEth(e.currentTarget.value)}
               onKeyPress={(e) => {
                 if (e.key === 'Enter') {
-                  const minPriceWei = ethers.utils
-                    .parseEther(e.currentTarget.value ?? '0')
-                    .toString()
-                  const maxPriceWei = ethers.utils.parseEther(
-                    maxPriceEth ?? '0'
-                  )
+                  let minPriceWei
+                  let maxPriceWei
+
+                  try {
+                    minPriceWei = ethers.utils
+                      .parseEther(e.currentTarget.value)
+                      .toString()
+                    if (minPriceWei === '0') minPriceWei = undefined
+                  } catch (err) {
+                    console.warn(err)
+                  }
+
+                  if (maxPriceEth) {
+                    try {
+                      maxPriceWei = ethers.utils
+                        .parseEther(maxPriceEth)
+                        .toString()
+                      if (maxPriceWei === '0') maxPriceWei = undefined
+                    } catch (err) {
+                      console.warn(err)
+                    }
+                  }
+
                   onSubmit?.(minPriceWei, maxPriceWei)
                 }
               }}
@@ -194,12 +211,28 @@ function PriceInput({
               onChange={(e) => setMaxPriceEth(e.currentTarget.value)}
               onKeyPress={(e) => {
                 if (e.key === 'Enter') {
-                  const minPriceWei = ethers.utils.parseEther(
-                    minPriceEth ?? '0'
-                  )
-                  const maxPriceWei = ethers.utils
-                    .parseEther(e.currentTarget.value ?? '0')
-                    .toString()
+                  let minPriceWei
+                  let maxPriceWei
+
+                  if (minPriceEth) {
+                    try {
+                      minPriceWei = ethers.utils
+                        .parseEther(minPriceEth)
+                        .toString()
+                      if (minPriceWei === '0') minPriceWei = undefined
+                    } catch (err) {
+                      console.warn(err)
+                    }
+                  }
+
+                  try {
+                    maxPriceWei = ethers.utils
+                      .parseEther(e.currentTarget.value)
+                      .toString()
+                    if (maxPriceWei === '0') maxPriceWei = undefined
+                  } catch (err) {
+                    console.warn(err)
+                  }
 
                   onSubmit?.(minPriceWei, maxPriceWei)
                 }
