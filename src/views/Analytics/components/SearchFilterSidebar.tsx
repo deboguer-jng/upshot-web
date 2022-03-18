@@ -106,6 +106,37 @@ function TokenIdInput({ defaultValue, onBlur, onSubmit }) {
   )
 }
 
+function priceKeyPress(minPriceEth, maxPriceEth, e, onSubmit) {
+  if (e.key === 'Enter') {
+    let minPriceWei
+    let maxPriceWei
+
+    if (minPriceEth) {
+      try {
+        minPriceWei = ethers.utils
+          .parseEther(minPriceEth)
+          .toString()
+        if (minPriceWei === '0') minPriceWei = undefined
+      } catch (err) {
+        console.warn(err)
+      }
+    }
+
+    if (maxPriceEth) {
+      try {
+        maxPriceWei = ethers.utils
+          .parseEther(maxPriceEth)
+          .toString()
+        if (maxPriceWei === '0') maxPriceWei = undefined
+      } catch (err) {
+        console.warn(err)
+      }
+    }
+
+    onSubmit?.(minPriceWei, maxPriceWei)
+  }
+}
+
 function PriceInput({
   minPrice,
   maxPrice,
@@ -175,68 +206,16 @@ function PriceInput({
               value={minPriceEth}
               onBlur={handleBlurMinPrice}
               onChange={(e) => setMinPriceEth(e.currentTarget.value)}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter') {
-                  let minPriceWei
-                  let maxPriceWei
-
-                  try {
-                    minPriceWei = ethers.utils
-                      .parseEther(e.currentTarget.value)
-                      .toString()
-                    if (minPriceWei === '0') minPriceWei = undefined
-                  } catch (err) {
-                    console.warn(err)
-                  }
-
-                  if (maxPriceEth) {
-                    try {
-                      maxPriceWei = ethers.utils
-                        .parseEther(maxPriceEth)
-                        .toString()
-                      if (maxPriceWei === '0') maxPriceWei = undefined
-                    } catch (err) {
-                      console.warn(err)
-                    }
-                  }
-
-                  onSubmit?.(minPriceWei, maxPriceWei)
-                }
-              }}
+              onKeyPress={(e) =>
+                priceKeyPress(e.currentTarget.value, maxPriceEth, e, onSubmit)}
             />
             <InputRounded
               placeholder="Ξ Max"
               value={maxPriceEth}
               onBlur={handleBlurMaxPrice}
               onChange={(e) => setMaxPriceEth(e.currentTarget.value)}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter') {
-                  let minPriceWei
-                  let maxPriceWei
-
-                  if (minPriceEth) {
-                    try {
-                      minPriceWei = ethers.utils
-                        .parseEther(minPriceEth)
-                        .toString()
-                      if (minPriceWei === '0') minPriceWei = undefined
-                    } catch (err) {
-                      console.warn(err)
-                    }
-                  }
-
-                  try {
-                    maxPriceWei = ethers.utils
-                      .parseEther(e.currentTarget.value)
-                      .toString()
-                    if (maxPriceWei === '0') maxPriceWei = undefined
-                  } catch (err) {
-                    console.warn(err)
-                  }
-
-                  onSubmit?.(minPriceWei, maxPriceWei)
-                }
-              }}
+              onKeyPress={(e) =>
+                priceKeyPress(minPriceEth, e.currentTarget.value, e, onSubmit)}
             />
           </Flex>
         </>
