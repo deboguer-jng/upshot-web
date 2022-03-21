@@ -16,6 +16,7 @@ import { ethers } from 'ethers'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { shortenAddress } from 'utils/address'
+import { formatCommas } from 'utils/number'
 
 import {
   GET_COLLECTORS,
@@ -130,7 +131,11 @@ export default function Collectors({
 
   const formatAppraisal = (appraisal) => {
     return appraisal
-      ? parseFloat(ethers.utils.formatEther(appraisal)).toFixed(2)
+      ? formatCommas(
+          parseFloat(ethers.utils.formatEther(appraisal)).toFixed(2),
+          2,
+          2
+        )
       : appraisal
   }
 
