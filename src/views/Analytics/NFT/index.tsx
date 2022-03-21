@@ -1,11 +1,11 @@
 /** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
 import {
+  AppraisalsCopy,
   BuyNowPanel,
   imageOptimizer,
   Pagination,
   useBreakpointIndex,
-  AppraisalsCopy,
 } from '@upshot-tech/upshot-ui'
 import { Container } from '@upshot-tech/upshot-ui'
 import { Flex, Grid, Image, Text } from '@upshot-tech/upshot-ui'
@@ -355,9 +355,13 @@ export default function NFTView() {
                   {!!rarityRank && !!collection && !!collection?.size && (
                     <Flex sx={{ gap: 1 }}>
                       <Text color="grey-300">
-                        {'Rank ' + rarityRank + ' / '}
+                        {'Rank ' +
+                          (rarityRank ? formatCommas(rarityRank) : '-') +
+                          ' / '}
                       </Text>
-                      <Text color="grey-500">{collection?.size}</Text>
+                      <Text color="grey-500">
+                        {collection?.size ? formatCommas(collection.size) : 0}
+                      </Text>
                     </Flex>
                   )}
                 </Flex>
