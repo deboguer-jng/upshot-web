@@ -113,9 +113,7 @@ function priceKeyPress(minPriceEth, maxPriceEth, e, onSubmit) {
 
     if (minPriceEth) {
       try {
-        minPriceWei = ethers.utils
-          .parseEther(minPriceEth)
-          .toString()
+        minPriceWei = ethers.utils.parseEther(minPriceEth).toString()
         if (minPriceWei === '0') minPriceWei = undefined
       } catch (err) {
         console.warn(err)
@@ -124,9 +122,7 @@ function priceKeyPress(minPriceEth, maxPriceEth, e, onSubmit) {
 
     if (maxPriceEth) {
       try {
-        maxPriceWei = ethers.utils
-          .parseEther(maxPriceEth)
-          .toString()
+        maxPriceWei = ethers.utils.parseEther(maxPriceEth).toString()
         if (maxPriceWei === '0') maxPriceWei = undefined
       } catch (err) {
         console.warn(err)
@@ -207,7 +203,8 @@ function PriceInput({
               onBlur={handleBlurMinPrice}
               onChange={(e) => setMinPriceEth(e.currentTarget.value)}
               onKeyPress={(e) =>
-                priceKeyPress(e.currentTarget.value, maxPriceEth, e, onSubmit)}
+                priceKeyPress(e.currentTarget.value, maxPriceEth, e, onSubmit)
+              }
             />
             <InputRounded
               placeholder="Ξ Max"
@@ -215,7 +212,8 @@ function PriceInput({
               onBlur={handleBlurMaxPrice}
               onChange={(e) => setMaxPriceEth(e.currentTarget.value)}
               onKeyPress={(e) =>
-                priceKeyPress(minPriceEth, e.currentTarget.value, e, onSubmit)}
+                priceKeyPress(minPriceEth, e.currentTarget.value, e, onSubmit)
+              }
             />
           </Flex>
         </>
@@ -591,11 +589,13 @@ export default function SearchFilterSidebar({
         </>
       )}
 
-      <Flex sx={{ justifyContent: 'flex-end' }}>
-        <Button capitalize onClick={handleApplyFiltersClick}>
-          Apply Filters
-        </Button>
-      </Flex>
+      {isMobile && (
+        <Flex sx={{ justifyContent: 'flex-end' }}>
+          <Button capitalize onClick={handleApplyFiltersClick}>
+            Apply Filters
+          </Button>
+        </Flex>
+      )}
     </Flex>
   )
 }
