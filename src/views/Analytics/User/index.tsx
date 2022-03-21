@@ -1989,15 +1989,11 @@ export default function UserView() {
                         isPixelated:
                           PIXELATED_CONTRACTS.includes(contractAddress),
                         appraisalPriceETH: lastAppraisalWeiPrice
-                          ? formatCommas(
-                              weiToEth(lastAppraisalWeiPrice, 4, false)
-                            )
+                          ? weiToEth(lastAppraisalWeiPrice, 4, false)
                           : null,
                         appraisalPriceUSD: lastAppraisalUsdPrice
-                          ? formatCommas(
-                              Math.round(
-                                parseInt(lastAppraisalUsdPrice) / 1000000
-                              )
+                          ? Math.round(
+                              parseInt(lastAppraisalUsdPrice) / 1000000
                             )
                           : null,
                         name: name
