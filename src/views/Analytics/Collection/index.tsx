@@ -63,7 +63,9 @@ function CollectionStat({
           {value}
         </Label>
       )}
-      {currencySymbol === '' && value}
+      <Text sx={{ fontSize: 4, fontWeight: 'heading' }}>
+        {currencySymbol === '' && value}
+      </Text>
 
       <Text variant="small">{label}</Text>
     </Flex>
