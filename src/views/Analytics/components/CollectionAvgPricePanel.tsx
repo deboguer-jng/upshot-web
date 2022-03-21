@@ -1,6 +1,6 @@
 /** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
-import { Flex, Image, Text } from '@upshot-tech/upshot-ui'
+import { Flex, Grid, Image, Text } from '@upshot-tech/upshot-ui'
 import {
   Box,
   CollectionButton,
@@ -75,8 +75,8 @@ export default function CollectionAvgPricePanel({
   const title =
     metric === 'PAST_WEEK_VOLUME'
       ? 'Collections by Weekly Volume'
-      : metric === 'PAST_WEEK_AVERAGE' ?
-      'Collections by Average Price'
+      : metric === 'PAST_WEEK_AVERAGE'
+      ? 'Collections by Average Price'
       : 'Collections by Floor Price'
   const subtitle =
     'Select collections to add them to the chart, or click icons to see more'
@@ -94,13 +94,14 @@ export default function CollectionAvgPricePanel({
     return (
       <CollectionPanel {...{ title, subtitle }}>
         {skeletonCells.map((idx, index) => (
-          <Flex
+          <Grid
             key={index}
-            sx={{ alignItems: 'center', color: 'disabled', gap: 2 }}
+            columns={['25px auto']}
+            sx={{ alignItems: 'center', color: 'disabled', gap: 1 }}
           >
             <Text>{index + 1}</Text>
             <CollectionButtonTemplate />
-          </Flex>
+          </Grid>
         ))}
       </CollectionPanel>
     )
@@ -133,9 +134,10 @@ export default function CollectionAvgPricePanel({
           ] as keyof typeof theme.colors
 
           return (
-            <Flex
+            <Grid
               key={index}
-              sx={{ alignItems: 'center', color: 'disabled', gap: 5 }}
+              columns={['25px auto']}
+              sx={{ alignItems: 'center', color: 'disabled', gap: 1 }}
             >
               <Text>{index + 1}</Text>
               <CollectionButton
@@ -192,7 +194,7 @@ export default function CollectionAvgPricePanel({
                 })}
                 {...{ underglow, hoverUnderglow }}
               />
-            </Flex>
+            </Grid>
           )
         }
       )}
