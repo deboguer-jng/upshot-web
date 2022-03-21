@@ -1,10 +1,10 @@
 /** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
 import {
+  AppraisalsCopy,
   imageOptimizer,
   theme,
   useBreakpointIndex,
-  AppraisalsCopy,
 } from '@upshot-tech/upshot-ui'
 import { Container, Flex, Grid, Label } from '@upshot-tech/upshot-ui'
 import { Avatar, Button, Icon, Text } from '@upshot-tech/upshot-ui'
@@ -16,7 +16,7 @@ import { useRouter } from 'next/router'
 import React, { useEffect, useMemo, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { Box } from 'theme-ui'
-import { weiToEth } from 'utils/number'
+import { formatLargeNumber, weiToEth } from 'utils/number'
 import CollectionScatterChart from 'views/Analytics/components/CollectionScatterChart'
 import ExplorePanel from 'views/Analytics/components/ExplorePanel'
 import TopSellingNFTs from 'views/Analytics/components/TopSellingNFTs'
@@ -326,7 +326,9 @@ export default function CollectionView() {
               <CollectionStat
                 value={
                   latestStats?.marketCap
-                    ? weiToEth(latestStats?.marketCap, 4, false)
+                    ? formatLargeNumber(
+                        weiToEth(latestStats?.marketCap, 4, false)
+                      )
                     : '-'
                 }
                 currencySymbol="Ξ"
@@ -335,7 +337,9 @@ export default function CollectionView() {
               <CollectionStat
                 value={
                   latestStats?.pastWeekWeiVolume
-                    ? weiToEth(latestStats?.pastWeekWeiVolume, 4, false)
+                    ? formatLargeNumber(
+                        weiToEth(latestStats?.pastWeekWeiVolume, 4, false)
+                      )
                     : '-'
                 }
                 currencySymbol="Ξ"

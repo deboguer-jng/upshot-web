@@ -18,7 +18,7 @@ import { PAGE_SIZE } from 'constants/'
 import router from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
-import { getPriceChangeLabel, weiToEth } from 'utils/number'
+import { formatLargeNumber, getPriceChangeLabel, weiToEth } from 'utils/number'
 
 import {
   GET_EXPLORE_COLLECTIONS,
@@ -336,7 +336,12 @@ export default function ExploreCollections({
               ) : (
                 <>
                   <TableCell sx={{ maxWidth: 50 }}>
-                    {dataCheck(weiToEth(latestStats?.pastWeekWeiVolume, 0))}
+                    {latestStats?.pastWeekWeiVolume
+                      ? 'Ξ' +
+                        formatLargeNumber(
+                          weiToEth(latestStats.pastWeekWeiVolume, 2, false)
+                        )
+                      : '-'}
                   </TableCell>
                   <TableCell sx={{ maxWidth: 50 }}>
                     {dataCheck(weiToEth(latestStats?.pastDayWeiAverage, 2))}
