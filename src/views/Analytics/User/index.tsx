@@ -45,7 +45,12 @@ import {
 } from 'react-virtualized'
 import { Label as LabelUI } from 'theme-ui'
 import { extractEns, shortenAddress } from 'utils/address'
-import { formatCurrencyUnits, formatLargeNumber, weiToEth } from 'utils/number'
+import {
+  formatCommas,
+  formatCurrencyUnits,
+  formatLargeNumber,
+  weiToEth,
+} from 'utils/number'
 
 import Breadcrumbs from '../components/Breadcrumbs'
 import {
@@ -644,7 +649,9 @@ export default function UserView() {
     data: { count, collection, ownedAppraisedValue },
   }) => {
     const formattedAppraisedValue = ownedAppraisedValue
-      ? parseFloat(ethers.utils.formatEther(ownedAppraisedValue)).toFixed(2)
+      ? formatCommas(
+          parseFloat(ethers.utils.formatEther(ownedAppraisedValue)).toFixed(2)
+        )
       : ownedAppraisedValue
     const price = collection.isAppraised
       ? { appraisalPrice: formattedAppraisedValue }
@@ -668,7 +675,11 @@ export default function UserView() {
           }
           avatarImage={collection.imageUrl}
           link={`/analytics/collection/${collection.id}`}
-          total={collection?.ownerAssetsInCollection?.count ?? 0}
+          total={
+            collection?.ownerAssetsInCollection?.count
+              ? formatCommas(collection.ownerAssetsInCollection.count, 0, 0)
+              : 0
+          }
           name={collection.name}
           key={index}
           onExpand={() =>
@@ -945,13 +956,17 @@ export default function UserView() {
   // pre-calculate portfolio appraisal values
   const calculatedTotalAssetAppraisedValueWei = data?.getUser
     ?.ownedAppraisalValue?.appraisalWei
-    ? (
-        parseFloat(
-          ethers.utils.formatEther(
-            data.getUser.ownedAppraisalValue.appraisalWei
-          )
-        ) + unsupportedAggregateCollectionStatFloorEth
-      ).toFixed(2)
+    ? formatCommas(
+        (
+          parseFloat(
+            ethers.utils.formatEther(
+              data.getUser.ownedAppraisalValue.appraisalWei
+            )
+          ) + unsupportedAggregateCollectionStatFloorEth
+        ).toFixed(2),
+        2,
+        2
+      )
     : '-'
 
   const calculatedTotalAssetAppraisedValueUsd = data?.getUser
@@ -965,13 +980,21 @@ export default function UserView() {
 
   const calculatedTotalNumUniqueCollections = data?.getUser?.extraCollections
     ?.count
-    ? Number(data.getUser.extraCollections?.count) +
-      unsupportedAggregateCollectionStatNumUniqueCollections
+    ? formatCommas(
+        Number(data.getUser.extraCollections?.count) +
+          unsupportedAggregateCollectionStatNumUniqueCollections,
+        0,
+        0
+      )
     : '-'
 
   const calculatedTotalNumAssets = data?.getUser?.numAssets
-    ? Number(data.getUser.numAssets) +
-      unsupportedAggregateCollectionStatNumAssets
+    ? formatCommas(
+        Number(data.getUser.numAssets) +
+          unsupportedAggregateCollectionStatNumAssets,
+        0,
+        0
+      )
     : '-'
 
   // Generate content for tooltip
@@ -1970,11 +1993,15 @@ export default function UserView() {
                         isPixelated:
                           PIXELATED_CONTRACTS.includes(contractAddress),
                         appraisalPriceETH: lastAppraisalWeiPrice
-                          ? weiToEth(lastAppraisalWeiPrice, 4, false)
+                          ? formatCommas(
+                              weiToEth(lastAppraisalWeiPrice, 4, false)
+                            )
                           : null,
                         appraisalPriceUSD: lastAppraisalUsdPrice
-                          ? Math.round(
-                              parseInt(lastAppraisalUsdPrice) / 1000000
+                          ? formatCommas(
+                              Math.round(
+                                parseInt(lastAppraisalUsdPrice) / 1000000
+                              )
                             )
                           : null,
                         name: name

@@ -111,8 +111,8 @@ export const getUnderOverPricedLabel = (val: number | null) => {
  */
 export const formatCommas = (
   value: string | number,
-  maximumFractionDigits = 2,
-  minimumFractionDigits = 2
+  maximumFractionDigits = 0,
+  minimumFractionDigits = 0
 ) => {
   if (Number.isNaN(Number(value))) return null
 
