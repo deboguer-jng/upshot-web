@@ -94,13 +94,14 @@ export default function CollectionAvgPricePanel({
     return (
       <CollectionPanel {...{ title, subtitle }}>
         {skeletonCells.map((idx, index) => (
-          <Flex
+          <Grid
             key={index}
-            sx={{ alignItems: 'center', color: 'disabled', gap: 2 }}
+            columns={['25px auto']}
+            sx={{ alignItems: 'center', color: 'disabled', gap: 1 }}
           >
             <Text>{index + 1}</Text>
             <CollectionButtonTemplate />
-          </Flex>
+          </Grid>
         ))}
       </CollectionPanel>
     )
