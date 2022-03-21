@@ -114,7 +114,7 @@ export const formatCommas = (
   maximumFractionDigits = 0,
   minimumFractionDigits = 0
 ) => {
-  if (Number.isNaN(Number(value))) return null
+  if (Number.isNaN(Number(value))) return undefined
 
   const formatter = new Intl.NumberFormat('en-US', {
     maximumFractionDigits,

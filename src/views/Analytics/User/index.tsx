@@ -675,11 +675,7 @@ export default function UserView() {
           }
           avatarImage={collection.imageUrl}
           link={`/analytics/collection/${collection.id}`}
-          total={
-            collection?.ownerAssetsInCollection?.count
-              ? formatCommas(collection.ownerAssetsInCollection.count, 0, 0)
-              : 0
-          }
+          total={collection?.ownerAssetsInCollection?.count}
           name={collection.name}
           key={index}
           onExpand={() =>
