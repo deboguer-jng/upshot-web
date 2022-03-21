@@ -94,11 +94,13 @@ export const getPriceChangeLabel = (val: number | null) => {
  *
  * @returns (underpriced) appended if underpriced, - (overpriced) appended if overpriced.
  */
- export const getUnderOverPricedLabel = (val: number | null) => {
+export const getUnderOverPricedLabel = (val: number | null) => {
   if (val === undefined || val === null) return '-'
 
   const percentChange = Math.abs(val).toFixed(2) + '%'
-  return val > 0 ? percentChange + ' (underpriced)' : percentChange + ' (overpriced)'
+  return val > 0
+    ? percentChange + ' (underpriced)'
+    : percentChange + ' (overpriced)'
 }
 
 /**
@@ -107,7 +109,17 @@ export const getPriceChangeLabel = (val: number | null) => {
  * @param value
  * @returns Formatted currency
  */
-export const formatCommas = (value: number) =>
-  Math.round(value)
-    .toString()
-    .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+export const formatCommas = (
+  value: string | number,
+  maximumFractionDigits = 0,
+  minimumFractionDigits = 0
+) => {
+  if (Number.isNaN(Number(value))) return null
+
+  const formatter = new Intl.NumberFormat('en-US', {
+    maximumFractionDigits,
+    minimumFractionDigits,
+  })
+
+  return formatter.format(Number(value))
+}
