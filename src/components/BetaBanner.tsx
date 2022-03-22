@@ -35,7 +35,7 @@ export const BetaBanner = ({ error = false }: BetaBannerProps) => (
           href="https://jv3yfpod32j.typeform.com/to/CZ28JWz9"
           target="_blank"
           rel="noopener noreferrer nofollow"
-          style={{ color: 'inherit' }}
+          style={{ color: 'inherit', textDecoration: 'underline', fontSize: 'inherit' }}
         >
           Give us feedback.
         </Link>

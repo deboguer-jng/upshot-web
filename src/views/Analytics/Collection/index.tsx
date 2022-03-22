@@ -366,6 +366,9 @@ export default function CollectionView() {
                 href={`/analytics/search/?collectionId=${id}&collectionName=${encodeURIComponent(
                   data.collectionById.name
                 )}`}
+                sx={{
+                  width: isMobile ? '100%' : 'auto',
+                }}
               >
                 <Button
                   icon={<Icon icon="search" />}
