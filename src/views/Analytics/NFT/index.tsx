@@ -480,7 +480,7 @@ export default function NFTView() {
                           <Link
                             href={`/analytics/collection/${collection?.id}`}
                             sx={{
-                              cursor: 'pointer',
+                              whiteSpace: 'nowrap', 
                               textOverflow: 'ellipsis',
                               overflow: 'hidden',
                               '&:hover': {
@@ -533,7 +533,7 @@ export default function NFTView() {
                           <Link
                             href={`/analytics/user/${txHistory?.[0]?.txToAddress}`}
                             sx={{
-                              cursor: 'pointer',
+                              whiteSpace: 'nowrap', 
                               textOverflow: 'ellipsis',
                               overflow: 'hidden',
                               '&:hover': {

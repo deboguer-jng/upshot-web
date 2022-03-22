@@ -16,7 +16,7 @@ function Breadcrumbs({ crumbs, ...props }: BreadcrumbsProps) {
       {crumbs
         ?.filter((crumb) => !!crumb)
         .map((crumb, idx) => (
-          <Link href={crumb.link} key={idx}>
+          <Link href={crumb.link} key={idx} sx={{ ':hover': { textDecoration: 'none' } }}>
             <Box sx={{ marginRight: 3 }}>
               <Breadcrumb text={crumb.text} />
             </Box>
