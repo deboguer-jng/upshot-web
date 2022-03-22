@@ -142,7 +142,7 @@ export default function CollectionAvgPricePanel({
               <Text>{index + 1}</Text>
               <CollectionButton
                 icon={
-                  <Link href={`/analytics/collection/${id}`}>
+                  <Link href={`/analytics/collection/${id}`} sx={{ flexShrink: 'initial' }}>
                     <Box
                       sx={{
                         width: '100%',
