@@ -15,7 +15,7 @@ import { format, formatDistance } from 'date-fns'
 import router from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
-import { getUnderOverPricedLabel, weiToEth } from 'utils/number'
+import { formatCommas, getUnderOverPricedLabel, weiToEth } from 'utils/number'
 
 import {
   GET_EXPLORE_NFTS,
@@ -297,7 +297,12 @@ export default function ExploreListedNFTs({
                       }}
                     >
                       {lastAppraisalWeiPrice
-                        ? weiToEth(lastAppraisalWeiPrice)
+                        ? 'Ξ' +
+                          formatCommas(
+                            weiToEth(lastAppraisalWeiPrice, 4, false),
+                            4,
+                            4
+                          )
                         : '-'}
                     </Text>
                   </Flex>
@@ -311,7 +316,12 @@ export default function ExploreListedNFTs({
                     <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
                       {listedNftColumns.LIST_PRICE}
                     </Text>
-                    <Text>{listPrice ? weiToEth(listPrice) : '-'}</Text>
+                    <Text>
+                      {listPrice
+                        ? 'Ξ' +
+                          formatCommas(weiToEth(listPrice, 4, false), 4, 4)
+                        : '-'}
+                    </Text>
                   </Flex>
                   <Flex
                     sx={{
@@ -353,11 +363,18 @@ export default function ExploreListedNFTs({
                 <>
                   <TableCell sx={{ maxWidth: 100, color: 'blue' }}>
                     {lastAppraisalWeiPrice
-                      ? weiToEth(lastAppraisalWeiPrice)
+                      ? 'Ξ' +
+                        formatCommas(
+                          weiToEth(lastAppraisalWeiPrice, 4, false),
+                          4,
+                          4
+                        )
                       : '-'}
                   </TableCell>
                   <TableCell sx={{ maxWidth: 100 }}>
-                    {listPrice ? weiToEth(listPrice) : '-'}
+                    {listPrice
+                      ? 'Ξ' + formatCommas(weiToEth(listPrice, 4, false), 4, 4)
+                      : '-'}
                   </TableCell>
                   <TableCell sx={{ maxWidth: 100 }}>
                     {listTimestamp

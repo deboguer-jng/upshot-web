@@ -15,7 +15,7 @@ import { format } from 'date-fns'
 import router from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
-import { getPriceChangeLabel, weiToEth } from 'utils/number'
+import { formatCommas, getPriceChangeLabel, weiToEth } from 'utils/number'
 
 import {
   GET_EXPLORE_NFTS,
@@ -306,7 +306,12 @@ export default function ExploreNFTs({
                     </Text>
                     <Text>
                       {lastSale?.ethSalePrice
-                        ? weiToEth(lastSale.ethSalePrice)
+                        ? 'Ξ' +
+                          formatCommas(
+                            weiToEth(lastSale.ethSalePrice, 4, false),
+                            4,
+                            4
+                          )
                         : '-'}
                     </Text>
                   </Flex>
@@ -322,7 +327,12 @@ export default function ExploreNFTs({
                     </Text>
                     <Text>
                       {lastAppraisalWeiPrice
-                        ? weiToEth(lastAppraisalWeiPrice)
+                        ? 'Ξ' +
+                          formatCommas(
+                            weiToEth(lastAppraisalWeiPrice, 4, false),
+                            4,
+                            4
+                          )
                         : '-'}
                     </Text>
                   </Flex>
@@ -354,12 +364,22 @@ export default function ExploreNFTs({
                   </TableCell>
                   <TableCell sx={{ maxWidth: 100 }}>
                     {lastSale?.ethSalePrice
-                      ? weiToEth(lastSale.ethSalePrice)
+                      ? 'Ξ' +
+                        formatCommas(
+                          weiToEth(lastSale.ethSalePrice, 4, false),
+                          4,
+                          4
+                        )
                       : '-'}
                   </TableCell>
                   <TableCell sx={{ maxWidth: 100 }}>
                     {lastAppraisalWeiPrice
-                      ? weiToEth(lastAppraisalWeiPrice)
+                      ? 'Ξ' +
+                        formatCommas(
+                          weiToEth(lastAppraisalWeiPrice, 4, false),
+                          4,
+                          4
+                        )
                       : '-'}
                   </TableCell>
                   <TableCell
