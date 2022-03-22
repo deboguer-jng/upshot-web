@@ -293,7 +293,7 @@ export default function CollectionView() {
                   latestStats?.average
                     ? formatNumber(latestStats.average, {
                         fromWei: true,
-                        decimals: 4,
+                        decimals: 2,
                       })
                     : '-'
                 }
@@ -306,7 +306,7 @@ export default function CollectionView() {
                   latestStats?.floor
                     ? formatNumber(latestStats.floor, {
                         fromWei: true,
-                        decimals: 4,
+                        decimals: 2,
                       })
                     : '-'
                 }
@@ -341,7 +341,7 @@ export default function CollectionView() {
                   latestStats?.marketCap
                     ? formatNumber(latestStats.marketCap, {
                         fromWei: true,
-                        decimals: 4,
+                        decimals: 2,
                         kmbUnits: true,
                       })
                     : '-'
@@ -354,7 +354,7 @@ export default function CollectionView() {
                   latestStats?.pastWeekWeiVolume
                     ? formatNumber(latestStats.pastWeekWeiVolume, {
                         fromWei: true,
-                        decimals: 4,
+                        decimals: 2,
                         kmbUnits: true,
                       })
                     : '-'
@@ -362,7 +362,10 @@ export default function CollectionView() {
                 currencySymbol="Ξ"
                 label="Weekly Volume"
               />
-              <CollectionStat value={size} label="NFTs in Collection" />
+              <CollectionStat
+                value={size ? formatNumber(size) : '-'}
+                label="NFTs in Collection"
+              />
               {/* <CollectionStat
                 value={numCollectors ? numCollectors.toString() : '-'}
                 label="Collectors"
