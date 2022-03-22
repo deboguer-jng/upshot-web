@@ -14,7 +14,7 @@ export enum TraitSortOption {
 
 export enum OrderDirection {
   DESC,
-  ASC
+  ASC,
 }
 
 export enum ETimeWindow {
@@ -22,7 +22,7 @@ export enum ETimeWindow {
   DAY,
   WEEK,
   MONTH,
-  ALLTIME
+  ALLTIME,
 }
 
 /**
@@ -207,7 +207,7 @@ export const GET_EXPLORE_COLLECTIONS = gql`
  * Collection Avg. Price
  * @see CollectionAvgPricePanel
  */
- export type GetCollectionsByMetricVars = {
+export type GetCollectionsByMetricVars = {
   orderColumn?: string
   orderDirection?: string
   limit?: number
@@ -276,7 +276,7 @@ export const GET_COLLECTIONS_BY_METRIC = gql`
  * @see TopCollectionsChart
  */
 
- export type GetTopCollectionsVars = {
+export type GetTopCollectionsVars = {
   orderColumn?: string
   orderDirection?: string
   limit?: number
@@ -308,6 +308,8 @@ export type GetTopCollectionsData = {
         floor?: string
         average?: string
         volume?: string
+        pastWeekWeiVolume?: string
+        pastWeekWeiAverage?: string
       }[]
     }[]
   }
@@ -348,11 +350,17 @@ export const GET_TOP_COLLECTIONS = gql`
           pastWeekWeiVolume
           weekFloorChange
         }
-        timeSeries(minTimestamp: $minTimestamp, maxTimestamp: $maxTimestamp, windowSize: $windowSize) {
+        timeSeries(
+          minTimestamp: $minTimestamp
+          maxTimestamp: $maxTimestamp
+          windowSize: $windowSize
+        ) {
           timestamp
           floor
           average
           volume
+          pastWeekWeiAverage
+          pastWeekWeiVolume
         }
       }
     }
@@ -678,7 +686,7 @@ export const GET_USER_OWNED_ASSETS = gql`
  * Get ungrouped traits
  */
 
- export type TraitSearchVars = {
+export type TraitSearchVars = {
   limit?: number
   offset?: number
   searchTerm?: string
@@ -715,7 +723,8 @@ export const TRAIT_SEARCH = gql`
     $traitType: String
     $collectionId: Int!
     $orderColumn: TraitSearchSortOption
-    $orderDirection: OrderDirection) {
+    $orderDirection: OrderDirection
+  ) {
     traitSearch(
       limit: $limit
       offset: $offset
