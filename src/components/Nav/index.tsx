@@ -1,13 +1,12 @@
 import { useLazyQuery } from '@apollo/client'
 import {
   ConnectModal,
-  Container,
   Flex,
   Icon,
   IconButton,
+  Link,
   Modal,
   Navbar,
-  Text,
   useBreakpointIndex,
   useTheme,
 } from '@upshot-tech/upshot-ui'
@@ -20,7 +19,6 @@ import {
   GetNavBarCollectionsData,
   GetNavBarCollectionsVars,
 } from 'graphql/queries'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
@@ -174,41 +172,37 @@ export const Nav = () => {
     <Sidebar ref={sidebarRef}>
       <Flex sx={{ flexDirection: 'column', gap: '32px', flexGrow: 1 }}>
         <Flex sx={{ flexDirection: 'column', gap: '32px' }}>
-          <Link href="/" passHref>
-            <SideLink
-              sx={{ fontSize: 6, fontWeight: 'heading' }}
-              $isActive={router.pathname === '/'}
-            >
-              Home
-            </SideLink>
-          </Link>
-          <Link href="/analytics" passHref>
-            <SideLink
-              sx={{ fontSize: 6, fontWeight: 'heading' }}
-              $isActive={router.pathname === '/analytics'}
-              onClick={handleToggleMenu}
-            >
-              Analytics
-            </SideLink>
-          </Link>
-          <Link href="https://docs.upshot.xyz" passHref>
-            <SideLink
-              sx={{ fontSize: 6, fontWeight: 'heading' }}
-              target="_blank"
-              onClick={handleToggleMenu}
-            >
-              API Docs
-            </SideLink>
-          </Link>
-          <Link href="https://jv3yfpod32j.typeform.com/to/CZ28JWz9" passHref>
-            <SideLink
-              sx={{ fontSize: 6, fontWeight: 'heading' }}
-              target="_blank"
-              onClick={handleToggleMenu}
-            >
-              Feedback
-            </SideLink>
-          </Link>
+          <SideLink
+            href="/"
+            sx={{ fontSize: 6, fontWeight: 'heading' }}
+            $isActive={router.pathname === '/'}
+          >
+            Home
+          </SideLink>
+          <SideLink
+            href="/analytics"
+            sx={{ fontSize: 6, fontWeight: 'heading' }}
+            $isActive={router.pathname === '/analytics'}
+            onClick={handleToggleMenu}
+          >
+            Analytics
+          </SideLink>
+          <SideLink
+            href="https://docs.upshot.xyz"
+            sx={{ fontSize: 6, fontWeight: 'heading' }}
+            target="_blank"
+            onClick={handleToggleMenu}
+          >
+            API Docs
+          </SideLink>
+          <SideLink
+            href="https://jv3yfpod32j.typeform.com/to/CZ28JWz9"
+            sx={{ fontSize: 6, fontWeight: 'heading' }}
+            target="_blank"
+            onClick={handleToggleMenu}
+          >
+            Feedback
+          </SideLink>
         </Flex>
       </Flex>
 
@@ -220,7 +214,7 @@ export const Nav = () => {
           padding: 4,
         }}
       >
-        <a
+        <Link
           href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
           target="_blank"
           rel="noreferrer"
@@ -228,21 +222,21 @@ export const Nav = () => {
           <IconButton onClick={handleToggleMenu}>
             <Icon color="white" icon="mirror" size={32} />
           </IconButton>
-        </a>
+        </Link>
 
-        <a href="https://twitter.com/upshothq" target="_blank" rel="noreferrer">
+        <Link href="https://twitter.com/upshothq" target="_blank" rel="noreferrer">
           <IconButton onClick={handleToggleMenu}>
             <Icon color="white" icon="twitterCircle" size={32} />
           </IconButton>
-        </a>
+        </Link>
 
-        <a href="https://discord.gg/upshot" target="_blank" rel="noreferrer">
+        <Link href="https://discord.gg/upshot" target="_blank" rel="noreferrer">
           <IconButton onClick={handleToggleMenu}>
             <Icon color="white" icon="discord" size={32} />
           </IconButton>
-        </a>
+        </Link>
 
-        <a
+        <Link
           href="https://www.instagram.com/upshot.hq/"
           target="_blank"
           rel="noreferrer"
@@ -250,7 +244,7 @@ export const Nav = () => {
           <IconButton onClick={handleToggleMenu}>
             <Icon color="white" icon="instagramCircle" size={32} />
           </IconButton>
-        </a>
+        </Link>
       </Flex>
     </Sidebar>
   )
