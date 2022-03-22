@@ -481,6 +481,7 @@ export default function NFTView() {
                           </Text>
                           <Link
                             href={`/analytics/collection/${collection?.id}`}
+                            passHref
                           >
                             <a
                               sx={{
@@ -537,6 +538,7 @@ export default function NFTView() {
                           </Text>
                           <Link
                             href={`/analytics/user/${txHistory?.[0]?.txToAddress}`}
+                            passHref
                           >
                             <a
                               sx={{
