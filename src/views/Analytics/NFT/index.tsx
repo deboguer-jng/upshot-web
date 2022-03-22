@@ -573,8 +573,13 @@ export default function NFTView() {
                               )}`}
                               key={idx}
                               sx={{
-                                textDecoration: 'none',
                                 cursor: 'pointer',
+                                whiteSpace: 'normal',
+                                lineHeight: 'auto',
+                                textDecoration: 'none',
+                                '&:hover': {
+                                  textDecoration: 'none',
+                                }
                               }}
                           >
                               <LabelAttribute
