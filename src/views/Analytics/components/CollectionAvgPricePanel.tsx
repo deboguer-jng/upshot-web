@@ -1,15 +1,15 @@
 /** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
-import { Flex, Grid, Image, Text } from '@upshot-tech/upshot-ui'
+import { Grid, Image, Text } from '@upshot-tech/upshot-ui'
 import {
   Box,
   CollectionButton,
   CollectionButtonTemplate,
   Icon,
+  Link,
   useTheme,
 } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE } from 'constants/'
-import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { weiToEth } from 'utils/number'
 
@@ -142,7 +142,7 @@ export default function CollectionAvgPricePanel({
               <Text>{index + 1}</Text>
               <CollectionButton
                 icon={
-                  <Link passHref href={`/analytics/collection/${id}`}>
+                  <Link href={`/analytics/collection/${id}`}>
                     <Box
                       sx={{
                         width: '100%',

@@ -2,6 +2,7 @@
 import { useQuery } from '@apollo/client'
 import {
   imageOptimizer,
+  Link,
   theme,
   useBreakpointIndex,
   AppraisalsCopy,
@@ -11,7 +12,6 @@ import { Avatar, Button, Icon, Text } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import Head from 'next/head'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useMemo, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
@@ -363,7 +363,6 @@ export default function CollectionView() {
               }}
             >
               <Link
-                passHref
                 href={`/analytics/search/?collectionId=${id}&collectionName=${encodeURIComponent(
                   data.collectionById.name
                 )}`}

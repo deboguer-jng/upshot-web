@@ -6,6 +6,7 @@ import {
   Box,
   Flex,
   Grid,
+  Link,
   MiniNftCard,
   Text,
 } from '@upshot-tech/upshot-ui'
@@ -14,7 +15,6 @@ import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import Head from 'next/head'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { shortenAddress } from 'utils/address'
@@ -119,10 +119,6 @@ export default function SearchView() {
 
   const handlePageChange = ({ selected }: { selected: number }) => {
     setPage(selected)
-  }
-
-  const handleClickNFT = (id: string) => {
-    router.push('/analytics/nft/' + id)
   }
 
   const handleChangeSelection = (columnIdx: number) => {
@@ -257,7 +253,7 @@ export default function SearchView() {
                       {collectionName ?? assetArr?.[0]?.collection?.name}
                     </Text>
                     <Link href={`/analytics/collection/${collectionId}`}>
-                      <a style={{ textDecoration: 'none' }}>
+                      <Link sx={{ ':hover': { textDecoration: 'none' } }}>
                         <IconButton
                           sx={{
                             marginLeft: '6px;',
@@ -266,7 +262,7 @@ export default function SearchView() {
                         >
                           <Icon icon="arrowStylizedRight" color="grey-500" />
                         </IconButton>
-                      </a>
+                      </Link>
                     </Link>
                   </Flex>
                 )}
@@ -346,9 +342,9 @@ export default function SearchView() {
                                   },
                                   idx
                                 ) => (
-                                  <a
+                                  <Link
                                     key={idx}
-                                    onClick={() => handleClickNFT(id)}
+                                    href={'/analytics/nft/' + id}
                                     style={{ cursor: 'pointer' }}
                                   >
                                     <MiniNftCard
@@ -378,7 +374,7 @@ export default function SearchView() {
                                       )}
                                       link={`/analytics/collection/${collection?.id}`}
                                     />
-                                  </a>
+                                  </Link>
                                 )
                               )}
                             </Flex>
