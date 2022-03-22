@@ -5,6 +5,7 @@ import {
   CollectionTable,
   CollectorAccordion,
   Flex,
+  formatNumber,
   Grid,
   Icon,
   Pagination,
@@ -17,15 +18,9 @@ import {
   useBreakpointIndex,
   useTheme,
 } from '@upshot-tech/upshot-ui'
-import { PAGE_SIZE, PIXELATED_CONTRACTS } from 'constants/'
+import { PAGE_SIZE } from 'constants/'
 import router from 'next/router'
 import { useEffect, useState } from 'react'
-import {
-  formatCommas,
-  formatCurrencyUnits,
-  formatLargeNumber,
-  weiToEth,
-} from 'utils/number'
 
 import { TRAIT_SEARCH, TraitSearchData, TraitSearchVars } from '../../queries'
 import { ExplorePanelSkeleton } from './NFTs'
@@ -301,7 +296,11 @@ export default function ExploreTraits({
                     </Text>
                     <Text>
                       {floor
-                        ? 'Ξ' + formatCommas(weiToEth(floor, 4, false), 4, 4)
+                        ? formatNumber(floor, {
+                            fromWei: true,
+                            decimals: 4,
+                            prefix: 'ETHER',
+                          })
                         : '-'}
                     </Text>
                   </Flex>
@@ -317,10 +316,13 @@ export default function ExploreTraits({
                     </Text>
                     <Text>
                       {floorUsd
-                        ? '$' +
-                          formatLargeNumber(
-                            Number(formatCurrencyUnits(floorUsd, 6))
-                          )
+                        ? formatNumber(floorUsd, {
+                            fromWei: true,
+                            fromDecimals: 6,
+                            decimals: 2,
+                            kmbUnits: true,
+                            prefix: 'USD',
+                          })
                         : '-'}
                     </Text>
                   </Flex>
@@ -337,15 +339,21 @@ export default function ExploreTraits({
                   </TableCell>
                   <TableCell sx={{ maxWidth: 50 }}>
                     {floor
-                      ? 'Ξ' + formatCommas(weiToEth(floor, 4, false), 4, 4)
+                      ? formatNumber(floor, {
+                          fromWei: true,
+                          decimals: 4,
+                          prefix: 'ETHER',
+                        })
                       : '-'}
                   </TableCell>
                   <TableCell sx={{ maxWidth: 50 }}>
                     {floorUsd
-                      ? '$' +
-                        formatLargeNumber(
-                          Number(formatCurrencyUnits(floorUsd, 6))
-                        )
+                      ? formatNumber(floorUsd, {
+                          fromWei: true,
+                          decimals: 4,
+                          fromDecimals: 6,
+                          prefix: 'USD',
+                        })
                       : '-'}
                   </TableCell>
                 </>

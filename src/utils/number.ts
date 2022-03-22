@@ -1,27 +1,5 @@
+import { formatNumber } from '@upshot-tech/upshot-ui'
 import { ethers } from 'ethers'
-const BN = ethers.BigNumber
-
-/**
- * Wei to Eth
- *
- * @returns wei converted to a truncated ether
- * string with an optional 'Ξ' prefix.
- */
-export const weiToEth = (
-  wei: string,
-  decimals: number = 4,
-  showPrefix: boolean = true
-) => {
-  let eth
-
-  try {
-    eth = parseFloat(ethers.utils.formatEther(wei)).toFixed(decimals)
-  } catch (err) {
-    return eth
-  }
-
-  return showPrefix ? 'Ξ' + eth : eth
-}
 
 /**
  * Parse Eth String
@@ -37,44 +15,10 @@ export const parseEthString = (ethUnsafe: string, decimals: number = 4) => {
     const wei = ethers.utils.parseEther(ethUnsafe)
 
     // If successful, format the value.
-    eth = weiToEth(wei.toString(), decimals, false)
+    eth = formatNumber(wei.toString(), { fromWei: true, decimals })
   } catch (err) {}
 
   return eth
-}
-
-/**
- * Format currency with decimals + symbol.
- */
-export const formatCurrencyUnits = (
-  amount: string,
-  decimals: number = 18,
-  precision: number = 4
-) => {
-  const denom = BN.from(10).pow(decimals)
-  const pow = BN.from(10).pow(precision)
-  const val = BN.from(amount).mul(pow).div(denom).toNumber()
-
-  return (val / 10 ** precision).toFixed(precision)
-}
-
-/**
- * Formats a large number into a smaller unit.
- */
-export const formatLargeNumber = (num: number, digits = 2) => {
-  const lookup = [
-    { value: 1, symbol: '' },
-    { value: 1e3, symbol: 'k' },
-    { value: 1e6, symbol: 'M' },
-    { value: 1e9, symbol: 'B' },
-  ]
-  const item = lookup
-    .slice()
-    .reverse()
-    .find((item) => num >= item.value)
-  return item
-    ? (num / item.value).toFixed(2) + item.symbol
-    : Number(0).toFixed(digits)
 }
 
 /**
@@ -101,25 +45,4 @@ export const getUnderOverPricedLabel = (val: number | null) => {
   return val > 0
     ? percentChange + ' (underpriced)'
     : percentChange + ' (overpriced)'
-}
-
-/**
- * Format commas
- *
- * @param value
- * @returns Formatted currency
- */
-export const formatCommas = (
-  value: string | number,
-  maximumFractionDigits = 0,
-  minimumFractionDigits = 0
-) => {
-  if (Number.isNaN(Number(value))) return undefined
-
-  const formatter = new Intl.NumberFormat('en-US', {
-    maximumFractionDigits,
-    minimumFractionDigits,
-  })
-
-  return formatter.format(Number(value))
 }

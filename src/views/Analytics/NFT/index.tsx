@@ -12,12 +12,13 @@ import { Flex, Grid, Image, Text } from '@upshot-tech/upshot-ui'
 import {
   Box,
   Chart,
+  formatNumber,
   Icon,
   IconButton,
   Label,
   LabelAttribute,
   Panel,
-  Tooltip,
+  parseUint256,
   useTheme,
 } from '@upshot-tech/upshot-ui'
 import {
@@ -40,7 +41,6 @@ import { useEffect, useState } from 'react'
 import { extractEns, shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
 import { getPriceChangeColor } from 'utils/color'
-import { formatCommas, formatCurrencyUnits, weiToEth } from 'utils/number'
 
 import Breadcrumbs from '../components/Breadcrumbs'
 import Collectors from '../components/ExplorePanel/Collectors'
@@ -346,7 +346,11 @@ export default function NFTView() {
                       }}
                     >
                       <Text color="blue" sx={{ border: 'none', fontSize: 16 }}>
-                        {'Ξ' + weiToEth(lastAppraisalWeiPrice, 3, false)}
+                        {formatNumber(lastAppraisalWeiPrice, {
+                          fromWei: true,
+                          prefix: 'ETHER',
+                          decimals: 2,
+                        })}
                       </Text>
                       <Icon icon="upshot" size={18} color="primary" />
                     </Flex>
@@ -356,11 +360,11 @@ export default function NFTView() {
                     <Flex sx={{ gap: 1 }}>
                       <Text color="grey-300">
                         {'Rank ' +
-                          (rarityRank ? formatCommas(rarityRank) : '-') +
+                          (rarityRank ? formatNumber(rarityRank) : '-') +
                           ' / '}
                       </Text>
                       <Text color="grey-500">
-                        {collection?.size ? formatCommas(collection.size) : 0}
+                        {collection?.size ? formatNumber(collection.size) : 0}
                       </Text>
                     </Flex>
                   )}
@@ -427,7 +431,7 @@ export default function NFTView() {
                     parseFloat(ethers.utils.formatEther(listPrice)).toFixed(2)
                   )}
                   sx={{ width: '100%' }}
-                  listPriceUSD={Number(formatCurrencyUnits(listPriceUsd, 6))}
+                  listPriceUSD={parseUint256(listPriceUsd, 6, 2)}
                   listAppraisalPercentage={listAppraisalRatio}
                   marketplaceName={
                     listUrl.includes('larvalabs.com')
@@ -683,15 +687,17 @@ export default function NFTView() {
                               sx={{ lineHeight: 1 }}
                             >
                               {isFloor
-                                ? weiToEth(
+                                ? formatNumber(
                                     appraisalHistory[
                                       appraisalHistory.length - 1
                                     ].estimatedPrice,
-                                    3,
-                                    false
+                                    { fromWei: true, decimals: 2 }
                                   )
                                 : lastAppraisalWeiPrice
-                                ? weiToEth(lastAppraisalWeiPrice, 3, false)
+                                ? formatNumber(lastAppraisalWeiPrice, {
+                                    fromWei: true,
+                                    decimals: 2,
+                                  })
                                 : '-'}
                             </Label>
 
@@ -721,9 +727,10 @@ export default function NFTView() {
                                   marginTop: '-.5rem',
                                 }}
                               >
-                                {formatCommas(
-                                  Number(lastAppraisalUsdPrice) / 1e6
-                                )}
+                                {formatNumber(lastAppraisalUsdPrice, {
+                                  fromWei: true,
+                                  fromDecimals: 6,
+                                })}
                               </Label>
                             )}
                           <Text
@@ -901,9 +908,11 @@ export default function NFTView() {
                               <TableCell sx={{ minWidth: 100, color: 'pink' }}>
                                 {'SALE' === type &&
                                   price &&
-                                  `${formatCurrencyUnits(price, decimals)} ${
-                                    symbol ?? 'ETH'
-                                  }`}
+                                  formatNumber(price, {
+                                    fromWei: true,
+                                    decimals: 2,
+                                    prefix: 'ETHER',
+                                  })}
                                 {'TRANSFER' === type && (
                                   <Text color="blue">Transfer</Text>
                                 )}

@@ -7,7 +7,13 @@ import {
   useBreakpointIndex,
 } from '@upshot-tech/upshot-ui'
 import { Container, Flex, Grid, Label } from '@upshot-tech/upshot-ui'
-import { Avatar, Button, Icon, Text } from '@upshot-tech/upshot-ui'
+import {
+  Avatar,
+  Button,
+  formatNumber,
+  Icon,
+  Text,
+} from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import Head from 'next/head'
@@ -16,7 +22,6 @@ import { useRouter } from 'next/router'
 import React, { useEffect, useMemo, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { Box } from 'theme-ui'
-import { formatLargeNumber, weiToEth } from 'utils/number'
 import CollectionScatterChart from 'views/Analytics/components/CollectionScatterChart'
 import ExplorePanel from 'views/Analytics/components/ExplorePanel'
 import TopSellingNFTs from 'views/Analytics/components/TopSellingNFTs'
@@ -286,7 +291,10 @@ export default function CollectionView() {
                 color="blue"
                 value={
                   latestStats?.average
-                    ? weiToEth(latestStats?.average, 4, false)
+                    ? formatNumber(latestStats.average, {
+                        fromWei: true,
+                        decimals: 4,
+                      })
                     : '-'
                 }
                 currencySymbol="Ξ"
@@ -296,7 +304,10 @@ export default function CollectionView() {
                 color="pink"
                 value={
                   latestStats?.floor
-                    ? weiToEth(latestStats?.floor, 4, false)
+                    ? formatNumber(latestStats.floor, {
+                        fromWei: true,
+                        decimals: 4,
+                      })
                     : '-'
                 }
                 currencySymbol="Ξ"
@@ -328,9 +339,11 @@ export default function CollectionView() {
               <CollectionStat
                 value={
                   latestStats?.marketCap
-                    ? formatLargeNumber(
-                        weiToEth(latestStats?.marketCap, 4, false)
-                      )
+                    ? formatNumber(latestStats.marketCap, {
+                        fromWei: true,
+                        decimals: 4,
+                        kmbUnits: true,
+                      })
                     : '-'
                 }
                 currencySymbol="Ξ"
@@ -339,9 +352,11 @@ export default function CollectionView() {
               <CollectionStat
                 value={
                   latestStats?.pastWeekWeiVolume
-                    ? formatLargeNumber(
-                        weiToEth(latestStats?.pastWeekWeiVolume, 4, false)
-                      )
+                    ? formatNumber(latestStats.pastWeekWeiVolume, {
+                        fromWei: true,
+                        decimals: 4,
+                        kmbUnits: true,
+                      })
                     : '-'
                 }
                 currencySymbol="Ξ"

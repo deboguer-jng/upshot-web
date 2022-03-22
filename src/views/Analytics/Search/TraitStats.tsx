@@ -9,6 +9,7 @@ import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { useTheme } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Grid, Text } from '@upshot-tech/upshot-ui'
 import {
+  formatNumber,
   TableBody,
   TableCell,
   TableHead,
@@ -16,7 +17,6 @@ import {
 } from '@upshot-tech/upshot-ui'
 import React from 'react'
 
-import { weiToEth } from '../../../utils/number'
 import {
   GET_TRAIT_STATS,
   GetTraitStatsData,
@@ -209,7 +209,15 @@ export default function TraitStats({
                   <Text sx={{ marginBottom: 1 }}>
                     {traitStatsColumns.FLOOR}
                   </Text>
-                  <Text>{floor ? weiToEth(floor) : '-'}</Text>
+                  <Text>
+                    {floor
+                      ? formatNumber(floor, {
+                          fromWei: true,
+                          decimals: 2,
+                          prefix: 'ETHER',
+                        })
+                      : '-'}
+                  </Text>
                 </Flex>
                 <Flex
                   sx={{
@@ -221,7 +229,11 @@ export default function TraitStats({
                   <Text sx={{ textAlign: 'center', marginBottom: 1 }}>
                     {traitStatsColumns.RARITY}
                   </Text>
-                  <Text>{rarity ? (100 - rarity * 100).toFixed(2).toString() + '%' : '-'}</Text>
+                  <Text>
+                    {rarity
+                      ? (100 - rarity * 100).toFixed(2).toString() + '%'
+                      : '-'}
+                  </Text>
                 </Flex>
               </Grid>
             ) : (
@@ -229,9 +241,19 @@ export default function TraitStats({
                 <TableCell sx={{ maxWidth: 50, textTransform: 'capitalize' }}>
                   {traitType}
                 </TableCell>
-                <TableCell sx={{ maxWidth: 50 }}>{rarity ? (100 - rarity * 100).toFixed(2).toString() + '%' : '-'}</TableCell>
+                <TableCell sx={{ maxWidth: 50 }}>
+                  {rarity
+                    ? (100 - rarity * 100).toFixed(2).toString() + '%'
+                    : '-'}
+                </TableCell>
                 <TableCell sx={{ maxWidth: 50, textTransform: 'capitalize' }}>
-                  {floor ? weiToEth(floor) : '-'}
+                  {floor
+                    ? formatNumber(floor, {
+                        fromWei: true,
+                        decimals: 2,
+                        prefix: 'ETHER',
+                      })
+                    : '-'}
                 </TableCell>
               </>
             )}
