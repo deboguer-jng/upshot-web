@@ -485,23 +485,29 @@ export default function NFTView() {
                           </Text>
                           <Link
                             href={`/analytics/collection/${collection?.id}`}
-                            passHref
                           >
-                            <Text
-                              as="a"
-                              color="grey-300"
+                            <a
                               sx={{
-                                fontWeight: 'bold',
-                                lineHeight: 1.25,
-                                fontSize: [3, 3, 4],
-                                textDecoration: 'none',
+                                cursor: 'pointer',
+                                textOverflow: 'ellipsis',
+                                overflow: 'hidden',
                                 '&:hover': {
                                   textDecoration: 'underline',
                                 },
                               }}
+                              title={collection?.name}
                             >
-                              {collection?.name}
-                            </Text>
+                              <Text
+                                color="grey-300"
+                                sx={{
+                                  fontWeight: 'bold',
+                                  lineHeight: 1.25,
+                                  fontSize: [3, 3, 4],
+                                }}
+                              >
+                                {collection?.name}
+                              </Text>
+                            </a>
                           </Link>
                         </Flex>
                       </Flex>
