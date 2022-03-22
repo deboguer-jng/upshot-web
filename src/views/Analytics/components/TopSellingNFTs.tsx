@@ -108,10 +108,6 @@ export default function TopSellingNFTs({
     }
   }, [loading])
 
-  const handleClickNFT = (id: string) => {
-    router.push('/analytics/nft/' + id)
-  }
-
   if (loading)
     return (
       <>
@@ -195,8 +191,8 @@ export default function TopSellingNFTs({
               key
             ) => (
               <a
+                href={'/analytics/nft/' + id}
                 key={key}
-                onClick={() => handleClickNFT(id)}
                 style={{ cursor: 'pointer' }}
               >
                 <MiniNftCard
