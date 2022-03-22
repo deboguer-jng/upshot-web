@@ -142,47 +142,46 @@ export default function CollectionAvgPricePanel({
               <Text>{index + 1}</Text>
               <CollectionButton
                 icon={
-                  <Link href={`/analytics/collection/${id}`} sx={{ flexShrink: 'initial' }}>
-                    <Box
+                  <Link
+                    href={`/analytics/collection/${id}`}
+                    sx={{
+                      width: '100%',
+                      height: '100%',
+                      position: 'relative',
+                      '&:hover img': {
+                        display: 'none',
+                      },
+                      '&:hover svg': {
+                        display: 'block',
+                      },
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Image
+                      alt={`${name} Cover Artwork`}
                       sx={{
-                        width: '100%',
+                        borderRadius: 'circle',
                         height: '100%',
-                        position: 'relative',
-                        '&:hover img': {
-                          display: 'none',
-                        },
-                        '&:hover svg': {
-                          display: 'block',
-                        },
+                        width: '100%',
+                        objectFit: 'cover',
+                        objectPosition: 'center',
                       }}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <Image
-                        alt={`${name} Cover Artwork`}
-                        sx={{
-                          borderRadius: 'circle',
-                          height: '100%',
-                          width: '100%',
-                          objectFit: 'cover',
-                          objectPosition: 'center',
-                        }}
-                        src={imageUrl}
-                        height={theme.buttons.collection.iconHeight}
-                        width={theme.buttons.collection.iconHeight}
-                      />
-                      <Icon
-                        icon="arrowStylizedRight"
-                        sx={{
-                          display: 'none',
-                          position: 'absolute',
-                          top: '0',
-                          width: '40% !important',
-                          height: '40% !important',
-                          margin: '30%',
-                        }}
-                        size="40%"
-                      ></Icon>
-                    </Box>
+                      src={imageUrl}
+                      height={theme.buttons.collection.iconHeight}
+                      width={theme.buttons.collection.iconHeight}
+                    />
+                    <Icon
+                      icon="arrowStylizedRight"
+                      sx={{
+                        display: 'none',
+                        position: 'absolute',
+                        top: '0',
+                        width: '40% !important',
+                        height: '40% !important',
+                        margin: '30%',
+                      }}
+                      size="40%"
+                    ></Icon>
                   </Link>
                 }
                 onClick={() => onCollectionSelected(id)}
