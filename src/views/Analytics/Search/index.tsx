@@ -252,17 +252,15 @@ export default function SearchView() {
                     <Text variant="h2Primary">
                       {collectionName ?? assetArr?.[0]?.collection?.name}
                     </Text>
-                    <Link href={`/analytics/collection/${collectionId}`}>
-                      <Link sx={{ ':hover': { textDecoration: 'none' } }}>
-                        <IconButton
-                          sx={{
-                            marginLeft: '6px;',
-                            verticalAlign: 'middle',
-                          }}
-                        >
-                          <Icon icon="arrowStylizedRight" color="grey-500" />
+                    <Link href={`/analytics/collection/${collectionId}`} sx={{ ':hover': { textDecoration: 'none' } }}>
+                      <IconButton
+                        sx={{
+                          marginLeft: '6px;',
+                          verticalAlign: 'middle',
+                        }}
+                      >
+                        <Icon icon="arrowStylizedRight" color="grey-500" />
                         </IconButton>
-                      </Link>
                     </Link>
                   </Flex>
                 )}
@@ -345,7 +343,7 @@ export default function SearchView() {
                                   <Link
                                     key={idx}
                                     href={'/analytics/nft/' + id}
-                                    style={{ cursor: 'pointer' }}
+                                    sx={{ ":hover": { textDecoration: 'none' } }}
                                   >
                                     <MiniNftCard
                                       price={

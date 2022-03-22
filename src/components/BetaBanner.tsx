@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { Icon } from '@upshot-tech/upshot-ui'
+import { Icon, Link } from '@upshot-tech/upshot-ui'
 import { Flex, Text } from 'theme-ui'
 
 const BetaBannerBase = styled.div`
@@ -31,14 +31,14 @@ export const BetaBanner = ({ error = false }: BetaBannerProps) => (
       </Text>
       <Text color="grey-400" sx={{ fontSize: 2 }}>
         This is a beta version of Upshot Analytics.{' '}
-        <a
+        <Link
           href="https://jv3yfpod32j.typeform.com/to/CZ28JWz9"
           target="_blank"
           rel="noopener noreferrer nofollow"
           style={{ color: 'inherit' }}
         >
           Give us feedback.
-        </a>
+        </Link>
       </Text>
     </Flex> : (
       <Flex sx={{ alignItems: 'center', justifyContent: 'center', gap: 1 }}>

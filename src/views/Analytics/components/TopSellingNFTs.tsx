@@ -4,6 +4,7 @@ import {
   BlurrySquareTemplate,
   Box,
   Flex,
+  Link,
   MiniNftCard,
   SwitchDropdown,
   useBreakpointIndex,
@@ -190,10 +191,10 @@ export default function TopSellingNFTs({
               },
               key
             ) => (
-              <a
+              <Link
                 href={'/analytics/nft/' + id}
                 key={key}
-                style={{ cursor: 'pointer' }}
+                sx={{ ":hover": { textDecoration: 'none' } }}
               >
                 <MiniNftCard
                   price={price ? weiToEth(price) : undefined}
@@ -207,7 +208,7 @@ export default function TopSellingNFTs({
                   pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
                   link={`/analytics/collection/${collection?.id}`}
                 />
-              </a>
+              </Link>
             )
           )}
         </MiniNFTContainer>
