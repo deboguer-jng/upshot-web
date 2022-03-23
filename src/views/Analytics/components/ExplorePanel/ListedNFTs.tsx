@@ -95,9 +95,6 @@ function ListedNFTTableHead({
                 key={idx}
                 color="grey-500"
                 onClick={() => onChangeSelection?.(idx)}
-                colSpan={
-                  idx === Object.values(listedNftColumns).length - 1 ? 2 : 1
-                }
                 sx={{
                   cursor: 'pointer',
                   color: selectedColumn === idx ? 'white' : null,
@@ -134,6 +131,7 @@ function ListedNFTTableHead({
                 </Flex>
               </TableCell>
             ))}
+            <TableCell sx={{ width: '40px !important' }} />
           </TableRow>
         </TableHead>
       )}
