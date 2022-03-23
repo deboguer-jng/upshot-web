@@ -158,9 +158,11 @@ function ExplorePanelHead({
 export default function ExplorePanel({
   collectionId,
   collectionName,
+  isAppraised,
 }: {
   collectionId?: number
   collectionName?: string
+  isAppraised?: boolean
 }) {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
