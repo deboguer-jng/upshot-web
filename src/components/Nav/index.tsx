@@ -1,6 +1,7 @@
 import { useLazyQuery } from '@apollo/client'
 import {
   ConnectModal,
+  HelpModal,
   Container,
   Flex,
   Icon,
@@ -78,9 +79,12 @@ export const Nav = () => {
     GetNavBarCollectionsVars
   >(GET_NAV_BAR_COLLECTIONS)
   const [open, setOpen] = useState(false)
+  const [helpOpen, setHelpOpen] = useState(false)
   const modalRef = useRef<HTMLDivElement>(null)
+  const helpModalRef = useRef<HTMLDivElement>(null)
   const isMobile = useBreakpointIndex() <= 1
   const toggleModal = () => setOpen(!open)
+  const toggleHelpModal = () => setHelpOpen(!helpOpen)
   const outsideClicked = useOutsideAlerter(sidebarRef)
 
   useEffect(() => {
@@ -285,6 +289,12 @@ export const Nav = () => {
           }}
           onDisconnectClick={handleDisconnect}
           onMenuClick={handleToggleMenu}
+          onHelpClick={
+            router.pathname.includes('/nft') ||
+            router.pathname.includes('/collection')
+              ? toggleHelpModal
+              : undefined
+          }
           searchSuggestions={suggestions}
           {...{ address, showSidebar }}
         >
@@ -292,6 +302,16 @@ export const Nav = () => {
         </Navbar>
         <Modal ref={modalRef} onClose={toggleModal} {...{ open }}>
           <ConnectModal {...{ hideMetaMask }} onConnect={handleConnect} />
+        </Modal>
+        <Modal
+          ref={helpModalRef}
+          onClose={toggleHelpModal}
+          {...{ open: helpOpen }}
+        >
+          <HelpModal
+            link="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
+            onClose={toggleHelpModal}
+          />
         </Modal>
       </Flex>
       {showSidebar && <SidebarShade />}
