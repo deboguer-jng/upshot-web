@@ -360,51 +360,50 @@ export default function NFTView() {
                       <Text color="grey-500">{collection?.size}</Text>
                     </Flex>
                   )}
+
+                  <a
+                    href={`https://opensea.io/assets/${id}`}
+                    target="_blank"
+                    sx={{ height: 20 }}
+                    rel="noreferrer"
+                  >
+                    <Icon
+                      icon="openSeaBlock"
+                      color="primary"
+                      sx={{ width: 20, height: 20 }}
+                    />
+                  </a>
+                  {ART_BLOCKS_CONTRACTS.includes(contractAddress) && (
+                    <a
+                      href={`https://generator.artblocks.io/${id}`}
+                      target="_blank"
+                      sx={{ marginLeft: '13px' }}
+                      rel="noreferrer"
+                    >
+                      <Icon
+                        icon="openLink"
+                        color="primary"
+                        sx={{ width: 20, height: 20 }}
+                      />
+                    </a>
+                  )}
+                  {contractAddress ===
+                    '0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB' && (
+                    <a
+                      href={`https://www.larvalabs.com/cryptopunks/details/${tokenId}`}
+                      target="_blank"
+                      sx={{ marginLeft: '13px' }}
+                      rel="noreferrer"
+                    >
+                      <Icon
+                        icon="openLink"
+                        color="primary"
+                        sx={{ width: 20, height: 20 }}
+                      />
+                    </a>
+                  )}
                 </Flex>
               </>
-
-              <Flex>
-                <a
-                  href={`https://opensea.io/assets/${id}`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <Icon
-                    icon="openSeaBlock"
-                    color="primary"
-                    sx={{ width: 20, height: 20 }}
-                  />
-                </a>
-                {ART_BLOCKS_CONTRACTS.includes(contractAddress) && (
-                  <a
-                    href={`https://generator.artblocks.io/${id}`}
-                    target="_blank"
-                    sx={{ marginLeft: '13px' }}
-                    rel="noreferrer"
-                  >
-                    <Icon
-                      icon="openLink"
-                      color="primary"
-                      sx={{ width: 20, height: 20 }}
-                    />
-                  </a>
-                )}
-                {contractAddress ===
-                  '0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB' && (
-                  <a
-                    href={`https://www.larvalabs.com/cryptopunks/details/${tokenId}`}
-                    target="_blank"
-                    sx={{ marginLeft: '13px' }}
-                    rel="noreferrer"
-                  >
-                    <Icon
-                      icon="openLink"
-                      color="primary"
-                      sx={{ width: 20, height: 20 }}
-                    />
-                  </a>
-                )}
-              </Flex>
             </Flex>
           </Flex>
 
