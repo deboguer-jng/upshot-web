@@ -496,9 +496,19 @@ export default function NFTView() {
                                 lineHeight: 1.25,
                                 fontSize: [3, 3, 4],
                               }}
+                              title={collection?.name}
                             >
-                              {collection?.name}
-                            </Text>
+                              <Text
+                                color="grey-300"
+                                sx={{
+                                  fontWeight: 'bold',
+                                  lineHeight: 1.25,
+                                  fontSize: [3, 3, 4],
+                                }}
+                              >
+                                {collection?.name}
+                              </Text>
+                            </a>
                           </Link>
                         </Flex>
                       </Flex>

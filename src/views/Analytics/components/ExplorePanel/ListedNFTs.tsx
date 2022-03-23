@@ -228,6 +228,13 @@ export default function ExploreListedNFTs({
     },
   })
 
+  /**
+   * We are using a workaround at the backend to speed up results when
+   * a search filter is not in the query. We don't receive a count back
+   * in this instance, so we use a hardcoded depth of 500 items.
+   */
+  const totalCount = searchTerm ? data?.assetGlobalSearch?.count ?? 0 : 500
+
   useEffect(() => {
     setPage(0)
   }, [searchTerm])
@@ -382,7 +389,7 @@ export default function ExploreListedNFTs({
       <Flex sx={{ justifyContent: 'center', marginTop: '10px' }}>
         <Pagination
           forcePage={page}
-          pageCount={Math.ceil(data.assetGlobalSearch.count / PAGE_SIZE)}
+          pageCount={Math.ceil(totalCount / PAGE_SIZE)}
           pageRangeDisplayed={0}
           marginPagesDisplayed={0}
           onPageChange={handlePageChange}
