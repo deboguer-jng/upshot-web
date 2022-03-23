@@ -10,9 +10,11 @@ import {
   CollectionCardExpanded,
   CollectionRow,
   CollectionTable,
+  formatNumber,
   Icon,
   IconButton,
   Modal,
+  parseUint256,
   RadarChart,
   Skeleton,
   Spinner,
@@ -45,12 +47,6 @@ import {
 } from 'react-virtualized'
 import { Label as LabelUI } from 'theme-ui'
 import { extractEns, shortenAddress } from 'utils/address'
-import {
-  formatCommas,
-  formatCurrencyUnits,
-  formatLargeNumber,
-  weiToEth,
-} from 'utils/number'
 
 import Breadcrumbs from '../components/Breadcrumbs'
 import {
@@ -649,9 +645,7 @@ export default function UserView() {
     data: { count, collection, ownedAppraisedValue },
   }) => {
     const formattedAppraisedValue = ownedAppraisedValue
-      ? formatCommas(
-          parseFloat(ethers.utils.formatEther(ownedAppraisedValue)).toFixed(2)
-        )
+      ? formatNumber(ownedAppraisedValue, { fromWei: true, decimals: 2 })
       : ownedAppraisedValue
     const price = collection.isAppraised
       ? { appraisalPrice: formattedAppraisedValue }
@@ -952,44 +946,37 @@ export default function UserView() {
   // pre-calculate portfolio appraisal values
   const calculatedTotalAssetAppraisedValueWei = data?.getUser
     ?.ownedAppraisalValue?.appraisalWei
-    ? formatCommas(
-        (
-          parseFloat(
-            ethers.utils.formatEther(
-              data.getUser.ownedAppraisalValue.appraisalWei
-            )
-          ) + unsupportedAggregateCollectionStatFloorEth
-        ).toFixed(2),
-        2,
-        2
+    ? formatNumber(
+        parseFloat(
+          ethers.utils.formatEther(
+            data.getUser.ownedAppraisalValue.appraisalWei
+          )
+        ) + unsupportedAggregateCollectionStatFloorEth,
+        { decimals: 2 }
       )
     : '-'
 
   const calculatedTotalAssetAppraisedValueUsd = data?.getUser
     ?.ownedAppraisalValue?.appraisalUsd
-    ? formatLargeNumber(
-        Number(
-          formatCurrencyUnits(data.getUser.ownedAppraisalValue.appraisalUsd, 6)
-        ) + unsupportedAggregateCollectionStatFloorUsd
+    ? formatNumber(
+        parseUint256(data.getUser.ownedAppraisalValue.appraisalUsd, 6, 2) +
+          unsupportedAggregateCollectionStatFloorUsd,
+        { kmbUnits: true, decimals: 2 }
       )
     : '-'
 
   const calculatedTotalNumUniqueCollections = data?.getUser?.extraCollections
     ?.count
-    ? formatCommas(
-        Number(data.getUser.extraCollections?.count) +
-          unsupportedAggregateCollectionStatNumUniqueCollections,
-        0,
-        0
+    ? formatNumber(
+        Number(data.getUser.extraCollections.count) +
+          unsupportedAggregateCollectionStatNumUniqueCollections
       )
     : '-'
 
   const calculatedTotalNumAssets = data?.getUser?.numAssets
-    ? formatCommas(
+    ? formatNumber(
         Number(data.getUser.numAssets) +
-          unsupportedAggregateCollectionStatNumAssets,
-        0,
-        0
+          unsupportedAggregateCollectionStatNumAssets
       )
     : '-'
 
@@ -1440,10 +1427,11 @@ export default function UserView() {
                                                           'ellipsis',
                                                       }}
                                                     >
-                                                      {`${formatCurrencyUnits(
-                                                        rowData?.price,
-                                                        rowData?.currency
-                                                          ?.decimals
+                                                      {`${parseUint256(
+                                                        rowData.price,
+                                                        rowData.currency
+                                                          .decimals,
+                                                        2
                                                       )}
                                                       ${
                                                         rowData?.currency
@@ -1729,10 +1717,11 @@ export default function UserView() {
                                                           'ellipsis',
                                                       }}
                                                     >
-                                                      {`${formatCurrencyUnits(
-                                                        rowData?.price,
-                                                        rowData?.currency
-                                                          ?.decimals
+                                                      {`${parseUint256(
+                                                        rowData.price,
+                                                        rowData.currency
+                                                          .decimals,
+                                                        2
                                                       )} ${
                                                         rowData?.currency
                                                           ?.symbol ?? 'ETH'
@@ -1989,13 +1978,11 @@ export default function UserView() {
                         isPixelated:
                           PIXELATED_CONTRACTS.includes(contractAddress),
                         appraisalPriceETH: lastAppraisalWeiPrice
-                          ? weiToEth(lastAppraisalWeiPrice, 4, false)
-                          : null,
+                          ? parseUint256(lastAppraisalWeiPrice)
+                          : undefined,
                         appraisalPriceUSD: lastAppraisalUsdPrice
-                          ? Math.round(
-                              parseInt(lastAppraisalUsdPrice) / 1000000
-                            )
-                          : null,
+                          ? parseUint256(lastAppraisalUsdPrice, 6)
+                          : undefined,
                         name: name
                           ? showCollection
                             ? name.replace(showCollection.name, '')

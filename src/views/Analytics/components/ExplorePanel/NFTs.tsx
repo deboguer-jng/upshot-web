@@ -4,6 +4,7 @@ import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { Pagination, useTheme } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Grid, Icon, Skeleton, Text } from '@upshot-tech/upshot-ui'
 import {
+  formatNumber,
   TableBody,
   TableCell,
   TableHead,
@@ -15,7 +16,7 @@ import { format } from 'date-fns'
 import router from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
-import { formatCommas, getPriceChangeLabel, weiToEth } from 'utils/number'
+import { getPriceChangeLabel } from 'utils/number'
 
 import {
   GET_EXPLORE_NFTS,
@@ -306,12 +307,11 @@ export default function ExploreNFTs({
                     </Text>
                     <Text>
                       {lastSale?.ethSalePrice
-                        ? 'Ξ' +
-                          formatCommas(
-                            weiToEth(lastSale.ethSalePrice, 4, false),
-                            4,
-                            4
-                          )
+                        ? formatNumber(lastSale.ethSalePrice, {
+                            decimals: 4,
+                            prefix: 'ETHER',
+                            fromWei: true,
+                          })
                         : '-'}
                     </Text>
                   </Flex>
@@ -327,12 +327,11 @@ export default function ExploreNFTs({
                     </Text>
                     <Text>
                       {lastAppraisalWeiPrice
-                        ? 'Ξ' +
-                          formatCommas(
-                            weiToEth(lastAppraisalWeiPrice, 4, false),
-                            4,
-                            4
-                          )
+                        ? formatNumber(lastAppraisalWeiPrice, {
+                            decimals: 4,
+                            prefix: 'ETHER',
+                            fromWei: true,
+                          })
                         : '-'}
                     </Text>
                   </Flex>
@@ -364,22 +363,20 @@ export default function ExploreNFTs({
                   </TableCell>
                   <TableCell sx={{ maxWidth: 100 }}>
                     {lastSale?.ethSalePrice
-                      ? 'Ξ' +
-                        formatCommas(
-                          weiToEth(lastSale.ethSalePrice, 4, false),
-                          4,
-                          4
-                        )
+                      ? formatNumber(lastSale.ethSalePrice, {
+                          decimals: 4,
+                          prefix: 'ETHER',
+                          fromWei: true,
+                        })
                       : '-'}
                   </TableCell>
                   <TableCell sx={{ maxWidth: 100 }}>
                     {lastAppraisalWeiPrice
-                      ? 'Ξ' +
-                        formatCommas(
-                          weiToEth(lastAppraisalWeiPrice, 4, false),
-                          4,
-                          4
-                        )
+                      ? formatNumber(lastAppraisalWeiPrice, {
+                          decimals: 4,
+                          prefix: 'ETHER',
+                          fromWei: true,
+                        })
                       : '-'}
                   </TableCell>
                   <TableCell

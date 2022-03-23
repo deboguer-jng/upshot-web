@@ -4,6 +4,7 @@ import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { Pagination, useTheme } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Grid, Icon, Skeleton, Text } from '@upshot-tech/upshot-ui'
 import {
+  formatNumber,
   TableBody,
   TableCell,
   TableHead,
@@ -11,11 +12,11 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { PAGE_SIZE } from 'constants/'
-import { format, formatDistance } from 'date-fns'
+import { formatDistance } from 'date-fns'
 import router from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
-import { formatCommas, getUnderOverPricedLabel, weiToEth } from 'utils/number'
+import { getUnderOverPricedLabel } from 'utils/number'
 
 import {
   GET_EXPLORE_NFTS,
@@ -297,12 +298,10 @@ export default function ExploreListedNFTs({
                       }}
                     >
                       {lastAppraisalWeiPrice
-                        ? 'Ξ' +
-                          formatCommas(
-                            weiToEth(lastAppraisalWeiPrice, 4, false),
-                            4,
-                            4
-                          )
+                        ? formatNumber(lastAppraisalWeiPrice, {
+                            decimals: 4,
+                            prefix: 'ETHER',
+                          })
                         : '-'}
                     </Text>
                   </Flex>
@@ -318,8 +317,10 @@ export default function ExploreListedNFTs({
                     </Text>
                     <Text>
                       {listPrice
-                        ? 'Ξ' +
-                          formatCommas(weiToEth(listPrice, 4, false), 4, 4)
+                        ? formatNumber(listPrice, {
+                            decimals: 4,
+                            prefix: 'ETHER',
+                          })
                         : '-'}
                     </Text>
                   </Flex>
@@ -363,17 +364,20 @@ export default function ExploreListedNFTs({
                 <>
                   <TableCell sx={{ maxWidth: 100, color: 'blue' }}>
                     {lastAppraisalWeiPrice
-                      ? 'Ξ' +
-                        formatCommas(
-                          weiToEth(lastAppraisalWeiPrice, 4, false),
-                          4,
-                          4
-                        )
+                      ? formatNumber(lastAppraisalWeiPrice, {
+                          decimals: 4,
+                          prefix: 'ETHER',
+                          fromWei: true,
+                        })
                       : '-'}
                   </TableCell>
                   <TableCell sx={{ maxWidth: 100 }}>
                     {listPrice
-                      ? 'Ξ' + formatCommas(weiToEth(listPrice, 4, false), 4, 4)
+                      ? formatNumber(listPrice, {
+                          decimals: 4,
+                          prefix: 'ETHER',
+                          fromWei: true,
+                        })
                       : '-'}
                   </TableCell>
                   <TableCell sx={{ maxWidth: 100 }}>
