@@ -221,6 +221,7 @@ export default function ExploreListedNFTs({
     variables: {
       limit: PAGE_SIZE,
       offset: page * PAGE_SIZE,
+      listed: true,
       searchTerm,
       collectionId,
       orderColumn: Object.keys(listedNftColumns)[selectedColumn],
