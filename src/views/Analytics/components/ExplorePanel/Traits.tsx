@@ -350,7 +350,7 @@ export default function ExploreTraits({
                     {floorUsd
                       ? formatNumber(floorUsd, {
                           fromWei: true,
-                          decimals: 4,
+                          decimals: 2,
                           fromDecimals: 6,
                           prefix: 'USD',
                         })

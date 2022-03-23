@@ -730,6 +730,7 @@ export default function NFTView() {
                                 {formatNumber(lastAppraisalUsdPrice, {
                                   fromWei: true,
                                   fromDecimals: 6,
+                                  decimals: 2,
                                 })}
                               </Label>
                             )}
