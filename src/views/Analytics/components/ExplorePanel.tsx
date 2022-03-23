@@ -185,11 +185,12 @@ export default function ExplorePanel({
   useEffect(() => {
     // Reset sort + selection on new tab selection.
     if (tab == 'Listed NFTs') {
-      setSelectedColumn(3)
+      setSelectedColumn(2)
+      setSortAscending(true)
     } else {
       setSelectedColumn(0)
+      setSortAscending(false)
     }
-    setSortAscending(false)
   }, [tab])
 
   return (
