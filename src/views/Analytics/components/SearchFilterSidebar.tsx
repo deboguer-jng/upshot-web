@@ -8,7 +8,6 @@ import {
   Icon,
   InputRounded,
   InputRoundedSearch,
-  Label,
   LabelAttribute,
   LabeledSwitch,
   Text,
@@ -107,6 +106,33 @@ function TokenIdInput({ defaultValue, onBlur, onSubmit }) {
   )
 }
 
+function priceKeyPress(minPriceEth, maxPriceEth, e, onSubmit) {
+  if (e.key === 'Enter') {
+    let minPriceWei
+    let maxPriceWei
+
+    if (minPriceEth) {
+      try {
+        minPriceWei = ethers.utils.parseEther(minPriceEth).toString()
+        if (minPriceWei === '0') minPriceWei = undefined
+      } catch (err) {
+        console.warn(err)
+      }
+    }
+
+    if (maxPriceEth) {
+      try {
+        maxPriceWei = ethers.utils.parseEther(maxPriceEth).toString()
+        if (maxPriceWei === '0') maxPriceWei = undefined
+      } catch (err) {
+        console.warn(err)
+      }
+    }
+
+    onSubmit?.(minPriceWei, maxPriceWei)
+  }
+}
+
 function PriceInput({
   minPrice,
   maxPrice,
@@ -176,35 +202,18 @@ function PriceInput({
               value={minPriceEth}
               onBlur={handleBlurMinPrice}
               onChange={(e) => setMinPriceEth(e.currentTarget.value)}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter') {
-                  const minPriceWei = ethers.utils
-                    .parseEther(e.currentTarget.value ?? '0')
-                    .toString()
-                  const maxPriceWei = ethers.utils.parseEther(
-                    maxPriceEth ?? '0'
-                  )
-                  onSubmit?.(minPriceWei, maxPriceWei)
-                }
-              }}
+              onKeyPress={(e) =>
+                priceKeyPress(e.currentTarget.value, maxPriceEth, e, onSubmit)
+              }
             />
             <InputRounded
               placeholder="Ξ Max"
               value={maxPriceEth}
               onBlur={handleBlurMaxPrice}
               onChange={(e) => setMaxPriceEth(e.currentTarget.value)}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter') {
-                  const minPriceWei = ethers.utils.parseEther(
-                    minPriceEth ?? '0'
-                  )
-                  const maxPriceWei = ethers.utils
-                    .parseEther(e.currentTarget.value ?? '0')
-                    .toString()
-
-                  onSubmit?.(minPriceWei, maxPriceWei)
-                }
-              }}
+              onKeyPress={(e) =>
+                priceKeyPress(minPriceEth, e.currentTarget.value, e, onSubmit)
+              }
             />
           </Flex>
         </>
@@ -356,9 +365,13 @@ function TraitCategoryList({
 export default function SearchFilterSidebar({
   collectionId: defaultCollectionId,
   collectionName: defaultCollectionName,
+  onApply,
+  onHideFilters,
 }: {
   collectionId?: number
   collectionName?: string
+  onApply?: ({ query }) => void
+  onHideFilters?: () => void
 }) {
   const router = useRouter()
   const [collectionId, setCollectionId] = useState(defaultCollectionId)
@@ -439,8 +452,7 @@ export default function SearchFilterSidebar({
   )
 
   const handleApplyFilters = (query = {}) => {
-    router.push({
-      pathname: '/analytics/search',
+    onApply?.({
       query: {
         traits: traitIds,
         collectionId,
@@ -472,6 +484,11 @@ export default function SearchFilterSidebar({
       return `${traitType}: ${name}`
     }
     return name
+  }
+
+  const handleApplyFiltersClick = () => {
+    handleApplyFilters()
+    onHideFilters?.()
   }
 
   return (
@@ -572,11 +589,13 @@ export default function SearchFilterSidebar({
         </>
       )}
 
-      <Flex sx={{ justifyContent: 'flex-end' }}>
-        <Button capitalize onClick={handleApplyFilters}>
-          Apply Filters
-        </Button>
-      </Flex>
+      {isMobile && (
+        <Flex sx={{ justifyContent: 'flex-end' }}>
+          <Button capitalize onClick={handleApplyFiltersClick}>
+            Apply Filters
+          </Button>
+        </Flex>
+      )}
     </Flex>
   )
 }

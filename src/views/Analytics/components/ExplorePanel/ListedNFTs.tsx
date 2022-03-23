@@ -11,11 +11,11 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { PAGE_SIZE } from 'constants/'
-import { format } from 'date-fns'
+import { format, formatDistance } from 'date-fns'
 import router from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
-import { getPriceChangeLabel, weiToEth } from 'utils/number'
+import { getUnderOverPricedLabel, weiToEth } from 'utils/number'
 
 import {
   GET_EXPLORE_NFTS,
@@ -38,14 +38,14 @@ interface NFTTableHeadProps extends React.HTMLAttributes<HTMLElement> {
   onChangeSelection?: (colIdx: number) => void
 }
 
-export const nftColumns = {
-  LAST_SALE_DATE: 'Last Sale',
-  LAST_SALE_PRICE: 'Last Sale Price',
-  LAST_APPRAISAL_PRICE: 'Latest Appraisal',
-  LAST_APPRAISAL_SALE_RATIO: 'Last Sale/Appraisal',
+export const listedNftColumns = {
+  LAST_APPRAISAL_PRICE: 'Last Appraisal',
+  LIST_PRICE: 'List Price',
+  LIST_TIMESTAMP: 'Listed',
+  LIST_APPRAISAL_RATIO: '% Difference',
 }
 
-function NFTTableHead({
+function ListedNFTTableHead({
   selectedColumn,
   sortAscending,
   onChangeSelection,
@@ -87,15 +87,15 @@ function NFTTableHead({
                   },
                 },
               }}
-            >
-              {/* Unsortable name column */}
-            </TableCell>
-            {Object.values(nftColumns).map((col, idx) => (
+            ></TableCell>
+            {Object.values(listedNftColumns).map((col, idx) => (
               <TableCell
                 key={idx}
                 color="grey-500"
                 onClick={() => onChangeSelection?.(idx)}
-                colSpan={idx === Object.values(nftColumns).length - 1 ? 2 : 1}
+                colSpan={
+                  idx === Object.values(listedNftColumns).length - 1 ? 2 : 1
+                }
                 sx={{
                   cursor: 'pointer',
                   color: selectedColumn === idx ? 'white' : null,
@@ -171,12 +171,12 @@ const NFTItemsWrapper = ({ children, ...props }: NFTTableHeadProps) => {
     <>
       {isMobile ? (
         <>
-          <NFTTableHead {...props} />
+          <ListedNFTTableHead {...props} />
           <CollectorAccordion> {children} </CollectorAccordion>
         </>
       ) : (
         <CollectionTable>
-          <NFTTableHead {...props} />
+          <ListedNFTTableHead {...props} />
           <TableBody>{children}</TableBody>
         </CollectionTable>
       )}
@@ -187,7 +187,7 @@ const NFTItemsWrapper = ({ children, ...props }: NFTTableHeadProps) => {
 /**
  *Default render function
  */
-export default function ExploreNFTs({
+export default function ExploreListedNFTs({
   searchTerm = '',
   collectionId,
   selectedColumn,
@@ -223,7 +223,7 @@ export default function ExploreNFTs({
       offset: page * PAGE_SIZE,
       searchTerm,
       collectionId,
-      orderColumn: Object.keys(nftColumns)[selectedColumn],
+      orderColumn: Object.keys(listedNftColumns)[selectedColumn],
       orderDirection: sortAscending ? 'ASC' : 'DESC',
     },
   })
@@ -243,7 +243,7 @@ export default function ExploreNFTs({
   if (loading)
     return (
       <ExplorePanelSkeleton>
-        <NFTTableHead {...{ selectedColumn, sortAscending }} />
+        <ListedNFTTableHead {...{ selectedColumn, sortAscending }} />
       </ExplorePanelSkeleton>
     )
 
@@ -271,6 +271,9 @@ export default function ExploreNFTs({
               lastSale,
               lastAppraisalWeiPrice,
               lastAppraisalSaleRatio,
+              listPrice,
+              listTimestamp,
+              listAppraisalRatio,
             },
             idx
           ) => (
@@ -293,41 +296,13 @@ export default function ExploreNFTs({
                     }}
                   >
                     <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
-                      {nftColumns.LAST_SALE_DATE}
+                      {listedNftColumns.LAST_APPRAISAL_PRICE}
                     </Text>
-                    <Text>
-                      {lastSale?.timestamp
-                        ? format(lastSale.timestamp * 1000, 'M/d/yyyy')
-                        : '-'}
-                    </Text>
-                  </Flex>
-                  <Flex
-                    sx={{
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
-                      {nftColumns.LAST_SALE_PRICE}
-                    </Text>
-                    <Text>
-                      {lastSale?.ethSalePrice
-                        ? weiToEth(lastSale.ethSalePrice)
-                        : '-'}
-                    </Text>
-                  </Flex>
-                  <Flex
-                    sx={{
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
-                      {nftColumns.LAST_APPRAISAL_PRICE}
-                    </Text>
-                    <Text>
+                    <Text
+                      sx={{
+                        color: 'blue',
+                      }}
+                    >
                       {lastAppraisalWeiPrice
                         ? weiToEth(lastAppraisalWeiPrice)
                         : '-'}
@@ -341,41 +316,69 @@ export default function ExploreNFTs({
                     }}
                   >
                     <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
-                      {nftColumns.LAST_APPRAISAL_SALE_RATIO}
+                      {listedNftColumns.LIST_PRICE}
+                    </Text>
+                    <Text>{listPrice ? weiToEth(listPrice) : '-'}</Text>
+                  </Flex>
+                  <Flex
+                    sx={{
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
+                      {listedNftColumns.LIST_TIMESTAMP}
+                    </Text>
+                    <Text>
+                      {listTimestamp
+                        ? formatDistance(listTimestamp * 1000, new Date()) +
+                          ' ago'
+                        : '-'}
+                    </Text>
+                  </Flex>
+                  <Flex
+                    sx={{
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
+                      {listedNftColumns.LIST_APPRAISAL_RATIO}
                     </Text>
                     <Text
                       sx={{
-                        color: getPriceChangeColor(lastAppraisalSaleRatio),
+                        color: getPriceChangeColor(listAppraisalRatio),
                       }}
                     >
-                      {getPriceChangeLabel(lastAppraisalSaleRatio)}
+                      {getUnderOverPricedLabel(listAppraisalRatio)}
                     </Text>
                   </Flex>
                 </Grid>
               ) : (
                 <>
-                  <TableCell sx={{ maxWidth: 100 }}>
-                    {lastSale?.timestamp
-                      ? format(lastSale.timestamp * 1000, 'M/d/yyyy')
-                      : '-'}
-                  </TableCell>
-                  <TableCell sx={{ maxWidth: 100 }}>
-                    {lastSale?.ethSalePrice
-                      ? weiToEth(lastSale.ethSalePrice)
-                      : '-'}
-                  </TableCell>
-                  <TableCell sx={{ maxWidth: 100 }}>
+                  <TableCell sx={{ maxWidth: 100, color: 'blue' }}>
                     {lastAppraisalWeiPrice
                       ? weiToEth(lastAppraisalWeiPrice)
+                      : '-'}
+                  </TableCell>
+                  <TableCell sx={{ maxWidth: 100 }}>
+                    {listPrice ? weiToEth(listPrice) : '-'}
+                  </TableCell>
+                  <TableCell sx={{ maxWidth: 100 }}>
+                    {listTimestamp
+                      ? formatDistance(listTimestamp * 1000, new Date()) +
+                        ' ago'
                       : '-'}
                   </TableCell>
                   <TableCell
                     sx={{
                       maxWidth: 100,
-                      color: getPriceChangeColor(lastAppraisalSaleRatio),
+                      color: getPriceChangeColor(listAppraisalRatio),
                     }}
                   >
-                    {getPriceChangeLabel(lastAppraisalSaleRatio)}
+                    {getUnderOverPricedLabel(listAppraisalRatio)}
                   </TableCell>
                 </>
               )}

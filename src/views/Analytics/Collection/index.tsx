@@ -4,6 +4,7 @@ import {
   imageOptimizer,
   theme,
   useBreakpointIndex,
+  AppraisalsCopy,
 } from '@upshot-tech/upshot-ui'
 import { Container, Flex, Grid, Label } from '@upshot-tech/upshot-ui'
 import { Avatar, Button, Icon, Text } from '@upshot-tech/upshot-ui'
@@ -273,31 +274,7 @@ export default function CollectionView() {
               General Stats
             </Text>
             {isAppraised && (
-              <a
-                href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
-                target="_blank"
-                sx={{ textDecoration: 'none' }}
-                rel="noreferrer"
-              >
-                <Box
-                  sx={{
-                    cursor: 'pointer',
-                    width: '100%',
-                    borderRadius: '10px',
-                    color: theme.colors.primary,
-                    border: '1px solid',
-                    padding: '10px',
-                    borderColor: theme.colors.primary,
-                    textDecoration: 'none',
-                    fontSize: '12px',
-                    '&:hover': {
-                      background: theme.colors['grey-800'],
-                    },
-                  }}
-                >
-                  How do we develop our appraisals? Read article to learn more.
-                </Box>
-              </a>
+              <AppraisalsCopy link="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104" />
             )}
             <Grid
               columns="repeat(auto-fit, minmax(140px, 1fr))"
@@ -366,9 +343,9 @@ export default function CollectionView() {
               />
               <CollectionStat value={size} label="NFTs in Collection" />
               {/* <CollectionStat
-              value={numCollectors ? numCollectors.toString() : '-'}
-              label="Collectors"
-            /> */}
+                value={numCollectors ? numCollectors.toString() : '-'}
+                label="Collectors"
+              /> */}
             </Grid>
           </Flex>
           <Flex

@@ -87,6 +87,7 @@ export default function SearchView() {
   const [selectedColumn, setSelectedColumn] = useState<number>(0)
   const [sortAscending, setSortAscending] = useState(false)
   const [listView, setListView] = useState(false)
+  const [openMobileFilters, setOpenMobileFilters] = useState(false)
 
   // Trait stats
   const [selectedTraitsColumn, setSelectedTraitsColumn] = useState<number>(3)
@@ -169,6 +170,14 @@ export default function SearchView() {
     setListView(switchToListView)
   }
 
+  const handleApplySearch = ({ query }) => {
+    setPage(0)
+    router.push({
+      pathname: '/analytics/search',
+      query,
+    })
+  }
+
   const assetArr = data?.assetGlobalSearch?.assets
 
   const storage = globalThis?.sessionStorage
@@ -212,56 +221,68 @@ export default function SearchView() {
           content="https://upshot.io/img/opengraph/opengraph_search.jpg"
         />
       </Head>
-      <Flex sx={{ minHeight: '100vh', flexDirection: 'column' }}>
-        <Nav />
-        <Container
-          maxBreakpoint="xxl"
+      <Nav />
+      <Container
+        maxBreakpoint="xxl"
+        sx={{
+          flexDirection: 'column',
+          minHeight: '100vh',
+          gap: 4,
+          padding: 4,
+        }}
+      >
+        <Breadcrumbs crumbs={breadcrumbs} />
+
+        <Grid
           sx={{
-            flexDirection: 'column',
-            gap: 4,
-            padding: 4,
-            flexGrow: 1,
+            gridTemplateColumns: ['1fr', '1fr', '1fr', '300px 1fr'],
+            gap: [5, 5, 5, 8],
           }}
         >
-          <Breadcrumbs crumbs={breadcrumbs} />
+          {isMobile ? (
+            <>
+              <Box>
+                <Accordion
+                  isDropdown
+                  title="Search Filters"
+                  open={openMobileFilters}
+                  onClick={() => setOpenMobileFilters(!openMobileFilters)}
+                  onClose={() => setOpenMobileFilters(false)}
+                >
+                  <Box sx={{ paddingTop: 4 }}>
+                    <SearchFilterSidebar
+                      onHideFilters={() => setOpenMobileFilters(false)}
+                      onApply={handleApplySearch}
+                    />
+                  </Box>
+                </Accordion>
+              </Box>
+            </>
+          ) : (
+            <SearchFilterSidebar onApply={handleApplySearch} />
+          )}
 
-          <Grid
+          <Flex
             sx={{
-              gridTemplateColumns: ['1fr', '1fr', '300px 3fr 1fr'],
-              flexGrow: 1,
-              gap: [8, 5, 8],
+              flex: '1 auto auto',
+              flexDirection: 'column',
+              gap: 6,
             }}
           >
-            {isMobile ? (
-              <>
-                <Box>
-                  <Accordion isDropdown title="Search Filters">
-                    <Box sx={{ paddingTop: 4 }}>
-                      <SearchFilterSidebar />
-                    </Box>
-                  </Accordion>
-                </Box>
-              </>
-            ) : (
-              <SearchFilterSidebar />
-            )}
-
-            <Flex
-              sx={{
-                flex: '1 auto auto',
-                flexDirection: 'column',
-                gap: 6,
-              }}
-            >
-              <Flex sx={{ flexDirection: 'column' }}>
-                {data?.assetGlobalSearch?.count ? (
-                  <Text>{data?.assetGlobalSearch?.count} {data?.assetGlobalSearch?.count === 1 ? 'result' : 'results'} found</Text>
-                ) : loading ? (
-                  <Text>Loading results...</Text>
-                ) : (
-                  <></>
+            <Flex sx={{ flexDirection: 'column' }}>
+              <Box sx={{ height: '18px' }}>
+                {!!data?.assetGlobalSearch?.count && (
+                  <Text>
+                    {data?.assetGlobalSearch?.count}{' '}
+                    {data?.assetGlobalSearch?.count === 1
+                      ? 'result'
+                      : 'results'}{' '}
+                    found
+                  </Text>
                 )}
-                {collectionName && collectionId && (
+              </Box>
+              {(collectionName || assetArr?.[0]?.collection?.name) &&
+                collectionId && (
                   <Flex
                     sx={{
                       flexDirection: 'row',
@@ -269,7 +290,9 @@ export default function SearchView() {
                       marginBottom: '5',
                     }}
                   >
-                    <Text variant="h2Primary">{collectionName}</Text>
+                    <Text variant="h2Primary">
+                      {collectionName ?? assetArr?.[0]?.collection?.name}
+                    </Text>
                     <Link href={`/analytics/collection/${collectionId}`}>
                       <a style={{ textDecoration: 'none' }}>
                         <IconButton
@@ -285,21 +308,22 @@ export default function SearchView() {
                   </Flex>
                 )}
 
-                {!!collectionId && traitIds.length > 0 && (
-                  <TraitStats
-                    selectedColumn={selectedTraitsColumn}
-                    sortAscending={sortTraitsAscending}
-                    onChangeSelection={handleChangeTraitsSelection}
-                    {...{ collectionId, traitIds }}
-                  />
-                )}
-              </Flex>
+              {!!collectionId && traitIds.length > 0 && (
+                <TraitStats
+                  selectedColumn={selectedTraitsColumn}
+                  sortAscending={sortTraitsAscending}
+                  onChangeSelection={handleChangeTraitsSelection}
+                  {...{ collectionId, traitIds }}
+                />
+              )}
+            </Flex>
 
-              {error ? (
-                <div>There was an error completing your request</div>
-              ) : data?.assetGlobalSearch?.count === 0 ? (
-                <div>No results available.</div>
-              ) : (
+            {error ? (
+              <div>There was an error completing your request</div>
+            ) : data?.assetGlobalSearch?.assets.length === 0 ? (
+              <div>No results available.</div>
+            ) : (
+              <>
                 <Flex
                   sx={{
                     flexDirection: 'column',
@@ -324,8 +348,8 @@ export default function SearchView() {
                     <TopCollections
                       variant="normal"
                       searchTerm={collectionSearch}
-                      {...{ selectedColumn, sortAscending }}
                       onChangeSelection={handleChangeSelection}
+                      {...{ selectedColumn, sortAscending }}
                     />
                   )}
                   {
@@ -414,35 +438,26 @@ export default function SearchView() {
                           ))
                   }
                 </Flex>
+              </>
+            )}
+
+            <Flex sx={{ justifyContent: 'center', width: '100%' }}>
+              {!!data?.assetGlobalSearch?.count && (
+                <Pagination
+                  forcePage={page}
+                  pageRangeDisplayed={0}
+                  marginPagesDisplayed={isMobile ? 1 : 3}
+                  pageCount={Math.ceil(
+                    data.assetGlobalSearch.count / (chunkSize * ROW_SIZE)
+                  )}
+                  onPageChange={handlePageChange}
+                />
               )}
-
-              <Flex sx={{ justifyContent: 'center', width: '100%' }}>
-                {!!data?.assetGlobalSearch?.count && (
-                  <Pagination
-                    forcePage={page}
-                    pageRangeDisplayed={0}
-                    marginPagesDisplayed={isMobile ? 1 : 3}
-                    pageCount={Math.ceil(
-                      data.assetGlobalSearch.count / (chunkSize * ROW_SIZE)
-                    )}
-                    onPageChange={handlePageChange}
-                  />
-                )}
-              </Flex>
             </Flex>
-          </Grid>
-        </Container>
-        <Container
-          maxBreakpoint="lg"
-          sx={{
-            flexDirection: 'column',
-            gap: 4,
-            padding: 4,
-          }}
-        ></Container>
-
-        <Footer />
-      </Flex>
+          </Flex>
+        </Grid>
+      </Container>
+      <Footer />
     </>
   )
 }
