@@ -361,9 +361,6 @@ export default function NFTView() {
                     </Flex>
                   )}
                 </Flex>
-                {!!lastAppraisalWeiPrice && (
-                  <AppraisalsCopy link="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104" />
-                )}
               </>
 
               <Flex>
