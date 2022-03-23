@@ -4,6 +4,7 @@ import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { Pagination, useTheme } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Grid, Icon, Skeleton, Text } from '@upshot-tech/upshot-ui'
 import {
+  formatNumber,
   TableBody,
   TableCell,
   TableHead,
@@ -15,7 +16,7 @@ import { format } from 'date-fns'
 import router from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
-import { getPriceChangeLabel, weiToEth } from 'utils/number'
+import { getPriceChangeLabel } from 'utils/number'
 
 import {
   GET_EXPLORE_NFTS,
@@ -313,7 +314,11 @@ export default function ExploreNFTs({
                     </Text>
                     <Text>
                       {lastSale?.ethSalePrice
-                        ? weiToEth(lastSale.ethSalePrice)
+                        ? formatNumber(lastSale.ethSalePrice, {
+                            decimals: 4,
+                            prefix: 'ETHER',
+                            fromWei: true,
+                          })
                         : '-'}
                     </Text>
                   </Flex>
@@ -329,7 +334,11 @@ export default function ExploreNFTs({
                     </Text>
                     <Text>
                       {lastAppraisalWeiPrice
-                        ? weiToEth(lastAppraisalWeiPrice)
+                        ? formatNumber(lastAppraisalWeiPrice, {
+                            decimals: 4,
+                            prefix: 'ETHER',
+                            fromWei: true,
+                          })
                         : '-'}
                     </Text>
                   </Flex>
@@ -361,12 +370,20 @@ export default function ExploreNFTs({
                   </TableCell>
                   <TableCell sx={{ maxWidth: 100 }}>
                     {lastSale?.ethSalePrice
-                      ? weiToEth(lastSale.ethSalePrice)
+                      ? formatNumber(lastSale.ethSalePrice, {
+                          decimals: 4,
+                          prefix: 'ETHER',
+                          fromWei: true,
+                        })
                       : '-'}
                   </TableCell>
                   <TableCell sx={{ maxWidth: 100 }}>
                     {lastAppraisalWeiPrice
-                      ? weiToEth(lastAppraisalWeiPrice)
+                      ? formatNumber(lastAppraisalWeiPrice, {
+                          decimals: 4,
+                          prefix: 'ETHER',
+                          fromWei: true,
+                        })
                       : '-'}
                   </TableCell>
                   <TableCell

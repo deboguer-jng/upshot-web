@@ -9,6 +9,7 @@ import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { Pagination, useTheme } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Grid, Text } from '@upshot-tech/upshot-ui'
 import {
+  formatNumber,
   TableBody,
   TableCell,
   TableHead,
@@ -18,7 +19,7 @@ import { PAGE_SIZE } from 'constants/'
 import router from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
-import { getPriceChangeLabel, weiToEth } from 'utils/number'
+import { getPriceChangeLabel } from 'utils/number'
 
 import {
   GET_EXPLORE_COLLECTIONS,
@@ -279,7 +280,14 @@ export default function ExploreCollections({
               onClick={() => handleShowCollection(id)}
               defaultOpen={idx === 0 ? true : false}
               subtitle={
-                isMobile ? weiToEth(latestStats?.pastWeekWeiVolume, 0) : null
+                isMobile && latestStats?.pastWeekWeiVolume
+                  ? formatNumber(latestStats.pastWeekWeiVolume, {
+                      fromWei: true,
+                      decimals: 2,
+                      kmbUnits: true,
+                      prefix: 'ETHER',
+                    })
+                  : undefined
               }
               fullWidth={isMobile}
               {...{ variant }}
@@ -297,7 +305,13 @@ export default function ExploreCollections({
                       {collectionColumns.PAST_WEEK_AVERAGE}
                     </Text>
                     <Text>
-                      {dataCheck(weiToEth(latestStats?.pastDayWeiAverage, 2))}
+                      {latestStats?.pastDayWeiAverage
+                        ? formatNumber(latestStats.pastDayWeiAverage, {
+                            fromWei: true,
+                            decimals: 2,
+                            prefix: 'ETHER',
+                          })
+                        : '-'}
                     </Text>
                   </Flex>
                   <Flex
@@ -310,7 +324,15 @@ export default function ExploreCollections({
                     <Text sx={{ marginBottom: 1 }}>
                       {collectionColumns.FLOOR}
                     </Text>
-                    <Text>{dataCheck(weiToEth(latestStats?.floor, 2))}</Text>
+                    <Text>
+                      {latestStats?.floor
+                        ? formatNumber(latestStats.floor, {
+                            fromWei: true,
+                            decimals: 2,
+                            prefix: 'ETHER',
+                          })
+                        : '-'}
+                    </Text>
                   </Flex>
                   <Flex
                     sx={{
@@ -336,13 +358,33 @@ export default function ExploreCollections({
               ) : (
                 <>
                   <TableCell sx={{ maxWidth: 50 }}>
-                    {dataCheck(weiToEth(latestStats?.pastWeekWeiVolume, 0))}
+                    {latestStats?.pastWeekWeiVolume
+                      ? formatNumber(latestStats.pastWeekWeiVolume, {
+                          fromWei: true,
+                          decimals: 2,
+                          kmbUnits: true,
+                          prefix: 'ETHER',
+                        })
+                      : '-'}
                   </TableCell>
                   <TableCell sx={{ maxWidth: 50 }}>
-                    {dataCheck(weiToEth(latestStats?.pastDayWeiAverage, 2))}
+                    {latestStats?.pastDayWeiAverage
+                      ? formatNumber(latestStats.pastDayWeiAverage, {
+                          fromWei: true,
+                          decimals: 2,
+                          kmbUnits: true,
+                          prefix: 'ETHER',
+                        })
+                      : '-'}
                   </TableCell>
                   <TableCell sx={{ maxWidth: 50 }}>
-                    {dataCheck(weiToEth(latestStats?.floor, 2))}
+                    {latestStats?.floor
+                      ? formatNumber(latestStats.floor, {
+                          fromWei: true,
+                          decimals: 2,
+                          prefix: 'ETHER',
+                        })
+                      : '-'}
                   </TableCell>
                   <TableCell
                     sx={{
