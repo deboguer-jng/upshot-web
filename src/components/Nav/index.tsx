@@ -1,9 +1,9 @@
 import { useLazyQuery } from '@apollo/client'
 import {
   ConnectModal,
-  HelpModal,
   Container,
   Flex,
+  HelpModal,
   Icon,
   IconButton,
   Modal,
