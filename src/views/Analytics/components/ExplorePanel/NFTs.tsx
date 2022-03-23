@@ -16,7 +16,7 @@ import { format } from 'date-fns'
 import router from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
-import { getPriceChangeLabel } from 'utils/number'
+import { getPriceChangeLabel, getUnderOverPricedLabel } from 'utils/number'
 
 import {
   GET_EXPLORE_NFTS,
@@ -43,7 +43,7 @@ export const nftColumns = {
   LAST_SALE_DATE: 'Last Sale',
   LAST_SALE_PRICE: 'Last Sale Price',
   LAST_APPRAISAL_PRICE: 'Latest Appraisal',
-  LAST_APPRAISAL_SALE_RATIO: 'Last Sale/Appraisal',
+  LIST_APPRAISAL_RATIO: '% Difference',
 }
 
 function NFTTableHead({
@@ -268,7 +268,6 @@ export default function ExploreNFTs({
               contractAddress,
               previewImageUrl,
               mediaUrl,
-              totalSaleCount,
               lastSale,
               lastAppraisalWeiPrice,
               lastAppraisalSaleRatio,
@@ -350,14 +349,14 @@ export default function ExploreNFTs({
                     }}
                   >
                     <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
-                      {nftColumns.LAST_APPRAISAL_SALE_RATIO}
+                      {nftColumns.LIST_APPRAISAL_RATIO}
                     </Text>
                     <Text
                       sx={{
                         color: getPriceChangeColor(lastAppraisalSaleRatio),
                       }}
                     >
-                      {getPriceChangeLabel(lastAppraisalSaleRatio)}
+                      {getUnderOverPricedLabel(lastAppraisalSaleRatio)}
                     </Text>
                   </Flex>
                 </Grid>
@@ -392,7 +391,7 @@ export default function ExploreNFTs({
                       color: getPriceChangeColor(lastAppraisalSaleRatio),
                     }}
                   >
-                    {getPriceChangeLabel(lastAppraisalSaleRatio)}
+                    {getUnderOverPricedLabel(lastAppraisalSaleRatio)}
                   </TableCell>
                 </>
               )}
