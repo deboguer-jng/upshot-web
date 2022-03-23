@@ -269,9 +269,6 @@ export default function CollectionView() {
             >
               General Stats
             </Text>
-            {isAppraised && (
-              <AppraisalsCopy link="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104" />
-            )}
             <Grid
               columns="repeat(auto-fit, minmax(140px, 1fr))"
               sx={{ gap: 4 }}
