@@ -154,9 +154,11 @@ export const Nav = () => {
 
   const handleSearchSuggestionChange = (item: InputSuggestion) => {
     if (showSidebar) handleToggleMenu()
-    isAddress
-      ? router.push(`/analytics/user/${encodeURIComponent(navSearchTerm)}`)
-      : router.push(`/analytics/collection/${item.id}`)
+    if (isAddress)
+      return router.push(`/analytics/user/${encodeURIComponent(navSearchTerm)}`)
+    if (!item?.id) return
+
+    router.push(`/analytics/collection/${item.id}`)
   }
 
   const hideMetaMask =

@@ -4,6 +4,7 @@ import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { Pagination, useTheme } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Grid, Icon, Skeleton, Text } from '@upshot-tech/upshot-ui'
 import {
+  formatNumber,
   TableBody,
   TableCell,
   TableHead,
@@ -11,11 +12,11 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { PAGE_SIZE } from 'constants/'
-import { format, formatDistance } from 'date-fns'
+import { formatDistance } from 'date-fns'
 import router from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
-import { getUnderOverPricedLabel, weiToEth } from 'utils/number'
+import { getUnderOverPricedLabel } from 'utils/number'
 
 import {
   GET_EXPLORE_NFTS,
@@ -221,6 +222,7 @@ export default function ExploreListedNFTs({
     variables: {
       limit: PAGE_SIZE,
       offset: page * PAGE_SIZE,
+      listed: true,
       searchTerm,
       collectionId,
       orderColumn: Object.keys(listedNftColumns)[selectedColumn],
@@ -304,7 +306,10 @@ export default function ExploreListedNFTs({
                       }}
                     >
                       {lastAppraisalWeiPrice
-                        ? weiToEth(lastAppraisalWeiPrice)
+                        ? formatNumber(lastAppraisalWeiPrice, {
+                            decimals: 4,
+                            prefix: 'ETHER',
+                          })
                         : '-'}
                     </Text>
                   </Flex>
@@ -318,7 +323,14 @@ export default function ExploreListedNFTs({
                     <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
                       {listedNftColumns.LIST_PRICE}
                     </Text>
-                    <Text>{listPrice ? weiToEth(listPrice) : '-'}</Text>
+                    <Text>
+                      {listPrice
+                        ? formatNumber(listPrice, {
+                            decimals: 4,
+                            prefix: 'ETHER',
+                          })
+                        : '-'}
+                    </Text>
                   </Flex>
                   <Flex
                     sx={{
@@ -360,11 +372,21 @@ export default function ExploreListedNFTs({
                 <>
                   <TableCell sx={{ maxWidth: 100, color: 'blue' }}>
                     {lastAppraisalWeiPrice
-                      ? weiToEth(lastAppraisalWeiPrice)
+                      ? formatNumber(lastAppraisalWeiPrice, {
+                          decimals: 4,
+                          prefix: 'ETHER',
+                          fromWei: true,
+                        })
                       : '-'}
                   </TableCell>
                   <TableCell sx={{ maxWidth: 100 }}>
-                    {listPrice ? weiToEth(listPrice) : '-'}
+                    {listPrice
+                      ? formatNumber(listPrice, {
+                          decimals: 4,
+                          prefix: 'ETHER',
+                          fromWei: true,
+                        })
+                      : '-'}
                   </TableCell>
                   <TableCell sx={{ maxWidth: 100 }}>
                     {listTimestamp

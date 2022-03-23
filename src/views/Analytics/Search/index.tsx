@@ -5,6 +5,7 @@ import {
   Accordion,
   Box,
   Flex,
+  formatNumber,
   Grid,
   MiniNftCard,
   Text,
@@ -19,7 +20,6 @@ import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
-import { weiToEth } from 'utils/number'
 
 import TopCollections from '../../Analytics/components/ExplorePanel/TopCollections'
 import Breadcrumbs from '../components/Breadcrumbs'
@@ -236,10 +236,8 @@ export default function SearchView() {
               <Box sx={{ height: '18px' }}>
                 {!!data?.assetGlobalSearch?.count && (
                   <Text>
-                    {data?.assetGlobalSearch?.count}{' '}
-                    {data?.assetGlobalSearch?.count === 1
-                      ? 'result'
-                      : 'results'}{' '}
+                    {formatNumber(data.assetGlobalSearch.count)}{' '}
+                    {data.assetGlobalSearch.count === 1 ? 'result' : 'results'}{' '}
                     found
                   </Text>
                 )}
@@ -354,7 +352,14 @@ export default function SearchView() {
                                     <MiniNftCard
                                       price={
                                         lastSale?.ethSalePrice
-                                          ? weiToEth(lastSale.ethSalePrice)
+                                          ? formatNumber(
+                                              lastSale.ethSalePrice,
+                                              {
+                                                fromWei: true,
+                                                decimals: 2,
+                                                prefix: 'ETHER',
+                                              }
+                                            )
                                           : undefined
                                       }
                                       rarity={

@@ -5,6 +5,7 @@ import {
   CollectorAccordionHead,
   CollectorAccordionRow,
   Flex,
+  formatNumber,
   Pagination,
   Skeleton,
   TableCell,
@@ -130,7 +131,7 @@ export default function Collectors({
 
   const formatAppraisal = (appraisal) => {
     return appraisal
-      ? parseFloat(ethers.utils.formatEther(appraisal)).toFixed(2)
+      ? formatNumber(appraisal, { fromWei: true, decimals: 2 })
       : appraisal
   }
 
