@@ -12,17 +12,18 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { PAGE_SIZE } from 'constants/'
-import { format } from 'date-fns'
+import { formatDistance } from 'date-fns'
 import router from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
-import { getPriceChangeLabel, getUnderOverPricedLabel } from 'utils/number'
+import { getUnderOverPricedLabel } from 'utils/number'
 
 import {
   GET_EXPLORE_NFTS,
   GetExploreNFTsData,
   GetExploreNFTsVars,
 } from '../../queries'
+import { getOrderDirection } from './util'
 
 interface NFTTableHeadProps extends React.HTMLAttributes<HTMLElement> {
   /**
@@ -43,7 +44,7 @@ export const nftColumns = {
   LAST_SALE_DATE: 'Last Sale',
   LAST_SALE_PRICE: 'Last Sale Price',
   LAST_APPRAISAL_PRICE: 'Latest Appraisal',
-  LIST_APPRAISAL_RATIO: '% Difference',
+  LAST_APPRAISAL_SALE_RATIO: '% Difference',
 }
 
 function NFTTableHead({
@@ -214,6 +215,9 @@ export default function ExploreNFTs({
     setPage(0)
   }
 
+  const orderColumn = Object.keys(nftColumns)[selectedColumn]
+  const orderDirection = getOrderDirection(orderColumn, sortAscending)
+
   const { loading, error, data } = useQuery<
     GetExploreNFTsData,
     GetExploreNFTsVars
@@ -224,8 +228,8 @@ export default function ExploreNFTs({
       offset: page * PAGE_SIZE,
       searchTerm,
       collectionId,
-      orderColumn: Object.keys(nftColumns)[selectedColumn],
-      orderDirection: sortAscending ? 'ASC' : 'DESC',
+      orderColumn,
+      orderDirection,
     },
   })
 
@@ -297,7 +301,10 @@ export default function ExploreNFTs({
                     </Text>
                     <Text>
                       {lastSale?.timestamp
-                        ? format(lastSale.timestamp * 1000, 'M/d/yyyy')
+                        ? formatDistance(
+                            lastSale.timestamp * 1000,
+                            new Date()
+                          ) + ' ago'
                         : '-'}
                     </Text>
                   </Flex>
@@ -349,7 +356,7 @@ export default function ExploreNFTs({
                     }}
                   >
                     <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
-                      {nftColumns.LIST_APPRAISAL_RATIO}
+                      {nftColumns.LAST_APPRAISAL_SALE_RATIO}
                     </Text>
                     <Text
                       sx={{
@@ -364,7 +371,8 @@ export default function ExploreNFTs({
                 <>
                   <TableCell sx={{ maxWidth: 100 }}>
                     {lastSale?.timestamp
-                      ? format(lastSale.timestamp * 1000, 'M/d/yyyy')
+                      ? formatDistance(lastSale.timestamp * 1000, new Date()) +
+                        ' ago'
                       : '-'}
                   </TableCell>
                   <TableCell sx={{ maxWidth: 100 }}>

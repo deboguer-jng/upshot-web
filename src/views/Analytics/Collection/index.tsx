@@ -1,12 +1,11 @@
 /** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
 import {
-  AppraisalsCopy,
   imageOptimizer,
   theme,
   useBreakpointIndex,
 } from '@upshot-tech/upshot-ui'
-import { Container, Flex, Grid, Label } from '@upshot-tech/upshot-ui'
+import { Container, Flex, Grid } from '@upshot-tech/upshot-ui'
 import {
   Avatar,
   Button,
@@ -146,7 +145,6 @@ function Layout({
 
 export default function CollectionView() {
   const [id, setId] = useState<number>()
-  const [descriptionOpen, setDescriptionOpen] = useState(false)
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
   const router = useRouter()
@@ -437,7 +435,11 @@ export default function CollectionView() {
           <TopSellingNFTs collectionId={id} />
         </Flex>
 
-        <ExplorePanel collectionId={id} collectionName={name} />
+        <ExplorePanel
+          collectionId={id}
+          collectionName={name}
+          {...{ isAppraised }}
+        />
       </Flex>
     </Layout>
   )

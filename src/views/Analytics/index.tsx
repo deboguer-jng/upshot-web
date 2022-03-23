@@ -164,13 +164,6 @@ export default function AnalyticsView() {
           <Box sx={{ position: 'relative' }}>
             <TopSellingCollectionNFTs />
           </Box>
-          {
-            // Temporarily disabled until we can address MC inconsistencies
-            // <Text variant="text.h1Secondary" sx={{ lineHeight: '2.25rem' }}>
-            //   Market Cap (Change Over 7 Days)
-            // </Text>
-            // <CollectionsTreeMap />
-          }
           <ExplorePanel />
         </Flex>
       </Container>
