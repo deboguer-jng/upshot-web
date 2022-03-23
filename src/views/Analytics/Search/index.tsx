@@ -16,7 +16,7 @@ import { PIXELATED_CONTRACTS } from 'constants/'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
 import { weiToEth } from 'utils/number'
@@ -229,6 +229,7 @@ export default function SearchView() {
             sx={{
               flex: '1 auto auto',
               flexDirection: 'column',
+              width: chunkSize * 168 - 20,
               gap: 6,
             }}
           >
