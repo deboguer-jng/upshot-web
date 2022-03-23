@@ -229,7 +229,7 @@ export default function SearchView() {
             sx={{
               flex: '1 auto auto',
               flexDirection: 'column',
-              width: isMobile ? '100%' : chunkSize * 168 - 20,
+              width: breakpointIndex <= 2 ? '100%' : chunkSize * 168 - 20,
               gap: 6,
             }}
           >
