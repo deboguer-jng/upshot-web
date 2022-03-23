@@ -352,15 +352,6 @@ export default function NFTView() {
                     </Flex>
                   )}
 
-                  {!!rarityRank && !!collection && !!collection?.size && (
-                    <Flex sx={{ gap: 1 }}>
-                      <Text color="grey-300">
-                        {'Rank ' + rarityRank + ' / '}
-                      </Text>
-                      <Text color="grey-500">{collection?.size}</Text>
-                    </Flex>
-                  )}
-
                   <a
                     href={`https://opensea.io/assets/${id}`}
                     target="_blank"
