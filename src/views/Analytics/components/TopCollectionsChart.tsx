@@ -22,8 +22,8 @@ interface TopCollectionsChartsProps {
 }
 
 const timeSeriesKeys = {
-  PAST_WEEK_AVERAGE: 'average',
-  PAST_WEEK_VOLUME: 'volume',
+  PAST_WEEK_AVERAGE: 'pastWeekWeiAverage',
+  PAST_WEEK_VOLUME: 'pastWeekWeiVolume',
   FLOOR: 'floor',
 }
 
