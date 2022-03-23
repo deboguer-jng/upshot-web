@@ -23,6 +23,7 @@ import {
   GetExploreNFTsData,
   GetExploreNFTsVars,
 } from '../../queries'
+import { getOrderDirection } from './util'
 
 interface NFTTableHeadProps extends React.HTMLAttributes<HTMLElement> {
   /**
@@ -214,6 +215,9 @@ export default function ExploreListedNFTs({
     setPage(0)
   }
 
+  const orderColumn = Object.keys(listedNftColumns)[selectedColumn]
+  const orderDirection = getOrderDirection(orderColumn, sortAscending)
+
   const { loading, error, data } = useQuery<
     GetExploreNFTsData,
     GetExploreNFTsVars
@@ -225,8 +229,8 @@ export default function ExploreListedNFTs({
       listed: true,
       searchTerm,
       collectionId,
-      orderColumn: Object.keys(listedNftColumns)[selectedColumn],
-      orderDirection: sortAscending ? 'ASC' : 'DESC',
+      orderColumn,
+      orderDirection,
     },
   })
 
