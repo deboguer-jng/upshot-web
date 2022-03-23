@@ -51,28 +51,17 @@ function CollectionStat({
         borderRadius: '20px',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: '8px 16px',
         textAlign: 'center',
+        minHeight: '72px',
         color,
+        gap: 1,
       }}
     >
-      {currencySymbol !== '' && (
-        <Label
-          currencySymbol={currencySymbol}
-          variant="currency"
-          color={color}
-          style={{
-            fontWeight: 700,
-          }}
-        >
-          {value}
-        </Label>
-      )}
-      <Text sx={{ fontSize: 4, fontWeight: 'heading' }}>
+      <Text sx={{ fontSize: 5, fontWeight: 'heading' }}>
         {currencySymbol === '' && value}
       </Text>
 
-      <Text variant="small">{label}</Text>
+      <Text sx={{ fontSize: 2 }}>{label}</Text>
     </Flex>
   )
 }
@@ -294,10 +283,10 @@ export default function CollectionView() {
                     ? formatNumber(latestStats.average, {
                         fromWei: true,
                         decimals: 2,
+                        prefix: 'ETHER',
                       })
                     : '-'
                 }
-                currencySymbol="Ξ"
                 label="Average Price"
               />
               <CollectionStat
@@ -307,10 +296,10 @@ export default function CollectionView() {
                     ? formatNumber(latestStats.floor, {
                         fromWei: true,
                         decimals: 2,
+                        prefix: 'ETHER',
                       })
                     : '-'
                 }
-                currencySymbol="Ξ"
                 label="Floor Price"
               />
               <CollectionStat
@@ -343,10 +332,10 @@ export default function CollectionView() {
                         fromWei: true,
                         decimals: 2,
                         kmbUnits: true,
+                        prefix: 'ETHER',
                       })
                     : '-'
                 }
-                currencySymbol="Ξ"
                 label="Market Cap"
               />
               <CollectionStat
@@ -356,20 +345,16 @@ export default function CollectionView() {
                         fromWei: true,
                         decimals: 2,
                         kmbUnits: true,
+                        prefix: 'ETHER',
                       })
                     : '-'
                 }
-                currencySymbol="Ξ"
                 label="Weekly Volume"
               />
               <CollectionStat
                 value={size ? formatNumber(size) : '-'}
                 label="NFTs in Collection"
               />
-              {/* <CollectionStat
-                value={numCollectors ? numCollectors.toString() : '-'}
-                label="Collectors"
-              /> */}
             </Grid>
           </Flex>
           <Flex
