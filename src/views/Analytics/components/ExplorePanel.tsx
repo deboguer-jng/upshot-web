@@ -189,7 +189,7 @@ export default function ExplorePanel({
     switch (tab) {
       case 'Listed NFTs': {
         setSelectedColumn(isAppraised ? 3 : 2)
-        setSortAscending(true)
+        setSortAscending(isAppraised ? false : true)
         break
       }
       case 'NFTs': {
