@@ -142,6 +142,7 @@ function NFTSearchResultsHead({
                 </Flex>
               </TableCell>
             ))}
+            <TableCell sx={{ width: '40px !important' }} />
           </TableRow>
         </TableHead>
       )}
@@ -183,7 +184,7 @@ const NFTSearchResultsWrapper = ({
           <CollectorAccordion>{children}</CollectorAccordion>
         </>
       ) : (
-        <CollectionTable sx={{ width: 'auto' }}>
+        <CollectionTable>
           <NFTSearchResultsHead {...props} />
           <TableBody>{children}</TableBody>
         </CollectionTable>
