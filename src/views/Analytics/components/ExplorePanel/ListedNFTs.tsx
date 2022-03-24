@@ -308,6 +308,7 @@ export default function ExploreListedNFTs({
                         ? formatNumber(lastAppraisalWeiPrice, {
                             decimals: 4,
                             prefix: 'ETHER',
+                            fromWei: true,
                           })
                         : '-'}
                     </Text>
@@ -327,6 +328,7 @@ export default function ExploreListedNFTs({
                         ? formatNumber(listPrice, {
                             decimals: 4,
                             prefix: 'ETHER',
+                            fromWei: true,
                           })
                         : '-'}
                     </Text>
