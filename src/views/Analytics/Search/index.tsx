@@ -386,7 +386,7 @@ export default function SearchView() {
                   )}
                   {
                     /* Chunk results into non-wrapping rows. */
-                    loading && collectionId ? (
+                    true && collectionId ? (
                       listView ? (
                         <NFTSearchResultsSkeleton
                           columns={nftSearchResultsColumns}

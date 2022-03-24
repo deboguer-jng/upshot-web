@@ -159,7 +159,7 @@ export function NFTSearchResultsSkeleton({
       <TableBody>
         {[...new Array(PAGE_SIZE)].map((_, idx) => (
           <Skeleton sx={{ height: 56 }} as="tr" key={idx}>
-            <TableCell colSpan={6}>
+            <TableCell colSpan={7}>
               <Box sx={{ height: 40, width: '100%' }} />
             </TableCell>
           </Skeleton>
