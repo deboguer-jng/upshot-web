@@ -268,7 +268,10 @@ export default function SearchView() {
             sx={{
               flex: '1 auto auto',
               flexDirection: 'column',
-              width: breakpointIndex <= 2 ? '100%' : chunkSize * 168 - 20,
+              width:
+                listView || breakpointIndex <= 2
+                  ? '100%'
+                  : chunkSize * 168 - 20,
               gap: 6,
             }}
           >
