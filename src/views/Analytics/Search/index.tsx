@@ -24,6 +24,9 @@ import { getAssetName } from 'utils/asset'
 import TopCollections from '../../Analytics/components/ExplorePanel/TopCollections'
 import Breadcrumbs from '../components/Breadcrumbs'
 import SearchFilterSidebar from '../components/SearchFilterSidebar'
+import NFTSearchResults, {
+  NFTSearchResultsSkeleton,
+} from './NFTSearchResultsListView'
 import {
   GET_ASSETS_SEARCH,
   GetAssetsSearchData,
@@ -32,6 +35,24 @@ import {
 import TraitStats from './TraitStats'
 
 const ROW_SIZE = 4
+
+export enum ENFTSearchResultsOrder {
+  LAST_SALE_PRICE,
+  LAST_APPRAISAL_PRICE,
+  LIST_PRICE,
+  LIST_APPRAISAL_RATIO,
+}
+
+export type OrderedNFTSearchResultsColumns = {
+  [key in keyof typeof ENFTSearchResultsOrder]: string
+}
+
+export const nftSearchResultsColumns: OrderedNFTSearchResultsColumns = {
+  LAST_SALE_PRICE: 'Last Sale Price',
+  LAST_APPRAISAL_PRICE: 'Last Appraisal',
+  LIST_PRICE: 'List Price',
+  LIST_APPRAISAL_RATIO: '% Difference',
+}
 
 enum BREAKPOINT_INDEXES {
   ZERO = 0,
@@ -67,6 +88,7 @@ export default function SearchView() {
   const collectionSearch = router.query.collectionSearch as string
   const [selectedColumn, setSelectedColumn] = useState<number>(0)
   const [sortAscending, setSortAscending] = useState(false)
+  const [listView, setListView] = useState(false)
   const [openMobileFilters, setOpenMobileFilters] = useState(false)
 
   // Trait stats
@@ -78,6 +100,17 @@ export default function SearchView() {
     }
 
     setSelectedTraitsColumn(columnIdx)
+  }
+
+  // NFT Search Results
+  const [selectedNFTColumn, setSelectedNFTColumn] = useState<number>(3)
+  const [sortNFTsAscending, setSortNFTsAscending] = useState(false)
+  const handleChangeNFTColumnSelection = (columnIdx: number) => {
+    if (columnIdx === selectedNFTColumn) {
+      setSortNFTsAscending(!sortNFTsAscending)
+    }
+
+    setSelectedNFTColumn(columnIdx)
   }
 
   // Used to wait for the router to mount before showing collectors.
@@ -112,7 +145,9 @@ export default function SearchView() {
       maxPrice,
       traitFilterJoin: traitANDMatch === 'true' ? 'AND' : 'OR',
       traitIds: traitIds.length ? traitIds : undefined,
-      listed: listedOnly === 'true' ? true : false,
+      listed: listedOnly === 'true' ? true : undefined,
+      orderColumn: Object.keys(nftSearchResultsColumns)[selectedNFTColumn],
+      orderDirection: sortNFTsAscending ? 'ASC' : 'DESC',
     },
     skip: !collectionId,
   })
@@ -131,6 +166,10 @@ export default function SearchView() {
     }
 
     setSelectedColumn(columnIdx)
+  }
+
+  const toggleListView = (switchToListView: boolean) => {
+    setListView(switchToListView)
   }
 
   const handleApplySearch = ({ query }) => {
@@ -229,7 +268,10 @@ export default function SearchView() {
             sx={{
               flex: '1 auto auto',
               flexDirection: 'column',
-              width: breakpointIndex <= 2 ? '100%' : chunkSize * 168 - 20,
+              width:
+                listView || breakpointIndex <= 2
+                  ? '100%'
+                  : chunkSize * 168 - 20,
               gap: 6,
             }}
           >
@@ -286,14 +328,54 @@ export default function SearchView() {
               <div>No results available.</div>
             ) : (
               <>
-                {!!collectionId && <Text variant="h3Primary">NFTs</Text>}
                 <Flex
                   sx={{
                     flexDirection: 'column',
                     gap: 5,
-                    alignItems: isMobile ? 'center' : 'baseline',
                   }}
                 >
+                  {!!collectionId && (
+                    <Flex
+                      sx={{
+                        width: '100%',
+                        flexDirection: 'row',
+                        gap: 6,
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Text variant="h3Primary">NFTs</Text>
+                      <Flex
+                        sx={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: 1,
+                        }}
+                      >
+                        <Text
+                          variant="large"
+                          color="grey-600"
+                          sx={{ marginRight: 2 }}
+                        >
+                          View as
+                        </Text>
+                        <IconButton onClick={() => toggleListView(false)}>
+                          <Icon
+                            color={listView ? 'grey-700' : 'grey-300'}
+                            icon={'gridViewV2'}
+                            size={32}
+                          />
+                        </IconButton>
+                        <IconButton onClick={() => toggleListView(true)}>
+                          <Icon
+                            color={listView ? 'grey-300' : 'grey-700'}
+                            icon={'listViewV2'}
+                            size={32}
+                          />
+                        </IconButton>
+                      </Flex>
+                    </Flex>
+                  )}
                   {!collectionId && ready && (
                     <TopCollections
                       variant="normal"
@@ -304,8 +386,15 @@ export default function SearchView() {
                   )}
                   {
                     /* Chunk results into non-wrapping rows. */
-                    loading && collectionId
-                      ? loadArr
+                    loading && collectionId ? (
+                      listView ? (
+                        <NFTSearchResultsSkeleton
+                          columns={nftSearchResultsColumns}
+                          selectedColumn={selectedNFTColumn}
+                          sortAscending={sortNFTsAscending}
+                        />
+                      ) : (
+                        loadArr
                           .map((_, i) =>
                             i % chunkSize === 0
                               ? loadArr.slice(i, i + chunkSize)
@@ -319,76 +408,84 @@ export default function SearchView() {
                               ))}
                             </Flex>
                           ))
-                      : assetArr
-                          ?.map((_, i) =>
-                            i % chunkSize === 0
-                              ? assetArr.slice(i, i + chunkSize)
-                              : null
-                          )
-                          .filter(Boolean)
-                          .map((items, idx) => (
-                            <Flex key={idx} sx={{ gap: 5 }}>
-                              {items?.map(
-                                (
-                                  {
-                                    id,
-                                    contractAddress,
-                                    previewImageUrl,
-                                    mediaUrl,
-                                    name,
-                                    collection,
-                                    tokenId,
-                                    lastSale,
-                                    rarity,
-                                    creatorUsername,
-                                    creatorAddress,
-                                  },
-                                  idx
-                                ) => (
-                                  <a
-                                    key={idx}
-                                    onClick={() => handleClickNFT(id)}
-                                    style={{ cursor: 'pointer' }}
-                                  >
-                                    <MiniNftCard
-                                      price={
-                                        lastSale?.ethSalePrice
-                                          ? formatNumber(
-                                              lastSale.ethSalePrice,
-                                              {
-                                                fromWei: true,
-                                                decimals: 2,
-                                                prefix: 'ETHER',
-                                              }
-                                            )
-                                          : undefined
-                                      }
-                                      rarity={
-                                        rarity
-                                          ? (rarity * 100).toFixed(2) + '%'
-                                          : '-'
-                                      }
-                                      image={previewImageUrl ?? mediaUrl}
-                                      creator={
-                                        creatorUsername ||
-                                        shortenAddress(creatorAddress, 2, 4)
-                                      }
-                                      pixelated={PIXELATED_CONTRACTS.includes(
-                                        contractAddress
-                                      )}
-                                      type="search"
-                                      name={getAssetName(
-                                        name,
-                                        collection?.name,
-                                        tokenId
-                                      )}
-                                      link={`/analytics/collection/${collection?.id}`}
-                                    />
-                                  </a>
-                                )
-                              )}
-                            </Flex>
-                          ))
+                      )
+                    ) : assetArr && listView ? (
+                      <NFTSearchResults
+                        assetArr={assetArr}
+                        columns={nftSearchResultsColumns}
+                        selectedColumn={selectedNFTColumn}
+                        sortAscending={sortNFTsAscending}
+                        onChangeSelection={handleChangeNFTColumnSelection}
+                      />
+                    ) : (
+                      assetArr
+                        ?.map((_, i) =>
+                          i % chunkSize === 0
+                            ? assetArr.slice(i, i + chunkSize)
+                            : null
+                        )
+                        .filter(Boolean)
+                        .map((items, idx) => (
+                          <Flex key={idx} sx={{ gap: 5 }}>
+                            {items?.map(
+                              (
+                                {
+                                  id,
+                                  contractAddress,
+                                  previewImageUrl,
+                                  mediaUrl,
+                                  name,
+                                  collection,
+                                  tokenId,
+                                  lastSale,
+                                  rarity,
+                                  creatorUsername,
+                                  creatorAddress,
+                                },
+                                idx
+                              ) => (
+                                <a
+                                  key={idx}
+                                  onClick={() => handleClickNFT(id)}
+                                  style={{ cursor: 'pointer' }}
+                                >
+                                  <MiniNftCard
+                                    price={
+                                      lastSale?.ethSalePrice
+                                        ? formatNumber(lastSale.ethSalePrice, {
+                                            fromWei: true,
+                                            decimals: 2,
+                                            prefix: 'ETHER',
+                                          })
+                                        : undefined
+                                    }
+                                    rarity={
+                                      rarity
+                                        ? (rarity * 100).toFixed(2) + '%'
+                                        : '-'
+                                    }
+                                    image={previewImageUrl ?? mediaUrl}
+                                    creator={
+                                      creatorUsername ||
+                                      shortenAddress(creatorAddress, 2, 4)
+                                    }
+                                    pixelated={PIXELATED_CONTRACTS.includes(
+                                      contractAddress
+                                    )}
+                                    type="search"
+                                    name={getAssetName(
+                                      name,
+                                      collection?.name,
+                                      tokenId
+                                    )}
+                                    link={`/analytics/collection/${collection?.id}`}
+                                  />
+                                </a>
+                              )
+                            )}
+                          </Flex>
+                        ))
+                    )
                   }
                 </Flex>
               </>
