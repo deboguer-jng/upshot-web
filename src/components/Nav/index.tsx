@@ -291,12 +291,7 @@ export const Nav = () => {
           }}
           onDisconnectClick={handleDisconnect}
           onMenuClick={handleToggleMenu}
-          onHelpClick={
-            router.pathname.includes('/nft') ||
-            router.pathname.includes('/collection')
-              ? toggleHelpModal
-              : undefined
-          }
+          onHelpClick={toggleHelpModal}
           searchSuggestions={suggestions}
           {...{ address, showSidebar }}
         >
