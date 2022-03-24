@@ -214,6 +214,7 @@ function printMetricData(
         fromWei: true,
         decimals: 2,
         prefix: 'ETHER',
+        kmbUnits: true,
       }) ?? '-'
     )
   } else if (metric === 'PAST_WEEK_AVERAGE' && data['average']) {
