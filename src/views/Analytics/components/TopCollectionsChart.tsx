@@ -1,4 +1,5 @@
 import { useQuery } from '@apollo/client'
+import { parseUint256 } from '@upshot-tech/upshot-ui'
 import { Chart, formatNumber } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE } from 'constants/'
 import { ethers } from 'ethers'
@@ -153,22 +154,13 @@ export default function TopCollectionsCharts({
         ),
         metric,
         currentFloor: latestStats?.floor
-          ? formatNumber(latestStats.floor, {
-              fromWei: true,
-              decimals: 4,
-            })
+          ? parseUint256(latestStats.floor)
           : undefined,
         currentAvg: latestStats?.pastWeekWeiAverage
-          ? formatNumber(latestStats.pastWeekWeiAverage, {
-              fromWei: true,
-              decimals: 4,
-            })
+          ? parseUint256(latestStats.pastWeekWeiAverage)
           : undefined,
         currentVolume: latestStats?.pastWeekWeiVolume
-          ? formatNumber(latestStats.pastWeekWeiVolume, {
-              fromWei: true,
-              decimals: 4,
-            })
+          ? parseUint256(latestStats.pastWeekWeiVolume)
           : undefined,
       }
     })
