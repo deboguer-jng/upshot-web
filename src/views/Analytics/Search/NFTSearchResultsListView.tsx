@@ -2,6 +2,7 @@
 import { useQuery } from '@apollo/client'
 import {
   CollectorAccordion,
+  formatNumber,
   Icon,
   Skeleton,
   useBreakpointIndex,
@@ -16,12 +17,11 @@ import {
   TableRow,
 } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE } from 'constants/'
-import { formatDistance } from 'date-fns'
 import router from 'next/router'
 import React from 'react'
 import { getPriceChangeColor } from 'utils/color'
 
-import { getUnderOverPricedLabel, weiToEth } from '../../../utils/number'
+import { getUnderOverPricedLabel } from '../../../utils/number'
 import { OrderedNFTSearchResultsColumns } from '.'
 
 export enum ETraitStatsOrder {
@@ -70,7 +70,7 @@ function NFTSearchResultsHead({
       {isMobile ? (
         <Box>
           <Flex sx={{ justifyContent: 'space-between', padding: 2 }}>
-              <Text></Text>
+            <Text></Text>
           </Flex>
         </Box>
       ) : (
@@ -100,35 +100,34 @@ function NFTSearchResultsHead({
                   },
                 },
               }}
-            >
-            </TableCell>
+            ></TableCell>
             {Object.values(columns).map((col, idx) => (
               <TableCell
                 key={idx}
                 color="grey-500"
                 onClick={() => onChangeSelection?.(idx)}
                 sx={{
-                    cursor: 'pointer',
-                    color: selectedColumn === idx ? 'white' : null,
+                  cursor: 'pointer',
+                  color: selectedColumn === idx ? 'white' : null,
+                  transition: 'default',
+                  userSelect: 'none',
+                  minWidth: 100,
+                  '& svg path': {
                     transition: 'default',
-                    userSelect: 'none',
-                    minWidth: 100,
-                    '& svg path': {
-                      transition: 'default',
-                      '&:nth-child(1)': {
-                        fill:
-                          selectedColumn === idx && sortAscending
-                            ? 'white'
-                            : theme.rawColors['grey-500'],
-                      },
-                      '&:nth-child(2)': {
-                        fill:
-                          !sortAscending && selectedColumn === idx
-                            ? 'white'
-                            : theme.rawColors['grey-500'],
-                      },
+                    '&:nth-child(1)': {
+                      fill:
+                        selectedColumn === idx && sortAscending
+                          ? 'white'
+                          : theme.rawColors['grey-500'],
                     },
-                  }}
+                    '&:nth-child(2)': {
+                      fill:
+                        !sortAscending && selectedColumn === idx
+                          ? 'white'
+                          : theme.rawColors['grey-500'],
+                    },
+                  },
+                }}
               >
                 <Flex sx={{ alignItems: 'center' }}>
                   <Flex
@@ -151,25 +150,28 @@ function NFTSearchResultsHead({
 }
 
 export function NFTSearchResultsSkeleton({
-    ...props
-  }: NFTSearchResultsHeadProps) {
-    return (
-      <CollectionTable>
-        <NFTSearchResultsHead {...props} />
-        <TableBody>
-          {[...new Array(PAGE_SIZE)].map((_, idx) => (
-            <Skeleton sx={{ height: 56 }} as="tr" key={idx}>
-              <TableCell colSpan={6}>
-                <Box sx={{ height: 40, width: '100%' }} />
-              </TableCell>
-            </Skeleton>
-          ))}
-        </TableBody>
-      </CollectionTable>
-    )
-  }
+  ...props
+}: NFTSearchResultsHeadProps) {
+  return (
+    <CollectionTable>
+      <NFTSearchResultsHead {...props} />
+      <TableBody>
+        {[...new Array(PAGE_SIZE)].map((_, idx) => (
+          <Skeleton sx={{ height: 56 }} as="tr" key={idx}>
+            <TableCell colSpan={6}>
+              <Box sx={{ height: 40, width: '100%' }} />
+            </TableCell>
+          </Skeleton>
+        ))}
+      </TableBody>
+    </CollectionTable>
+  )
+}
 
-const NFTSearchResultsWrapper = ({ children, ...props }: NFTSearchResultsHeadProps) => {
+const NFTSearchResultsWrapper = ({
+  children,
+  ...props
+}: NFTSearchResultsHeadProps) => {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
 
@@ -191,8 +193,8 @@ const NFTSearchResultsWrapper = ({ children, ...props }: NFTSearchResultsHeadPro
 }
 
 const handleShowNFT = (id: string) => {
-    router.push('/analytics/nft/' + id)
-  }
+  router.push('/analytics/nft/' + id)
+}
 
 export default function NFTSearchResults({
   columns,
@@ -215,94 +217,160 @@ export default function NFTSearchResults({
       <NFTSearchResultsWrapper
         {...{ selectedColumn, sortAscending, onChangeSelection, columns }}
       >
-        {assetArr.map(({            
-            id,
-            tokenId,
-            previewImageUrl,
-            name,
-            lastSale,
-            latestAppraisal,
-            listPrice,
-            listAppraisalRatio,
-        }, idx) => (
-          <CollectionRow
-            title={tokenId ? '#' + tokenId : name}
-            key={idx}
-            defaultOpen={idx === 0 ? true : false}
-            variant="normal"
-            imageSrc={previewImageUrl ?? ''}
-            subtitle={isMobile ? name : undefined}
-            onClick={() => handleShowNFT(id)}
-          >
-            {isMobile ? (
-              <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>
-                <Flex
-                  sx={{
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Text sx={{ marginBottom: 1 }}>
-                    {columns.LAST_SALE_PRICE}
-                  </Text>
-                  <Text>{lastSale && lastSale?.ethSalePrice ? weiToEth(lastSale.ethSalePrice) : '-'}</Text>
-                </Flex>
-                <Flex
-                  sx={{
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Text sx={{ textAlign: 'center', marginBottom: 1 }}>
-                    {columns.LAST_APPRAISAL_PRICE}
-                  </Text>
-                  <Text>{latestAppraisal && latestAppraisal?.estimatedPrice ? weiToEth(latestAppraisal.estimatedPrice) : '-'}</Text>
-                </Flex>
-                <Flex
-                  sx={{
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Text sx={{ textAlign: 'center', marginBottom: 1 }}>
-                    {columns.LIST_PRICE}
-                  </Text>
-                  <Text>{listPrice ? weiToEth(listPrice) : '-'}</Text>
-                </Flex>
-                <Flex
-                  sx={{
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Text sx={{ textAlign: 'center', marginBottom: 1 }}>
-                    {columns.LIST_APPRAISAL_RATIO}
-                  </Text>
-                  <Text sx={{ color: getPriceChangeColor(listAppraisalRatio) }}>{listAppraisalRatio ? getUnderOverPricedLabel(listAppraisalRatio) : '-'}</Text>
-                </Flex>
-              </Grid>
-            ) : (
-              <>
-                <TableCell sx={{ maxWidth: 50 }}>
-                    <Text variant="medium">{lastSale && lastSale?.ethSalePrice ? weiToEth(lastSale.ethSalePrice) : '-'}</Text>
-                </TableCell>
-                <TableCell sx={{ maxWidth: 50, textTransform: 'capitalize' }}>
-                    <Text variant="medium" color="primary">{latestAppraisal && latestAppraisal?.estimatedPrice ? weiToEth(latestAppraisal.estimatedPrice) : '-'}</Text>
-                </TableCell>
-                <TableCell sx={{ maxWidth: 50, textTransform: 'capitalize' }}>
-                    <Text variant="medium">{listPrice ? weiToEth(listPrice) : '-'}</Text>
-                </TableCell>
-                <TableCell sx={{ maxWidth: 50 }}>
-                    <Text variant="medium" sx={{ color: getPriceChangeColor(listAppraisalRatio) }}>{listAppraisalRatio ? getUnderOverPricedLabel(listAppraisalRatio) : '-'}</Text>
-                </TableCell>
-              </>
-            )}
-          </CollectionRow>
-        ))}
+        {assetArr.map(
+          (
+            {
+              id,
+              tokenId,
+              previewImageUrl,
+              name,
+              lastSale,
+              latestAppraisal,
+              listPrice,
+              listAppraisalRatio,
+            },
+            idx
+          ) => (
+            <CollectionRow
+              title={tokenId ? '#' + tokenId : name}
+              key={idx}
+              defaultOpen={idx === 0 ? true : false}
+              variant="normal"
+              imageSrc={previewImageUrl ?? ''}
+              subtitle={isMobile ? name : undefined}
+              onClick={() => handleShowNFT(id)}
+            >
+              {isMobile ? (
+                <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>
+                  <Flex
+                    sx={{
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text sx={{ marginBottom: 1 }}>
+                      {columns.LAST_SALE_PRICE}
+                    </Text>
+                    <Text>
+                      {lastSale && lastSale?.ethSalePrice
+                        ? formatNumber(lastSale.ethSalePrice, {
+                            fromWei: true,
+                            decimals: 2,
+                            prefix: 'ETHER',
+                          })
+                        : '-'}
+                    </Text>
+                  </Flex>
+                  <Flex
+                    sx={{
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text sx={{ textAlign: 'center', marginBottom: 1 }}>
+                      {columns.LAST_APPRAISAL_PRICE}
+                    </Text>
+                    <Text>
+                      {latestAppraisal && latestAppraisal?.estimatedPrice
+                        ? formatNumber(latestAppraisal.estimatedPrice, {
+                            fromWei: true,
+                            decimals: 2,
+                            prefix: 'ETHER',
+                          })
+                        : '-'}
+                    </Text>
+                  </Flex>
+                  <Flex
+                    sx={{
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text sx={{ textAlign: 'center', marginBottom: 1 }}>
+                      {columns.LIST_PRICE}
+                    </Text>
+                    <Text>
+                      {listPrice
+                        ? formatNumber(listPrice, {
+                            fromWei: true,
+                            decimals: 2,
+                            prefix: 'ETHER',
+                          })
+                        : '-'}
+                    </Text>
+                  </Flex>
+                  <Flex
+                    sx={{
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text sx={{ textAlign: 'center', marginBottom: 1 }}>
+                      {columns.LIST_APPRAISAL_RATIO}
+                    </Text>
+                    <Text
+                      sx={{ color: getPriceChangeColor(listAppraisalRatio) }}
+                    >
+                      {listAppraisalRatio
+                        ? getUnderOverPricedLabel(listAppraisalRatio)
+                        : '-'}
+                    </Text>
+                  </Flex>
+                </Grid>
+              ) : (
+                <>
+                  <TableCell sx={{ maxWidth: 50 }}>
+                    <Text variant="medium">
+                      {lastSale && lastSale?.ethSalePrice
+                        ? formatNumber(lastSale.ethSalePrice, {
+                            fromWei: true,
+                            decimals: 2,
+                            prefix: 'ETHER',
+                          })
+                        : '-'}
+                    </Text>
+                  </TableCell>
+                  <TableCell sx={{ maxWidth: 50, textTransform: 'capitalize' }}>
+                    <Text variant="medium" color="primary">
+                      {latestAppraisal && latestAppraisal?.estimatedPrice
+                        ? formatNumber(latestAppraisal.estimatedPrice, {
+                            fromWei: true,
+                            decimals: 2,
+                            prefix: 'ETHER',
+                          })
+                        : '-'}
+                    </Text>
+                  </TableCell>
+                  <TableCell sx={{ maxWidth: 50, textTransform: 'capitalize' }}>
+                    <Text variant="medium">
+                      {listPrice
+                        ? formatNumber(listPrice, {
+                            fromWei: true,
+                            decimals: 2,
+                            prefix: 'ETHER',
+                          })
+                        : '-'}
+                    </Text>
+                  </TableCell>
+                  <TableCell sx={{ maxWidth: 50 }}>
+                    <Text
+                      variant="medium"
+                      sx={{ color: getPriceChangeColor(listAppraisalRatio) }}
+                    >
+                      {listAppraisalRatio
+                        ? getUnderOverPricedLabel(listAppraisalRatio)
+                        : '-'}
+                    </Text>
+                  </TableCell>
+                </>
+              )}
+            </CollectionRow>
+          )
+        )}
       </NFTSearchResultsWrapper>
     </>
   )

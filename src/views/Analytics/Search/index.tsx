@@ -449,7 +449,11 @@ export default function SearchView() {
                                   <MiniNftCard
                                     price={
                                       lastSale?.ethSalePrice
-                                        ? weiToEth(lastSale.ethSalePrice)
+                                        ? formatNumber(lastSale.ethSalePrice, {
+                                            fromWei: true,
+                                            decimals: 2,
+                                            prefix: 'ETHER',
+                                          })
                                         : undefined
                                     }
                                     rarity={
