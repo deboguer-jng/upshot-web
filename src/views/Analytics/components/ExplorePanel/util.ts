@@ -5,12 +5,7 @@
  * after calculating NOW - timestamp.)
  */
 export const getOrderDirection = (col: string, isAscending: boolean) => {
-  const reversedColumns = [
-    'LAST_SALE_DATE',
-    'LIST_TIMESTAMP',
-    'LIST_APPRAISAL_RATIO',
-    'LAST_APPRAISAL_SALE_RATIO',
-  ]
+  const reversedColumns = ['LAST_SALE_DATE', 'LIST_TIMESTAMP']
 
   if (reversedColumns.includes(col)) return !isAscending ? 'ASC' : 'DESC'
 
