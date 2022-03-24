@@ -541,7 +541,7 @@ export const GET_COLLECTORS = gql`
               id
               name
               imageUrl
-              ownerAssetsInCollection(limit: 20) {
+              ownerAssetsInCollection(limit: 100) {
                 count
                 assets {
                   id
@@ -639,7 +639,7 @@ export const GET_PREVIOUS_OWNERS = gql`
               id
               name
               imageUrl
-              ownerAssetsInCollection(limit: 20) {
+              ownerAssetsInCollection(limit: 100) {
                 count
                 assets {
                   id
@@ -674,7 +674,7 @@ export type GetUserOwnedAssetsData = {
 export const GET_USER_OWNED_ASSETS = gql`
   query GetUserOwnedAssets($userId: Int!, $collectionId: Int!) {
     getUser(userId: $userId) {
-      ownedAssets(collectionId: $collectionId, limit: 20, notable: true) {
+      ownedAssets(collectionId: $collectionId, limit: 100, notable: true) {
         count
         assets {
           id
