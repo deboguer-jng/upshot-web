@@ -1,7 +1,6 @@
 /** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
 import {
-  AppraisalsCopy,
   BuyNowPanel,
   imageOptimizer,
   Pagination,
@@ -190,31 +189,23 @@ export default function NFTView() {
 
   const {
     name,
-    rarity,
-    rarityRank,
     previewImageUrl,
     mediaUrl,
     collection,
     tokenId,
     traits,
-    lastSale,
     lastAppraisalWeiPrice,
     lastAppraisalUsdPrice,
     lastAppraisalAt,
     latestAppraisal,
     txHistory,
     appraisalHistory,
-    creatorAvatar,
-    creatorAddress,
-    creatorUsername,
     contractAddress,
     warningBanner,
     listPrice,
     listPriceUsd,
     listMarketplace,
     listUrl,
-    listTimestamp,
-    listExpiration,
     listAppraisalRatio,
   } = data.assetById
 
@@ -355,67 +346,50 @@ export default function NFTView() {
                       <Icon icon="upshot" size={18} color="primary" />
                     </Flex>
                   )}
-
-                  {!!rarityRank && !!collection && !!collection?.size && (
-                    <Flex sx={{ gap: 1 }}>
-                      <Text color="grey-300">
-                        {'Rank ' +
-                          (rarityRank ? formatNumber(rarityRank) : '-') +
-                          ' / '}
-                      </Text>
-                      <Text color="grey-500">
-                        {collection?.size ? formatNumber(collection.size) : 0}
-                      </Text>
-                    </Flex>
-                  )}
+                  <Flex sx={{ height: 20 }}>
+                    <a
+                      href={`https://opensea.io/assets/${id}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <Icon
+                        icon="openSeaBlock"
+                        color="primary"
+                        sx={{ width: 20, height: 20 }}
+                      />
+                    </a>
+                    {ART_BLOCKS_CONTRACTS.includes(contractAddress) && (
+                      <a
+                        href={`https://generator.artblocks.io/${id}`}
+                        target="_blank"
+                        sx={{ marginLeft: '13px' }}
+                        rel="noreferrer"
+                      >
+                        <Icon
+                          icon="openLink"
+                          color="primary"
+                          sx={{ width: 20, height: 20 }}
+                        />
+                      </a>
+                    )}
+                    {contractAddress ===
+                      '0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB' && (
+                      <a
+                        href={`https://www.larvalabs.com/cryptopunks/details/${tokenId}`}
+                        target="_blank"
+                        sx={{ marginLeft: '13px' }}
+                        rel="noreferrer"
+                      >
+                        <Icon
+                          icon="openLink"
+                          color="primary"
+                          sx={{ width: 20, height: 20 }}
+                        />
+                      </a>
+                    )}
+                  </Flex>
                 </Flex>
-                {!!lastAppraisalWeiPrice && (
-                  <AppraisalsCopy link="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104" />
-                )}
               </>
-
-              <Flex>
-                <a
-                  href={`https://opensea.io/assets/${id}`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <Icon
-                    icon="openSeaBlock"
-                    color="primary"
-                    sx={{ width: 20, height: 20 }}
-                  />
-                </a>
-                {ART_BLOCKS_CONTRACTS.includes(contractAddress) && (
-                  <a
-                    href={`https://generator.artblocks.io/${id}`}
-                    target="_blank"
-                    sx={{ marginLeft: '13px' }}
-                    rel="noreferrer"
-                  >
-                    <Icon
-                      icon="openLink"
-                      color="primary"
-                      sx={{ width: 20, height: 20 }}
-                    />
-                  </a>
-                )}
-                {contractAddress ===
-                  '0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB' && (
-                  <a
-                    href={`https://www.larvalabs.com/cryptopunks/details/${tokenId}`}
-                    target="_blank"
-                    sx={{ marginLeft: '13px' }}
-                    rel="noreferrer"
-                  >
-                    <Icon
-                      icon="openLink"
-                      color="primary"
-                      sx={{ width: 20, height: 20 }}
-                    />
-                  </a>
-                )}
-              </Flex>
             </Flex>
           </Flex>
 
