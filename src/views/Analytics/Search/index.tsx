@@ -51,7 +51,7 @@ export const nftSearchResultsColumns: OrderedNFTSearchResultsColumns = {
   LAST_SALE_PRICE: 'Last Sale Price',
   LAST_APPRAISAL_PRICE: 'Last Appraisal',
   LIST_PRICE: 'List Price',
-  LIST_APPRAISAL_RATIO: 'List Price/Appraisal',
+  LIST_APPRAISAL_RATIO: '% Difference',
 }
 
 enum BREAKPOINT_INDEXES {
