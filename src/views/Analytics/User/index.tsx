@@ -192,50 +192,9 @@ function Header({
   )
 }
 
-function IncludeUnsupportedCheckbox({
-  value,
-  onClick,
-}: {
-  value: boolean
-  onClick: (e: React.MouseEvent<HTMLInputElement>) => void
-}) {
-  const { theme } = useTheme()
-  return (
-    <Panel
-      sx={{
-        backgroundColor: 'grey-900',
-        borderRadius: '20px',
-        marginBottom: '20px',
-        border: 'solid 1px ' + theme.colors.blue,
-        transition: 'all .125s ease-in-out',
-        '&:hover': {
-          boxShadow: '0px 0px 0px 1px ' + theme.colors.blue,
-        },
-      }}
-    >
-      <LabelUI sx={{ alignItems: 'center', marginBottom: 2 }}>
-        <Checkbox
-          readOnly
-          checked={value}
-          sx={{ cursor: 'pointer' }}
-          {...{ onClick }}
-        />
-        <Text color="blue">Include unappraised assets</Text>
-      </LabelUI>
-      <Text color="grey-500">
-        We are in the process of supporting more collections and NFT appraisals.
-        In the meantime, check this box to view all of the collections you own
-        NFTs from along with their floor prices.
-      </Text>
-    </Panel>
-  )
-}
-
 export default function UserView() {
   const router = useRouter()
   const { theme } = useTheme()
-  const [includeUnsupportedAssets, setIncludeUnsupportedAssets] =
-    useState(false)
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
   const modalRef = useRef<HTMLDivElement>(null)
@@ -359,7 +318,6 @@ export default function UserView() {
       },
       skip:
         !addressFormatted ||
-        !includeUnsupportedAssets ||
         !hasAllSupportedCollections,
     }
   )
@@ -373,7 +331,7 @@ export default function UserView() {
     variables: {
       userAddress: addressFormatted,
     },
-    skip: !addressFormatted || !includeUnsupportedAssets,
+    skip: !addressFormatted,
   })
 
   const unsupportedAggregateCollectionStatFloorEth = Number(
@@ -652,71 +610,61 @@ export default function UserView() {
       : { floorPrice: formattedAppraisedValue }
 
     return (
-      <>
-        {index === 0 && ( // append Supported/Unsupported checkbox before the first card
-          <IncludeUnsupportedCheckbox
-            onClick={() =>
-              setIncludeUnsupportedAssets(!includeUnsupportedAssets)
-            }
-            value={includeUnsupportedAssets}
-          />
-        )}
-        <CollectionCard
-          {...price}
-          hasSeeAll={count > 5}
-          seeAllImageSrc={
-            collection.ownerAssetsInCollection.assets[0]?.previewImageUrl
-          }
-          avatarImage={collection.imageUrl}
-          link={`/analytics/collection/${collection.id}`}
-          total={collection?.ownerAssetsInCollection?.count}
-          name={collection.name}
-          key={index}
-          onExpand={() =>
-            setShowCollection({
-              id: collection.id,
-              name: collection.name,
-              imageUrl: collection.imagrl,
-              numOwnedAssets: collection?.ownerAssetsInCollection?.count,
-            })
-          }
-        >
-          {collection.ownerAssetsInCollection.assets
-            .slice(0, 5)
-            .map(({ id, previewImageUrl, mediaUrl, contractAddress }, idx) => (
-              <Link passHref href={`/analytics/nft/${id}`} key={idx}>
-                <Box
-                  sx={{
-                    width: '100%',
-                    cursor: 'pointer',
-                    '&::after': {
-                      content: "''",
-                      display: 'block',
-                      paddingTop: '100%',
-                      backgroundImage: `url(${
-                        imageOptimizer(previewImageUrl ?? mediaUrl, {
-                          width: 180,
-                          height: 180,
-                        }) ??
-                        previewImageUrl ??
-                        mediaUrl
-                      })`,
-                      backgroundSize: 'cover',
-                      backgroundRepeat: 'no-repeat',
-                      backgroundPosition: 'center',
-                      borderRadius: 'sm',
-                      imageRendering: PIXELATED_CONTRACTS.includes(
-                        contractAddress
-                      )
-                        ? 'pixelated'
-                        : 'auto',
-                    },
-                  }}
-                />
-              </Link>
-            ))}
-        </CollectionCard>
-      </>
+      <CollectionCard
+        {...price}
+        hasSeeAll={count > 5}
+        seeAllImageSrc={
+          collection.ownerAssetsInCollection.assets[0]?.previewImageUrl
+        }
+        avatarImage={collection.imageUrl}
+        link={`/analytics/collection/${collection.id}`}
+        total={collection?.ownerAssetsInCollection?.count}
+        name={collection.name}
+        key={index}
+        onExpand={() =>
+          setShowCollection({
+            id: collection.id,
+            name: collection.name,
+            imageUrl: collection.imagrl,
+            numOwnedAssets: collection?.ownerAssetsInCollection?.count,
+          })
+        }
+      >
+        {collection.ownerAssetsInCollection.assets
+          .slice(0, 5)
+          .map(({ id, previewImageUrl, mediaUrl, contractAddress }, idx) => (
+            <Link passHref href={`/analytics/nft/${id}`} key={idx}>
+              <Box
+                sx={{
+                  width: '100%',
+                  cursor: 'pointer',
+                  '&::after': {
+                    content: "''",
+                    display: 'block',
+                    paddingTop: '100%',
+                    backgroundImage: `url(${
+                      imageOptimizer(previewImageUrl ?? mediaUrl, {
+                        width: 180,
+                        height: 180,
+                      }) ??
+                      previewImageUrl ??
+                      mediaUrl
+                    })`,
+                    backgroundSize: 'cover',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'center',
+                    borderRadius: 'sm',
+                    imageRendering: PIXELATED_CONTRACTS.includes(
+                      contractAddress
+                    )
+                      ? 'pixelated'
+                      : 'auto',
+                  },
+                }}
+              />
+            </Link>
+          ))}
+      </CollectionCard>
     )
   }
 
@@ -1892,16 +1840,6 @@ export default function UserView() {
           {!!data?.getUser?.extraCollections?.count && (
             <Text variant="h1Primary">Collection</Text>
           )}
-          {!data?.getUser?.extraCollections?.count && (
-            <Grid gap={4} columns={[1, 1, 1, 3]}>
-              <IncludeUnsupportedCheckbox
-                onClick={() =>
-                  setIncludeUnsupportedAssets(!includeUnsupportedAssets)
-                }
-                value={includeUnsupportedAssets}
-              />
-            </Grid>
-          )}
           <Masonry
             columnWidth={300}
             columnGutter={16}
@@ -1912,8 +1850,7 @@ export default function UserView() {
             style={{ outline: 'none' }}
             key={data?.getUser?.extraCollections?.collectionAssetCounts?.length}
           />
-          {includeUnsupportedAssets &&
-            !!dataUnsupportedCollections?.getUnsupportedCollectionPage
+          {!!dataUnsupportedCollections?.getUnsupportedCollectionPage
               ?.collections?.length && (
               <>
                 <Text variant="h1Primary">Unappraised</Text>
