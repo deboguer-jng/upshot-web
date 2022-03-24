@@ -51,7 +51,7 @@ function CollectionStat({
         justifyContent: 'center',
         alignItems: 'center',
         textAlign: 'center',
-        minHeight: '72px',
+        minHeight: '80px',
         color,
         gap: 1,
       }}
@@ -60,7 +60,7 @@ function CollectionStat({
         {currencySymbol === '' && value}
       </Text>
 
-      <Text sx={{ fontSize: 2 }}>{label}</Text>
+      <Text sx={{ fontSize: 2, lineHeight: 1 }}>{label}</Text>
     </Flex>
   )
 }
