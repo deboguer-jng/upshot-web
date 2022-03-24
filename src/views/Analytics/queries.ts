@@ -527,7 +527,7 @@ export const GET_COLLECTORS = gql`
         }
         firstAssetPurchaseTime
         avgHoldTime
-        ownedAssets(collectionId: $id, notable: true, limit: 10) {
+        ownedAssets(collectionId: $id, notable: true, limit: 100) {
           count
           assets {
             id
@@ -625,7 +625,7 @@ export const GET_PREVIOUS_OWNERS = gql`
         }
         firstAssetPurchaseTime(collectionId: $id)
         avgHoldTime(collectionId: $id)
-        ownedAssets(collectionId: $id, notable: true, limit: 10) {
+        ownedAssets(collectionId: $id, notable: true, limit: 100) {
           count
           assets {
             id
