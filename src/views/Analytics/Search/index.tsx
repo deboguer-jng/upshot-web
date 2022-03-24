@@ -5,6 +5,7 @@ import {
   Accordion,
   Box,
   Flex,
+  formatNumber,
   Grid,
   MiniNftCard,
   Text,
@@ -16,10 +17,9 @@ import { PIXELATED_CONTRACTS } from 'constants/'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
-import { weiToEth } from 'utils/number'
 
 import TopCollections from '../../Analytics/components/ExplorePanel/TopCollections'
 import Breadcrumbs from '../components/Breadcrumbs'
@@ -268,6 +268,7 @@ export default function SearchView() {
             sx={{
               flex: '1 auto auto',
               flexDirection: 'column',
+              width: breakpointIndex <= 2 ? '100%' : chunkSize * 168 - 20,
               gap: 6,
             }}
           >
@@ -275,10 +276,8 @@ export default function SearchView() {
               <Box sx={{ height: '18px' }}>
                 {!!data?.assetGlobalSearch?.count && (
                   <Text>
-                    {data?.assetGlobalSearch?.count}{' '}
-                    {data?.assetGlobalSearch?.count === 1
-                      ? 'result'
-                      : 'results'}{' '}
+                    {formatNumber(data.assetGlobalSearch.count)}{' '}
+                    {data.assetGlobalSearch.count === 1 ? 'result' : 'results'}{' '}
                     found
                   </Text>
                 )}

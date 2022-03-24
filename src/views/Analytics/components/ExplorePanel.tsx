@@ -158,9 +158,11 @@ function ExplorePanelHead({
 export default function ExplorePanel({
   collectionId,
   collectionName,
+  isAppraised,
 }: {
   collectionId?: number
   collectionName?: string
+  isAppraised?: boolean
 }) {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
@@ -184,12 +186,22 @@ export default function ExplorePanel({
 
   useEffect(() => {
     // Reset sort + selection on new tab selection.
-    if (tab == 'Listed NFTs') {
-      setSelectedColumn(2)
-      setSortAscending(true)
-    } else {
-      setSelectedColumn(0)
-      setSortAscending(false)
+    switch (tab) {
+      case 'Listed NFTs': {
+        setSelectedColumn(isAppraised ? 3 : 2)
+        setSortAscending(true)
+        break
+      }
+      case 'NFTs': {
+        setSelectedColumn(0)
+        setSortAscending(true)
+        break
+      }
+      default: {
+        setSelectedColumn(0)
+        setSortAscending(false)
+        break
+      }
     }
   }, [tab])
 

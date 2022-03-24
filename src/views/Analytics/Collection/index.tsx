@@ -4,10 +4,15 @@ import {
   imageOptimizer,
   theme,
   useBreakpointIndex,
-  AppraisalsCopy,
 } from '@upshot-tech/upshot-ui'
-import { Container, Flex, Grid, Label } from '@upshot-tech/upshot-ui'
-import { Avatar, Button, Icon, Text } from '@upshot-tech/upshot-ui'
+import { Container, Flex, Grid } from '@upshot-tech/upshot-ui'
+import {
+  Avatar,
+  Button,
+  formatNumber,
+  Icon,
+  Text,
+} from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import Head from 'next/head'
@@ -16,7 +21,6 @@ import { useRouter } from 'next/router'
 import React, { useEffect, useMemo, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { Box } from 'theme-ui'
-import { weiToEth } from 'utils/number'
 import CollectionScatterChart from 'views/Analytics/components/CollectionScatterChart'
 import ExplorePanel from 'views/Analytics/components/ExplorePanel'
 import TopSellingNFTs from 'views/Analytics/components/TopSellingNFTs'
@@ -46,26 +50,17 @@ function CollectionStat({
         borderRadius: '20px',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: '8px 16px',
         textAlign: 'center',
+        minHeight: '80px',
         color,
+        gap: 1,
       }}
     >
-      {currencySymbol !== '' && (
-        <Label
-          currencySymbol={currencySymbol}
-          variant="currency"
-          color={color}
-          style={{
-            fontWeight: 700,
-          }}
-        >
-          {value}
-        </Label>
-      )}
-      {currencySymbol === '' && value}
+      <Text sx={{ fontSize: 5, fontWeight: 'heading' }}>
+        {currencySymbol === '' && value}
+      </Text>
 
-      <Text variant="small">{label}</Text>
+      <Text sx={{ fontSize: 2, lineHeight: 1 }}>{label}</Text>
     </Flex>
   )
 }
@@ -150,7 +145,6 @@ function Layout({
 
 export default function CollectionView() {
   const [id, setId] = useState<number>()
-  const [descriptionOpen, setDescriptionOpen] = useState(false)
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
   const router = useRouter()
@@ -273,9 +267,6 @@ export default function CollectionView() {
             >
               General Stats
             </Text>
-            {isAppraised && (
-              <AppraisalsCopy link="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104" />
-            )}
             <Grid
               columns="repeat(auto-fit, minmax(140px, 1fr))"
               sx={{ gap: 4 }}
@@ -284,20 +275,26 @@ export default function CollectionView() {
                 color="blue"
                 value={
                   latestStats?.average
-                    ? weiToEth(latestStats?.average, 4, false)
+                    ? formatNumber(latestStats.average, {
+                        fromWei: true,
+                        decimals: 2,
+                        prefix: 'ETHER',
+                      })
                     : '-'
                 }
-                currencySymbol="Ξ"
                 label="Average Price"
               />
               <CollectionStat
                 color="pink"
                 value={
                   latestStats?.floor
-                    ? weiToEth(latestStats?.floor, 4, false)
+                    ? formatNumber(latestStats.floor, {
+                        fromWei: true,
+                        decimals: 2,
+                        prefix: 'ETHER',
+                      })
                     : '-'
                 }
-                currencySymbol="Ξ"
                 label="Floor Price"
               />
               <CollectionStat
@@ -326,26 +323,33 @@ export default function CollectionView() {
               <CollectionStat
                 value={
                   latestStats?.marketCap
-                    ? weiToEth(latestStats?.marketCap, 4, false)
+                    ? formatNumber(latestStats.marketCap, {
+                        fromWei: true,
+                        decimals: 2,
+                        kmbUnits: true,
+                        prefix: 'ETHER',
+                      })
                     : '-'
                 }
-                currencySymbol="Ξ"
                 label="Market Cap"
               />
               <CollectionStat
                 value={
                   latestStats?.pastWeekWeiVolume
-                    ? weiToEth(latestStats?.pastWeekWeiVolume, 4, false)
+                    ? formatNumber(latestStats.pastWeekWeiVolume, {
+                        fromWei: true,
+                        decimals: 2,
+                        kmbUnits: true,
+                        prefix: 'ETHER',
+                      })
                     : '-'
                 }
-                currencySymbol="Ξ"
                 label="Weekly Volume"
               />
-              <CollectionStat value={size} label="NFTs in Collection" />
-              {/* <CollectionStat
-                value={numCollectors ? numCollectors.toString() : '-'}
-                label="Collectors"
-              /> */}
+              <CollectionStat
+                value={size ? formatNumber(size) : '-'}
+                label="NFTs in Collection"
+              />
             </Grid>
           </Flex>
           <Flex
@@ -431,7 +435,11 @@ export default function CollectionView() {
           <TopSellingNFTs collectionId={id} />
         </Flex>
 
-        <ExplorePanel collectionId={id} collectionName={name} />
+        <ExplorePanel
+          collectionId={id}
+          collectionName={name}
+          {...{ isAppraised }}
+        />
       </Flex>
     </Layout>
   )

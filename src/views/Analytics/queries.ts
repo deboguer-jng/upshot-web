@@ -33,9 +33,10 @@ export type GetExploreNFTsVars = {
   limit: number
   offset: number
   searchTerm: string
-  collectionId?: number
   orderColumn: string
   orderDirection: string
+  collectionId?: number
+  listed?: boolean
 }
 
 export type GetExploreNFTsData = {
@@ -74,6 +75,7 @@ export const GET_EXPLORE_NFTS = gql`
     $collectionId: Int
     $orderColumn: AssetSearchSortOption
     $orderDirection: OrderDirection
+    $listed: Boolean
   ) {
     assetGlobalSearch(
       limit: $limit
@@ -82,6 +84,7 @@ export const GET_EXPLORE_NFTS = gql`
       collectionId: $collectionId
       orderColumn: $orderColumn
       orderDirection: $orderDirection
+      listed: $listed
     ) {
       count
       assets {
