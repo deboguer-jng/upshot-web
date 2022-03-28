@@ -106,7 +106,7 @@ export default function WaitListView() {
       <Box
         sx={{
           position: 'fixed',
-          backgroundImage: 'url(./img/waitlist.svg)',
+          backgroundImage: 'url(/img/waitlist.svg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           width: '100vw',
