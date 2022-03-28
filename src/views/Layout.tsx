@@ -57,5 +57,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   // React to Injected provider events, if it exists.
   useInactiveListener(!triedEager || !!activatingConnector)
 
-  return <>{router.route === '/' || isBeta ? children : <WaitList />}</>
+  return (
+    <>{router.route === '/' || (isBeta && account) ? children : <WaitList />}</>
+  )
 }
