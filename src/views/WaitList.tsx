@@ -26,6 +26,7 @@ import { selectAddress, setActivatingConnector } from 'redux/reducers/web3'
 import { shortenAddress } from 'utils/address'
 
 const StyledLink = styled.a`
+  cursor: pointer;
   color: ${({ theme }) => theme.colors['grey-500']};
   font-size: 0.875rem;
   text-decoration: none;
@@ -161,7 +162,7 @@ export default function WaitListView() {
             >
               Join The Waitlist
             </Button>
-            <Flex sx={{ alignItems: 'center', gap: 1, cursor: 'pointer' }}>
+            <Flex sx={{ alignItems: 'center', gap: 1 }}>
               {loading ? (
                 <img
                   src="/img/Logo_bounce_spin.gif"
@@ -174,8 +175,11 @@ export default function WaitListView() {
                     Looks like {shortAddr} hasn&apos;t been approved yet.
                   </Text>
                   <Text color="grey-500">
-                    Join the waitlist or connect a wallet that has been
-                    approved.
+                    Join the waitlist or{' '}
+                    <StyledLink onClick={() => setOpen(true)}>
+                      connect a wallet
+                    </StyledLink>{' '}
+                    that has been approved.
                   </Text>
                 </Flex>
               ) : (
