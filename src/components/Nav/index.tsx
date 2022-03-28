@@ -26,6 +26,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { selectShowSidebar, setShowSidebar } from 'redux/reducers/layout'
+import { setIsBeta } from 'redux/reducers/user'
 import {
   selectAddress,
   selectEns,
@@ -168,6 +169,7 @@ export const Nav = () => {
     deactivate()
     if (showSidebar) handleToggleMenu()
     dispatch(setAddress(undefined))
+    dispatch(setIsBeta(undefined))
   }
 
   const handleToggleMenu = () => {
