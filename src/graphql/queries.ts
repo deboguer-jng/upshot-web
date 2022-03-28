@@ -25,3 +25,25 @@ export const GET_NAV_BAR_COLLECTIONS = gql`
     }
   }
 `
+
+/**
+ * Get Waitlist status
+ * @see /views/Waitlist
+ */
+export type GetWaitListVars = {
+  address: string
+}
+
+export type GetWaitListData = {
+  getUser: {
+    isBeta: boolean
+  }
+}
+
+export const GET_WAIT_LIST = gql`
+  query GetWaitList($address: String) {
+    getUser(address: $address) {
+      isBeta
+    }
+  }
+`

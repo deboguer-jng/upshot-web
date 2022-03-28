@@ -31,7 +31,6 @@ import {
   selectEns,
   setActivatingConnector,
   setAddress,
-  setEns,
 } from 'redux/reducers/web3'
 import { shortenAddress } from 'utils/address'
 
@@ -169,7 +168,6 @@ export const Nav = () => {
     deactivate()
     if (showSidebar) handleToggleMenu()
     dispatch(setAddress(undefined))
-    dispatch(setEns({ name: undefined, avatar: undefined }))
   }
 
   const handleToggleMenu = () => {
