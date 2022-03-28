@@ -184,7 +184,17 @@ export default function WaitListView() {
                 </Flex>
               ) : (
                 <>
-                  <Text color="blue" sx={{ fontSize: 2 }} onClick={toggleModal}>
+                  <Text
+                    color="blue"
+                    sx={{
+                      fontSize: 2,
+                      cursor: 'pointer',
+                      '&:hover': {
+                        textDecoration: 'underline',
+                      },
+                    }}
+                    onClick={toggleModal}
+                  >
                     Already Approved? Connect Here
                   </Text>
                   <Icon color="blue" icon="arrowStylizedRight" size={12} />
