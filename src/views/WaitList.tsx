@@ -135,7 +135,7 @@ export default function WaitListView() {
           }}
         >
           <img
-            src="./img/upshot_logo_white.svg"
+            src="/img/upshot_logo_white.svg"
             width="100%"
             alt="Upshot Logo"
             style={{ margin: '0 auto', maxWidth: 360 }}
