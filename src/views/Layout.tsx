@@ -45,7 +45,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     if (!ready) return
 
     dispatch(setAddress(account || undefined))
-    if (account !== address) {
+    if (account && account !== address) {
       dispatch(setIsBeta(undefined))
       return
     }
@@ -57,7 +57,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   // React to Injected provider events, if it exists.
   useInactiveListener(!triedEager || !!activatingConnector)
 
-  return (
-    <>{router.route === '/' || (isBeta && account) ? children : <WaitList />}</>
-  )
+  if (!ready) return null
+
+  return <>{router.route === '/' || isBeta ? children : <WaitList />}</>
 }
