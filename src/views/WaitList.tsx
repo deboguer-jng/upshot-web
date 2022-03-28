@@ -27,8 +27,8 @@ import { shortenAddress } from 'utils/address'
 
 const StyledLink = styled.a`
   cursor: pointer;
-  color: ${({ theme }) => theme.colors['grey-500']};
-  font-size: 0.875rem;
+  color: inherit;
+  font-size: inherit;
   text-decoration: none;
 
   &:hover {
@@ -191,6 +191,10 @@ export default function WaitListView() {
                 </>
               )}
             </Flex>
+
+            <Text color="blue" variant="xLarge" sx={{ margin: '0 auto' }}>
+              <StyledLink href="/">Return to Home</StyledLink>
+            </Text>
           </Flex>
         </Box>
 
