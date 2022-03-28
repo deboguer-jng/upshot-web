@@ -171,7 +171,7 @@ export const Nav = () => {
     if (showSidebar) handleToggleMenu()
     dispatch(setAddress(undefined))
     dispatch(setEns({ name: undefined }))
-    dispatch(setIsBeta(false))
+    dispatch(setIsBeta(undefined))
   }
 
   const handleToggleMenu = () => {
