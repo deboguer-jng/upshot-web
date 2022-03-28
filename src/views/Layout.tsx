@@ -45,7 +45,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     if (!ready) return
 
     dispatch(setAddress(account || undefined))
-    if (account && account !== address) {
+    if (account && address && account !== address) {
       dispatch(setIsBeta(undefined))
       return
     }
