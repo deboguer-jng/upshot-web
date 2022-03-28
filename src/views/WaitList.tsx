@@ -53,15 +53,12 @@ export default function WaitListView() {
     fetchPolicy: 'no-cache',
     onCompleted: (data) => {
       const isBeta = Boolean(data?.getUser?.isBeta)
-      console.log({ isBeta })
       dispatch(setIsBeta(isBeta))
     },
     onError: (err) => {
       console.error(err)
     },
   })
-
-  console.log('yo', isBeta)
 
   useEffect(() => {
     if (!address) return
