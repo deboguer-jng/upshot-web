@@ -1,5 +1,6 @@
 import { useWeb3React } from '@web3-react/core'
 import { connectorsByName } from 'constants/connectors'
+import { ethers } from 'ethers'
 import { useEagerConnect, useInactiveListener } from 'hooks/web3'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -12,6 +13,7 @@ import {
   selectAddress,
   setActivatingConnector,
   setAddress,
+  setEns,
 } from 'redux/reducers/web3'
 
 import WaitList from '../views/WaitList'
@@ -49,6 +51,27 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       dispatch(setIsBeta(undefined))
       return
     }
+
+    const fetchEns = async (address: string) => {
+      const provider = library
+        ? new ethers.providers.Web3Provider(library.provider)
+        : null
+
+      if (!provider) return
+
+      /* Reverse lookup of ENS name via address */
+      let name
+      try {
+        name = await provider.lookupAddress(address)
+      } catch (err) {
+        console.error(err)
+      }
+
+      dispatch(setEns({ name }))
+    }
+
+    // Fetch ENS details
+    if (account) fetchEns(account)
   }, [account, library, dispatch, ready, address])
 
   // Eagerly connect to the Injected provider, if granted access and authenticated in redux.

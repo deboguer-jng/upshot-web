@@ -4,7 +4,6 @@ import { RootState } from 'redux/store'
 
 type ENSAccount = {
   name?: string
-  avatar?: string
 }
 
 export interface Web3State {
@@ -27,7 +26,6 @@ const initialState: Web3State = {
    */
   ens: {
     name: undefined,
-    avatar: undefined,
   },
 }
 
@@ -44,10 +42,13 @@ export const web3Slice = createSlice({
     setAddress: (state, action: PayloadAction<string | undefined>) => {
       state.address = action.payload
     },
+    setEns: (state, action: PayloadAction<ENSAccount>) => {
+      state.ens = action.payload
+    },
   },
 })
 
-export const { setActivatingConnector, setAddress } = web3Slice.actions
+export const { setActivatingConnector, setAddress, setEns } = web3Slice.actions
 
 export const selectActivatingConnector = (state: RootState) =>
   state.web3.activatingConnector
