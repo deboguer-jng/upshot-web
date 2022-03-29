@@ -16,6 +16,7 @@ import {
   setEns,
 } from 'redux/reducers/web3'
 
+import { logEvent } from '../utils/googleAnalytics'
 import WaitList from '../views/WaitList'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -45,6 +46,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   // Propogate account changes to the redux store.
   useEffect(() => {
     if (!ready) return
+
+    if (account) {
+      logEvent('auth', 'signin', account)
+    }
 
     dispatch(setAddress(account || undefined))
     if (account && address && account !== address) {
