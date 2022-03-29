@@ -322,8 +322,8 @@ export default function CollectionView() {
               />
               <CollectionStat
                 value={
-                  latestStats?.marketCap
-                    ? formatNumber(latestStats.marketCap, {
+                  latestStats?.totalWeiVolume
+                    ? formatNumber(latestStats.totalWeiVolume, {
                         fromWei: true,
                         decimals: 2,
                         kmbUnits: true,
@@ -331,7 +331,7 @@ export default function CollectionView() {
                       })
                     : '-'
                 }
-                label="Market Cap"
+                label="Floor Cap"
               />
               <CollectionStat
                 value={
