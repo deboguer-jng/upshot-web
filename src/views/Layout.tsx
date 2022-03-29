@@ -47,11 +47,23 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!ready) return
 
-    if (account) {
-      logEvent('auth', 'signin', account)
+    const handleAccountsChanged = async (accounts) => {
+      if (!accounts.length) {
+        dispatch(setAddress(undefined))
+        dispatch(setEns({ name: undefined }))
+        dispatch(setIsBeta(undefined))
+      }
     }
 
-    dispatch(setAddress(account || undefined))
+    if (window['ethereum']) {
+      window['ethereum'].on('accountsChanged', handleAccountsChanged)
+    }
+
+    if (account && (!address || account !== address)) {
+      logEvent('auth', 'signin', account)
+      dispatch(setAddress(account))
+    }
+
     if (account && address && account !== address) {
       dispatch(setIsBeta(undefined))
       return
@@ -77,6 +89,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
     // Fetch ENS details
     if (account) fetchEns(account)
+
+    if (window['ethereum'])
+      return () =>
+        window['ethereum'].removeListener(
+          'accountsChanged',
+          handleAccountsChanged
+        )
   }, [account, library, dispatch, ready, address])
 
   // Eagerly connect to the Injected provider, if granted access and authenticated in redux.
