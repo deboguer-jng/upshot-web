@@ -15,7 +15,7 @@ interface ButtonTabsProps {
 }
 
 export default function ButtonTabs({ onChange }: ButtonTabsProps) {
-  const [selected, setSelected] = useState(0)
+  const [selected, setSelected] = useState(1)
   const isMobile = useBreakpointIndex() <= 1
 
   const handleChange = (idx: number) => {

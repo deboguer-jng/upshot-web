@@ -15,7 +15,7 @@ import TopSellingCollectionNFTs from './components/TopSellingCollectionNFTs'
 const selectedCollectionsColors = ['blue', 'pink', 'orange', 'green', 'yellow']
 
 export default function AnalyticsView() {
-  const [chartMetric, setChartMetric] = useState<METRIC>('FLOOR')
+  const [chartMetric, setChartMetric] = useState<METRIC>('PAST_WEEK_VOLUME')
   const [selectedCollections, setSelectedCollections] = useState<number[]>([])
   const [colorCycleIndex, setColorCycleIndex] = useState(3)
 
