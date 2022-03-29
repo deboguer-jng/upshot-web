@@ -1,39 +1,26 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'redux/store'
 
-interface UserIdentity {
-  id?: string
-}
-
 export interface UserState {
-  identity: UserIdentity
+  isBeta?: boolean
 }
 
 const initialState: UserState = {
-  /**
-   * Global user values needed at an app-context.
-   *
-   * @notice We don't need to store the user's full bio
-   * or other details that are only displayed in the
-   * context of the profile page view.
-   */
-  identity: {
-    id: undefined,
-  },
+  isBeta: undefined,
 }
 
 export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setIdentity: (state, action: PayloadAction<UserIdentity>) => {
-      state.identity = action.payload
+    setIsBeta: (state, action: PayloadAction<boolean | undefined>) => {
+      state.isBeta = action.payload
     },
   },
 })
 
-export const { setIdentity } = userSlice.actions
+export const { setIsBeta } = userSlice.actions
 
-export const selectIdentity = (state: RootState) => state.user
+export const selectIsBeta = (state: RootState) => state.user.isBeta
 
 export default userSlice.reducer
