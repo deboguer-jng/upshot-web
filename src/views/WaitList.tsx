@@ -9,6 +9,7 @@ import {
   IconButton,
   Modal,
   Text,
+  useTheme,
 } from '@upshot-tech/upshot-ui'
 import { useWeb3React } from '@web3-react/core'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
@@ -43,6 +44,7 @@ export default function WaitListView() {
   const { activate, connector } = useWeb3React()
   const dispatch = useAppDispatch()
   const address = useAppSelector(selectAddress)
+  const { theme } = useTheme()
 
   const shortAddr = shortenAddress(address)
   const isBeta = useAppSelector(selectIsBeta)
@@ -176,7 +178,10 @@ export default function WaitListView() {
                   </Text>
                   <Text color="grey-500">
                     Join the waitlist or{' '}
-                    <StyledLink onClick={() => setOpen(true)}>
+                    <StyledLink
+                      style={{ color: theme.rawColors.blue }}
+                      onClick={() => setOpen(true)}
+                    >
                       connect a wallet
                     </StyledLink>{' '}
                     that has been approved.
