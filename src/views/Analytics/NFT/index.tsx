@@ -466,9 +466,6 @@ export default function NFTView() {
                               whiteSpace: 'nowrap', 
                               textOverflow: 'ellipsis',
                               overflow: 'hidden',
-                              '&:hover': {
-                                textDecoration: 'underline',
-                              },
                             }}
                             title={collection?.name}
                           >
@@ -520,9 +517,6 @@ export default function NFTView() {
                               whiteSpace: 'nowrap', 
                               textOverflow: 'ellipsis',
                               overflow: 'hidden',
-                              '&:hover': {
-                                textDecoration: 'underline',
-                              },
                             }}
                             title={displayName}
                           >
@@ -557,14 +551,10 @@ export default function NFTView() {
                               )}`}
                               key={idx}
                               sx={{
-                                cursor: 'pointer',
                                 whiteSpace: 'normal',
                                 lineHeight: 'auto',
-                                textDecoration: 'none',
-                                '&:hover': {
-                                  textDecoration: 'none',
-                                }
                               }}
+                              noHover
                           >
                               <LabelAttribute
                                 expanded={true}
@@ -818,12 +808,7 @@ export default function NFTView() {
                                       />
                                       <Link
                                         href={`/analytics/user/${txFromAddress}`}
-                                        sx={{
-                                          cursor: 'pointer',
-                                          '&:hover': {
-                                            textDecoration: 'underline',
-                                          },
-                                        }}
+                                        
                                       >
                                         <Text>
                                           {extractEns(
@@ -851,12 +836,7 @@ export default function NFTView() {
                                       />
                                       <Link
                                         href={`/analytics/user/${txToAddress}`}
-                                        sx={{
-                                          cursor: 'pointer',
-                                          '&:hover': {
-                                            textDecoration: 'underline',
-                                          },
-                                        }}
+                                        
                                       >
                                         <Text>
                                           {extractEns(
