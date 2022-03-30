@@ -6,11 +6,11 @@ import {
   Grid,
   Icon,
   IconButton,
+  Investors,
   LandingPanel,
+  Link,
   Panel,
   Text,
-  Investors,
-  Link,
   theme,
 } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
@@ -18,7 +18,6 @@ import Head from 'next/head'
 import { useState } from 'react'
 import { Image } from 'theme-ui'
 
-import { projects } from './content'
 import AnalyticsSVG from './panelBackgrounds/Analytics.svg'
 import AnalyticsHoverSVG from './panelBackgrounds/AnalyticsHover.svg'
 import ApiSVG from './panelBackgrounds/Api.svg'
