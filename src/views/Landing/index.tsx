@@ -10,12 +10,13 @@ import {
   Panel,
   Text,
   Investors,
+  Link,
   theme,
 } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import Head from 'next/head'
 import { useState } from 'react'
-import { Image, Link } from 'theme-ui'
+import { Image } from 'theme-ui'
 
 import { projects } from './content'
 import AnalyticsSVG from './panelBackgrounds/Analytics.svg'
@@ -42,12 +43,9 @@ function renderLandingPanel(data: PanelData) {
       target="_blank"
       sx={{
         color: 'initial',
-        textDecoration: 'none',
-        display: 'grid',
-        '&:hover': {
-          textDecoration: 'none',
-        },
+        display: 'grid'
       }}
+      noHover
     >
       <LandingPanel
         projectType={data.projectType}
@@ -168,12 +166,7 @@ export default function LandingView() {
                   <Link
                     href="https://jobs.lever.co/upshot.io"
                     target="_blank"
-                    sx={{
-                      textDecoration: 'none',
-                      '&:hover': {
-                        textDecoration: 'none',
-                      },
-                    }}
+                    noHover
                   >
                     <Button
                       capitalize={true}
@@ -211,12 +204,9 @@ export default function LandingView() {
             rel="noopener noreferrer"
             sx={{
               color: 'text',
-              textDecoration: 'none',
               display: 'grid',
-              '&:hover': {
-                textDecoration: 'none',
-              },
             }}
+            noHover
           >
             <Panel
               hoverUnderglow="pink"
@@ -273,12 +263,9 @@ export default function LandingView() {
                 rel="noopener noreferrer"
                 sx={{
                   color: 'text',
-                  textDecoration: 'none',
                   display: 'grid',
-                  '&:hover': {
-                    textDecoration: 'none',
-                  },
                 }}
+                noHover
               >
                 <Panel
                   hoverUnderglow="blue"
@@ -332,12 +319,9 @@ export default function LandingView() {
                 rel="noopener noreferrer"
                 sx={{
                   color: 'text',
-                  textDecoration: 'none',
                   display: 'grid',
-                  '&:hover': {
-                    textDecoration: 'none',
-                  },
                 }}
+                noHover
               >
                 <Panel
                   hoverUnderglow="red"

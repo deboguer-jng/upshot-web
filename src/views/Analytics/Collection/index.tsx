@@ -372,10 +372,8 @@ export default function CollectionView() {
                 )}`}
                 sx={{
                   width: isMobile ? '100%' : 'auto',
-                  '&:hover': {
-                    textDecoration: 'none',
-                  }
                 }}
+                noHover
               >
                 <Button
                   icon={<Icon icon="search" />}

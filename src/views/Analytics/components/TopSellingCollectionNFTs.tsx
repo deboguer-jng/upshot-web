@@ -267,8 +267,7 @@ export default function TopSellingCollectionNFTs({
                   <Link
                     key={key}
                     href={'/analytics/nft/' + id}
-                    style={{ cursor: 'pointer' }}
-                    sx={{ ":hover": { textDecoration: 'none' } }}
+                    noHover
                   >
                     <MiniNftCard
                       price={
@@ -299,7 +298,7 @@ export default function TopSellingCollectionNFTs({
               {collectionData?.searchCollectionByMetric.assetSets.map(
                 ({ id, name, imageUrl, latestStats }) => (
                   <Link key={id} href={`/analytics/collection/${id}`}>
-                    <Link sx={{ ':hover': { textDecoration: 'none' } }}>
+                    <Link noHover>
                       <MiniNftCard
                         tooltip={`volume / ${period}`}
                         price={

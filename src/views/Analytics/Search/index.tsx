@@ -293,7 +293,7 @@ export default function SearchView() {
                     <Text variant="h2Primary">
                       {collectionName ?? assetArr?.[0]?.collection?.name}
                     </Text>
-                    <Link href={`/analytics/collection/${collectionId}`} sx={{ ':hover': { textDecoration: 'none' } }}>
+                    <Link href={`/analytics/collection/${collectionId}`} noHover>
                       <IconButton
                         sx={{
                           marginLeft: '6px;',
@@ -441,7 +441,7 @@ export default function SearchView() {
                                   <Link
                                     key={idx}
                                     href={'/analytics/nft/' + id}
-                                    sx={{ ":hover": { textDecoration: 'none !important' } }}
+                                    noHover
                                   >
                                   <MiniNftCard
                                     price={
