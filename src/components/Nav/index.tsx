@@ -15,6 +15,7 @@ import { useWeb3React } from '@web3-react/core'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { ConnectorName, connectorsByName } from 'constants/connectors'
 import makeBlockie from 'ethereum-blockies-base64'
+import { ethers } from 'ethers'
 import {
   GET_NAV_BAR_COLLECTIONS,
   GetNavBarCollectionsData,
@@ -36,6 +37,12 @@ import { shortenAddress } from 'utils/address'
 
 import { BetaBanner } from '../BetaBanner'
 import { Sidebar, SidebarShade, SideLink } from './Styled'
+
+interface InputSuggestion {
+  id: number | string
+  name: string
+  [key: string]: any
+}
 
 function useOutsideAlerter(ref) {
   const [status, setStatus] = useState(false)
@@ -99,11 +106,6 @@ export const Nav = () => {
       handleToggleMenu()
     }
   }, [outsideClicked])
-  interface InputSuggestion {
-    id: number | string
-    name: string
-    [key: string]: any
-  }
 
   const isAddress =
     navSearchTerm?.substring(0, 2) === '0x' && navSearchTerm?.length === 42
@@ -139,10 +141,24 @@ export const Nav = () => {
         )
   }, [navCollectionsData, navSearchTerm, isAddress])
 
-  const handleNavSearch = (e: React.FormEvent) => {
+  const handleNavSearch = async (e: React.FormEvent) => {
     e.preventDefault()
     if (showSidebar) handleToggleMenu()
     ;(document.activeElement as HTMLElement).blur()
+
+    if (isENS) {
+      try {
+        const provider = ethers.getDefaultProvider()
+        const address = await provider.resolveName(navSearchTerm)
+        if (!address) return
+
+        router.push(`/analytics/user/${address}`)
+      } catch (err) {
+        console.warn(err)
+      }
+
+      return
+    }
 
     isAddress
       ? router.push(`/analytics/user/${encodeURIComponent(navSearchTerm)}`)
