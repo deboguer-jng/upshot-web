@@ -1,6 +1,6 @@
 import css from '@emotion/css'
 import styled from '@emotion/styled'
-import { Link } from 'theme-ui'
+import { Link } from '@upshot-tech/upshot-ui'
 
 export const SidebarShade = styled.div`
   position: fixed;

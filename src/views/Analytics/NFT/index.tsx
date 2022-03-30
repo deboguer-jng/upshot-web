@@ -16,6 +16,7 @@ import {
   IconButton,
   Label,
   LabelAttribute,
+  Link,
   Panel,
   parseUint256,
   useTheme,
@@ -34,7 +35,6 @@ import { format } from 'date-fns'
 import makeBlockie from 'ethereum-blockies-base64'
 import { ethers } from 'ethers'
 import Head from 'next/head'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { extractEns, shortenAddress } from 'utils/address'
@@ -430,7 +430,6 @@ export default function NFTView() {
                       <Flex sx={{ gap: [1, 1, 4], alignItems: 'center' }}>
                         <Link
                           href={`/analytics/collection/${collection?.id}`}
-                          passHref
                         >
                           <Image
                             src={
@@ -463,29 +462,27 @@ export default function NFTView() {
                           </Text>
                           <Link
                             href={`/analytics/collection/${collection?.id}`}
+                            sx={{
+                              whiteSpace: 'nowrap', 
+                              textOverflow: 'ellipsis',
+                              overflow: 'hidden',
+                              '&:hover': {
+                                textDecoration: 'underline',
+                              },
+                            }}
+                            title={collection?.name}
                           >
-                            <a
+                            <Text
+                              color="grey-300"
                               sx={{
-                                cursor: 'pointer',
-                                textOverflow: 'ellipsis',
-                                overflow: 'hidden',
-                                '&:hover': {
-                                  textDecoration: 'underline',
-                                },
+                                fontWeight: 'bold',
+                                lineHeight: 1.25,
+                                fontSize: [3, 3, 4],
                               }}
                               title={collection?.name}
                             >
-                              <Text
-                                color="grey-300"
-                                sx={{
-                                  fontWeight: 'bold',
-                                  lineHeight: 1.25,
-                                  fontSize: [3, 3, 4],
-                                }}
-                              >
-                                {collection?.name}
-                              </Text>
-                            </a>
+                              {collection?.name}
+                            </Text>
                           </Link>
                         </Flex>
                       </Flex>
@@ -519,18 +516,16 @@ export default function NFTView() {
                           </Text>
                           <Link
                             href={`/analytics/user/${txHistory?.[0]?.txToAddress}`}
+                            sx={{
+                              whiteSpace: 'nowrap', 
+                              textOverflow: 'ellipsis',
+                              overflow: 'hidden',
+                              '&:hover': {
+                                textDecoration: 'underline',
+                              },
+                            }}
+                            title={displayName}
                           >
-                            <a
-                              sx={{
-                                cursor: 'pointer',
-                                textOverflow: 'ellipsis',
-                                overflow: 'hidden',
-                                '&:hover': {
-                                  textDecoration: 'underline',
-                                },
-                              }}
-                              title={displayName}
-                            >
                               <Text
                                 color="grey-300"
                                 sx={{
@@ -541,7 +536,6 @@ export default function NFTView() {
                               >
                                 {displayName}
                               </Text>
-                            </a>
                           </Link>
                         </Flex>
                       </Flex>
@@ -562,25 +556,27 @@ export default function NFTView() {
                                 collection?.name ?? ''
                               )}`}
                               key={idx}
-                            >
-                              <a
-                                sx={{
+                              sx={{
+                                cursor: 'pointer',
+                                whiteSpace: 'normal',
+                                lineHeight: 'auto',
+                                textDecoration: 'none',
+                                '&:hover': {
                                   textDecoration: 'none',
-                                  cursor: 'pointer',
-                                }}
+                                }
+                              }}
+                          >
+                              <LabelAttribute
+                                expanded={true}
+                                expandedText={traitType ? traitType : 'Trait'}
+                                variant="percentage"
+                                percentage={(100 - rarity * 100)
+                                  .toFixed(2)
+                                  .toString()}
+                                hasHover
                               >
-                                <LabelAttribute
-                                  expanded={true}
-                                  expandedText={traitType ? traitType : 'Trait'}
-                                  variant="percentage"
-                                  percentage={(100 - rarity * 100)
-                                    .toFixed(2)
-                                    .toString()}
-                                  hasHover
-                                >
-                                  {value}
-                                </LabelAttribute>
-                              </a>
+                                {value}
+                              </LabelAttribute>
                             </Link>
                           </Box>
                         )
@@ -822,27 +818,24 @@ export default function NFTView() {
                                       />
                                       <Link
                                         href={`/analytics/user/${txFromAddress}`}
+                                        sx={{
+                                          cursor: 'pointer',
+                                          '&:hover': {
+                                            textDecoration: 'underline',
+                                          },
+                                        }}
                                       >
-                                        <a
-                                          sx={{
-                                            cursor: 'pointer',
-                                            '&:hover': {
-                                              textDecoration: 'underline',
-                                            },
-                                          }}
-                                        >
-                                          <Text>
-                                            {extractEns(
-                                              txFromUser?.addresses,
-                                              txFromAddress
-                                            ) ??
-                                              shortenAddress(
-                                                txFromAddress,
-                                                2,
-                                                4
-                                              )}
-                                          </Text>
-                                        </a>
+                                        <Text>
+                                          {extractEns(
+                                            txFromUser?.addresses,
+                                            txFromAddress
+                                          ) ??
+                                            shortenAddress(
+                                              txFromAddress,
+                                              2,
+                                              4
+                                            )}
+                                        </Text>
                                       </Link>
                                     </Flex>
                                   </TableCell>
@@ -858,23 +851,20 @@ export default function NFTView() {
                                       />
                                       <Link
                                         href={`/analytics/user/${txToAddress}`}
+                                        sx={{
+                                          cursor: 'pointer',
+                                          '&:hover': {
+                                            textDecoration: 'underline',
+                                          },
+                                        }}
                                       >
-                                        <a
-                                          sx={{
-                                            cursor: 'pointer',
-                                            '&:hover': {
-                                              textDecoration: 'underline',
-                                            },
-                                          }}
-                                        >
-                                          <Text>
-                                            {extractEns(
-                                              txToUser?.addresses,
-                                              txToAddress
-                                            ) ??
-                                              shortenAddress(txToAddress, 2, 4)}
-                                          </Text>
-                                        </a>
+                                        <Text>
+                                          {extractEns(
+                                            txToUser?.addresses,
+                                            txToAddress
+                                          ) ??
+                                            shortenAddress(txToAddress, 2, 4)}
+                                        </Text>
                                       </Link>
                                     </Flex>
                                   </TableCell>
@@ -894,7 +884,7 @@ export default function NFTView() {
                                 {'MINT' === type && (
                                   <Text color="green">Mint</Text>
                                 )}
-                                <a
+                                <Link
                                   href={`https://etherscan.io/tx/${txHash}`}
                                   target="_blank"
                                   title="Open transaction on Etherscan"
@@ -903,7 +893,7 @@ export default function NFTView() {
                                   <IconButton>
                                     <Icon icon="disconnect" color="grey-500" />
                                   </IconButton>
-                                </a>
+                                </Link>
                               </TableCell>
                             </TableRow>
                           )

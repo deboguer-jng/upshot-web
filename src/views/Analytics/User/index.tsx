@@ -13,6 +13,7 @@ import {
   formatNumber,
   Icon,
   IconButton,
+  Link,
   Modal,
   parseUint256,
   RadarChart,
@@ -34,7 +35,6 @@ import makeBlockie from 'ethereum-blockies-base64'
 import { ethers } from 'ethers'
 import { Masonry, useInfiniteLoader } from 'masonic'
 import Head from 'next/head'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { transparentize } from 'polished'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -633,7 +633,7 @@ export default function UserView() {
         {collection.ownerAssetsInCollection.assets
           .slice(0, 5)
           .map(({ id, previewImageUrl, mediaUrl, contractAddress }, idx) => (
-            <Link passHref href={`/analytics/nft/${id}`} key={idx}>
+            <Link href={`/analytics/nft/${id}`} key={idx}>
               <Box
                 sx={{
                   width: '100%',
@@ -1411,7 +1411,7 @@ export default function UserView() {
                                                     Mint
                                                   </Text>
                                                 )}
-                                                <a
+                                                <Link
                                                   href={`https://etherscan.io/tx/${rowData?.txHash}`}
                                                   target="_blank"
                                                   title="Open transaction on Etherscan"
@@ -1435,7 +1435,7 @@ export default function UserView() {
                                                       }
                                                     />
                                                   </IconButton>
-                                                </a>
+                                                </Link>
                                               </TableCell>
                                             )
                                           }}
@@ -1498,21 +1498,15 @@ export default function UserView() {
                                               <Link
                                                 href={`/analytics/nft/${rowData?.asset?.id}`}
                                               >
-                                                <a
+                                                <Link
                                                   sx={{
-                                                    cursor: 'pointer',
                                                     display: 'block',
                                                     textOverflow: 'ellipsis',
-                                                    whiteSpace: 'nowrap',
                                                     overflow: 'hidden',
-                                                    '&:hover': {
-                                                      textDecoration:
-                                                        'underline',
-                                                    },
                                                   }}
                                                 >
                                                   {rowData?.asset?.name}
-                                                </a>
+                                                </Link>
                                               </Link>
                                             )
                                           }}
@@ -1546,19 +1540,12 @@ export default function UserView() {
                                                     height: 3,
                                                   }}
                                                 />
-                                                <a
+                                                <Link
                                                   href={`/analytics/user/${rowData?.txFromAddress}`}
                                                   sx={{
-                                                    cursor: 'pointer',
                                                     display: 'block',
                                                     overflow: 'hidden',
                                                     fontSize: 2.5,
-                                                    color: 'white',
-                                                    textDecoration: 'none',
-                                                    '&:hover': {
-                                                      textDecoration:
-                                                        'underline',
-                                                    },
                                                   }}
                                                 >
                                                   <Text
@@ -1574,7 +1561,7 @@ export default function UserView() {
                                                       rowData?.txFromAddress
                                                     ) ?? rowData?.txFromAddress}
                                                   </Text>
-                                                </a>
+                                                </Link>
                                               </Grid>
                                             )
                                           }}
@@ -1606,19 +1593,12 @@ export default function UserView() {
                                                     height: 3,
                                                   }}
                                                 />
-                                                <a
+                                                <Link
                                                   href={`/analytics/user/${rowData?.txToAddress}`}
                                                   sx={{
-                                                    cursor: 'pointer',
                                                     display: 'block',
                                                     overflow: 'hidden',
                                                     fontSize: 2.5,
-                                                    textDecoration: 'none',
-                                                    color: 'white',
-                                                    '&:hover': {
-                                                      textDecoration:
-                                                        'underline',
-                                                    },
                                                   }}
                                                 >
                                                   <Text
@@ -1634,7 +1614,7 @@ export default function UserView() {
                                                       rowData?.txToAddress
                                                     ) ?? rowData?.txToAddress}
                                                   </Text>
-                                                </a>
+                                                </Link>
                                               </TableCell>
                                             )
                                           }}
@@ -1700,7 +1680,7 @@ export default function UserView() {
                                                     Mint
                                                   </Text>
                                                 )}
-                                                <a
+                                                <Link
                                                   href={`https://etherscan.io/tx/${rowData?.txHash}`}
                                                   target="_blank"
                                                   title="Open transaction on Etherscan"
@@ -1724,7 +1704,7 @@ export default function UserView() {
                                                       }
                                                     />
                                                   </IconButton>
-                                                </a>
+                                                </Link>
                                               </TableCell>
                                             )
                                           }}

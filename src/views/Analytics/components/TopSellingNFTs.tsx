@@ -5,6 +5,7 @@ import {
   Box,
   Flex,
   formatNumber,
+  Link,
   MiniNftCard,
   SwitchDropdown,
   useBreakpointIndex,
@@ -108,10 +109,6 @@ export default function TopSellingNFTs({
     }
   }, [loading])
 
-  const handleClickNFT = (id: string) => {
-    router.push('/analytics/nft/' + id)
-  }
-
   if (loading)
     return (
       <>
@@ -194,10 +191,10 @@ export default function TopSellingNFTs({
               },
               key
             ) => (
-              <a
+              <Link
+                href={'/analytics/nft/' + id}
                 key={key}
-                onClick={() => handleClickNFT(id)}
-                style={{ cursor: 'pointer' }}
+                sx={{ ":hover": { textDecoration: 'none' } }}
               >
                 <MiniNftCard
                   price={
@@ -219,7 +216,7 @@ export default function TopSellingNFTs({
                   pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
                   link={`/analytics/collection/${collection?.id}`}
                 />
-              </a>
+              </Link>
             )
           )}
         </MiniNFTContainer>
