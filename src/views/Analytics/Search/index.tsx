@@ -441,7 +441,7 @@ export default function SearchView() {
                                   <Link
                                     key={idx}
                                     href={'/analytics/nft/' + id}
-                                    sx={{ ":hover": { textDecoration: 'none' } }}
+                                    sx={{ ":hover": { textDecoration: 'none !important' } }}
                                   >
                                   <MiniNftCard
                                     price={
