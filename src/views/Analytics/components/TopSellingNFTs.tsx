@@ -4,6 +4,7 @@ import {
   BlurrySquareTemplate,
   Box,
   Flex,
+  formatNumber,
   Link,
   MiniNftCard,
   SwitchDropdown,
@@ -14,7 +15,6 @@ import { formatDistance } from 'date-fns'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { shortenAddress } from 'utils/address'
-import { weiToEth } from 'utils/number'
 
 import { GET_TOP_SALES, GetTopSalesData, GetTopSalesVars } from '../queries'
 import { MiniNFTContainer } from './Styled'
@@ -197,7 +197,15 @@ export default function TopSellingNFTs({
                 sx={{ ":hover": { textDecoration: 'none' } }}
               >
                 <MiniNftCard
-                  price={price ? weiToEth(price) : undefined}
+                  price={
+                    price
+                      ? formatNumber(price, {
+                          fromWei: true,
+                          decimals: 2,
+                          prefix: 'ETHER',
+                        })
+                      : undefined
+                  }
                   to={shortenAddress(txToAddress, 2, 4)}
                   toLink={`/analytics/user/${txToAddress}`}
                   from={shortenAddress(txFromAddress, 2, 4)}

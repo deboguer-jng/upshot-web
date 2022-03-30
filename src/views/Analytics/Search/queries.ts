@@ -17,6 +17,8 @@ export type GetAssetsSearchVars = {
   maxPrice?: string
   traitFilterJoin?: string
   listed?: boolean
+  orderColumn?: string
+  orderDirection?: string
 }
 
 export type GetAssetsSearchData = {
@@ -30,11 +32,18 @@ export type GetAssetsSearchData = {
       mediaUrl: string
       lastSale?: {
         ethSalePrice: string
+        timestamp?: number
+      }
+      latestAppraisal?: {
+        estimatedPrice?: string
+        timestamp?: number
       }
       collection?: {
         name: string
         id: number
       }
+      listPrice?: string
+      listAppraisalRatio?: number
       collectionId: number
       contractAddress: string
       creatorUsername: string
@@ -58,6 +67,8 @@ export const GET_ASSETS_SEARCH = gql`
     $offset: Int
     $traitFilterJoin: AndOr
     $listed: Boolean
+    $orderColumn: AssetSearchSortOption
+    $orderDirection: OrderDirection
   ) {
     assetGlobalSearch(
       limit: $limit
@@ -72,6 +83,8 @@ export const GET_ASSETS_SEARCH = gql`
       tokenId: $tokenId
       traitFilterJoin: $traitFilterJoin
       listed: $listed
+      orderColumn: $orderColumn
+      orderDirection: $orderDirection
     ) {
       count
       assets {
@@ -86,7 +99,14 @@ export const GET_ASSETS_SEARCH = gql`
         mediaUrl
         lastSale {
           ethSalePrice
+          timestamp
         }
+        latestAppraisal {
+          estimatedPrice
+          timestamp
+        }
+        listPrice
+        listAppraisalRatio
         contractAddress
         creatorUsername
         creatorAddress

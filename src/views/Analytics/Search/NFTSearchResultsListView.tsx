@@ -1,31 +1,45 @@
+/** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
 import {
-  Box,
-  CollectionRow,
-  CollectionTable,
   CollectorAccordion,
-  Flex,
   formatNumber,
-  Grid,
   Icon,
-  Pagination,
   Skeleton,
+  useBreakpointIndex,
+} from '@upshot-tech/upshot-ui'
+import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
+import { useTheme } from '@upshot-tech/upshot-ui'
+import { Box, Flex, Grid, Text } from '@upshot-tech/upshot-ui'
+import {
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  Text,
-  useBreakpointIndex,
-  useTheme,
 } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE } from 'constants/'
 import router from 'next/router'
-import { useEffect, useState } from 'react'
+import React from 'react'
+import { getPriceChangeColor } from 'utils/color'
 
-import { TRAIT_SEARCH, TraitSearchData, TraitSearchVars } from '../../queries'
-import { ExplorePanelSkeleton } from './NFTs'
+import { getUnderOverPricedLabel } from '../../../utils/number'
+import { OrderedNFTSearchResultsColumns } from '.'
 
-interface TraitsTableHeadProps extends React.HTMLAttributes<HTMLElement> {
+export enum ETraitStatsOrder {
+  VALUE,
+  TYPE,
+  RARITY,
+  FLOOR,
+}
+
+export type OrderedTraitStatColumns = {
+  [key in keyof typeof ETraitStatsOrder]: string
+}
+
+interface NFTSearchResultsHeadProps extends React.HTMLAttributes<HTMLElement> {
+  /**
+   * The columns for the nft search results table
+   */
+  columns: OrderedNFTSearchResultsColumns
   /**
    * The current selected column index used for sorting.
    */
@@ -40,26 +54,25 @@ interface TraitsTableHeadProps extends React.HTMLAttributes<HTMLElement> {
   onChangeSelection?: (colIdx: number) => void
 }
 
-export const traitColumns = {
-  TYPE: 'Trait Type',
-  RARITY: 'Rarity',
-  FLOOR: 'Floor',
-  FLOORUSD: 'Floor (USD)',
-}
-
-function TraitsTableHead({
+function NFTSearchResultsHead({
+  columns,
   selectedColumn,
   sortAscending,
   onChangeSelection,
-}: TraitsTableHeadProps) {
+}: NFTSearchResultsHeadProps) {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
+
   const { theme } = useTheme()
 
   return (
     <>
       {isMobile ? (
-        <Box />
+        <Box>
+          <Flex sx={{ justifyContent: 'space-between', padding: 2 }}>
+            <Text></Text>
+          </Flex>
+        </Box>
       ) : (
         <TableHead>
           <TableRow>
@@ -88,7 +101,7 @@ function TraitsTableHead({
                 },
               }}
             ></TableCell>
-            {Object.values(traitColumns).map((col, idx) => (
+            {Object.values(columns).map((col, idx) => (
               <TableCell
                 key={idx}
                 color="grey-500"
@@ -137,7 +150,29 @@ function TraitsTableHead({
   )
 }
 
-const TraitsWrapper = ({ children, ...props }: TraitsTableHeadProps) => {
+export function NFTSearchResultsSkeleton({
+  ...props
+}: NFTSearchResultsHeadProps) {
+  return (
+    <CollectionTable>
+      <NFTSearchResultsHead {...props} />
+      <TableBody>
+        {[...new Array(PAGE_SIZE)].map((_, idx) => (
+          <Skeleton sx={{ height: 56 }} as="tr" key={idx}>
+            <TableCell colSpan={7}>
+              <Box sx={{ height: 40, width: '100%' }} />
+            </TableCell>
+          </Skeleton>
+        ))}
+      </TableBody>
+    </CollectionTable>
+  )
+}
+
+const NFTSearchResultsWrapper = ({
+  children,
+  ...props
+}: NFTSearchResultsHeadProps) => {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
 
@@ -145,12 +180,12 @@ const TraitsWrapper = ({ children, ...props }: TraitsTableHeadProps) => {
     <>
       {isMobile ? (
         <>
-          <TraitsTableHead {...props} />
+          <NFTSearchResultsHead {...props} />
           <CollectorAccordion>{children}</CollectorAccordion>
         </>
       ) : (
         <CollectionTable>
-          <TraitsTableHead {...props} />
+          <NFTSearchResultsHead {...props} />
           <TableBody>{children}</TableBody>
         </CollectionTable>
       )}
@@ -158,103 +193,53 @@ const TraitsWrapper = ({ children, ...props }: TraitsTableHeadProps) => {
   )
 }
 
-const handleRedirectToSearch = (traitId?: number, collectionId?: number) => {
-  router.push(
-    `/analytics/search?traits=${traitId}&collectionId=${collectionId}`
-  )
+const handleShowNFT = (id: string) => {
+  router.push('/analytics/nft/' + id)
 }
 
-/**
- *Default render function
- */
-export default function ExploreTraits({
-  collectionId,
-  traitType,
-  searchTerm = '',
+export default function NFTSearchResults({
+  columns,
   selectedColumn,
   sortAscending,
   onChangeSelection,
+  assetArr,
 }: {
-  collectionId: number
-  traitType?: string
-  searchTerm?: string
+  columns: OrderedNFTSearchResultsColumns
   selectedColumn: number
   sortAscending: boolean
+  assetArr: any
   onChangeSelection: (colIdx: number) => void
 }) {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
-  const [page, setPage] = useState(0)
-
-  const handlePageChange = ({ selected }: { selected: number }) => {
-    setPage(selected)
-  }
-
-  const { loading, error, data } = useQuery<TraitSearchData, TraitSearchVars>(
-    TRAIT_SEARCH,
-    {
-      errorPolicy: 'all',
-      variables: {
-        collectionId,
-        limit: PAGE_SIZE,
-        offset: page * PAGE_SIZE,
-        searchTerm,
-        traitType,
-        orderColumn: Object.keys(traitColumns)[selectedColumn],
-        orderDirection: sortAscending ? 'ASC' : 'DESC',
-      },
-      skip: !collectionId,
-    }
-  )
-
-  useEffect(() => {
-    setPage(0)
-  }, [searchTerm])
-
-  /* Loading state. */
-  if (loading)
-    return (
-      <ExplorePanelSkeleton>
-        <TraitsTableHead {...{ selectedColumn, sortAscending }} />
-      </ExplorePanelSkeleton>
-    )
-
-  /* Error state. */
-  // if (error) return <div>There was an error completing your request.</div>
-
-  if (!data?.traitSearch?.traits?.length)
-    return <div>No results available.</div>
-
-  const dataCheck = (data) => {
-    return data ? data : '-'
-  }
 
   return (
     <>
-      <TraitsWrapper {...{ selectedColumn, sortAscending, onChangeSelection }}>
-        {data.traitSearch?.traits?.map(
+      <NFTSearchResultsWrapper
+        {...{ selectedColumn, sortAscending, onChangeSelection, columns }}
+      >
+        {assetArr.map(
           (
             {
               id,
-              traitType,
-              displayType,
-              maxValue,
-              collectionId,
-              value,
-              rarity,
-              image,
-              floor,
-              floorUsd,
+              tokenId,
+              previewImageUrl,
+              name,
+              lastSale,
+              latestAppraisal,
+              listPrice,
+              listAppraisalRatio,
             },
             idx
           ) => (
             <CollectionRow
-              variant="black"
-              title={value ?? '-'}
-              imageSrc={image ?? ''}
+              title={tokenId ? '#' + tokenId : name}
               key={idx}
               defaultOpen={idx === 0 ? true : false}
-              onClick={() => handleRedirectToSearch(id, collectionId)}
+              variant="normal"
+              imageSrc={previewImageUrl ?? ''}
+              subtitle={isMobile ? name : undefined}
+              onClick={() => handleShowNFT(id)}
             >
               {isMobile ? (
                 <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>
@@ -265,40 +250,14 @@ export default function ExploreTraits({
                       alignItems: 'center',
                     }}
                   >
-                    <Text sx={{ marginBottom: 1 }}>{traitColumns.TYPE}</Text>
-                    <Text>{dataCheck(traitType)}</Text>
-                  </Flex>
-                  <Flex
-                    sx={{
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Text sx={{ textAlign: 'center', marginBottom: 1 }}>
-                      {traitColumns.RARITY}
+                    <Text sx={{ marginBottom: 1 }}>
+                      {columns.LAST_SALE_PRICE}
                     </Text>
                     <Text>
-                      {rarity
-                        ? (100 - rarity * 100).toFixed(2).toString() + '%'
-                        : '-'}
-                    </Text>
-                  </Flex>
-                  <Flex
-                    sx={{
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Text sx={{ textAlign: 'center', marginBottom: 1 }}>
-                      {traitColumns.FLOOR}
-                    </Text>
-                    <Text>
-                      {floor
-                        ? formatNumber(floor, {
+                      {lastSale && lastSale?.ethSalePrice
+                        ? formatNumber(lastSale.ethSalePrice, {
                             fromWei: true,
-                            decimals: 4,
+                            decimals: 2,
                             prefix: 'ETHER',
                           })
                         : '-'}
@@ -311,18 +270,54 @@ export default function ExploreTraits({
                       alignItems: 'center',
                     }}
                   >
-                    <Text sx={{ marginBottom: 1 }}>
-                      {traitColumns.FLOORUSD}
+                    <Text sx={{ textAlign: 'center', marginBottom: 1 }}>
+                      {columns.LAST_APPRAISAL_PRICE}
                     </Text>
                     <Text>
-                      {floorUsd
-                        ? formatNumber(floorUsd, {
+                      {latestAppraisal && latestAppraisal?.estimatedPrice
+                        ? formatNumber(latestAppraisal.estimatedPrice, {
                             fromWei: true,
-                            fromDecimals: 6,
                             decimals: 2,
-                            kmbUnits: true,
-                            prefix: 'USD',
+                            prefix: 'ETHER',
                           })
+                        : '-'}
+                    </Text>
+                  </Flex>
+                  <Flex
+                    sx={{
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text sx={{ textAlign: 'center', marginBottom: 1 }}>
+                      {columns.LIST_PRICE}
+                    </Text>
+                    <Text>
+                      {listPrice
+                        ? formatNumber(listPrice, {
+                            fromWei: true,
+                            decimals: 2,
+                            prefix: 'ETHER',
+                          })
+                        : '-'}
+                    </Text>
+                  </Flex>
+                  <Flex
+                    sx={{
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text sx={{ textAlign: 'center', marginBottom: 1 }}>
+                      {columns.LIST_APPRAISAL_RATIO}
+                    </Text>
+                    <Text
+                      sx={{ color: getPriceChangeColor(listAppraisalRatio) }}
+                    >
+                      {listAppraisalRatio
+                        ? getUnderOverPricedLabel(listAppraisalRatio)
                         : '-'}
                     </Text>
                   </Flex>
@@ -330,52 +325,54 @@ export default function ExploreTraits({
               ) : (
                 <>
                   <TableCell sx={{ maxWidth: 50 }}>
-                    {dataCheck(traitType)}
+                    <Text variant="medium">
+                      {lastSale && lastSale?.ethSalePrice
+                        ? formatNumber(lastSale.ethSalePrice, {
+                            fromWei: true,
+                            decimals: 2,
+                            prefix: 'ETHER',
+                          })
+                        : '-'}
+                    </Text>
+                  </TableCell>
+                  <TableCell sx={{ maxWidth: 50, textTransform: 'capitalize' }}>
+                    <Text variant="medium" color="primary">
+                      {latestAppraisal && latestAppraisal?.estimatedPrice
+                        ? formatNumber(latestAppraisal.estimatedPrice, {
+                            fromWei: true,
+                            decimals: 2,
+                            prefix: 'ETHER',
+                          })
+                        : '-'}
+                    </Text>
+                  </TableCell>
+                  <TableCell sx={{ maxWidth: 50, textTransform: 'capitalize' }}>
+                    <Text variant="medium">
+                      {listPrice
+                        ? formatNumber(listPrice, {
+                            fromWei: true,
+                            decimals: 2,
+                            prefix: 'ETHER',
+                          })
+                        : '-'}
+                    </Text>
                   </TableCell>
                   <TableCell sx={{ maxWidth: 50 }}>
-                    {rarity
-                      ? (100 - rarity * 100).toFixed(2).toString() + '%'
-                      : '-'}
-                  </TableCell>
-                  <TableCell sx={{ maxWidth: 50 }}>
-                    {floor
-                      ? formatNumber(floor, {
-                          fromWei: true,
-                          decimals: 4,
-                          prefix: 'ETHER',
-                        })
-                      : '-'}
-                  </TableCell>
-                  <TableCell sx={{ maxWidth: 50 }}>
-                    {floorUsd
-                      ? formatNumber(floorUsd, {
-                          fromWei: true,
-                          decimals: 2,
-                          fromDecimals: 6,
-                          prefix: 'USD',
-                        })
-                      : '-'}
+                    <Text
+                      variant="medium"
+                      sx={{ color: getPriceChangeColor(listAppraisalRatio) }}
+                    >
+                      {listAppraisalRatio
+                        ? getUnderOverPricedLabel(listAppraisalRatio)
+                        : '-'}
+                    </Text>
                   </TableCell>
                 </>
               )}
             </CollectionRow>
           )
         )}
-      </TraitsWrapper>
-
-      <Flex sx={{ justifyContent: 'center', marginTop: '10px' }}>
-        <Pagination
-          forcePage={page}
-          pageCount={
-            data?.traitSearch?.count
-              ? Math.ceil(data.traitSearch.count / PAGE_SIZE)
-              : 1
-          }
-          pageRangeDisplayed={0}
-          marginPagesDisplayed={0}
-          onPageChange={handlePageChange}
-        />
-      </Flex>
+      </NFTSearchResultsWrapper>
     </>
   )
 }

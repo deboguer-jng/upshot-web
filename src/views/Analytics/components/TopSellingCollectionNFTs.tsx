@@ -4,6 +4,7 @@ import {
   BlurrySquareTemplate,
   Box,
   Flex,
+  formatNumber,
   Link,
   MiniNftCard,
   SwitchDropdown,
@@ -15,7 +16,6 @@ import { BigNumber as BN } from 'ethers'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { shortenAddress } from 'utils/address'
-import { weiToEth } from 'utils/number'
 
 import {
   GET_COLLECTIONS_BY_METRIC,
@@ -137,23 +137,22 @@ export default function TopSellingCollectionNFTs({
     }
   ) // Using `all` to include data with errors.
 
-
-  const { 
-    loading: collectionLoading, 
-    error: collectionError, 
-    data: collectionData
-  } = useQuery<
-    GetCollectionsByMetricData,
-    GetCollectionsByMetricVars
-  >(GET_COLLECTIONS_BY_METRIC, {
-    errorPolicy: 'all',
-    variables: {
-      orderColumn: 'PAST_WEEK_VOLUME',
-      orderDirection: 'DESC',
-      limit: 100,
-      offset: page * 100,
-    },
-  })
+  const {
+    loading: collectionLoading,
+    error: collectionError,
+    data: collectionData,
+  } = useQuery<GetCollectionsByMetricData, GetCollectionsByMetricVars>(
+    GET_COLLECTIONS_BY_METRIC,
+    {
+      errorPolicy: 'all',
+      variables: {
+        orderColumn: 'PAST_WEEK_VOLUME',
+        orderDirection: 'DESC',
+        limit: 100,
+        offset: page * 100,
+      },
+    }
+  )
 
   if (loading || collectionLoading)
     return (
@@ -272,7 +271,15 @@ export default function TopSellingCollectionNFTs({
                     sx={{ ":hover": { textDecoration: 'none' } }}
                   >
                     <MiniNftCard
-                      price={price ? weiToEth(price) : undefined}
+                      price={
+                        price
+                          ? formatNumber(price, {
+                              fromWei: true,
+                              decimals: 2,
+                              prefix: 'ETHER',
+                            })
+                          : undefined
+                      }
                       to={shortenAddress(txToAddress, 2, 4)}
                       toLink={`/analytics/user/${txToAddress}`}
                       from={shortenAddress(txFromAddress, 2, 4)}
@@ -297,7 +304,12 @@ export default function TopSellingCollectionNFTs({
                         tooltip={`volume / ${period}`}
                         price={
                           latestStats?.pastDayWeiVolume
-                            ? weiToEth(latestStats?.pastDayWeiVolume)
+                            ? formatNumber(latestStats.pastDayWeiVolume, {
+                                fromWei: true,
+                                kmbUnits: true,
+                                decimals: 2,
+                                prefix: 'ETHER',
+                              })
                             : undefined
                         }
                         name={name}
@@ -305,7 +317,7 @@ export default function TopSellingCollectionNFTs({
                         image={imageUrl}
                         floorPrice={
                           latestStats?.floor
-                            ? weiToEth(latestStats?.floor)
+                            ? formatNumber(latestStats.floor, { fromWei: true })
                             : undefined
                         }
                         sales={getSalesNumber(latestStats)}

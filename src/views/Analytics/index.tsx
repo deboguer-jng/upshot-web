@@ -15,7 +15,7 @@ import TopSellingCollectionNFTs from './components/TopSellingCollectionNFTs'
 const selectedCollectionsColors = ['blue', 'pink', 'orange', 'green', 'yellow']
 
 export default function AnalyticsView() {
-  const [chartMetric, setChartMetric] = useState<METRIC>('FLOOR')
+  const [chartMetric, setChartMetric] = useState<METRIC>('PAST_WEEK_VOLUME')
   const [selectedCollections, setSelectedCollections] = useState<number[]>([])
   const [colorCycleIndex, setColorCycleIndex] = useState(3)
 
@@ -164,13 +164,6 @@ export default function AnalyticsView() {
           <Box sx={{ position: 'relative' }}>
             <TopSellingCollectionNFTs />
           </Box>
-          {
-            // Temporarily disabled until we can address MC inconsistencies
-            // <Text variant="text.h1Secondary" sx={{ lineHeight: '2.25rem' }}>
-            //   Market Cap (Change Over 7 Days)
-            // </Text>
-            // <CollectionsTreeMap />
-          }
           <ExplorePanel />
         </Flex>
       </Container>

@@ -4,7 +4,6 @@ import { RootState } from 'redux/store'
 
 type ENSAccount = {
   name?: string
-  avatar?: string
 }
 
 export interface Web3State {
@@ -27,7 +26,6 @@ const initialState: Web3State = {
    */
   ens: {
     name: undefined,
-    avatar: undefined,
   },
 }
 

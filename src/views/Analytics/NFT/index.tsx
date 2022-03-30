@@ -5,19 +5,20 @@ import {
   imageOptimizer,
   Pagination,
   useBreakpointIndex,
-  AppraisalsCopy,
 } from '@upshot-tech/upshot-ui'
 import { Container } from '@upshot-tech/upshot-ui'
 import { Flex, Grid, Image, Text } from '@upshot-tech/upshot-ui'
 import {
   Box,
   Chart,
+  formatNumber,
   Icon,
   IconButton,
   Label,
   LabelAttribute,
   Link,
   Panel,
+  parseUint256,
   useTheme,
 } from '@upshot-tech/upshot-ui'
 import {
@@ -39,7 +40,6 @@ import { useEffect, useState } from 'react'
 import { extractEns, shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
 import { getPriceChangeColor } from 'utils/color'
-import { formatCommas, formatCurrencyUnits, weiToEth } from 'utils/number'
 
 import Breadcrumbs from '../components/Breadcrumbs'
 import Collectors from '../components/ExplorePanel/Collectors'
@@ -189,31 +189,23 @@ export default function NFTView() {
 
   const {
     name,
-    rarity,
-    rarityRank,
     previewImageUrl,
     mediaUrl,
     collection,
     tokenId,
     traits,
-    lastSale,
     lastAppraisalWeiPrice,
     lastAppraisalUsdPrice,
     lastAppraisalAt,
     latestAppraisal,
     txHistory,
     appraisalHistory,
-    creatorAvatar,
-    creatorAddress,
-    creatorUsername,
     contractAddress,
     warningBanner,
     listPrice,
     listPriceUsd,
     listMarketplace,
     listUrl,
-    listTimestamp,
-    listExpiration,
     listAppraisalRatio,
   } = data.assetById
 
@@ -345,68 +337,59 @@ export default function NFTView() {
                       }}
                     >
                       <Text color="blue" sx={{ border: 'none', fontSize: 16 }}>
-                        {'Ξ' + weiToEth(lastAppraisalWeiPrice, 3, false)}
+                        {formatNumber(lastAppraisalWeiPrice, {
+                          fromWei: true,
+                          prefix: 'ETHER',
+                          decimals: 2,
+                        })}
                       </Text>
                       <Icon icon="upshot" size={18} color="primary" />
                     </Flex>
                   )}
-
-                  {!!rarityRank && !!collection && !!collection?.size && (
-                    <Flex sx={{ gap: 1 }}>
-                      <Text color="grey-300">
-                        {'Rank ' + rarityRank + ' / '}
-                      </Text>
-                      <Text color="grey-500">{collection?.size}</Text>
-                    </Flex>
-                  )}
+                  <Flex sx={{ height: 20 }}>
+                    <a
+                      href={`https://opensea.io/assets/${id}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <Icon
+                        icon="openSeaBlock"
+                        color="primary"
+                        sx={{ width: 20, height: 20 }}
+                      />
+                    </a>
+                    {ART_BLOCKS_CONTRACTS.includes(contractAddress) && (
+                      <a
+                        href={`https://generator.artblocks.io/${id}`}
+                        target="_blank"
+                        sx={{ marginLeft: '13px' }}
+                        rel="noreferrer"
+                      >
+                        <Icon
+                          icon="openLink"
+                          color="primary"
+                          sx={{ width: 20, height: 20 }}
+                        />
+                      </a>
+                    )}
+                    {contractAddress ===
+                      '0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB' && (
+                      <a
+                        href={`https://www.larvalabs.com/cryptopunks/details/${tokenId}`}
+                        target="_blank"
+                        sx={{ marginLeft: '13px' }}
+                        rel="noreferrer"
+                      >
+                        <Icon
+                          icon="openLink"
+                          color="primary"
+                          sx={{ width: 20, height: 20 }}
+                        />
+                      </a>
+                    )}
+                  </Flex>
                 </Flex>
-                {!!lastAppraisalWeiPrice && (
-                  <AppraisalsCopy link="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104" />
-                )}
               </>
-
-              <Flex>
-                <Link
-                  href={`https://opensea.io/assets/${id}`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <Icon
-                    icon="openSeaBlock"
-                    color="primary"
-                    sx={{ width: 20, height: 20 }}
-                  />
-                </Link>
-                {ART_BLOCKS_CONTRACTS.includes(contractAddress) && (
-                  <Link
-                    href={`https://generator.artblocks.io/${id}`}
-                    target="_blank"
-                    sx={{ marginLeft: '13px' }}
-                    rel="noreferrer"
-                  >
-                    <Icon
-                      icon="openLink"
-                      color="primary"
-                      sx={{ width: 20, height: 20 }}
-                    />
-                  </Link>
-                )}
-                {contractAddress ===
-                  '0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB' && (
-                  <Link
-                    href={`https://www.larvalabs.com/cryptopunks/details/${tokenId}`}
-                    target="_blank"
-                    sx={{ marginLeft: '13px' }}
-                    rel="noreferrer"
-                  >
-                    <Icon
-                      icon="openLink"
-                      color="primary"
-                      sx={{ width: 20, height: 20 }}
-                    />
-                  </Link>
-                )}
-              </Flex>
             </Flex>
           </Flex>
 
@@ -422,7 +405,7 @@ export default function NFTView() {
                     parseFloat(ethers.utils.formatEther(listPrice)).toFixed(2)
                   )}
                   sx={{ width: '100%' }}
-                  listPriceUSD={Number(formatCurrencyUnits(listPriceUsd, 6))}
+                  listPriceUSD={parseUint256(listPriceUsd, 6, 2)}
                   listAppraisalPercentage={listAppraisalRatio}
                   marketplaceName={
                     listUrl.includes('larvalabs.com')
@@ -674,15 +657,17 @@ export default function NFTView() {
                               sx={{ lineHeight: 1 }}
                             >
                               {isFloor
-                                ? weiToEth(
+                                ? formatNumber(
                                     appraisalHistory[
                                       appraisalHistory.length - 1
                                     ].estimatedPrice,
-                                    3,
-                                    false
+                                    { fromWei: true, decimals: 2 }
                                   )
                                 : lastAppraisalWeiPrice
-                                ? weiToEth(lastAppraisalWeiPrice, 3, false)
+                                ? formatNumber(lastAppraisalWeiPrice, {
+                                    fromWei: true,
+                                    decimals: 2,
+                                  })
                                 : '-'}
                             </Label>
 
@@ -712,9 +697,11 @@ export default function NFTView() {
                                   marginTop: '-.5rem',
                                 }}
                               >
-                                {formatCommas(
-                                  Number(lastAppraisalUsdPrice) / 1e6
-                                )}
+                                {formatNumber(lastAppraisalUsdPrice, {
+                                  fromWei: true,
+                                  fromDecimals: 6,
+                                  decimals: 2,
+                                })}
                               </Label>
                             )}
                           <Text
@@ -886,9 +873,11 @@ export default function NFTView() {
                               <TableCell sx={{ minWidth: 100, color: 'pink' }}>
                                 {'SALE' === type &&
                                   price &&
-                                  `${formatCurrencyUnits(price, decimals)} ${
-                                    symbol ?? 'ETH'
-                                  }`}
+                                  formatNumber(price, {
+                                    fromWei: true,
+                                    decimals: 2,
+                                    prefix: 'ETHER',
+                                  })}
                                 {'TRANSFER' === type && (
                                   <Text color="blue">Transfer</Text>
                                 )}

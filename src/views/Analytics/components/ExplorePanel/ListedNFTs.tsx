@@ -4,6 +4,7 @@ import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { Pagination, useTheme } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Grid, Icon, Skeleton, Text } from '@upshot-tech/upshot-ui'
 import {
+  formatNumber,
   TableBody,
   TableCell,
   TableHead,
@@ -11,17 +12,18 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { PAGE_SIZE } from 'constants/'
-import { format, formatDistance } from 'date-fns'
+import { formatDistance } from 'date-fns'
 import router from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
-import { getUnderOverPricedLabel, weiToEth } from 'utils/number'
+import { getUnderOverPricedLabel } from 'utils/number'
 
 import {
   GET_EXPLORE_NFTS,
   GetExploreNFTsData,
   GetExploreNFTsVars,
 } from '../../queries'
+import { getOrderDirection } from './util'
 
 interface NFTTableHeadProps extends React.HTMLAttributes<HTMLElement> {
   /**
@@ -93,9 +95,6 @@ function ListedNFTTableHead({
                 key={idx}
                 color="grey-500"
                 onClick={() => onChangeSelection?.(idx)}
-                colSpan={
-                  idx === Object.values(listedNftColumns).length - 1 ? 2 : 1
-                }
                 sx={{
                   cursor: 'pointer',
                   color: selectedColumn === idx ? 'white' : null,
@@ -132,6 +131,7 @@ function ListedNFTTableHead({
                 </Flex>
               </TableCell>
             ))}
+            <TableCell sx={{ width: '40px !important' }} />
           </TableRow>
         </TableHead>
       )}
@@ -213,6 +213,9 @@ export default function ExploreListedNFTs({
     setPage(0)
   }
 
+  const orderColumn = Object.keys(listedNftColumns)[selectedColumn]
+  const orderDirection = getOrderDirection(orderColumn, sortAscending)
+
   const { loading, error, data } = useQuery<
     GetExploreNFTsData,
     GetExploreNFTsVars
@@ -221,10 +224,11 @@ export default function ExploreListedNFTs({
     variables: {
       limit: PAGE_SIZE,
       offset: page * PAGE_SIZE,
+      listed: true,
       searchTerm,
       collectionId,
-      orderColumn: Object.keys(listedNftColumns)[selectedColumn],
-      orderDirection: sortAscending ? 'ASC' : 'DESC',
+      orderColumn,
+      orderDirection,
     },
   })
 
@@ -267,10 +271,7 @@ export default function ExploreListedNFTs({
               contractAddress,
               previewImageUrl,
               mediaUrl,
-              totalSaleCount,
-              lastSale,
               lastAppraisalWeiPrice,
-              lastAppraisalSaleRatio,
               listPrice,
               listTimestamp,
               listAppraisalRatio,
@@ -304,7 +305,11 @@ export default function ExploreListedNFTs({
                       }}
                     >
                       {lastAppraisalWeiPrice
-                        ? weiToEth(lastAppraisalWeiPrice)
+                        ? formatNumber(lastAppraisalWeiPrice, {
+                            decimals: 4,
+                            prefix: 'ETHER',
+                            fromWei: true,
+                          })
                         : '-'}
                     </Text>
                   </Flex>
@@ -318,7 +323,15 @@ export default function ExploreListedNFTs({
                     <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
                       {listedNftColumns.LIST_PRICE}
                     </Text>
-                    <Text>{listPrice ? weiToEth(listPrice) : '-'}</Text>
+                    <Text>
+                      {listPrice
+                        ? formatNumber(listPrice, {
+                            decimals: 4,
+                            prefix: 'ETHER',
+                            fromWei: true,
+                          })
+                        : '-'}
+                    </Text>
                   </Flex>
                   <Flex
                     sx={{
@@ -360,11 +373,21 @@ export default function ExploreListedNFTs({
                 <>
                   <TableCell sx={{ maxWidth: 100, color: 'blue' }}>
                     {lastAppraisalWeiPrice
-                      ? weiToEth(lastAppraisalWeiPrice)
+                      ? formatNumber(lastAppraisalWeiPrice, {
+                          decimals: 4,
+                          prefix: 'ETHER',
+                          fromWei: true,
+                        })
                       : '-'}
                   </TableCell>
                   <TableCell sx={{ maxWidth: 100 }}>
-                    {listPrice ? weiToEth(listPrice) : '-'}
+                    {listPrice
+                      ? formatNumber(listPrice, {
+                          decimals: 4,
+                          prefix: 'ETHER',
+                          fromWei: true,
+                        })
+                      : '-'}
                   </TableCell>
                   <TableCell sx={{ maxWidth: 100 }}>
                     {listTimestamp

@@ -4,6 +4,7 @@ import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { Pagination, useTheme } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Grid, Icon, Skeleton, Text } from '@upshot-tech/upshot-ui'
 import {
+  formatNumber,
   TableBody,
   TableCell,
   TableHead,
@@ -11,17 +12,18 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { PAGE_SIZE } from 'constants/'
-import { format } from 'date-fns'
+import { formatDistance } from 'date-fns'
 import router from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
-import { getPriceChangeLabel, weiToEth } from 'utils/number'
+import { getUnderOverPricedLabel } from 'utils/number'
 
 import {
   GET_EXPLORE_NFTS,
   GetExploreNFTsData,
   GetExploreNFTsVars,
 } from '../../queries'
+import { getOrderDirection } from './util'
 
 interface NFTTableHeadProps extends React.HTMLAttributes<HTMLElement> {
   /**
@@ -42,7 +44,7 @@ export const nftColumns = {
   LAST_SALE_DATE: 'Last Sale',
   LAST_SALE_PRICE: 'Last Sale Price',
   LAST_APPRAISAL_PRICE: 'Latest Appraisal',
-  LAST_APPRAISAL_SALE_RATIO: 'Last Sale/Appraisal',
+  LAST_APPRAISAL_SALE_RATIO: '% Difference',
 }
 
 function NFTTableHead({
@@ -95,7 +97,6 @@ function NFTTableHead({
                 key={idx}
                 color="grey-500"
                 onClick={() => onChangeSelection?.(idx)}
-                colSpan={idx === Object.values(nftColumns).length - 1 ? 2 : 1}
                 sx={{
                   cursor: 'pointer',
                   color: selectedColumn === idx ? 'white' : null,
@@ -132,6 +133,7 @@ function NFTTableHead({
                 </Flex>
               </TableCell>
             ))}
+            <TableCell sx={{ width: '40px !important' }} />
           </TableRow>
         </TableHead>
       )}
@@ -213,6 +215,9 @@ export default function ExploreNFTs({
     setPage(0)
   }
 
+  const orderColumn = Object.keys(nftColumns)[selectedColumn]
+  const orderDirection = getOrderDirection(orderColumn, sortAscending)
+
   const { loading, error, data } = useQuery<
     GetExploreNFTsData,
     GetExploreNFTsVars
@@ -223,8 +228,8 @@ export default function ExploreNFTs({
       offset: page * PAGE_SIZE,
       searchTerm,
       collectionId,
-      orderColumn: Object.keys(nftColumns)[selectedColumn],
-      orderDirection: sortAscending ? 'ASC' : 'DESC',
+      orderColumn,
+      orderDirection,
     },
   })
 
@@ -267,7 +272,6 @@ export default function ExploreNFTs({
               contractAddress,
               previewImageUrl,
               mediaUrl,
-              totalSaleCount,
               lastSale,
               lastAppraisalWeiPrice,
               lastAppraisalSaleRatio,
@@ -297,7 +301,10 @@ export default function ExploreNFTs({
                     </Text>
                     <Text>
                       {lastSale?.timestamp
-                        ? format(lastSale.timestamp * 1000, 'M/d/yyyy')
+                        ? formatDistance(
+                            lastSale.timestamp * 1000,
+                            new Date()
+                          ) + ' ago'
                         : '-'}
                     </Text>
                   </Flex>
@@ -313,7 +320,11 @@ export default function ExploreNFTs({
                     </Text>
                     <Text>
                       {lastSale?.ethSalePrice
-                        ? weiToEth(lastSale.ethSalePrice)
+                        ? formatNumber(lastSale.ethSalePrice, {
+                            decimals: 4,
+                            prefix: 'ETHER',
+                            fromWei: true,
+                          })
                         : '-'}
                     </Text>
                   </Flex>
@@ -329,7 +340,11 @@ export default function ExploreNFTs({
                     </Text>
                     <Text>
                       {lastAppraisalWeiPrice
-                        ? weiToEth(lastAppraisalWeiPrice)
+                        ? formatNumber(lastAppraisalWeiPrice, {
+                            decimals: 4,
+                            prefix: 'ETHER',
+                            fromWei: true,
+                          })
                         : '-'}
                     </Text>
                   </Flex>
@@ -348,7 +363,7 @@ export default function ExploreNFTs({
                         color: getPriceChangeColor(lastAppraisalSaleRatio),
                       }}
                     >
-                      {getPriceChangeLabel(lastAppraisalSaleRatio)}
+                      {getUnderOverPricedLabel(lastAppraisalSaleRatio)}
                     </Text>
                   </Flex>
                 </Grid>
@@ -356,17 +371,26 @@ export default function ExploreNFTs({
                 <>
                   <TableCell sx={{ maxWidth: 100 }}>
                     {lastSale?.timestamp
-                      ? format(lastSale.timestamp * 1000, 'M/d/yyyy')
+                      ? formatDistance(lastSale.timestamp * 1000, new Date()) +
+                        ' ago'
                       : '-'}
                   </TableCell>
                   <TableCell sx={{ maxWidth: 100 }}>
                     {lastSale?.ethSalePrice
-                      ? weiToEth(lastSale.ethSalePrice)
+                      ? formatNumber(lastSale.ethSalePrice, {
+                          decimals: 4,
+                          prefix: 'ETHER',
+                          fromWei: true,
+                        })
                       : '-'}
                   </TableCell>
                   <TableCell sx={{ maxWidth: 100 }}>
                     {lastAppraisalWeiPrice
-                      ? weiToEth(lastAppraisalWeiPrice)
+                      ? formatNumber(lastAppraisalWeiPrice, {
+                          decimals: 4,
+                          prefix: 'ETHER',
+                          fromWei: true,
+                        })
                       : '-'}
                   </TableCell>
                   <TableCell
@@ -375,7 +399,7 @@ export default function ExploreNFTs({
                       color: getPriceChangeColor(lastAppraisalSaleRatio),
                     }}
                   >
-                    {getPriceChangeLabel(lastAppraisalSaleRatio)}
+                    {getUnderOverPricedLabel(lastAppraisalSaleRatio)}
                   </TableCell>
                 </>
               )}

@@ -1,9 +1,9 @@
 import { useQuery } from '@apollo/client'
-import { Chart } from '@upshot-tech/upshot-ui'
+import { parseUint256 } from '@upshot-tech/upshot-ui'
+import { Chart, formatNumber } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE } from 'constants/'
 import { ethers } from 'ethers'
 import { useState } from 'react'
-import { weiToEth } from 'utils/number'
 
 import {
   ETimeWindow,
@@ -129,22 +129,21 @@ export default function TopCollectionsCharts({
     .map(({ data, name, id, latestStats, ...rest }) => {
       const ath = rest[athKeys[metric]]?.value
       const atl = rest[atlKeys[metric]]?.value
-      // const priceChange = !latestStats?.weekCapChange
-      //   ? null
-      //   : latestStats?.weekCapChange >= 0
-      //   ? '+' + latestStats?.weekCapChange + '%'
-      //   : latestStats?.weekCapChange + '%'
 
       return {
         name,
         url: `/analytics/collection/${id}`,
-        ath: ath && metric !== 'FLOOR' ? weiToEth(ath, 2) : null,
-        atl: atl && metric !== 'FLOOR' ? weiToEth(atl, 2) : null,
-        /* priceUsd: 10, */
-        // priceChange,
+        ath:
+          ath && metric !== 'FLOOR'
+            ? formatNumber(ath, { fromWei: true, decimals: 2 })
+            : undefined,
+        atl:
+          atl && metric !== 'FLOOR'
+            ? formatNumber(atl, { fromWei: true, decimals: 2 })
+            : undefined,
         volume:
           metric === 'PAST_WEEK_VOLUME' && latestStats?.pastWeekWeiVolume
-            ? parseFloat(weiToEth(latestStats?.pastWeekWeiVolume, 2, false))
+            ? Number(ethers.utils.formatEther(latestStats.pastWeekWeiVolume))
             : 0,
         data: data.map((val, i) =>
           i === 0
@@ -155,14 +154,14 @@ export default function TopCollectionsCharts({
         ),
         metric,
         currentFloor: latestStats?.floor
-          ? weiToEth(latestStats?.floor.toString(), 4, false)
-          : null,
+          ? parseUint256(latestStats.floor)
+          : undefined,
         currentAvg: latestStats?.pastWeekWeiAverage
-          ? weiToEth(latestStats?.pastWeekWeiAverage.toString(), 4, false)
-          : null,
+          ? parseUint256(latestStats.pastWeekWeiAverage)
+          : undefined,
         currentVolume: latestStats?.pastWeekWeiVolume
-          ? weiToEth(latestStats?.pastWeekWeiVolume.toString(), 4, false)
-          : null,
+          ? parseUint256(latestStats.pastWeekWeiVolume)
+          : undefined,
       }
     })
 

@@ -5,13 +5,12 @@ import {
   Box,
   CollectionButton,
   CollectionButtonTemplate,
+  formatNumber,
   Icon,
   Link,
   useTheme,
 } from '@upshot-tech/upshot-ui'
-import { PAGE_SIZE } from 'constants/'
 import { useEffect, useRef, useState } from 'react'
-import { weiToEth } from 'utils/number'
 
 import {
   GET_COLLECTIONS_BY_METRIC,
@@ -186,11 +185,13 @@ export default function CollectionAvgPricePanel({
                 }
                 onClick={() => onCollectionSelected(id)}
                 text={name ?? 'Unknown'}
-                subText={printMetricData(metric, {
-                  average: latestStats?.pastDayWeiAverage,
-                  floor: latestStats?.floor,
-                  volume: latestStats?.pastWeekWeiVolume,
-                })}
+                subText={
+                  printMetricData(metric, {
+                    average: latestStats?.pastDayWeiAverage,
+                    floor: latestStats?.floor,
+                    volume: latestStats?.pastWeekWeiVolume,
+                  }) ?? ''
+                }
                 {...{ underglow, hoverUnderglow }}
               />
             </Grid>
@@ -207,10 +208,29 @@ function printMetricData(
   data: { average?: string; floor?: string; volume?: string }
 ) {
   if (metric === 'PAST_WEEK_VOLUME' && data['volume']) {
-    return weiToEth(data['volume']) ?? '-'
+    return (
+      formatNumber(data['volume'], {
+        fromWei: true,
+        decimals: 2,
+        prefix: 'ETHER',
+        kmbUnits: true,
+      }) ?? '-'
+    )
   } else if (metric === 'PAST_WEEK_AVERAGE' && data['average']) {
-    return weiToEth(data['average']) ?? '-'
+    return (
+      formatNumber(data['average'], {
+        fromWei: true,
+        decimals: 2,
+        prefix: 'ETHER',
+      }) ?? '-'
+    )
   } else if (metric === 'FLOOR' && data['floor']) {
-    return weiToEth(data['floor']) ?? '-'
+    return (
+      formatNumber(data['floor'], {
+        fromWei: true,
+        decimals: 2,
+        prefix: 'ETHER',
+      }) ?? '-'
+    )
   }
 }

@@ -2,6 +2,7 @@ import { useLazyQuery } from '@apollo/client'
 import {
   ConnectModal,
   Flex,
+  HelpModal,
   Icon,
   IconButton,
   Link,
@@ -23,6 +24,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { selectShowSidebar, setShowSidebar } from 'redux/reducers/layout'
+import { setIsBeta } from 'redux/reducers/user'
 import {
   selectAddress,
   selectEns,
@@ -76,9 +78,12 @@ export const Nav = () => {
     GetNavBarCollectionsVars
   >(GET_NAV_BAR_COLLECTIONS)
   const [open, setOpen] = useState(false)
+  const [helpOpen, setHelpOpen] = useState(false)
   const modalRef = useRef<HTMLDivElement>(null)
+  const helpModalRef = useRef<HTMLDivElement>(null)
   const isMobile = useBreakpointIndex() <= 1
   const toggleModal = () => setOpen(!open)
+  const toggleHelpModal = () => setHelpOpen(!helpOpen)
   const outsideClicked = useOutsideAlerter(sidebarRef)
 
   useEffect(() => {
@@ -148,9 +153,11 @@ export const Nav = () => {
 
   const handleSearchSuggestionChange = (item: InputSuggestion) => {
     if (showSidebar) handleToggleMenu()
-    isAddress
-      ? router.push(`/analytics/user/${encodeURIComponent(navSearchTerm)}`)
-      : router.push(`/analytics/collection/${item.id}`)
+    if (isAddress)
+      return router.push(`/analytics/user/${encodeURIComponent(navSearchTerm)}`)
+    if (!item?.id) return
+
+    router.push(`/analytics/collection/${item.id}`)
   }
 
   const hideMetaMask =
@@ -161,7 +168,8 @@ export const Nav = () => {
     deactivate()
     if (showSidebar) handleToggleMenu()
     dispatch(setAddress(undefined))
-    dispatch(setEns({ name: undefined, avatar: undefined }))
+    dispatch(setEns({ name: undefined }))
+    dispatch(setIsBeta(undefined))
   }
 
   const handleToggleMenu = () => {
@@ -279,6 +287,7 @@ export const Nav = () => {
           }}
           onDisconnectClick={handleDisconnect}
           onMenuClick={handleToggleMenu}
+          onHelpClick={toggleHelpModal}
           searchSuggestions={suggestions}
           {...{ address, showSidebar }}
         >
@@ -286,6 +295,16 @@ export const Nav = () => {
         </Navbar>
         <Modal ref={modalRef} onClose={toggleModal} {...{ open }}>
           <ConnectModal {...{ hideMetaMask }} onConnect={handleConnect} />
+        </Modal>
+        <Modal
+          ref={helpModalRef}
+          onClose={toggleHelpModal}
+          {...{ open: helpOpen }}
+        >
+          <HelpModal
+            link="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
+            onClose={toggleHelpModal}
+          />
         </Modal>
       </Flex>
       {showSidebar && <SidebarShade />}
