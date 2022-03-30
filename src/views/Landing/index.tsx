@@ -202,7 +202,7 @@ export default function LandingView() {
             href="/analytics"
             rel="noopener noreferrer"
             sx={{
-              color: 'text',
+              color: theme.colors.text + ' !important',
               display: 'grid',
             }}
             noHover
@@ -248,7 +248,11 @@ export default function LandingView() {
                 <Text variant="h1Secondary">Analytics</Text>
                 <Text
                   variant="large"
-                  sx={{ display: 'block', width: ['100%', null, null, '50%'] }}
+                  sx={{ 
+                    display: 'block',
+                    whiteSpace: 'normal',
+                    width: ['100%', null, null, '50%'],
+                  }}
                 >
                   Explore the world of NFTs using powerful data.
                 </Text>
@@ -261,7 +265,7 @@ export default function LandingView() {
                 href="https://docs.upshot.xyz/"
                 rel="noopener noreferrer"
                 sx={{
-                  color: 'text',
+                  color: theme.colors.text + ' !important',
                   display: 'grid',
                 }}
                 noHover
@@ -307,7 +311,10 @@ export default function LandingView() {
                     <Text variant="h1Secondary" sx={{ whiteSpace: 'nowrap' }}>
                       Upshot API
                     </Text>
-                    <Text variant="large" sx={{ display: 'block' }}>
+                    <Text
+                      variant="large"
+                      sx={{ display: 'block',  whiteSpace: 'normal' }}
+                    >
                       Integrate Upshot data into your project.
                     </Text>
                   </div>
@@ -317,7 +324,7 @@ export default function LandingView() {
                 href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
                 rel="noopener noreferrer"
                 sx={{
-                  color: 'text',
+                  color: theme.colors.text + ' !important',
                   display: 'grid',
                 }}
                 noHover
@@ -362,7 +369,10 @@ export default function LandingView() {
                   ></Image>
                   <div style={{ position: 'relative' }}>
                     <Text variant="h1Secondary">Blog</Text>
-                    <Text variant="large" sx={{ display: 'block' }}>
+                    <Text
+                      variant="large"
+                      sx={{ display: 'block', whiteSpace: 'normal', }}
+                    >
                       Learn more about NFTxDeFI
                     </Text>
                   </div>
