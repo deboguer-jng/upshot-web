@@ -108,6 +108,8 @@ export const Nav = () => {
   const isAddress =
     navSearchTerm?.substring(0, 2) === '0x' && navSearchTerm?.length === 42
 
+  const isENS = navSearchTerm && navSearchTerm.slice(-4) === '.eth'
+
   const handleConnect = (provider: ConnectorName) => {
     if (
       connector instanceof WalletConnectConnector &&
@@ -232,7 +234,11 @@ export const Nav = () => {
           </IconButton>
         </Link>
 
-        <Link href="https://twitter.com/upshothq" target="_blank" rel="noreferrer">
+        <Link
+          href="https://twitter.com/upshothq"
+          target="_blank"
+          rel="noreferrer"
+        >
           <IconButton onClick={handleToggleMenu}>
             <Icon color="white" icon="twitterCircle" size={32} />
           </IconButton>
