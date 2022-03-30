@@ -8,6 +8,7 @@ import {
   formatNumber,
   Grid,
   Icon,
+  Link,
   Pagination,
   Skeleton,
   TableBody,
@@ -255,6 +256,7 @@ export default function ExploreTraits({
               key={idx}
               defaultOpen={idx === 0 ? true : false}
               onClick={() => handleRedirectToSearch(id, collectionId)}
+              href={`/analytics/search?traits=${id}&collectionId=${collectionId}`}
             >
               {isMobile ? (
                 <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>
@@ -330,31 +332,39 @@ export default function ExploreTraits({
               ) : (
                 <>
                   <TableCell sx={{ maxWidth: 50 }}>
-                    {dataCheck(traitType)}
+                    <Link href={`/analytics/search?traits=${id}&collectionId=${collectionId}`} noHover>
+                      {dataCheck(traitType)}
+                    </Link>
                   </TableCell>
                   <TableCell sx={{ maxWidth: 50 }}>
-                    {rarity
-                      ? (100 - rarity * 100).toFixed(2).toString() + '%'
-                      : '-'}
+                    <Link href={`/analytics/search?traits=${id}&collectionId=${collectionId}`} noHover>
+                      {rarity
+                        ? (100 - rarity * 100).toFixed(2).toString() + '%'
+                        : '-'}
+                    </Link>
                   </TableCell>
                   <TableCell sx={{ maxWidth: 50 }}>
-                    {floor
-                      ? formatNumber(floor, {
-                          fromWei: true,
-                          decimals: 4,
-                          prefix: 'ETHER',
-                        })
-                      : '-'}
+                    <Link href={`/analytics/search?traits=${id}&collectionId=${collectionId}`} noHover>
+                      {floor
+                        ? formatNumber(floor, {
+                            fromWei: true,
+                            decimals: 4,
+                            prefix: 'ETHER',
+                          })
+                        : '-'}
+                    </Link>
                   </TableCell>
                   <TableCell sx={{ maxWidth: 50 }}>
-                    {floorUsd
-                      ? formatNumber(floorUsd, {
-                          fromWei: true,
-                          decimals: 2,
-                          fromDecimals: 6,
-                          prefix: 'USD',
-                        })
-                      : '-'}
+                    <Link href={`/analytics/search?traits=${id}&collectionId=${collectionId}`} noHover>
+                      {floorUsd
+                        ? formatNumber(floorUsd, {
+                            fromWei: true,
+                            decimals: 2,
+                            fromDecimals: 6,
+                            prefix: 'USD',
+                          })
+                        : '-'}
+                    </Link>
                   </TableCell>
                 </>
               )}

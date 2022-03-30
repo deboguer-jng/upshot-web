@@ -7,7 +7,7 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { Pagination, useTheme } from '@upshot-tech/upshot-ui'
-import { Box, Flex, Grid, Text } from '@upshot-tech/upshot-ui'
+import { Box, Flex, Grid, Link, Text } from '@upshot-tech/upshot-ui'
 import {
   formatNumber,
   TableBody,
@@ -276,6 +276,7 @@ export default function ExploreCollections({
               imageSrc={imageUrl!}
               key={idx}
               onClick={() => handleShowCollection(id)}
+              href={`/analytics/collection/${id}`}
               defaultOpen={idx === 0 ? true : false}
               subtitle={
                 isMobile && latestStats?.pastWeekWeiVolume
@@ -356,33 +357,39 @@ export default function ExploreCollections({
               ) : (
                 <>
                   <TableCell sx={{ maxWidth: 50 }}>
-                    {latestStats?.pastWeekWeiVolume
-                      ? formatNumber(latestStats.pastWeekWeiVolume, {
-                          fromWei: true,
-                          decimals: 2,
-                          kmbUnits: true,
-                          prefix: 'ETHER',
-                        })
-                      : '-'}
+                    <Link href={`/analytics/collection/${id}`} noHover>
+                      {latestStats?.pastWeekWeiVolume
+                        ? formatNumber(latestStats.pastWeekWeiVolume, {
+                            fromWei: true,
+                            decimals: 2,
+                            kmbUnits: true,
+                            prefix: 'ETHER',
+                          })
+                        : '-'}
+                    </Link>
                   </TableCell>
                   <TableCell sx={{ maxWidth: 50 }}>
-                    {latestStats?.pastDayWeiAverage
-                      ? formatNumber(latestStats.pastDayWeiAverage, {
-                          fromWei: true,
-                          decimals: 2,
-                          kmbUnits: true,
-                          prefix: 'ETHER',
-                        })
-                      : '-'}
+                    <Link href={`/analytics/collection/${id}`} noHover>
+                      {latestStats?.pastDayWeiAverage
+                        ? formatNumber(latestStats.pastDayWeiAverage, {
+                            fromWei: true,
+                            decimals: 2,
+                            kmbUnits: true,
+                            prefix: 'ETHER',
+                          })
+                        : '-'}
+                    </Link>
                   </TableCell>
                   <TableCell sx={{ maxWidth: 50 }}>
-                    {latestStats?.floor
-                      ? formatNumber(latestStats.floor, {
-                          fromWei: true,
-                          decimals: 2,
-                          prefix: 'ETHER',
-                        })
-                      : '-'}
+                    <Link href={`/analytics/collection/${id}`} noHover>
+                      {latestStats?.floor
+                        ? formatNumber(latestStats.floor, {
+                            fromWei: true,
+                            decimals: 2,
+                            prefix: 'ETHER',
+                          })
+                        : '-'}
+                    </Link>
                   </TableCell>
                   <TableCell
                     sx={{
@@ -390,7 +397,9 @@ export default function ExploreCollections({
                       color: getPriceChangeColor(latestStats?.weekFloorChange),
                     }}
                   >
-                    {getPriceChangeLabel(latestStats?.weekFloorChange)}
+                    <Link href={`/analytics/collection/${id}`} noHover>
+                      {getPriceChangeLabel(latestStats?.weekFloorChange)}
+                    </Link>
                   </TableCell>
                 </>
               )}

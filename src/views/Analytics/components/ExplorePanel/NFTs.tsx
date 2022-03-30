@@ -5,6 +5,7 @@ import { Pagination, useTheme } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Grid, Icon, Skeleton, Text } from '@upshot-tech/upshot-ui'
 import {
   formatNumber,
+  Link,
   TableBody,
   TableCell,
   TableHead,
@@ -286,6 +287,7 @@ export default function ExploreNFTs({
               defaultOpen={idx === 0 ? true : false}
               onClick={() => handleShowNFT(id)}
               pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
+              href={`/analytics/nft/${id}`} 
             >
               {isMobile ? (
                 <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>
@@ -370,28 +372,35 @@ export default function ExploreNFTs({
               ) : (
                 <>
                   <TableCell sx={{ maxWidth: 100 }}>
-                    {lastSale?.timestamp
-                      ? formatDistance(lastSale.timestamp * 1000, new Date()) +
-                        ' ago'
-                      : '-'}
+                    <Link href={`/analytics/nft/${id}`} noHover>
+                      {lastSale?.timestamp
+                        ? formatDistance(lastSale.timestamp * 1000, new Date()) +
+                          ' ago'
+                        : '-'}
+                    </Link>
                   </TableCell>
                   <TableCell sx={{ maxWidth: 100 }}>
-                    {lastSale?.ethSalePrice
-                      ? formatNumber(lastSale.ethSalePrice, {
-                          decimals: 4,
-                          prefix: 'ETHER',
-                          fromWei: true,
-                        })
-                      : '-'}
+                    <Link href={`/analytics/nft/${id}`} noHover>
+                      {lastSale?.ethSalePrice
+                        ? formatNumber(lastSale.ethSalePrice, {
+                            decimals: 4,
+                            prefix: 'ETHER',
+                            fromWei: true,
+                          })
+                        : '-'}
+                        
+                    </Link>
                   </TableCell>
                   <TableCell sx={{ maxWidth: 100 }}>
-                    {lastAppraisalWeiPrice
-                      ? formatNumber(lastAppraisalWeiPrice, {
-                          decimals: 4,
-                          prefix: 'ETHER',
-                          fromWei: true,
-                        })
-                      : '-'}
+                    <Link href={`/analytics/nft/${id}`} noHover>
+                      {lastAppraisalWeiPrice
+                        ? formatNumber(lastAppraisalWeiPrice, {
+                            decimals: 4,
+                            prefix: 'ETHER',
+                            fromWei: true,
+                          })
+                        : '-'}
+                    </Link>
                   </TableCell>
                   <TableCell
                     sx={{
@@ -399,7 +408,9 @@ export default function ExploreNFTs({
                       color: getPriceChangeColor(lastAppraisalSaleRatio),
                     }}
                   >
-                    {getUnderOverPricedLabel(lastAppraisalSaleRatio)}
+                    <Link href={`/analytics/nft/${id}`} noHover>
+                      {getUnderOverPricedLabel(lastAppraisalSaleRatio)}
+                    </Link>
                   </TableCell>
                 </>
               )}
