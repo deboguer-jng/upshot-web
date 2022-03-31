@@ -24,7 +24,7 @@ import {
   GetExploreNFTsData,
   GetExploreNFTsVars,
 } from '../../queries'
-import { getOrderDirection } from './util'
+import { getOrderDirection, lacksGlobalAssetFilters } from './util'
 
 interface NFTTableHeadProps extends React.HTMLAttributes<HTMLElement> {
   /**
@@ -217,28 +217,33 @@ export default function ExploreListedNFTs({
   const orderColumn = Object.keys(listedNftColumns)[selectedColumn]
   const orderDirection = getOrderDirection(orderColumn, sortAscending)
 
+  const variables = {
+    limit: PAGE_SIZE,
+    offset: page * PAGE_SIZE,
+    listed: true,
+    searchTerm,
+    collectionId,
+    orderColumn,
+    orderDirection,
+  }
+
   const { loading, error, data } = useQuery<
     GetExploreNFTsData,
     GetExploreNFTsVars
   >(GET_EXPLORE_NFTS, {
     errorPolicy: 'all',
-    variables: {
-      limit: PAGE_SIZE,
-      offset: page * PAGE_SIZE,
-      listed: true,
-      searchTerm,
-      collectionId,
-      orderColumn,
-      orderDirection,
-    },
+    variables,
   })
 
   /**
-   * We are using a workaround at the backend to speed up results when
-   * a search filter is not in the query. We don't receive a count back
-   * in this instance, so we use a hardcoded depth of 500 items.
+   * We are using a workaround at the backend to speed up results for queries
+   * which lack filters. The returned asset counts for these queries is
+   * unavailable, so we assume 500.
    */
-  const totalCount = searchTerm ? data?.assetGlobalSearch?.count ?? 0 : 500
+  const returnedAssetCount = data?.assetGlobalSearch?.count ?? 0
+  const correctedCount = lacksGlobalAssetFilters(variables)
+    ? 500
+    : returnedAssetCount
 
   useEffect(() => {
     setPage(0)
@@ -422,7 +427,7 @@ export default function ExploreListedNFTs({
       <Flex sx={{ justifyContent: 'center', marginTop: '10px' }}>
         <Pagination
           forcePage={page}
-          pageCount={Math.ceil(totalCount / PAGE_SIZE)}
+          pageCount={Math.ceil(correctedCount / PAGE_SIZE)}
           pageRangeDisplayed={0}
           marginPagesDisplayed={0}
           onPageChange={handlePageChange}
