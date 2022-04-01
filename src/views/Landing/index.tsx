@@ -6,18 +6,18 @@ import {
   Grid,
   Icon,
   IconButton,
+  Investors,
   LandingPanel,
+  Link,
   Panel,
   Text,
-  Investors,
   theme,
 } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import Head from 'next/head'
 import { useState } from 'react'
-import { Image, Link } from 'theme-ui'
+import { Image } from 'theme-ui'
 
-import { projects } from './content'
 import AnalyticsSVG from './panelBackgrounds/Analytics.svg'
 import AnalyticsHoverSVG from './panelBackgrounds/AnalyticsHover.svg'
 import ApiSVG from './panelBackgrounds/Api.svg'
@@ -42,12 +42,9 @@ function renderLandingPanel(data: PanelData) {
       target="_blank"
       sx={{
         color: 'initial',
-        textDecoration: 'none',
-        display: 'grid',
-        '&:hover': {
-          textDecoration: 'none',
-        },
+        display: 'grid'
       }}
+      noHover
     >
       <LandingPanel
         projectType={data.projectType}
@@ -168,12 +165,7 @@ export default function LandingView() {
                   <Link
                     href="https://jobs.lever.co/upshot.io"
                     target="_blank"
-                    sx={{
-                      textDecoration: 'none',
-                      '&:hover': {
-                        textDecoration: 'none',
-                      },
-                    }}
+                    noHover
                   >
                     <Button
                       capitalize={true}
@@ -210,13 +202,10 @@ export default function LandingView() {
             href="/analytics"
             rel="noopener noreferrer"
             sx={{
-              color: 'text',
-              textDecoration: 'none',
+              color: theme.colors.text + ' !important',
               display: 'grid',
-              '&:hover': {
-                textDecoration: 'none',
-              },
             }}
+            noHover
           >
             <Panel
               hoverUnderglow="pink"
@@ -259,7 +248,11 @@ export default function LandingView() {
                 <Text variant="h1Secondary">Analytics</Text>
                 <Text
                   variant="large"
-                  sx={{ display: 'block', width: ['100%', null, null, '50%'] }}
+                  sx={{ 
+                    display: 'block',
+                    whiteSpace: 'normal',
+                    width: ['100%', null, null, '50%'],
+                  }}
                 >
                   Explore the world of NFTs using powerful data.
                 </Text>
@@ -272,13 +265,10 @@ export default function LandingView() {
                 href="https://docs.upshot.xyz/"
                 rel="noopener noreferrer"
                 sx={{
-                  color: 'text',
-                  textDecoration: 'none',
+                  color: theme.colors.text + ' !important',
                   display: 'grid',
-                  '&:hover': {
-                    textDecoration: 'none',
-                  },
                 }}
+                noHover
               >
                 <Panel
                   hoverUnderglow="blue"
@@ -321,7 +311,10 @@ export default function LandingView() {
                     <Text variant="h1Secondary" sx={{ whiteSpace: 'nowrap' }}>
                       Upshot API
                     </Text>
-                    <Text variant="large" sx={{ display: 'block' }}>
+                    <Text
+                      variant="large"
+                      sx={{ display: 'block',  whiteSpace: 'normal' }}
+                    >
                       Integrate Upshot data into your project.
                     </Text>
                   </div>
@@ -331,13 +324,10 @@ export default function LandingView() {
                 href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
                 rel="noopener noreferrer"
                 sx={{
-                  color: 'text',
-                  textDecoration: 'none',
+                  color: theme.colors.text + ' !important',
                   display: 'grid',
-                  '&:hover': {
-                    textDecoration: 'none',
-                  },
                 }}
+                noHover
               >
                 <Panel
                   hoverUnderglow="red"
@@ -379,7 +369,10 @@ export default function LandingView() {
                   ></Image>
                   <div style={{ position: 'relative' }}>
                     <Text variant="h1Secondary">Blog</Text>
-                    <Text variant="large" sx={{ display: 'block' }}>
+                    <Text
+                      variant="large"
+                      sx={{ display: 'block', whiteSpace: 'normal', }}
+                    >
                       Learn more about NFTxDeFI
                     </Text>
                   </div>

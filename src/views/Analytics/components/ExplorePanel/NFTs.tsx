@@ -5,6 +5,7 @@ import { Pagination, useTheme } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Grid, Icon, Skeleton, Text } from '@upshot-tech/upshot-ui'
 import {
   formatNumber,
+  Link,
   TableBody,
   TableCell,
   TableHead,
@@ -23,7 +24,7 @@ import {
   GetExploreNFTsData,
   GetExploreNFTsVars,
 } from '../../queries'
-import { getOrderDirection } from './util'
+import { getOrderDirection, lacksGlobalAssetFilters } from './util'
 
 interface NFTTableHeadProps extends React.HTMLAttributes<HTMLElement> {
   /**
@@ -217,28 +218,32 @@ export default function ExploreNFTs({
 
   const orderColumn = Object.keys(nftColumns)[selectedColumn]
   const orderDirection = getOrderDirection(orderColumn, sortAscending)
+  const variables = {
+    limit: PAGE_SIZE,
+    offset: page * PAGE_SIZE,
+    searchTerm,
+    collectionId,
+    orderColumn,
+    orderDirection,
+  }
 
   const { loading, error, data } = useQuery<
     GetExploreNFTsData,
     GetExploreNFTsVars
   >(GET_EXPLORE_NFTS, {
     errorPolicy: 'all',
-    variables: {
-      limit: PAGE_SIZE,
-      offset: page * PAGE_SIZE,
-      searchTerm,
-      collectionId,
-      orderColumn,
-      orderDirection,
-    },
+    variables,
   })
 
   /**
-   * We are using a workaround at the backend to speed up results when
-   * a search filter is not in the query. We don't receive a count back
-   * in this instance, so we use a hardcoded depth of 500 items.
+   * We are using a workaround at the backend to speed up results for queries
+   * which lack filters. The returned asset counts for these queries is
+   * unavailable, so we assume 500.
    */
-  const totalCount = searchTerm ? data?.assetGlobalSearch?.count ?? 0 : 500
+  const returnedAssetCount = data?.assetGlobalSearch?.count ?? 0
+  const correctedCount = lacksGlobalAssetFilters(variables)
+    ? 500
+    : returnedAssetCount
 
   useEffect(() => {
     setPage(0)
@@ -286,6 +291,7 @@ export default function ExploreNFTs({
               defaultOpen={idx === 0 ? true : false}
               onClick={() => handleShowNFT(id)}
               pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
+              href={`/analytics/nft/${id}`}
             >
               {isMobile ? (
                 <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>
@@ -370,28 +376,36 @@ export default function ExploreNFTs({
               ) : (
                 <>
                   <TableCell sx={{ maxWidth: 100 }}>
-                    {lastSale?.timestamp
-                      ? formatDistance(lastSale.timestamp * 1000, new Date()) +
-                        ' ago'
-                      : '-'}
+                    <Link href={`/analytics/nft/${id}`} noHover>
+                      {lastSale?.timestamp
+                        ? formatDistance(
+                            lastSale.timestamp * 1000,
+                            new Date()
+                          ) + ' ago'
+                        : '-'}
+                    </Link>
                   </TableCell>
                   <TableCell sx={{ maxWidth: 100 }}>
-                    {lastSale?.ethSalePrice
-                      ? formatNumber(lastSale.ethSalePrice, {
-                          decimals: 4,
-                          prefix: 'ETHER',
-                          fromWei: true,
-                        })
-                      : '-'}
+                    <Link href={`/analytics/nft/${id}`} noHover>
+                      {lastSale?.ethSalePrice
+                        ? formatNumber(lastSale.ethSalePrice, {
+                            decimals: 4,
+                            prefix: 'ETHER',
+                            fromWei: true,
+                          })
+                        : '-'}
+                    </Link>
                   </TableCell>
                   <TableCell sx={{ maxWidth: 100 }}>
-                    {lastAppraisalWeiPrice
-                      ? formatNumber(lastAppraisalWeiPrice, {
-                          decimals: 4,
-                          prefix: 'ETHER',
-                          fromWei: true,
-                        })
-                      : '-'}
+                    <Link href={`/analytics/nft/${id}`} noHover>
+                      {lastAppraisalWeiPrice
+                        ? formatNumber(lastAppraisalWeiPrice, {
+                            decimals: 4,
+                            prefix: 'ETHER',
+                            fromWei: true,
+                          })
+                        : '-'}
+                    </Link>
                   </TableCell>
                   <TableCell
                     sx={{
@@ -399,7 +413,9 @@ export default function ExploreNFTs({
                       color: getPriceChangeColor(lastAppraisalSaleRatio),
                     }}
                   >
-                    {getUnderOverPricedLabel(lastAppraisalSaleRatio)}
+                    <Link href={`/analytics/nft/${id}`} noHover>
+                      {getUnderOverPricedLabel(lastAppraisalSaleRatio)}
+                    </Link>
                   </TableCell>
                 </>
               )}
@@ -410,7 +426,7 @@ export default function ExploreNFTs({
       <Flex sx={{ justifyContent: 'center', marginTop: '10px' }}>
         <Pagination
           forcePage={page}
-          pageCount={Math.ceil(totalCount / PAGE_SIZE)}
+          pageCount={Math.ceil(correctedCount / PAGE_SIZE)}
           pageRangeDisplayed={0}
           marginPagesDisplayed={0}
           onPageChange={handlePageChange}

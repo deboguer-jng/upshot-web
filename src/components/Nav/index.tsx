@@ -1,14 +1,13 @@
 import { useLazyQuery } from '@apollo/client'
 import {
   ConnectModal,
-  Container,
   Flex,
   HelpModal,
   Icon,
   IconButton,
+  Link,
   Modal,
   Navbar,
-  Text,
   useBreakpointIndex,
   useTheme,
 } from '@upshot-tech/upshot-ui'
@@ -16,12 +15,12 @@ import { useWeb3React } from '@web3-react/core'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { ConnectorName, connectorsByName } from 'constants/connectors'
 import makeBlockie from 'ethereum-blockies-base64'
+import { ethers } from 'ethers'
 import {
   GET_NAV_BAR_COLLECTIONS,
   GetNavBarCollectionsData,
   GetNavBarCollectionsVars,
 } from 'graphql/queries'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
@@ -44,6 +43,12 @@ import { shortenAddress } from 'utils/address'
 
 import { BetaBanner } from '../BetaBanner'
 import { Sidebar, SidebarShade, SideLink } from './Styled'
+
+interface InputSuggestion {
+  id: number | string
+  name: string
+  [key: string]: any
+}
 
 function useOutsideAlerter(ref) {
   const [status, setStatus] = useState(false)
@@ -107,14 +112,11 @@ export const Nav = () => {
       handleToggleMenu()
     }
   }, [outsideClicked])
-  interface InputSuggestion {
-    id: number | string
-    name: string
-    [key: string]: any
-  }
 
   const isAddress =
     navSearchTerm?.substring(0, 2) === '0x' && navSearchTerm?.length === 42
+
+  const isENS = navSearchTerm && navSearchTerm.slice(-4) === '.eth'
 
   const handleConnect = (provider: ConnectorName) => {
     if (
@@ -145,10 +147,24 @@ export const Nav = () => {
         )
   }, [navCollectionsData, navSearchTerm, isAddress])
 
-  const handleNavSearch = (e: React.FormEvent) => {
+  const handleNavSearch = async (e: React.FormEvent) => {
     e.preventDefault()
     if (showSidebar) handleToggleMenu()
     ;(document.activeElement as HTMLElement).blur()
+
+    if (isENS) {
+      try {
+        const provider = ethers.getDefaultProvider()
+        const address = await provider.resolveName(navSearchTerm)
+        if (!address) return
+
+        router.push(`/analytics/user/${address}`)
+      } catch (err) {
+        console.warn(err)
+      }
+
+      return
+    }
 
     isAddress
       ? router.push(`/analytics/user/${encodeURIComponent(navSearchTerm)}`)
@@ -188,41 +204,37 @@ export const Nav = () => {
     <Sidebar ref={sidebarRef}>
       <Flex sx={{ flexDirection: 'column', gap: '32px', flexGrow: 1 }}>
         <Flex sx={{ flexDirection: 'column', gap: '32px' }}>
-          <Link href="/" passHref>
-            <SideLink
-              sx={{ fontSize: 6, fontWeight: 'heading' }}
-              $isActive={router.pathname === '/'}
-            >
-              Home
-            </SideLink>
-          </Link>
-          <Link href="/analytics" passHref>
-            <SideLink
-              sx={{ fontSize: 6, fontWeight: 'heading' }}
-              $isActive={router.pathname === '/analytics'}
-              onClick={handleToggleMenu}
-            >
-              Analytics
-            </SideLink>
-          </Link>
-          <Link href="https://docs.upshot.xyz" passHref>
-            <SideLink
-              sx={{ fontSize: 6, fontWeight: 'heading' }}
-              target="_blank"
-              onClick={handleToggleMenu}
-            >
-              API Docs
-            </SideLink>
-          </Link>
-          <Link href="https://jv3yfpod32j.typeform.com/to/CZ28JWz9" passHref>
-            <SideLink
-              sx={{ fontSize: 6, fontWeight: 'heading' }}
-              target="_blank"
-              onClick={handleToggleMenu}
-            >
-              Feedback
-            </SideLink>
-          </Link>
+          <SideLink
+            href="/"
+            sx={{ fontSize: 6, fontWeight: 'heading' }}
+            $isActive={router.pathname === '/'}
+          >
+            Home
+          </SideLink>
+          <SideLink
+            href="/analytics"
+            sx={{ fontSize: 6, fontWeight: 'heading' }}
+            $isActive={router.pathname === '/analytics'}
+            onClick={handleToggleMenu}
+          >
+            Analytics
+          </SideLink>
+          <SideLink
+            href="https://docs.upshot.xyz"
+            sx={{ fontSize: 6, fontWeight: 'heading' }}
+            target="_blank"
+            onClick={handleToggleMenu}
+          >
+            API Docs
+          </SideLink>
+          <SideLink
+            href="https://jv3yfpod32j.typeform.com/to/CZ28JWz9"
+            sx={{ fontSize: 6, fontWeight: 'heading' }}
+            target="_blank"
+            onClick={handleToggleMenu}
+          >
+            Feedback
+          </SideLink>
         </Flex>
       </Flex>
 
@@ -234,7 +246,7 @@ export const Nav = () => {
           padding: 4,
         }}
       >
-        <a
+        <Link
           href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
           target="_blank"
           rel="noreferrer"
@@ -242,21 +254,25 @@ export const Nav = () => {
           <IconButton onClick={handleToggleMenu}>
             <Icon color="white" icon="mirror" size={32} />
           </IconButton>
-        </a>
+        </Link>
 
-        <a href="https://twitter.com/upshothq" target="_blank" rel="noreferrer">
+        <Link
+          href="https://twitter.com/upshothq"
+          target="_blank"
+          rel="noreferrer"
+        >
           <IconButton onClick={handleToggleMenu}>
             <Icon color="white" icon="twitterCircle" size={32} />
           </IconButton>
-        </a>
+        </Link>
 
-        <a href="https://discord.gg/upshot" target="_blank" rel="noreferrer">
+        <Link href="https://discord.gg/upshot" target="_blank" rel="noreferrer">
           <IconButton onClick={handleToggleMenu}>
             <Icon color="white" icon="discord" size={32} />
           </IconButton>
-        </a>
+        </Link>
 
-        <a
+        <Link
           href="https://www.instagram.com/upshot.hq/"
           target="_blank"
           rel="noreferrer"
@@ -264,7 +280,7 @@ export const Nav = () => {
           <IconButton onClick={handleToggleMenu}>
             <Icon color="white" icon="instagramCircle" size={32} />
           </IconButton>
-        </a>
+        </Link>
       </Flex>
     </Sidebar>
   )

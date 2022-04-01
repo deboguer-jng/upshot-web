@@ -5,6 +5,7 @@ import {
   Box,
   Flex,
   formatNumber,
+  Link,
   MiniNftCard,
   SwitchDropdown,
   useBreakpointIndex,
@@ -12,7 +13,6 @@ import {
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { formatDistance } from 'date-fns'
 import { BigNumber as BN } from 'ethers'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { shortenAddress } from 'utils/address'
@@ -154,10 +154,6 @@ export default function TopSellingCollectionNFTs({
     }
   )
 
-  const handleClickNFT = (id: string) => {
-    router.push('/analytics/nft/' + id)
-  }
-
   if (loading || collectionLoading)
     return (
       <>
@@ -268,10 +264,10 @@ export default function TopSellingCollectionNFTs({
                   },
                   key
                 ) => (
-                  <a
+                  <Link
                     key={key}
-                    onClick={() => handleClickNFT(id)}
-                    style={{ cursor: 'pointer' }}
+                    href={'/analytics/nft/' + id}
+                    noHover
                   >
                     <MiniNftCard
                       price={
@@ -293,7 +289,7 @@ export default function TopSellingCollectionNFTs({
                       pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
                       link={`/analytics/collection/${collection?.id}`}
                     />
-                  </a>
+                  </Link>
                 )
               )}
             </>
@@ -302,7 +298,7 @@ export default function TopSellingCollectionNFTs({
               {collectionData?.searchCollectionByMetric.assetSets.map(
                 ({ id, name, imageUrl, latestStats }) => (
                   <Link key={id} href={`/analytics/collection/${id}`}>
-                    <a style={{ textDecoration: 'none' }}>
+                    <Link noHover>
                       <MiniNftCard
                         tooltip={`volume / ${period}`}
                         price={
@@ -326,7 +322,7 @@ export default function TopSellingCollectionNFTs({
                         sales={getSalesNumber(latestStats)}
                         link={`/analytics/collection/${id}`}
                       />
-                    </a>
+                    </Link>
                   </Link>
                 )
               )}

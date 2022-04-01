@@ -53,9 +53,6 @@ export default function Collectors({
   const handlePageChange = ({ selected }: { selected: number }) => {
     setPage(selected)
   }
-  const handleShowCollector = (address: string) => {
-    router.push('/analytics/user/' + address)
-  }
   let collectorVars = {
     limit: PAGE_SIZE,
     offset: page * PAGE_SIZE,
@@ -186,9 +183,6 @@ export default function Collectors({
               <CollectorAccordionRow
                 isLandingPage={isLandingPage}
                 address={addresses?.[0].address}
-                onClick={() => {
-                  handleShowCollector(addresses?.[0].address)
-                }}
                 firstAcquisition={firstAssetPurchaseTime}
                 collectionName={name}
                 portfolioValue={formatAppraisal(

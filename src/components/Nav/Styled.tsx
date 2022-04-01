@@ -1,6 +1,6 @@
 import css from '@emotion/css'
 import styled from '@emotion/styled'
-import { Link } from 'theme-ui'
+import { Link } from '@upshot-tech/upshot-ui'
 
 export const SidebarShade = styled.div`
   position: fixed;
@@ -54,6 +54,7 @@ export const SideLink = styled(Link)<{ $isActive?: boolean }>`
     theme.colors[$isActive ? 'primary' : 'grey-400']};
   text-decoration: none !important;
   transition: ${({ theme }) => theme.transitions.default};
+  font-size: 2rem;
 
   &:hover {
     color: ${({ theme, $isActive }) =>
