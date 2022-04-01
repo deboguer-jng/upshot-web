@@ -3,6 +3,7 @@ import { RootState } from 'redux/store'
 
 export interface LayoutState {
   showSidebar: boolean
+  showHelpModal: boolean
 }
 
 const initialState: LayoutState = {
@@ -10,6 +11,7 @@ const initialState: LayoutState = {
    * Sidebar is visible.
    */
   showSidebar: false,
+  showHelpModal: false,
 }
 
 export const layoutSlice = createSlice({
@@ -19,11 +21,17 @@ export const layoutSlice = createSlice({
     setShowSidebar: (state, action: PayloadAction<boolean>) => {
       state.showSidebar = action.payload
     },
+    setShowHelpModal: (state, action: PayloadAction<boolean>) => {
+      state.showHelpModal = action.payload
+    },
   },
 })
 
-export const { setShowSidebar } = layoutSlice.actions
+export const { setShowSidebar, setShowHelpModal } = layoutSlice.actions
 
 export const selectShowSidebar = (state: RootState) => state.layout.showSidebar
+
+export const selectShowHelpModal = (state: RootState) =>
+  state.layout.showHelpModal
 
 export default layoutSlice.reducer
