@@ -23,8 +23,14 @@ import {
 } from 'graphql/queries'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
-import { selectShowSidebar, setShowSidebar } from 'redux/reducers/layout'
+import {
+  selectShowHelpModal,
+  selectShowSidebar,
+  setShowHelpModal,
+  setShowSidebar,
+} from 'redux/reducers/layout'
 import { setIsBeta } from 'redux/reducers/user'
 import {
   selectAddress,
@@ -85,12 +91,12 @@ export const Nav = () => {
     GetNavBarCollectionsVars
   >(GET_NAV_BAR_COLLECTIONS)
   const [open, setOpen] = useState(false)
-  const [helpOpen, setHelpOpen] = useState(false)
+  const helpOpen = useSelector(selectShowHelpModal)
   const modalRef = useRef<HTMLDivElement>(null)
   const helpModalRef = useRef<HTMLDivElement>(null)
   const isMobile = useBreakpointIndex() <= 1
   const toggleModal = () => setOpen(!open)
-  const toggleHelpModal = () => setHelpOpen(!helpOpen)
+  const toggleHelpModal = () => dispatch(setShowHelpModal(!helpOpen))
   const outsideClicked = useOutsideAlerter(sidebarRef)
 
   useEffect(() => {

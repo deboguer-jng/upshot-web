@@ -4,6 +4,7 @@ import {
   BuyNowPanel,
   imageOptimizer,
   Pagination,
+  Tooltip,
   useBreakpointIndex,
 } from '@upshot-tech/upshot-ui'
 import { Container } from '@upshot-tech/upshot-ui'
@@ -37,6 +38,9 @@ import { ethers } from 'ethers'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { useAppDispatch } from 'redux/hooks'
+import { selectShowHelpModal, setShowHelpModal } from 'redux/reducers/layout'
 import { extractEns, shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
 import { getPriceChangeColor } from 'utils/color'
@@ -107,12 +111,15 @@ function Layout({ children }: { children: React.ReactNode }) {
 
 export default function NFTView() {
   const [id, setId] = useState('')
+  const dispatch = useAppDispatch()
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
   const router = useRouter()
   const { theme } = useTheme()
   const [traitPage, setTraitPage] = useState<number>(0)
   const [pageTraits, setPageTraits] = useState<any[]>([])
+  const helpOpen = useSelector(selectShowHelpModal)
+  const toggleHelpModal = () => dispatch(setShowHelpModal(!helpOpen))
 
   const TRAIT_PAGE_SIZE = 4
 
@@ -343,7 +350,17 @@ export default function NFTView() {
                           decimals: 2,
                         })}
                       </Text>
-                      <Icon icon="upshot" size={18} color="primary" />
+                      <Tooltip
+                        tooltip={'How do we price NFTs?'}
+                        sx={{ marginLeft: '0', height: 18 }}
+                      >
+                        <Icon
+                          icon="upshot"
+                          onClick={toggleHelpModal}
+                          size={18}
+                          color="primary"
+                        />
+                      </Tooltip>
                     </Flex>
                   )}
                   <Flex sx={{ height: 20 }}>
