@@ -1,24 +1,24 @@
 [[redirects]]
   from = "/analytics/nft/:contractAddress/:tokenId"
-  to = "/analytics/nft/[contractAddress]/[tokenId].html?assetId=:contractAddress/:tokenId"
+  to = "/dashboard/nft/[contractAddress]/[tokenId].html?assetId=:contractAddress/:tokenId"
   status = 200
 
 [[redirects]]
   from = "/analytics/collection/:id"
-  to = "/analytics/collection/[id].html?id=:id"
+  to = "/dashboard/collection/[id].html?id=:id"
   status = 200
 
 [[redirects]]
   from = "/analytics/user/:address"
-  to = "/analytics/user/[address].html?address=:address"
+  to = "/dashboard/user/[address].html?address=:address"
   status = 200
 
 [[redirects]]
   from = "/analytics"
-  to = "/analytics.html"
+  to = "/dashboard.html"
   status = 200
 
 [[redirects]]
   from = "/analytics/search"
-  to = "/analytics/search.html"
+  to = "/dashboard/search.html"
   status = 200
