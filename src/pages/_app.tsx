@@ -52,7 +52,7 @@ function PreviousRouterWrapper({ children }) {
 export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     /* Initialize telemetry on enabled release stages. */
-    const enabledTelemetryStages = ['production', 'staging']
+    const enabledTelemetryStages = ['production']
 
     if (enabledTelemetryStages.includes(process.env.NEXT_PUBLIC_ENV!)) {
       /* Start google analytics */
