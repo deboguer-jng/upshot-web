@@ -228,12 +228,12 @@ export default function NFTView() {
     setTraitPage(selected)
   }
 
-  const appraisalSeries = appraisalHistory.map(
-    ({ timestamp, estimatedPrice }) => [
+  const appraisalSeries = appraisalHistory
+    .filter(({ timestamp, estimatedPrice }) => timestamp && estimatedPrice)
+    .map(({ timestamp, estimatedPrice }) => [
       timestamp * 1000,
       parseFloat(ethers.utils.formatEther(estimatedPrice)),
-    ]
-  )
+    ])
 
   const isFloor = !latestAppraisal && appraisalHistory.length
 
@@ -445,9 +445,7 @@ export default function NFTView() {
 
                     <Flex sx={{ gap: 4 }}>
                       <Flex sx={{ gap: [1, 1, 4], alignItems: 'center' }}>
-                        <Link
-                          href={`/analytics/collection/${collection?.id}`}
-                        >
+                        <Link href={`/analytics/collection/${collection?.id}`}>
                           <Image
                             src={
                               collection?.imageUrl ?? '/img/defaultAvatar.png'
@@ -480,7 +478,7 @@ export default function NFTView() {
                           <Link
                             href={`/analytics/collection/${collection?.id}`}
                             sx={{
-                              whiteSpace: 'nowrap', 
+                              whiteSpace: 'nowrap',
                               textOverflow: 'ellipsis',
                               overflow: 'hidden',
                             }}
@@ -531,22 +529,22 @@ export default function NFTView() {
                           <Link
                             href={`/analytics/user/${txHistory?.[0]?.txToAddress}`}
                             sx={{
-                              whiteSpace: 'nowrap', 
+                              whiteSpace: 'nowrap',
                               textOverflow: 'ellipsis',
                               overflow: 'hidden',
                             }}
                             title={displayName}
                           >
-                              <Text
-                                color="grey-300"
-                                sx={{
-                                  fontWeight: 'bold',
-                                  lineHeight: 1.25,
-                                  fontSize: [3, 3, 4],
-                                }}
-                              >
-                                {displayName}
-                              </Text>
+                            <Text
+                              color="grey-300"
+                              sx={{
+                                fontWeight: 'bold',
+                                lineHeight: 1.25,
+                                fontSize: [3, 3, 4],
+                              }}
+                            >
+                              {displayName}
+                            </Text>
                           </Link>
                         </Flex>
                       </Flex>
@@ -572,7 +570,7 @@ export default function NFTView() {
                                 lineHeight: 'auto',
                               }}
                               noHover
-                          >
+                            >
                               <LabelAttribute
                                 expanded={true}
                                 expandedText={traitType ? traitType : 'Trait'}
@@ -825,18 +823,13 @@ export default function NFTView() {
                                       />
                                       <Link
                                         href={`/analytics/user/${txFromAddress}`}
-                                        
                                       >
                                         <Text>
                                           {extractEns(
                                             txFromUser?.addresses,
                                             txFromAddress
                                           ) ??
-                                            shortenAddress(
-                                              txFromAddress,
-                                              2,
-                                              4
-                                            )}
+                                            shortenAddress(txFromAddress, 2, 4)}
                                         </Text>
                                       </Link>
                                     </Flex>
@@ -853,7 +846,6 @@ export default function NFTView() {
                                       />
                                       <Link
                                         href={`/analytics/user/${txToAddress}`}
-                                        
                                       >
                                         <Text>
                                           {extractEns(
