@@ -783,6 +783,7 @@ export default function UserView() {
                 key={idx}
                 nftCount={count}
                 onClick={() => handleShowCollection(collection.id)}
+                href={'/analytics/collection/' + collection.id}
               />
             )
           )}
@@ -806,8 +807,13 @@ export default function UserView() {
                   imageSrc={collection['imageUrl']}
                   key={idx}
                   onClick={() => handleShowCollection(collection.id)}
+                  href={'/analytics/collection/' + collection.id}
                 >
-                  <TableCell sx={{ color: 'blue' }}>{count}</TableCell>
+                  <TableCell sx={{ color: 'blue' }}>
+                    <Link href={'/analytics/collection/' + collection.id}>
+                      {count}
+                    </Link>
+                  </TableCell>
                 </CollectionRow>
               )
             )}
