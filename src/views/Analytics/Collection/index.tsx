@@ -259,7 +259,7 @@ export default function CollectionView() {
                   </Text>
                   <Tooltip
                     tooltip={'How do we price NFTs?'}
-                    sx={{ marginLeft: '0', height: 25 }}
+                    sx={{ marginLeft: '0', marginTop: '5px', height: 25 }}
                   >
                     <Icon
                       icon="upshot"
