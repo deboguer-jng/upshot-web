@@ -296,27 +296,15 @@ export default function NFTView() {
             }}
           >
             {ART_BLOCKS_CONTRACTS.includes(contractAddress) ? (
-              <Box
+              <Image
+                src={`https://media.artblocks.io/${tokenId}.png`}
+                alt={`Featured image for ${assetName}`}
                 sx={{
-                  position: 'relative',
-                  overflow: 'hidden',
-                  paddingTop: '100%',
+                  width: '100%',
+                  imageRendering: 'pixelated',
+                  borderRadius: '10px',
                 }}
-              >
-                <iframe
-                  src={`https://generator.artblocks.io/${tokenId}`}
-                  width="100%"
-                  height="100%"
-                  frameBorder={0}
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                  }}
-                />
-              </Box>
+              />
             ) : (
               <Image
                 src={finalImageSrc}
