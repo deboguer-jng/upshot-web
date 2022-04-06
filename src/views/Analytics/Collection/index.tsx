@@ -4,6 +4,7 @@ import {
   imageOptimizer,
   Link,
   theme,
+  Tooltip,
   useBreakpointIndex,
 } from '@upshot-tech/upshot-ui'
 import { Container, Flex, Grid } from '@upshot-tech/upshot-ui'
@@ -20,6 +21,9 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { useEffect, useMemo, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
+import { useSelector } from 'react-redux'
+import { useAppDispatch } from 'redux/hooks'
+import { selectShowHelpModal, setShowHelpModal } from 'redux/reducers/layout'
 import { Box } from 'theme-ui'
 import CollectionScatterChart from 'views/Analytics/components/CollectionScatterChart'
 import ExplorePanel from 'views/Analytics/components/ExplorePanel'
@@ -144,9 +148,12 @@ function Layout({
 }
 
 export default function CollectionView() {
+  const dispatch = useAppDispatch()
   const [id, setId] = useState<number>()
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
+  const helpOpen = useSelector(selectShowHelpModal)
+  const toggleHelpModal = () => dispatch(setShowHelpModal(!helpOpen))
   const router = useRouter()
 
   useEffect(() => {
@@ -246,9 +253,23 @@ export default function CollectionView() {
                 />
               </Box>
               <Flex sx={{ flexDirection: 'column' }}>
-                <Text variant="h1Secondary" sx={{ lineHeight: '2rem' }}>
-                  {name}
-                </Text>
+                <Flex sx={{ alignItems: 'center', gap: 2 }}>
+                  <Text variant="h1Secondary" sx={{ lineHeight: '2rem' }}>
+                    {name}
+                  </Text>
+                  <Tooltip
+                    tooltip={'How do we price NFTs?'}
+                    sx={{ marginLeft: '0', height: 25 }}
+                  >
+                    <Icon
+                      icon="upshot"
+                      onClick={toggleHelpModal}
+                      size={25}
+                      color="primary"
+                    />
+                  </Tooltip>
+                </Flex>
+
                 <Text
                   color="grey"
                   variant="h4Primary"
