@@ -6,6 +6,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { useAppSelector } from 'redux/hooks'
 import { useAppDispatch } from 'redux/hooks'
+import { fetchFeatures } from 'redux/reducers/features'
 import { selectIsBeta } from 'redux/reducers/user'
 import { setIsBeta } from 'redux/reducers/user'
 import {
@@ -30,8 +31,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
 
   useEffect(() => {
+    dispatch(fetchFeatures())
     setReady(true)
-  }, [])
+  }, [dispatch])
 
   // Recognize the connector currently being activated.
   useEffect(() => {

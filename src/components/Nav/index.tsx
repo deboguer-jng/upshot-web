@@ -25,6 +25,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
+import { selectFeatures } from 'redux/reducers/features'
 import {
   selectShowHelpModal,
   selectShowSidebar,
@@ -81,6 +82,8 @@ export const Nav = () => {
   const { activate, deactivate, connector } = useWeb3React()
   const router = useRouter()
   const dispatch = useAppDispatch()
+  const features = useAppSelector(selectFeatures)
+
   const address = useAppSelector(selectAddress)
   const showSidebar = useAppSelector(selectShowSidebar)
   const sidebarRef = useRef(null)
@@ -297,7 +300,7 @@ export const Nav = () => {
           zIndex: theme.zIndex.nav + 1,
         }}
       >
-        <BetaBanner />
+        <BetaBanner variant={features?.nav?.banner?.variant} />
         <Navbar
           avatarImageUrl={address ? makeBlockie(address) : undefined}
           ensName={ens.name}

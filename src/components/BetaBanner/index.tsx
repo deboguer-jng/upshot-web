@@ -11,29 +11,12 @@ interface BetaBannerProps {
   /**
    * Display the maintenance variant.
    */
-  maintenance?: boolean
+  variant?: 'beta' | 'error' | 'maintenance'
 }
 
-enum BannerVariant {
-  BETA,
-  ERROR,
-  MAINTENANCE,
-}
-
-export const BetaBanner = ({
-  error = false,
-  maintenance = false,
-}: BetaBannerProps) => {
-  const getVariantFromPropsFlag = () => {
-    if (error) return BannerVariant.ERROR
-    if (maintenance) return BannerVariant.MAINTENANCE
-    return BannerVariant.BETA
-  }
-
-  const variant = getVariantFromPropsFlag()
-
+export const BetaBanner = ({ variant = 'beta' }: BetaBannerProps) => {
   const contentsByVariant = {
-    [BannerVariant.BETA]: (
+    beta: (
       <Flex sx={{ gap: 4, alignItems: 'center', justifyContent: 'center' }}>
         <Text
           color="primary"
@@ -63,7 +46,7 @@ export const BetaBanner = ({
         </Text>
       </Flex>
     ),
-    [BannerVariant.MAINTENANCE]: (
+    maintenance: (
       <Flex sx={{ gap: 4, alignItems: 'center', justifyContent: 'center' }}>
         <Text
           color="primary"
@@ -82,7 +65,7 @@ export const BetaBanner = ({
         </Text>
       </Flex>
     ),
-    [BannerVariant.ERROR]: (
+    error: (
       <Flex sx={{ alignItems: 'center', justifyContent: 'center', gap: 1 }}>
         <Icon size={20} icon="warning" color="red" />
         <Text color="red">
