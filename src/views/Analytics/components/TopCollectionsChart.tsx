@@ -18,6 +18,7 @@ import { OrderedAssetColumns } from './ExplorePanel/TopCollections'
 interface TopCollectionsChartsProps {
   metric: METRIC
   selectedCollections: number[]
+  selectedCollectionsInit: boolean
   onClose?: (index: number) => void
 }
 
@@ -52,6 +53,7 @@ const floorCheck = (val) => {
 export default function TopCollectionsCharts({
   metric,
   selectedCollections,
+  selectedCollectionsInit,
   onClose,
 }: TopCollectionsChartsProps) {
   const [page, setPage] = useState(0)
@@ -71,24 +73,25 @@ export default function TopCollectionsCharts({
       orderDirection: 'ASC',
       limit: PAGE_SIZE,
       offset: page * PAGE_SIZE,
-      ids: selectedCollections ?? [],
+      ids: selectedCollections,
       minTimestamp: minTimestamp,
       windowSize: 'WEEK',
     },
+    skip: !selectedCollections.length,
   })
-
+  
   /* Load state. */
-  if (loading) return <Chart loading />
+  if (selectedCollectionsInit || loading) return <Chart loading />
 
   /* Error state. */
   // if (error) return <Chart error />
 
+  /* No selected state. */
+  if (!selectedCollections.length) return <Chart noSelected />
+
   /* No results state. */
   if (!data?.searchCollectionByMetric?.assetSets?.length)
     return <Chart noData />
-
-  /* No selected state. */
-  if (!selectedCollections.length) return <Chart noSelected />
 
   const assetSets = data.searchCollectionByMetric.assetSets.filter(
     ({ timeSeries }) => timeSeries?.length
