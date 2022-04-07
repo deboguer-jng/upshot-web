@@ -1,13 +1,12 @@
-import { Box, Container, useTheme } from '@upshot-tech/upshot-ui'
+import { Box, Container } from '@upshot-tech/upshot-ui'
 import { Flex, Text } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import Head from 'next/head'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import ButtonTabs, { METRIC } from './components/ButtonTabs'
 import CollectionAvgPricePanel from './components/CollectionAvgPricePanel'
-import CollectionsTreeMap from './components/CollectionsTreeMap'
 import ExplorePanel from './components/ExplorePanel'
 import TopCollectionsChart from './components/TopCollectionsChart'
 import TopSellingCollectionNFTs from './components/TopSellingCollectionNFTs'
@@ -16,9 +15,23 @@ const selectedCollectionsColors = ['blue', 'pink', 'orange', 'green', 'yellow']
 
 export default function AnalyticsView() {
   const [chartMetric, setChartMetric] = useState<METRIC>('PAST_WEEK_VOLUME')
+  /* Selected collections are [] by default.
+     <CollectionAvgPricePanel> will load the top collections and select the
+     three biggest. We need to wait for the first query (top collections)
+     to finish before we make the second (chart loading) query.
+     While we wait, lets call it initial state: it will be stored in
+     the selectedCollectionsInit state variable */
   const [selectedCollections, setSelectedCollections] = useState<number[]>([])
+  const [selectedCollectionsInit, setSelectedCollectionsInit] = useState(true)
   const [colorCycleIndex, setColorCycleIndex] = useState(3)
 
+  useEffect(() => {
+    /* set the initial (await for first query) state false since the first
+    query (getting top collections) should be finished when
+    <CollectionAvgPricePanel> selects the top colelctions */
+    if (selectedCollections.length) setSelectedCollectionsInit(false)
+  }, [selectedCollections]) 
+  
   const handleChange = (updatedChartMetric: METRIC) => {
     setChartMetric(updatedChartMetric)
   }
@@ -149,7 +162,7 @@ export default function AnalyticsView() {
           <TopCollectionsChart
             metric={chartMetric}
             onClose={handleClose}
-            {...{ selectedCollections }}
+            {...{ selectedCollections, selectedCollectionsInit }}
           />
           <CollectionAvgPricePanel
             metric={chartMetric}
