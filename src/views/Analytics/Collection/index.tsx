@@ -257,17 +257,19 @@ export default function CollectionView() {
                   <Text variant="h1Secondary" sx={{ lineHeight: '2rem' }}>
                     {name}
                   </Text>
-                  <Tooltip
-                    tooltip={'How do we price NFTs?'}
-                    sx={{ marginLeft: '0', marginTop: '5px', height: 25 }}
-                  >
-                    <Icon
-                      icon="upshot"
-                      onClick={toggleHelpModal}
-                      size={25}
-                      color="primary"
-                    />
-                  </Tooltip>
+                  {isAppraised && (
+                    <Tooltip
+                      tooltip={'How do we price NFTs?'}
+                      sx={{ marginLeft: '0', marginTop: '5px', height: 25 }}
+                    >
+                      <Icon
+                        icon="upshot"
+                        onClick={toggleHelpModal}
+                        size={25}
+                        color="primary"
+                      />
+                    </Tooltip>
+                  )}
                 </Flex>
 
                 <Text
