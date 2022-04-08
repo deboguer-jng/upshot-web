@@ -6,15 +6,15 @@ const initialState = {
   loading: false,
 }
 
-const featureConfigURL = process.env.NEXT_PUBLIC_FEATURES_URL
-
 export const fetchFeatures = createAsyncThunk('app/features', async () => {
-  if (!featureConfigURL) {
+  if (!process.env.NEXT_PUBLIC_FEATURES_URL) {
     console.warn('Using default feature set.')
     return
   }
 
-  const res = await fetch(featureConfigURL).then((data) => data.json())
+  const res = await fetch(process.env.NEXT_PUBLIC_FEATURES_URL).then((data) =>
+    data.json()
+  )
   return res
 })
 
