@@ -7,7 +7,10 @@ const initialState = {
 }
 
 export const fetchFeatures = createAsyncThunk('app/features', async () => {
-  if (!process.env.NEXT_PUBLIC_FEATURES_URL) return
+  if (!process.env.NEXT_PUBLIC_FEATURES_URL) {
+    console.warn('Using default feature set.')
+    return
+  }
 
   const res = await fetch(process.env.NEXT_PUBLIC_FEATURES_URL).then((data) =>
     data.json()
