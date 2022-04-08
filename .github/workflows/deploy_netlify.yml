@@ -30,6 +30,7 @@ jobs:
           NEXT_PUBLIC_BUGSNAG_API_KEY: ${{ secrets.NEXT_PUBLIC_BUGSNAG_API_KEY }}
           NEXT_PUBLIC_MOUSEFLOW_ID: ${{ secrets.NEXT_PUBLIC_MOUSEFLOW_ID }}
           NEXT_PUBLIC_INFURA_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_INFURA_PROJECT_ID }}
+          NEXT_PUBLIC_FEATURES_URL: ${{ secrets.STAGE_NEXT_PUBLIC_FEATURES_URL }}
 
   deploy-prod:
     if: github.ref == 'refs/heads/main'
@@ -54,3 +55,4 @@ jobs:
           NEXT_PUBLIC_BUGSNAG_API_KEY: ${{ secrets.NEXT_PUBLIC_BUGSNAG_API_KEY }}
           NEXT_PUBLIC_MOUSEFLOW_ID: ${{ secrets.NEXT_PUBLIC_MOUSEFLOW_ID }}
           NEXT_PUBLIC_INFURA_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_INFURA_PROJECT_ID }}
+          NEXT_PUBLIC_FEATURES_URL: ${{ secrets.PROD_NEXT_PUBLIC_FEATURES_URL }}
