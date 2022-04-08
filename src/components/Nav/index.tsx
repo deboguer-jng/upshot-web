@@ -203,6 +203,12 @@ export const Nav = () => {
     dispatch(setShowSidebar(!showSidebar))
   }
 
+  const getVariant = () => {
+    if (features?.status?.maintenance) return 'maintenance'
+
+    return 'beta'
+  }
+
   const sidebar = (
     <Sidebar ref={sidebarRef}>
       <Flex sx={{ flexDirection: 'column', gap: '32px', flexGrow: 1 }}>
@@ -300,7 +306,7 @@ export const Nav = () => {
           zIndex: theme.zIndex.nav + 1,
         }}
       >
-        <BetaBanner variant={features?.nav?.banner?.variant} />
+        <BetaBanner variant={getVariant()} />
         <Navbar
           avatarImageUrl={address ? makeBlockie(address) : undefined}
           ensName={ens.name}

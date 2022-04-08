@@ -7,7 +7,11 @@ const initialState = {
 }
 
 export const fetchFeatures = createAsyncThunk('app/features', async () => {
-  const res = await fetch('/features.json').then((data) => data.json())
+  if (!process.env.NEXT_PUBLIC_FEATURES_URL) return
+
+  const res = await fetch(process.env.NEXT_PUBLIC_FEATURES_URL).then((data) =>
+    data.json()
+  )
   return res
 })
 
