@@ -295,30 +295,19 @@ export default function NFTView() {
               top: '160px',
             }}
           >
-            {ART_BLOCKS_CONTRACTS.includes(contractAddress) ? (
-              <Image
-                src={`https://media.artblocks.io/${tokenId}.png`}
-                alt={`Featured image for ${assetName}`}
-                sx={{
-                  width: '100%',
-                  imageRendering: 'pixelated',
-                  borderRadius: '10px',
-                }}
-              />
-            ) : (
-              <Image
-                src={finalImageSrc}
-                alt={`Featured image for ${assetName}`}
-                sx={{
-                  borderRadius: '10px',
-                  width: '100%',
-                  backgroundColor: 'grey-600',
-                  imageRendering: PIXELATED_CONTRACTS.includes(contractAddress)
-                    ? 'pixelated'
-                    : 'auto',
-                }}
-              />
-            )}
+
+            <Image
+              src={finalImageSrc}
+              alt={`Featured image for ${assetName}`}
+              sx={{
+                borderRadius: '10px',
+                width: '100%',
+                backgroundColor: 'grey-600',
+                imageRendering: PIXELATED_CONTRACTS.includes(contractAddress)
+                  ? 'pixelated'
+                  : 'auto',
+              }}
+            />
             <Flex sx={{ flexDirection: 'column', gap: 4 }}>
               <Text variant="h2Primary">{assetName}</Text>
               <>
