@@ -221,6 +221,17 @@ export default function TopSellingCollectionNFTs({
     }
   }
 
+  const getPeriodPrice = (state) => {
+    switch (period) {
+      case '1 day':
+        return state.pastDayWeiVolume
+      case '1 week':
+        return state.pastWeekWeiVolume
+      case '1 month':
+        return state.pastWeekWeiVolume
+    }
+  }
+
   return (
     <>
       <TopSellingCollectionNFTsHeader
@@ -264,11 +275,7 @@ export default function TopSellingCollectionNFTs({
                   },
                   key
                 ) => (
-                  <Link
-                    key={key}
-                    href={'/analytics/nft/' + id}
-                    noHover
-                  >
+                  <Link key={key} href={'/analytics/nft/' + id} noHover>
                     <MiniNftCard
                       price={
                         price
@@ -302,8 +309,8 @@ export default function TopSellingCollectionNFTs({
                       <MiniNftCard
                         tooltip={`volume / ${period}`}
                         price={
-                          latestStats?.pastDayWeiVolume
-                            ? formatNumber(latestStats.pastDayWeiVolume, {
+                          getPeriodPrice(latestStats)
+                            ? formatNumber(getPeriodPrice(latestStats), {
                                 fromWei: true,
                                 kmbUnits: true,
                                 decimals: 2,
