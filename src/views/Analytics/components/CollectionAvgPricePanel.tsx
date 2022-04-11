@@ -105,7 +105,7 @@ export default function CollectionAvgPricePanel({
       </CollectionPanel>
     )
 
-  if (!data?.searchCollectionByMetric.assetSets.length)
+  if (!data?.searchCollectionByMetric?.assetSets?.length)
     return (
       <CollectionPanel {...{ title, subtitle }}>
         No results available.
