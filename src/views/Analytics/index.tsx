@@ -30,8 +30,8 @@ export default function AnalyticsView() {
     query (getting top collections) should be finished when
     <CollectionAvgPricePanel> selects the top colelctions */
     if (selectedCollections.length) setSelectedCollectionsInit(false)
-  }, [selectedCollections]) 
-  
+  }, [selectedCollections])
+
   const handleChange = (updatedChartMetric: METRIC) => {
     setChartMetric(updatedChartMetric)
   }

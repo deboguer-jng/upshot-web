@@ -316,9 +316,7 @@ export default function UserView() {
         limit: collectionLimit,
         offset: 0,
       },
-      skip:
-        !addressFormatted ||
-        !hasAllSupportedCollections,
+      skip: !addressFormatted || !hasAllSupportedCollections,
     }
   )
 
@@ -1837,23 +1835,23 @@ export default function UserView() {
             key={data?.getUser?.extraCollections?.collectionAssetCounts?.length}
           />
           {!!dataUnsupportedCollections?.getUnsupportedCollectionPage
-              ?.collections?.length && (
-              <>
-                <Text variant="h1Primary">Unappraised</Text>
-                <Masonry
-                  columnWidth={300}
-                  columnGutter={16}
-                  rowGutter={16}
-                  items={
-                    dataUnsupportedCollections?.getUnsupportedCollectionPage
-                      ?.collections ?? []
-                  }
-                  render={RenderUnsupportedMasonry}
-                  onRender={maybeLoadMoreUnsupportedCollections}
-                  style={{ outline: 'none' }}
-                />
-              </>
-            )}
+            ?.collections?.length && (
+            <>
+              <Text variant="h1Primary">Unappraised</Text>
+              <Masonry
+                columnWidth={300}
+                columnGutter={16}
+                rowGutter={16}
+                items={
+                  dataUnsupportedCollections?.getUnsupportedCollectionPage
+                    ?.collections ?? []
+                }
+                render={RenderUnsupportedMasonry}
+                onRender={maybeLoadMoreUnsupportedCollections}
+                style={{ outline: 'none' }}
+              />
+            </>
+          )}
         </Flex>
       </Layout>
       <Modal

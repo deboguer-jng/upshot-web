@@ -332,19 +332,28 @@ export default function ExploreTraits({
               ) : (
                 <>
                   <TableCell sx={{ maxWidth: 50 }}>
-                    <Link href={`/analytics/search?traits=${id}&collectionId=${collectionId}`} noHover>
+                    <Link
+                      href={`/analytics/search?traits=${id}&collectionId=${collectionId}`}
+                      noHover
+                    >
                       {dataCheck(traitType)}
                     </Link>
                   </TableCell>
                   <TableCell sx={{ maxWidth: 50 }}>
-                    <Link href={`/analytics/search?traits=${id}&collectionId=${collectionId}`} noHover>
+                    <Link
+                      href={`/analytics/search?traits=${id}&collectionId=${collectionId}`}
+                      noHover
+                    >
                       {rarity
                         ? (100 - rarity * 100).toFixed(2).toString() + '%'
                         : '-'}
                     </Link>
                   </TableCell>
                   <TableCell sx={{ maxWidth: 50 }}>
-                    <Link href={`/analytics/search?traits=${id}&collectionId=${collectionId}`} noHover>
+                    <Link
+                      href={`/analytics/search?traits=${id}&collectionId=${collectionId}`}
+                      noHover
+                    >
                       {floor
                         ? formatNumber(floor, {
                             fromWei: true,
@@ -355,7 +364,10 @@ export default function ExploreTraits({
                     </Link>
                   </TableCell>
                   <TableCell sx={{ maxWidth: 50 }}>
-                    <Link href={`/analytics/search?traits=${id}&collectionId=${collectionId}`} noHover>
+                    <Link
+                      href={`/analytics/search?traits=${id}&collectionId=${collectionId}`}
+                      noHover
+                    >
                       {floorUsd
                         ? formatNumber(floorUsd, {
                             fromWei: true,

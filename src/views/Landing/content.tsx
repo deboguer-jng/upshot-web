@@ -1,4 +1,5 @@
 import AavegotchiPNG from './projectLogos/aavegotchi.png'
+import ArcadePNG from './projectLogos/arcade.png'
 import BlackPoolPNG from './projectLogos/blackpool.jpeg'
 import ChargedPNG from './projectLogos/charged.png'
 import FractionalPNG from './projectLogos/fractional.png'
@@ -11,7 +12,6 @@ import PolymarketPNG from './projectLogos/polymarket.png'
 import PwnPNG from './projectLogos/pwn-finance.png'
 import SolvPNG from './projectLogos/solv.png'
 import UniclyPNG from './projectLogos/unicly.png'
-import ArcadePNG from './projectLogos/arcade.png'
 
 /* This array contains the content of the landing page panels under the "Discover" section */
 

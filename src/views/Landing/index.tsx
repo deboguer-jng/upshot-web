@@ -42,7 +42,7 @@ function renderLandingPanel(data: PanelData) {
       target="_blank"
       sx={{
         color: 'initial',
-        display: 'grid'
+        display: 'grid',
       }}
       noHover
     >
@@ -248,7 +248,7 @@ export default function LandingView() {
                 <Text variant="h1Secondary">Analytics</Text>
                 <Text
                   variant="large"
-                  sx={{ 
+                  sx={{
                     display: 'block',
                     whiteSpace: 'normal',
                     width: ['100%', null, null, '50%'],
@@ -313,7 +313,7 @@ export default function LandingView() {
                     </Text>
                     <Text
                       variant="large"
-                      sx={{ display: 'block',  whiteSpace: 'normal' }}
+                      sx={{ display: 'block', whiteSpace: 'normal' }}
                     >
                       Integrate Upshot data into your project.
                     </Text>
@@ -371,7 +371,7 @@ export default function LandingView() {
                     <Text variant="h1Secondary">Blog</Text>
                     <Text
                       variant="large"
-                      sx={{ display: 'block', whiteSpace: 'normal', }}
+                      sx={{ display: 'block', whiteSpace: 'normal' }}
                     >
                       Learn more about NFTxDeFI
                     </Text>

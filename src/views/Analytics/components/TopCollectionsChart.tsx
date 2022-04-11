@@ -79,7 +79,7 @@ export default function TopCollectionsCharts({
     },
     skip: !selectedCollections.length,
   })
-  
+
   /* Load state. */
   if (selectedCollectionsInit || loading) return <Chart loading />
 

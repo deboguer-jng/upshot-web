@@ -264,11 +264,7 @@ export default function TopSellingCollectionNFTs({
                   },
                   key
                 ) => (
-                  <Link
-                    key={key}
-                    href={'/analytics/nft/' + id}
-                    noHover
-                  >
+                  <Link key={key} href={'/analytics/nft/' + id} noHover>
                     <MiniNftCard
                       price={
                         price

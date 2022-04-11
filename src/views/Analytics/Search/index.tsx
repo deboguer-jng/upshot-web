@@ -293,7 +293,10 @@ export default function SearchView() {
                     <Text variant="h2Primary">
                       {collectionName ?? assetArr?.[0]?.collection?.name}
                     </Text>
-                    <Link href={`/analytics/collection/${collectionId}`} noHover>
+                    <Link
+                      href={`/analytics/collection/${collectionId}`}
+                      noHover
+                    >
                       <IconButton
                         sx={{
                           marginLeft: '6px;',
@@ -301,7 +304,7 @@ export default function SearchView() {
                         }}
                       >
                         <Icon icon="arrowStylizedRight" color="grey-500" />
-                        </IconButton>
+                      </IconButton>
                     </Link>
                   </Flex>
                 )}
@@ -438,11 +441,11 @@ export default function SearchView() {
                                 },
                                 idx
                               ) => (
-                                  <Link
-                                    key={idx}
-                                    href={'/analytics/nft/' + id}
-                                    noHover
-                                  >
+                                <Link
+                                  key={idx}
+                                  href={'/analytics/nft/' + id}
+                                  noHover
+                                >
                                   <MiniNftCard
                                     price={
                                       lastSale?.ethSalePrice
