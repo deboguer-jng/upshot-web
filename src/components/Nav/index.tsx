@@ -21,6 +21,7 @@ import {
   GetNavBarCollectionsData,
   GetNavBarCollectionsVars,
 } from 'graphql/queries'
+import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
@@ -259,6 +260,7 @@ export const Nav = () => {
           href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
           target="_blank"
           rel="noreferrer"
+          component={NextLink}
         >
           <IconButton onClick={handleToggleMenu}>
             <Icon color="white" icon="mirror" size={32} />
@@ -269,13 +271,19 @@ export const Nav = () => {
           href="https://twitter.com/upshothq"
           target="_blank"
           rel="noreferrer"
+          component={NextLink}
         >
           <IconButton onClick={handleToggleMenu}>
             <Icon color="white" icon="twitterCircle" size={32} />
           </IconButton>
         </Link>
 
-        <Link href="https://discord.gg/upshot" target="_blank" rel="noreferrer">
+        <Link
+          href="https://discord.gg/upshot"
+          target="_blank"
+          rel="noreferrer"
+          component={NextLink}
+        >
           <IconButton onClick={handleToggleMenu}>
             <Icon color="white" icon="discord" size={32} />
           </IconButton>
@@ -285,6 +293,7 @@ export const Nav = () => {
           href="https://www.instagram.com/upshot.hq/"
           target="_blank"
           rel="noreferrer"
+          component={NextLink}
         >
           <IconButton onClick={handleToggleMenu}>
             <Icon color="white" icon="instagramCircle" size={32} />

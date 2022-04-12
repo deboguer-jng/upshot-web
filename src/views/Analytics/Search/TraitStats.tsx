@@ -15,6 +15,7 @@ import {
   TableHead,
   TableRow,
 } from '@upshot-tech/upshot-ui'
+import NextLink from 'next/link'
 import React from 'react'
 
 import {
@@ -184,6 +185,7 @@ export default function TraitStats({
             variant="normal"
             imageSrc={image ?? ''}
             subtitle={isMobile ? traitType : undefined}
+            linkComponent={NextLink}
           >
             {isMobile ? (
               <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>

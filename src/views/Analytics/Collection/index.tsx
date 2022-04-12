@@ -18,6 +18,7 @@ import {
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import Head from 'next/head'
+import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useMemo, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
@@ -396,6 +397,7 @@ export default function CollectionView() {
                 sx={{
                   width: isMobile ? '100%' : 'auto',
                 }}
+                component={NextLink}
                 noHover
               >
                 <Button
