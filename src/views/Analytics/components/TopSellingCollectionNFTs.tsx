@@ -300,33 +300,36 @@ export default function TopSellingCollectionNFTs({
             <>
               {collectionData?.searchCollectionByMetric.assetSets.map(
                 ({ id, name, imageUrl, latestStats }) => (
-                  <Link key={id} href={`/analytics/collection/${id}`}>
-                    <Link component={NextLink} noHover>
-                      <MiniNftCard
-                        tooltip={`volume / ${period}`}
-                        price={
-                          latestStats?.pastDayWeiVolume
-                            ? formatNumber(latestStats.pastDayWeiVolume, {
-                                fromWei: true,
-                                kmbUnits: true,
-                                decimals: 2,
-                                prefix: 'ETHER',
-                              })
-                            : undefined
-                        }
-                        linkComponent={NextLink}
-                        name={name}
-                        type="collection"
-                        image={imageUrl}
-                        floorPrice={
-                          latestStats?.floor
-                            ? formatNumber(latestStats.floor, { fromWei: true })
-                            : undefined
-                        }
-                        sales={getSalesNumber(latestStats)}
-                        link={`/analytics/collection/${id}`}
-                      />
-                    </Link>
+                  <Link
+                    key={id}
+                    href={`/analytics/collection/${id}`}
+                    component={NextLink}
+                    noHover
+                  >
+                    <MiniNftCard
+                      tooltip={`volume / ${period}`}
+                      price={
+                        latestStats?.pastDayWeiVolume
+                          ? formatNumber(latestStats.pastDayWeiVolume, {
+                              fromWei: true,
+                              kmbUnits: true,
+                              decimals: 2,
+                              prefix: 'ETHER',
+                            })
+                          : undefined
+                      }
+                      linkComponent={NextLink}
+                      name={name}
+                      type="collection"
+                      image={imageUrl}
+                      floorPrice={
+                        latestStats?.floor
+                          ? formatNumber(latestStats.floor, { fromWei: true })
+                          : undefined
+                      }
+                      sales={getSalesNumber(latestStats)}
+                      link={`/analytics/collection/${id}`}
+                    />
                   </Link>
                 )
               )}
