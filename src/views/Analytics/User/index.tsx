@@ -1289,7 +1289,11 @@ export default function UserView() {
                         </Flex>
                       ) : !!txHistoryData?.getTxHistory?.txHistory?.count ? (
                         <Box
-                          sx={{ position: 'relative', height: '300px' }}
+                          sx={{
+                            position: 'relative',
+                            height: '300px',
+                            overflow: 'auto',
+                          }}
                           css={theme.scroll.thin.styles}
                         >
                           <InfiniteLoader
@@ -1316,14 +1320,26 @@ export default function UserView() {
                                         width={width}
                                         height={270}
                                         rowHeight={30}
-                                        rowStyle={{
-                                          overflowX: 'auto',
-                                          // width: 'unset!important',
-                                        }}
                                         sx={{
+                                          width: 680,
+                                          '& .ReactVirtualized__Table__headerRow':
+                                            {
+                                              width: '100%!important',
+                                            },
+                                          '& .ReactVirtualized__Table__Grid': {
+                                            width: '100%!important',
+                                          },
                                           '& > .ReactVirtualized__Grid>.ReactVirtualized__Grid__innerScrollContainer':
                                             {
+                                              width: '100%!important',
+                                              maxWidth: 'unset!important',
                                               overflow: 'auto!important',
+                                              maxHeight: 'unset!important',
+                                              minHeight: '100%!important',
+                                            },
+                                          '& > .ReactVirtualized__Grid> .ReactVirtualized__Grid__innerScrollContainer > .ReactVirtualized__Table__row':
+                                            {
+                                              width: '100%!important',
                                             },
                                         }}
                                         rowCount={
