@@ -316,9 +316,7 @@ export default function UserView() {
         limit: collectionLimit,
         offset: 0,
       },
-      skip:
-        !addressFormatted ||
-        !hasAllSupportedCollections,
+      skip: !addressFormatted || !hasAllSupportedCollections,
     }
   )
 
@@ -1318,6 +1316,16 @@ export default function UserView() {
                                         width={width}
                                         height={270}
                                         rowHeight={30}
+                                        rowStyle={{
+                                          overflowX: 'auto',
+                                          // width: 'unset!important',
+                                        }}
+                                        sx={{
+                                          '& > .ReactVirtualized__Grid>.ReactVirtualized__Grid__innerScrollContainer':
+                                            {
+                                              overflow: 'auto!important',
+                                            },
+                                        }}
                                         rowCount={
                                           txHistoryData?.getTxHistory?.txHistory
                                             ?.count
@@ -1353,10 +1361,143 @@ export default function UserView() {
                                             )
                                           }}
                                           cellDataGetter={() => {}}
-                                          width={width * 0.4}
+                                          width={120}
+                                          style={{ width: 120 }}
                                         />
                                         <Column
-                                          width={width * 0.6}
+                                          label="NFT"
+                                          dataKey="name"
+                                          headerRenderer={({ label }) =>
+                                            headerRenderer(label)
+                                          }
+                                          cellRenderer={({ rowData }) => {
+                                            return (
+                                              <Link
+                                                href={`/analytics/nft/${rowData?.asset?.id}`}
+                                              >
+                                                <Link
+                                                  sx={{
+                                                    display: 'block',
+                                                    textOverflow: 'ellipsis',
+                                                    overflow: 'hidden',
+                                                  }}
+                                                >
+                                                  {rowData?.asset?.name}
+                                                </Link>
+                                              </Link>
+                                            )
+                                          }}
+                                          cellDataGetter={() => {}}
+                                          width={120}
+                                        />
+                                        <Column
+                                          label="Sender"
+                                          dataKey="txFromAddress"
+                                          headerRenderer={({ label }) =>
+                                            headerRenderer(label)
+                                          }
+                                          cellDataGetter={() => {}}
+                                          width={120}
+                                          cellRenderer={({ rowData }) => {
+                                            return (
+                                              <Grid
+                                                sx={{
+                                                  alignItems: 'center',
+                                                  gap: 1,
+                                                  gridTemplateColumns:
+                                                    '12px auto',
+                                                  overflow: 'hidden',
+                                                }}
+                                              >
+                                                <Box
+                                                  sx={{
+                                                    borderRadius: 'circle',
+                                                    bg: 'yellow',
+                                                    width: 3,
+                                                    height: 3,
+                                                  }}
+                                                />
+                                                <Link
+                                                  href={`/analytics/user/${rowData?.txFromAddress}`}
+                                                  sx={{
+                                                    display: 'block',
+                                                    overflow: 'hidden',
+                                                    fontSize: 2.5,
+                                                  }}
+                                                >
+                                                  <Text
+                                                    sx={{
+                                                      display: 'block',
+                                                      overflow: 'hidden',
+                                                      textOverflow: 'ellipsis',
+                                                    }}
+                                                  >
+                                                    {extractEns(
+                                                      rowData?.txFromUser
+                                                        ?.addresses,
+                                                      rowData?.txFromAddress
+                                                    ) ?? rowData?.txFromAddress}
+                                                  </Text>
+                                                </Link>
+                                              </Grid>
+                                            )
+                                          }}
+                                        />
+                                        <Column
+                                          width={120}
+                                          label="Recipient"
+                                          dataKey="txToAddress"
+                                          headerRenderer={({ label }) =>
+                                            headerRenderer(label)
+                                          }
+                                          cellDataGetter={() => {}}
+                                          cellRenderer={({ rowData }) => {
+                                            return (
+                                              <TableCell
+                                                sx={{
+                                                  display: 'grid',
+                                                  alignItems: 'center',
+                                                  gridTemplateColumns:
+                                                    '12px auto',
+                                                  gap: 1,
+                                                }}
+                                              >
+                                                <Box
+                                                  sx={{
+                                                    borderRadius: 'circle',
+                                                    bg: 'purple',
+                                                    width: 3,
+                                                    height: 3,
+                                                  }}
+                                                />
+                                                <Link
+                                                  href={`/analytics/user/${rowData?.txToAddress}`}
+                                                  sx={{
+                                                    display: 'block',
+                                                    overflow: 'hidden',
+                                                    fontSize: 2.5,
+                                                  }}
+                                                >
+                                                  <Text
+                                                    sx={{
+                                                      display: 'block',
+                                                      overflow: 'hidden',
+                                                      textOverflow: 'ellipsis',
+                                                    }}
+                                                  >
+                                                    {extractEns(
+                                                      rowData?.txToUser
+                                                        ?.addresses,
+                                                      rowData?.txToAddress
+                                                    ) ?? rowData?.txToAddress}
+                                                  </Text>
+                                                </Link>
+                                              </TableCell>
+                                            )
+                                          }}
+                                        />
+                                        <Column
+                                          width={120}
                                           label="Sale Price"
                                           dataKey="price"
                                           headerRenderer={({ label }) =>
@@ -1837,23 +1978,23 @@ export default function UserView() {
             key={data?.getUser?.extraCollections?.collectionAssetCounts?.length}
           />
           {!!dataUnsupportedCollections?.getUnsupportedCollectionPage
-              ?.collections?.length && (
-              <>
-                <Text variant="h1Primary">Unappraised</Text>
-                <Masonry
-                  columnWidth={300}
-                  columnGutter={16}
-                  rowGutter={16}
-                  items={
-                    dataUnsupportedCollections?.getUnsupportedCollectionPage
-                      ?.collections ?? []
-                  }
-                  render={RenderUnsupportedMasonry}
-                  onRender={maybeLoadMoreUnsupportedCollections}
-                  style={{ outline: 'none' }}
-                />
-              </>
-            )}
+            ?.collections?.length && (
+            <>
+              <Text variant="h1Primary">Unappraised</Text>
+              <Masonry
+                columnWidth={300}
+                columnGutter={16}
+                rowGutter={16}
+                items={
+                  dataUnsupportedCollections?.getUnsupportedCollectionPage
+                    ?.collections ?? []
+                }
+                render={RenderUnsupportedMasonry}
+                onRender={maybeLoadMoreUnsupportedCollections}
+                style={{ outline: 'none' }}
+              />
+            </>
+          )}
         </Flex>
       </Layout>
       <Modal
