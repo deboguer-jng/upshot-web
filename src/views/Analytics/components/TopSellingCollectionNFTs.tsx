@@ -228,7 +228,7 @@ export default function TopSellingCollectionNFTs({
       case '1 week':
         return state.pastWeekWeiVolume
       case '1 month':
-        return state.pastWeekWeiVolume
+        return state.pastMonthWeiVolume
     }
   }
 

@@ -233,6 +233,8 @@ export type GetCollectionsByMetricData = {
         pastDayWeiVolume: string
         pastWeekWeiVolume: string
         weekFloorChange: number
+        pastMonthWeiVolume: string
+        pastMonthWeiAverage: string
       }
     }[]
   }
@@ -267,6 +269,8 @@ export const GET_COLLECTIONS_BY_METRIC = gql`
           pastDayWeiVolume
           pastWeekWeiAverage
           pastWeekWeiVolume
+          pastMonthWeiVolume
+          pastMonthWeiAverage
           pastMonthNumTxs
         }
       }
