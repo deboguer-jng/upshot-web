@@ -324,7 +324,11 @@ export default function TopSellingCollectionNFTs({
                       image={imageUrl}
                       floorPrice={
                         latestStats?.floor
-                          ? formatNumber(latestStats.floor, { fromWei: true })
+                          ? formatNumber(latestStats.floor, {
+                              fromWei: true,
+                              decimals: 2,
+                              prefix: 'ETHER',
+                            })
                           : undefined
                       }
                       sales={getSalesNumber(latestStats)}
