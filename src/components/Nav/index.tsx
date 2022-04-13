@@ -216,6 +216,7 @@ export const Nav = () => {
         <Flex sx={{ flexDirection: 'column', gap: '32px' }}>
           <SideLink
             href="/"
+            component={NextLink}
             sx={{ fontSize: 6, fontWeight: 'heading' }}
             $isActive={router.pathname === '/'}
           >
@@ -223,6 +224,7 @@ export const Nav = () => {
           </SideLink>
           <SideLink
             href="/analytics"
+            component={NextLink}
             sx={{ fontSize: 6, fontWeight: 'heading' }}
             $isActive={router.pathname === '/analytics'}
             onClick={handleToggleMenu}
@@ -231,6 +233,7 @@ export const Nav = () => {
           </SideLink>
           <SideLink
             href="https://docs.upshot.xyz"
+            component={NextLink}
             sx={{ fontSize: 6, fontWeight: 'heading' }}
             target="_blank"
             onClick={handleToggleMenu}
@@ -238,6 +241,7 @@ export const Nav = () => {
             API Docs
           </SideLink>
           <SideLink
+            component={NextLink}
             href="https://jv3yfpod32j.typeform.com/to/CZ28JWz9"
             sx={{ fontSize: 6, fontWeight: 'heading' }}
             target="_blank"
