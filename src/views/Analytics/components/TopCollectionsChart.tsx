@@ -3,6 +3,7 @@ import { parseUint256 } from '@upshot-tech/upshot-ui'
 import { Chart, formatNumber } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE } from 'constants/'
 import { ethers } from 'ethers'
+import NextLink from 'next/link'
 import { useState } from 'react'
 
 import {
@@ -168,5 +169,5 @@ export default function TopCollectionsCharts({
       }
     })
 
-  return <Chart data={chartData} {...{ onClose }} />
+  return <Chart data={chartData} linkComponent={NextLink} {...{ onClose }} />
 }

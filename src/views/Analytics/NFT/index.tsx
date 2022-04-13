@@ -36,6 +36,7 @@ import { format } from 'date-fns'
 import makeBlockie from 'ethereum-blockies-base64'
 import { ethers } from 'ethers'
 import Head from 'next/head'
+import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
@@ -295,7 +296,6 @@ export default function NFTView() {
               top: '160px',
             }}
           >
-
             <Image
               src={finalImageSrc}
               alt={`Featured image for ${assetName}`}
@@ -407,6 +407,7 @@ export default function NFTView() {
                       : listMarketplace
                   }
                   marketplaceUrl={listUrl}
+                  linkComponent={NextLink}
                 />
               )}
             <Flex
@@ -422,7 +423,10 @@ export default function NFTView() {
 
                     <Flex sx={{ gap: 4 }}>
                       <Flex sx={{ gap: [1, 1, 4], alignItems: 'center' }}>
-                        <Link href={`/analytics/collection/${collection?.id}`}>
+                        <Link
+                          href={`/analytics/collection/${collection?.id}`}
+                          component={NextLink}
+                        >
                           <Image
                             src={
                               collection?.imageUrl ?? '/img/defaultAvatar.png'
@@ -460,6 +464,7 @@ export default function NFTView() {
                               overflow: 'hidden',
                             }}
                             title={collection?.name}
+                            component={NextLink}
                           >
                             <Text
                               color="grey-300"
@@ -511,6 +516,7 @@ export default function NFTView() {
                               overflow: 'hidden',
                             }}
                             title={displayName}
+                            component={NextLink}
                           >
                             <Text
                               color="grey-300"
@@ -546,6 +552,7 @@ export default function NFTView() {
                                 whiteSpace: 'normal',
                                 lineHeight: 'auto',
                               }}
+                              component={NextLink}
                               noHover
                             >
                               <LabelAttribute
@@ -714,7 +721,7 @@ export default function NFTView() {
                         </Text>
                       </Flex>
                     )}
-                    <Chart data={chartData} embedded />
+                    <Chart data={chartData} linkComponent={NextLink} embedded />
                   </Flex>
                 </Panel>
               </Flex>
@@ -800,6 +807,7 @@ export default function NFTView() {
                                       />
                                       <Link
                                         href={`/analytics/user/${txFromAddress}`}
+                                        component={NextLink}
                                       >
                                         <Text>
                                           {extractEns(
@@ -823,6 +831,7 @@ export default function NFTView() {
                                       />
                                       <Link
                                         href={`/analytics/user/${txToAddress}`}
+                                        component={NextLink}
                                       >
                                         <Text>
                                           {extractEns(
@@ -855,6 +864,7 @@ export default function NFTView() {
                                   target="_blank"
                                   title="Open transaction on Etherscan"
                                   rel="noopener noreferrer nofollow"
+                                  component={NextLink}
                                 >
                                   <IconButton>
                                     <Icon icon="disconnect" color="grey-500" />

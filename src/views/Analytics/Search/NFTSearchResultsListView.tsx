@@ -17,6 +17,7 @@ import {
   TableRow,
 } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE } from 'constants/'
+import NextLink from 'next/link'
 import router from 'next/router'
 import React from 'react'
 import { getPriceChangeColor } from 'utils/color'
@@ -240,6 +241,7 @@ export default function NFTSearchResults({
               imageSrc={previewImageUrl ?? ''}
               subtitle={isMobile ? name : undefined}
               onClick={() => handleShowNFT(id)}
+              linkComponent={NextLink}
             >
               {isMobile ? (
                 <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>

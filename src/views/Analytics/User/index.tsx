@@ -35,6 +35,7 @@ import makeBlockie from 'ethereum-blockies-base64'
 import { ethers } from 'ethers'
 import { Masonry, useInfiniteLoader } from 'masonic'
 import Head from 'next/head'
+import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { transparentize } from 'polished'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -211,14 +212,17 @@ export default function UserView() {
     useState(false)
 
   /* Address formatting */
+  const [address, setAddress] = useState('')
   const [addressFormatted, setAddressFormatted] = useState<string>()
   const [errorAddress, setErrorAddress] = useState(false)
-  const address = router.query.address as string
   const shortAddress = useMemo(() => shortenAddress(address), [address])
   const loadingAddressFormatted = !addressFormatted && !errorAddress
 
   useEffect(() => {
-    if (!address) return
+    if (!router.query.address) return
+
+    const address = router.query.address as string
+    setAddress(address)
 
     try {
       setAddressFormatted(ethers.utils.getAddress(address))
@@ -233,7 +237,7 @@ export default function UserView() {
        */
       setErrorAddress(true)
     }
-  }, [address])
+  }, [router.query])
 
   const collectionLimit = 8
 
@@ -610,6 +614,7 @@ export default function UserView() {
     return (
       <CollectionCard
         {...price}
+        linkComponent={NextLink}
         hasSeeAll={count > 5}
         seeAllImageSrc={
           collection.ownerAssetsInCollection.assets[0]?.previewImageUrl
@@ -631,7 +636,12 @@ export default function UserView() {
         {collection.ownerAssetsInCollection.assets
           .slice(0, 5)
           .map(({ id, previewImageUrl, mediaUrl, contractAddress }, idx) => (
-            <Link href={`/analytics/nft/${id}`} key={idx}>
+            <Link
+              href={`/analytics/nft/${id}`}
+              component={NextLink}
+              key={idx}
+              onClick={(e) => e.stopPropagation()}
+            >
               <Box
                 sx={{
                   width: '100%',
@@ -691,6 +701,7 @@ export default function UserView() {
       <>
         <CollectionCard
           isUnsupported
+          linkComponent={NextLink}
           link={`https://opensea.io/collection/${osCollectionSlug}?ref=${OPENSEA_REFERRAL_LINK}`}
           avatarImage={imageUrl}
           name={name}
@@ -782,6 +793,7 @@ export default function UserView() {
                 nftCount={count}
                 onClick={() => handleShowCollection(collection.id)}
                 href={'/analytics/collection/' + collection.id}
+                linkComponent={NextLink}
               />
             )
           )}
@@ -806,9 +818,13 @@ export default function UserView() {
                   key={idx}
                   onClick={() => handleShowCollection(collection.id)}
                   href={'/analytics/collection/' + collection.id}
+                  linkComponent={NextLink}
                 >
                   <TableCell sx={{ color: 'blue' }}>
-                    <Link href={'/analytics/collection/' + collection.id}>
+                    <Link
+                      href={'/analytics/collection/' + collection.id}
+                      component={NextLink}
+                    >
                       {count}
                     </Link>
                   </TableCell>
@@ -1390,16 +1406,14 @@ export default function UserView() {
                                             return (
                                               <Link
                                                 href={`/analytics/nft/${rowData?.asset?.id}`}
+                                                component={NextLink}
+                                                sx={{
+                                                  display: 'block',
+                                                  textOverflow: 'ellipsis',
+                                                  overflow: 'hidden',
+                                                }}
                                               >
-                                                <Link
-                                                  sx={{
-                                                    display: 'block',
-                                                    textOverflow: 'ellipsis',
-                                                    overflow: 'hidden',
-                                                  }}
-                                                >
-                                                  {rowData?.asset?.name}
-                                                </Link>
+                                                {rowData?.asset?.name}
                                               </Link>
                                             )
                                           }}
@@ -1435,6 +1449,7 @@ export default function UserView() {
                                                 />
                                                 <Link
                                                   href={`/analytics/user/${rowData?.txFromAddress}`}
+                                                  component={NextLink}
                                                   sx={{
                                                     display: 'block',
                                                     overflow: 'hidden',
@@ -1488,6 +1503,7 @@ export default function UserView() {
                                                 />
                                                 <Link
                                                   href={`/analytics/user/${rowData?.txToAddress}`}
+                                                  component={NextLink}
                                                   sx={{
                                                     display: 'block',
                                                     overflow: 'hidden',
@@ -1579,6 +1595,7 @@ export default function UserView() {
                                                   target="_blank"
                                                   title="Open transaction on Etherscan"
                                                   rel="noopener noreferrer nofollow"
+                                                  component={NextLink}
                                                 >
                                                   <IconButton
                                                     sx={{
@@ -1660,8 +1677,10 @@ export default function UserView() {
                                             return (
                                               <Link
                                                 href={`/analytics/nft/${rowData?.asset?.id}`}
+                                                component={NextLink}
                                               >
                                                 <Link
+                                                  component={NextLink}
                                                   sx={{
                                                     display: 'block',
                                                     textOverflow: 'ellipsis',
@@ -1705,6 +1724,7 @@ export default function UserView() {
                                                 />
                                                 <Link
                                                   href={`/analytics/user/${rowData?.txFromAddress}`}
+                                                  component={NextLink}
                                                   sx={{
                                                     display: 'block',
                                                     overflow: 'hidden',
@@ -1758,6 +1778,7 @@ export default function UserView() {
                                                 />
                                                 <Link
                                                   href={`/analytics/user/${rowData?.txToAddress}`}
+                                                  component={NextLink}
                                                   sx={{
                                                     display: 'block',
                                                     overflow: 'hidden',
@@ -1848,6 +1869,7 @@ export default function UserView() {
                                                   target="_blank"
                                                   title="Open transaction on Etherscan"
                                                   rel="noopener noreferrer nofollow"
+                                                  component={NextLink}
                                                 >
                                                   <IconButton
                                                     sx={{
@@ -2034,6 +2056,7 @@ export default function UserView() {
         ) : (
           <Box sx={{ width: '95vw' }}>
             <CollectionCardExpanded
+              linkComponent={NextLink}
               avatarImage={showCollection?.imageUrl}
               name={showCollection?.name ?? ''}
               total={showCollection?.numOwnedAssets ?? 0}

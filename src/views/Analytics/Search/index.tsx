@@ -16,6 +16,7 @@ import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import Head from 'next/head'
+import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useRef, useState } from 'react'
 import { shortenAddress } from 'utils/address'
@@ -295,6 +296,7 @@ export default function SearchView() {
                     </Text>
                     <Link
                       href={`/analytics/collection/${collectionId}`}
+                      component={NextLink}
                       noHover
                     >
                       <IconButton
@@ -444,9 +446,11 @@ export default function SearchView() {
                                 <Link
                                   key={idx}
                                   href={'/analytics/nft/' + id}
+                                  component={NextLink}
                                   noHover
                                 >
                                   <MiniNftCard
+                                    linkComponent={NextLink}
                                     price={
                                       lastSale?.ethSalePrice
                                         ? formatNumber(lastSale.ethSalePrice, {
