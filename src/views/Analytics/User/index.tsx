@@ -212,14 +212,17 @@ export default function UserView() {
     useState(false)
 
   /* Address formatting */
+  const [address, setAddress] = useState('')
   const [addressFormatted, setAddressFormatted] = useState<string>()
   const [errorAddress, setErrorAddress] = useState(false)
-  const address = router.query.address as string
   const shortAddress = useMemo(() => shortenAddress(address), [address])
   const loadingAddressFormatted = !addressFormatted && !errorAddress
 
   useEffect(() => {
-    if (!address) return
+    if (!router.query.address) return
+
+    const address = router.query.address as string
+    setAddress(address)
 
     try {
       setAddressFormatted(ethers.utils.getAddress(address))
@@ -234,7 +237,7 @@ export default function UserView() {
        */
       setErrorAddress(true)
     }
-  }, [address])
+  }, [router.query])
 
   const collectionLimit = 8
 
@@ -611,6 +614,7 @@ export default function UserView() {
     return (
       <CollectionCard
         {...price}
+        linkComponent={NextLink}
         hasSeeAll={count > 5}
         seeAllImageSrc={
           collection.ownerAssetsInCollection.assets[0]?.previewImageUrl
@@ -632,7 +636,12 @@ export default function UserView() {
         {collection.ownerAssetsInCollection.assets
           .slice(0, 5)
           .map(({ id, previewImageUrl, mediaUrl, contractAddress }, idx) => (
-            <Link href={`/analytics/nft/${id}`} component={NextLink} key={idx}>
+            <Link
+              href={`/analytics/nft/${id}`}
+              component={NextLink}
+              key={idx}
+              onClick={(e) => e.stopPropagation()}
+            >
               <Box
                 sx={{
                   width: '100%',
@@ -692,6 +701,7 @@ export default function UserView() {
       <>
         <CollectionCard
           isUnsupported
+          linkComponent={NextLink}
           link={`https://opensea.io/collection/${osCollectionSlug}?ref=${OPENSEA_REFERRAL_LINK}`}
           avatarImage={imageUrl}
           name={name}

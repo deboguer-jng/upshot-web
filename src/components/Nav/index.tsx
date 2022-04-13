@@ -321,6 +321,7 @@ export const Nav = () => {
       >
         <BetaBanner variant={getVariant()} />
         <Navbar
+          linkComponent={NextLink}
           avatarImageUrl={address ? makeBlockie(address) : undefined}
           ensName={ens.name}
           searchValue={navSearchTerm}

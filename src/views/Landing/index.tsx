@@ -194,7 +194,6 @@ export default function LandingView() {
               display: 'grid',
             }}
             component={NextLink}
-            passHref
             noHover
           >
             <Panel

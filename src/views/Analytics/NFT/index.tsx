@@ -721,7 +721,7 @@ export default function NFTView() {
                         </Text>
                       </Flex>
                     )}
-                    <Chart data={chartData} embedded />
+                    <Chart data={chartData} linkComponent={NextLink} embedded />
                   </Flex>
                 </Panel>
               </Flex>
