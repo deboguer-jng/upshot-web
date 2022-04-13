@@ -302,8 +302,15 @@ export default function TopSellingCollectionNFTs({
             </>
           ) : (
             <>
-              {collectionData?.searchCollectionByMetric.assetSets.map(
-                ({ id, name, imageUrl, latestStats }) => (
+              {[...collectionData?.searchCollectionByMetric.assetSets]
+                ?.sort((a, b) => {
+                  let aVolume = parseInt(getPeriodPrice(a.latestStats))
+                  let bVolume = parseInt(getPeriodPrice(b.latestStats))
+                  if (aVolume < bVolume) return 1
+                  if (aVolume === bVolume) return 0
+                  return -1
+                })
+                .map(({ id, name, imageUrl, latestStats }) => (
                   <Link key={id} href={`/analytics/collection/${id}`}>
                     <Link noHover>
                       <MiniNftCard
@@ -331,8 +338,7 @@ export default function TopSellingCollectionNFTs({
                       />
                     </Link>
                   </Link>
-                )
-              )}
+                ))}
             </>
           )}
         </MiniNFTContainer>
