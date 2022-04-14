@@ -14,6 +14,7 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE, PIXELATED_CONTRACTS } from 'constants/'
 import { ethers } from 'ethers'
+import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { shortenAddress } from 'utils/address'
@@ -181,6 +182,7 @@ export default function Collectors({
               idx
             ) => (
               <CollectorAccordionRow
+                linkComponent={NextLink}
                 isLandingPage={isLandingPage}
                 address={addresses?.[0].address}
                 firstAcquisition={firstAssetPurchaseTime}

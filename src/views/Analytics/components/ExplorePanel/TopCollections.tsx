@@ -16,6 +16,7 @@ import {
   TableRow,
 } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE } from 'constants/'
+import NextLink from 'next/link'
 import router from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
@@ -289,6 +290,7 @@ export default function ExploreCollections({
                   : undefined
               }
               fullWidth={isMobile}
+              linkComponent={NextLink}
               {...{ variant }}
             >
               {isMobile ? (
@@ -357,7 +359,11 @@ export default function ExploreCollections({
               ) : (
                 <>
                   <TableCell sx={{ maxWidth: 50 }}>
-                    <Link href={`/analytics/collection/${id}`} noHover>
+                    <Link
+                      href={`/analytics/collection/${id}`}
+                      component={NextLink}
+                      noHover
+                    >
                       {latestStats?.pastWeekWeiVolume
                         ? formatNumber(latestStats.pastWeekWeiVolume, {
                             fromWei: true,
@@ -369,7 +375,11 @@ export default function ExploreCollections({
                     </Link>
                   </TableCell>
                   <TableCell sx={{ maxWidth: 50 }}>
-                    <Link href={`/analytics/collection/${id}`} noHover>
+                    <Link
+                      href={`/analytics/collection/${id}`}
+                      component={NextLink}
+                      noHover
+                    >
                       {latestStats?.pastDayWeiAverage
                         ? formatNumber(latestStats.pastDayWeiAverage, {
                             fromWei: true,
@@ -381,7 +391,11 @@ export default function ExploreCollections({
                     </Link>
                   </TableCell>
                   <TableCell sx={{ maxWidth: 50 }}>
-                    <Link href={`/analytics/collection/${id}`} noHover>
+                    <Link
+                      href={`/analytics/collection/${id}`}
+                      component={NextLink}
+                      noHover
+                    >
                       {latestStats?.floor
                         ? formatNumber(latestStats.floor, {
                             fromWei: true,
@@ -397,7 +411,11 @@ export default function ExploreCollections({
                       color: getPriceChangeColor(latestStats?.weekFloorChange),
                     }}
                   >
-                    <Link href={`/analytics/collection/${id}`} noHover>
+                    <Link
+                      href={`/analytics/collection/${id}`}
+                      component={NextLink}
+                      noHover
+                    >
                       {getPriceChangeLabel(latestStats?.weekFloorChange)}
                     </Link>
                   </TableCell>

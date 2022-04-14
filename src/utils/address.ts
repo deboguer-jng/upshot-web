@@ -29,10 +29,9 @@ export function shortenAddress(
  * @returns string
  */
 export const extractEns = (
-   addresses: {address: string, ens: string}[] | undefined,
-   address: string
+  addresses: { address: string; ens: string }[] | undefined,
+  address: string
 ) => {
-  if (typeof addresses === 'undefined')
-    return null
-  return addresses.find(addresses => addresses.address === address)?.ens
+  if (typeof addresses === 'undefined') return null
+  return addresses.find((addresses) => addresses.address === address)?.ens
 }

@@ -20,6 +20,7 @@ import {
   useTheme,
 } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE } from 'constants/'
+import NextLink from 'next/link'
 import router from 'next/router'
 import { useEffect, useState } from 'react'
 
@@ -257,6 +258,7 @@ export default function ExploreTraits({
               defaultOpen={idx === 0 ? true : false}
               onClick={() => handleRedirectToSearch(id, collectionId)}
               href={`/analytics/search?traits=${id}&collectionId=${collectionId}`}
+              linkComponent={NextLink}
             >
               {isMobile ? (
                 <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>
@@ -332,19 +334,31 @@ export default function ExploreTraits({
               ) : (
                 <>
                   <TableCell sx={{ maxWidth: 50 }}>
-                    <Link href={`/analytics/search?traits=${id}&collectionId=${collectionId}`} noHover>
+                    <Link
+                      href={`/analytics/search?traits=${id}&collectionId=${collectionId}`}
+                      component={NextLink}
+                      noHover
+                    >
                       {dataCheck(traitType)}
                     </Link>
                   </TableCell>
                   <TableCell sx={{ maxWidth: 50 }}>
-                    <Link href={`/analytics/search?traits=${id}&collectionId=${collectionId}`} noHover>
+                    <Link
+                      href={`/analytics/search?traits=${id}&collectionId=${collectionId}`}
+                      component={NextLink}
+                      noHover
+                    >
                       {rarity
                         ? (100 - rarity * 100).toFixed(2).toString() + '%'
                         : '-'}
                     </Link>
                   </TableCell>
                   <TableCell sx={{ maxWidth: 50 }}>
-                    <Link href={`/analytics/search?traits=${id}&collectionId=${collectionId}`} noHover>
+                    <Link
+                      href={`/analytics/search?traits=${id}&collectionId=${collectionId}`}
+                      component={NextLink}
+                      noHover
+                    >
                       {floor
                         ? formatNumber(floor, {
                             fromWei: true,
@@ -355,7 +369,11 @@ export default function ExploreTraits({
                     </Link>
                   </TableCell>
                   <TableCell sx={{ maxWidth: 50 }}>
-                    <Link href={`/analytics/search?traits=${id}&collectionId=${collectionId}`} noHover>
+                    <Link
+                      href={`/analytics/search?traits=${id}&collectionId=${collectionId}`}
+                      component={NextLink}
+                      noHover
+                    >
                       {floorUsd
                         ? formatNumber(floorUsd, {
                             fromWei: true,

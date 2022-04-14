@@ -35,6 +35,7 @@ import makeBlockie from 'ethereum-blockies-base64'
 import { ethers } from 'ethers'
 import { Masonry, useInfiniteLoader } from 'masonic'
 import Head from 'next/head'
+import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { transparentize } from 'polished'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -211,14 +212,17 @@ export default function UserView() {
     useState(false)
 
   /* Address formatting */
+  const [address, setAddress] = useState('')
   const [addressFormatted, setAddressFormatted] = useState<string>()
   const [errorAddress, setErrorAddress] = useState(false)
-  const address = router.query.address as string
   const shortAddress = useMemo(() => shortenAddress(address), [address])
   const loadingAddressFormatted = !addressFormatted && !errorAddress
 
   useEffect(() => {
-    if (!address) return
+    if (!router.query.address) return
+
+    const address = router.query.address as string
+    setAddress(address)
 
     try {
       setAddressFormatted(ethers.utils.getAddress(address))
@@ -233,7 +237,7 @@ export default function UserView() {
        */
       setErrorAddress(true)
     }
-  }, [address])
+  }, [router.query])
 
   const collectionLimit = 8
 
@@ -316,9 +320,7 @@ export default function UserView() {
         limit: collectionLimit,
         offset: 0,
       },
-      skip:
-        !addressFormatted ||
-        !hasAllSupportedCollections,
+      skip: !addressFormatted || !hasAllSupportedCollections,
     }
   )
 
@@ -612,6 +614,7 @@ export default function UserView() {
     return (
       <CollectionCard
         {...price}
+        linkComponent={NextLink}
         hasSeeAll={count > 5}
         seeAllImageSrc={
           collection.ownerAssetsInCollection.assets[0]?.previewImageUrl
@@ -633,7 +636,12 @@ export default function UserView() {
         {collection.ownerAssetsInCollection.assets
           .slice(0, 5)
           .map(({ id, previewImageUrl, mediaUrl, contractAddress }, idx) => (
-            <Link href={`/analytics/nft/${id}`} key={idx}>
+            <Link
+              href={`/analytics/nft/${id}`}
+              component={NextLink}
+              key={idx}
+              onClick={(e) => e.stopPropagation()}
+            >
               <Box
                 sx={{
                   width: '100%',
@@ -693,6 +701,7 @@ export default function UserView() {
       <>
         <CollectionCard
           isUnsupported
+          linkComponent={NextLink}
           link={`https://opensea.io/collection/${osCollectionSlug}?ref=${OPENSEA_REFERRAL_LINK}`}
           avatarImage={imageUrl}
           name={name}
@@ -784,6 +793,7 @@ export default function UserView() {
                 nftCount={count}
                 onClick={() => handleShowCollection(collection.id)}
                 href={'/analytics/collection/' + collection.id}
+                linkComponent={NextLink}
               />
             )
           )}
@@ -808,9 +818,13 @@ export default function UserView() {
                   key={idx}
                   onClick={() => handleShowCollection(collection.id)}
                   href={'/analytics/collection/' + collection.id}
+                  linkComponent={NextLink}
                 >
                   <TableCell sx={{ color: 'blue' }}>
-                    <Link href={'/analytics/collection/' + collection.id}>
+                    <Link
+                      href={'/analytics/collection/' + collection.id}
+                      component={NextLink}
+                    >
                       {count}
                     </Link>
                   </TableCell>
@@ -1291,7 +1305,11 @@ export default function UserView() {
                         </Flex>
                       ) : !!txHistoryData?.getTxHistory?.txHistory?.count ? (
                         <Box
-                          sx={{ position: 'relative', height: '300px' }}
+                          sx={{
+                            position: 'relative',
+                            height: '300px',
+                            overflow: 'auto',
+                          }}
                           css={theme.scroll.thin.styles}
                         >
                           <InfiniteLoader
@@ -1318,6 +1336,28 @@ export default function UserView() {
                                         width={width}
                                         height={270}
                                         rowHeight={30}
+                                        sx={{
+                                          width: 680,
+                                          '& .ReactVirtualized__Table__headerRow':
+                                            {
+                                              width: '100%!important',
+                                            },
+                                          '& .ReactVirtualized__Table__Grid': {
+                                            width: '100%!important',
+                                          },
+                                          '& > .ReactVirtualized__Grid>.ReactVirtualized__Grid__innerScrollContainer':
+                                            {
+                                              width: '100%!important',
+                                              maxWidth: 'unset!important',
+                                              overflow: 'auto!important',
+                                              maxHeight: 'unset!important',
+                                              minHeight: '100%!important',
+                                            },
+                                          '& > .ReactVirtualized__Grid> .ReactVirtualized__Grid__innerScrollContainer > .ReactVirtualized__Table__row':
+                                            {
+                                              width: '100%!important',
+                                            },
+                                        }}
                                         rowCount={
                                           txHistoryData?.getTxHistory?.txHistory
                                             ?.count
@@ -1353,10 +1393,143 @@ export default function UserView() {
                                             )
                                           }}
                                           cellDataGetter={() => {}}
-                                          width={width * 0.4}
+                                          width={120}
+                                          style={{ width: 120 }}
                                         />
                                         <Column
-                                          width={width * 0.6}
+                                          label="NFT"
+                                          dataKey="name"
+                                          headerRenderer={({ label }) =>
+                                            headerRenderer(label)
+                                          }
+                                          cellRenderer={({ rowData }) => {
+                                            return (
+                                              <Link
+                                                href={`/analytics/nft/${rowData?.asset?.id}`}
+                                                component={NextLink}
+                                                sx={{
+                                                  display: 'block',
+                                                  textOverflow: 'ellipsis',
+                                                  overflow: 'hidden',
+                                                }}
+                                              >
+                                                {rowData?.asset?.name}
+                                              </Link>
+                                            )
+                                          }}
+                                          cellDataGetter={() => {}}
+                                          width={120}
+                                        />
+                                        <Column
+                                          label="Sender"
+                                          dataKey="txFromAddress"
+                                          headerRenderer={({ label }) =>
+                                            headerRenderer(label)
+                                          }
+                                          cellDataGetter={() => {}}
+                                          width={120}
+                                          cellRenderer={({ rowData }) => {
+                                            return (
+                                              <Grid
+                                                sx={{
+                                                  alignItems: 'center',
+                                                  gap: 1,
+                                                  gridTemplateColumns:
+                                                    '12px auto',
+                                                  overflow: 'hidden',
+                                                }}
+                                              >
+                                                <Box
+                                                  sx={{
+                                                    borderRadius: 'circle',
+                                                    bg: 'yellow',
+                                                    width: 3,
+                                                    height: 3,
+                                                  }}
+                                                />
+                                                <Link
+                                                  href={`/analytics/user/${rowData?.txFromAddress}`}
+                                                  component={NextLink}
+                                                  sx={{
+                                                    display: 'block',
+                                                    overflow: 'hidden',
+                                                    fontSize: 2.5,
+                                                  }}
+                                                >
+                                                  <Text
+                                                    sx={{
+                                                      display: 'block',
+                                                      overflow: 'hidden',
+                                                      textOverflow: 'ellipsis',
+                                                    }}
+                                                  >
+                                                    {extractEns(
+                                                      rowData?.txFromUser
+                                                        ?.addresses,
+                                                      rowData?.txFromAddress
+                                                    ) ?? rowData?.txFromAddress}
+                                                  </Text>
+                                                </Link>
+                                              </Grid>
+                                            )
+                                          }}
+                                        />
+                                        <Column
+                                          width={120}
+                                          label="Recipient"
+                                          dataKey="txToAddress"
+                                          headerRenderer={({ label }) =>
+                                            headerRenderer(label)
+                                          }
+                                          cellDataGetter={() => {}}
+                                          cellRenderer={({ rowData }) => {
+                                            return (
+                                              <TableCell
+                                                sx={{
+                                                  display: 'grid',
+                                                  alignItems: 'center',
+                                                  gridTemplateColumns:
+                                                    '12px auto',
+                                                  gap: 1,
+                                                }}
+                                              >
+                                                <Box
+                                                  sx={{
+                                                    borderRadius: 'circle',
+                                                    bg: 'purple',
+                                                    width: 3,
+                                                    height: 3,
+                                                  }}
+                                                />
+                                                <Link
+                                                  href={`/analytics/user/${rowData?.txToAddress}`}
+                                                  component={NextLink}
+                                                  sx={{
+                                                    display: 'block',
+                                                    overflow: 'hidden',
+                                                    fontSize: 2.5,
+                                                  }}
+                                                >
+                                                  <Text
+                                                    sx={{
+                                                      display: 'block',
+                                                      overflow: 'hidden',
+                                                      textOverflow: 'ellipsis',
+                                                    }}
+                                                  >
+                                                    {extractEns(
+                                                      rowData?.txToUser
+                                                        ?.addresses,
+                                                      rowData?.txToAddress
+                                                    ) ?? rowData?.txToAddress}
+                                                  </Text>
+                                                </Link>
+                                              </TableCell>
+                                            )
+                                          }}
+                                        />
+                                        <Column
+                                          width={120}
                                           label="Sale Price"
                                           dataKey="price"
                                           headerRenderer={({ label }) =>
@@ -1422,6 +1595,7 @@ export default function UserView() {
                                                   target="_blank"
                                                   title="Open transaction on Etherscan"
                                                   rel="noopener noreferrer nofollow"
+                                                  component={NextLink}
                                                 >
                                                   <IconButton
                                                     sx={{
@@ -1503,8 +1677,10 @@ export default function UserView() {
                                             return (
                                               <Link
                                                 href={`/analytics/nft/${rowData?.asset?.id}`}
+                                                component={NextLink}
                                               >
                                                 <Link
+                                                  component={NextLink}
                                                   sx={{
                                                     display: 'block',
                                                     textOverflow: 'ellipsis',
@@ -1548,6 +1724,7 @@ export default function UserView() {
                                                 />
                                                 <Link
                                                   href={`/analytics/user/${rowData?.txFromAddress}`}
+                                                  component={NextLink}
                                                   sx={{
                                                     display: 'block',
                                                     overflow: 'hidden',
@@ -1601,6 +1778,7 @@ export default function UserView() {
                                                 />
                                                 <Link
                                                   href={`/analytics/user/${rowData?.txToAddress}`}
+                                                  component={NextLink}
                                                   sx={{
                                                     display: 'block',
                                                     overflow: 'hidden',
@@ -1691,6 +1869,7 @@ export default function UserView() {
                                                   target="_blank"
                                                   title="Open transaction on Etherscan"
                                                   rel="noopener noreferrer nofollow"
+                                                  component={NextLink}
                                                 >
                                                   <IconButton
                                                     sx={{
@@ -1837,23 +2016,23 @@ export default function UserView() {
             key={data?.getUser?.extraCollections?.collectionAssetCounts?.length}
           />
           {!!dataUnsupportedCollections?.getUnsupportedCollectionPage
-              ?.collections?.length && (
-              <>
-                <Text variant="h1Primary">Unappraised</Text>
-                <Masonry
-                  columnWidth={300}
-                  columnGutter={16}
-                  rowGutter={16}
-                  items={
-                    dataUnsupportedCollections?.getUnsupportedCollectionPage
-                      ?.collections ?? []
-                  }
-                  render={RenderUnsupportedMasonry}
-                  onRender={maybeLoadMoreUnsupportedCollections}
-                  style={{ outline: 'none' }}
-                />
-              </>
-            )}
+            ?.collections?.length && (
+            <>
+              <Text variant="h1Primary">Unappraised</Text>
+              <Masonry
+                columnWidth={300}
+                columnGutter={16}
+                rowGutter={16}
+                items={
+                  dataUnsupportedCollections?.getUnsupportedCollectionPage
+                    ?.collections ?? []
+                }
+                render={RenderUnsupportedMasonry}
+                onRender={maybeLoadMoreUnsupportedCollections}
+                style={{ outline: 'none' }}
+              />
+            </>
+          )}
         </Flex>
       </Layout>
       <Modal
@@ -1877,6 +2056,7 @@ export default function UserView() {
         ) : (
           <Box sx={{ width: '95vw' }}>
             <CollectionCardExpanded
+              linkComponent={NextLink}
               avatarImage={showCollection?.imageUrl}
               name={showCollection?.name ?? ''}
               total={showCollection?.numOwnedAssets ?? 0}

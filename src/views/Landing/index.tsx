@@ -15,6 +15,7 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import Head from 'next/head'
+import NextLink from 'next/link'
 import { useState } from 'react'
 import { Image } from 'theme-ui'
 
@@ -32,28 +33,6 @@ type PanelData = {
   description: string
   image?: any
   url: string
-}
-
-// Render function for Discover panels
-function renderLandingPanel(data: PanelData) {
-  return (
-    <Link
-      href={data.url}
-      target="_blank"
-      sx={{
-        color: 'initial',
-        display: 'grid'
-      }}
-      noHover
-    >
-      <LandingPanel
-        projectType={data.projectType}
-        title={data.title}
-        description={data.description}
-        image={data.image?.src}
-      />
-    </Link>
-  )
 }
 
 export default function LandingView() {
@@ -148,14 +127,22 @@ export default function LandingView() {
               </Box>
               <Flex sx={{ gridGap: '14px', marginTop: '20px' }}>
                 <Box>
-                  <Link href="https://discord.gg/upshot" target="_blank">
+                  <Link
+                    href="https://discord.gg/upshot"
+                    target="_blank"
+                    component={NextLink}
+                  >
                     <IconButton>
                       <Icon color="purple" icon="discord" size={32} />
                     </IconButton>
                   </Link>
                 </Box>
                 <Box>
-                  <Link href="https://twitter.com/upshothq" target="_blank">
+                  <Link
+                    href="https://twitter.com/upshothq"
+                    target="_blank"
+                    component={NextLink}
+                  >
                     <IconButton>
                       <Icon color="blue" icon="twitterCircle" size={32} />
                     </IconButton>
@@ -165,6 +152,7 @@ export default function LandingView() {
                   <Link
                     href="https://jobs.lever.co/upshot.io"
                     target="_blank"
+                    component={NextLink}
                     noHover
                   >
                     <Button
@@ -205,6 +193,7 @@ export default function LandingView() {
               color: theme.colors.text + ' !important',
               display: 'grid',
             }}
+            component={NextLink}
             noHover
           >
             <Panel
@@ -248,7 +237,7 @@ export default function LandingView() {
                 <Text variant="h1Secondary">Analytics</Text>
                 <Text
                   variant="large"
-                  sx={{ 
+                  sx={{
                     display: 'block',
                     whiteSpace: 'normal',
                     width: ['100%', null, null, '50%'],
@@ -268,6 +257,7 @@ export default function LandingView() {
                   color: theme.colors.text + ' !important',
                   display: 'grid',
                 }}
+                component={NextLink}
                 noHover
               >
                 <Panel
@@ -313,7 +303,7 @@ export default function LandingView() {
                     </Text>
                     <Text
                       variant="large"
-                      sx={{ display: 'block',  whiteSpace: 'normal' }}
+                      sx={{ display: 'block', whiteSpace: 'normal' }}
                     >
                       Integrate Upshot data into your project.
                     </Text>
@@ -327,6 +317,7 @@ export default function LandingView() {
                   color: theme.colors.text + ' !important',
                   display: 'grid',
                 }}
+                component={NextLink}
                 noHover
               >
                 <Panel
@@ -371,7 +362,7 @@ export default function LandingView() {
                     <Text variant="h1Secondary">Blog</Text>
                     <Text
                       variant="large"
-                      sx={{ display: 'block', whiteSpace: 'normal', }}
+                      sx={{ display: 'block', whiteSpace: 'normal' }}
                     >
                       Learn more about NFTxDeFI
                     </Text>

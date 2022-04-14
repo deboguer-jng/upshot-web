@@ -14,6 +14,7 @@ import {
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { PAGE_SIZE } from 'constants/'
 import { formatDistance } from 'date-fns'
+import NextLink from 'next/link'
 import router from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
@@ -292,6 +293,7 @@ export default function ExploreNFTs({
               onClick={() => handleShowNFT(id)}
               pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
               href={`/analytics/nft/${id}`}
+              linkComponent={NextLink}
             >
               {isMobile ? (
                 <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>
@@ -376,7 +378,11 @@ export default function ExploreNFTs({
               ) : (
                 <>
                   <TableCell sx={{ maxWidth: 100 }}>
-                    <Link href={`/analytics/nft/${id}`} noHover>
+                    <Link
+                      href={`/analytics/nft/${id}`}
+                      component={NextLink}
+                      noHover
+                    >
                       {lastSale?.timestamp
                         ? formatDistance(
                             lastSale.timestamp * 1000,
@@ -386,7 +392,11 @@ export default function ExploreNFTs({
                     </Link>
                   </TableCell>
                   <TableCell sx={{ maxWidth: 100 }}>
-                    <Link href={`/analytics/nft/${id}`} noHover>
+                    <Link
+                      href={`/analytics/nft/${id}`}
+                      component={NextLink}
+                      noHover
+                    >
                       {lastSale?.ethSalePrice
                         ? formatNumber(lastSale.ethSalePrice, {
                             decimals: 4,
@@ -397,7 +407,11 @@ export default function ExploreNFTs({
                     </Link>
                   </TableCell>
                   <TableCell sx={{ maxWidth: 100 }}>
-                    <Link href={`/analytics/nft/${id}`} noHover>
+                    <Link
+                      href={`/analytics/nft/${id}`}
+                      component={NextLink}
+                      noHover
+                    >
                       {lastAppraisalWeiPrice
                         ? formatNumber(lastAppraisalWeiPrice, {
                             decimals: 4,
@@ -413,7 +427,11 @@ export default function ExploreNFTs({
                       color: getPriceChangeColor(lastAppraisalSaleRatio),
                     }}
                   >
-                    <Link href={`/analytics/nft/${id}`} noHover>
+                    <Link
+                      href={`/analytics/nft/${id}`}
+                      component={NextLink}
+                      noHover
+                    >
                       {getUnderOverPricedLabel(lastAppraisalSaleRatio)}
                     </Link>
                   </TableCell>

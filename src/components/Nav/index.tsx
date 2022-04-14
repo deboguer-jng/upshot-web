@@ -21,6 +21,7 @@ import {
   GetNavBarCollectionsData,
   GetNavBarCollectionsVars,
 } from 'graphql/queries'
+import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
@@ -215,6 +216,7 @@ export const Nav = () => {
         <Flex sx={{ flexDirection: 'column', gap: '32px' }}>
           <SideLink
             href="/"
+            component={NextLink}
             sx={{ fontSize: 6, fontWeight: 'heading' }}
             $isActive={router.pathname === '/'}
           >
@@ -222,6 +224,7 @@ export const Nav = () => {
           </SideLink>
           <SideLink
             href="/analytics"
+            component={NextLink}
             sx={{ fontSize: 6, fontWeight: 'heading' }}
             $isActive={router.pathname === '/analytics'}
             onClick={handleToggleMenu}
@@ -230,6 +233,7 @@ export const Nav = () => {
           </SideLink>
           <SideLink
             href="https://docs.upshot.xyz"
+            component={NextLink}
             sx={{ fontSize: 6, fontWeight: 'heading' }}
             target="_blank"
             onClick={handleToggleMenu}
@@ -237,6 +241,7 @@ export const Nav = () => {
             API Docs
           </SideLink>
           <SideLink
+            component={NextLink}
             href="https://jv3yfpod32j.typeform.com/to/CZ28JWz9"
             sx={{ fontSize: 6, fontWeight: 'heading' }}
             target="_blank"
@@ -259,6 +264,7 @@ export const Nav = () => {
           href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
           target="_blank"
           rel="noreferrer"
+          component={NextLink}
         >
           <IconButton onClick={handleToggleMenu}>
             <Icon color="white" icon="mirror" size={32} />
@@ -269,13 +275,19 @@ export const Nav = () => {
           href="https://twitter.com/upshothq"
           target="_blank"
           rel="noreferrer"
+          component={NextLink}
         >
           <IconButton onClick={handleToggleMenu}>
             <Icon color="white" icon="twitterCircle" size={32} />
           </IconButton>
         </Link>
 
-        <Link href="https://discord.gg/upshot" target="_blank" rel="noreferrer">
+        <Link
+          href="https://discord.gg/upshot"
+          target="_blank"
+          rel="noreferrer"
+          component={NextLink}
+        >
           <IconButton onClick={handleToggleMenu}>
             <Icon color="white" icon="discord" size={32} />
           </IconButton>
@@ -285,6 +297,7 @@ export const Nav = () => {
           href="https://www.instagram.com/upshot.hq/"
           target="_blank"
           rel="noreferrer"
+          component={NextLink}
         >
           <IconButton onClick={handleToggleMenu}>
             <Icon color="white" icon="instagramCircle" size={32} />
@@ -308,6 +321,7 @@ export const Nav = () => {
       >
         <BetaBanner variant={getVariant()} />
         <Navbar
+          linkComponent={NextLink}
           avatarImageUrl={address ? makeBlockie(address) : undefined}
           ensName={ens.name}
           searchValue={navSearchTerm}

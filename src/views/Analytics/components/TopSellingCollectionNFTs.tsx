@@ -13,6 +13,7 @@ import {
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { formatDistance } from 'date-fns'
 import { BigNumber as BN } from 'ethers'
+import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { shortenAddress } from 'utils/address'
@@ -275,7 +276,12 @@ export default function TopSellingCollectionNFTs({
                   },
                   key
                 ) => (
-                  <Link key={key} href={'/analytics/nft/' + id} noHover>
+                  <Link
+                    key={key}
+                    href={'/analytics/nft/' + id}
+                    component={NextLink}
+                    noHover
+                  >
                     <MiniNftCard
                       price={
                         price
@@ -286,6 +292,7 @@ export default function TopSellingCollectionNFTs({
                             })
                           : undefined
                       }
+                      linkComponent={NextLink}
                       to={shortenAddress(txToAddress, 2, 4)}
                       toLink={`/analytics/user/${txToAddress}`}
                       from={shortenAddress(txFromAddress, 2, 4)}
@@ -311,32 +318,36 @@ export default function TopSellingCollectionNFTs({
                   return -1
                 })
                 .map(({ id, name, imageUrl, latestStats }) => (
-                  <Link key={id} href={`/analytics/collection/${id}`}>
-                    <Link noHover>
-                      <MiniNftCard
-                        tooltip={`volume / ${period}`}
-                        price={
-                          getPeriodPrice(latestStats)
-                            ? formatNumber(getPeriodPrice(latestStats), {
-                                fromWei: true,
-                                kmbUnits: true,
-                                decimals: 2,
-                                prefix: 'ETHER',
-                              })
-                            : undefined
-                        }
-                        name={name}
-                        type="collection"
-                        image={imageUrl}
-                        floorPrice={
-                          latestStats?.floor
-                            ? formatNumber(latestStats.floor, { fromWei: true })
-                            : undefined
-                        }
-                        sales={getSalesNumber(latestStats)}
-                        link={`/analytics/collection/${id}`}
-                      />
-                    </Link>
+                  <Link
+                    key={id}
+                    href={`/analytics/collection/${id}`}
+                    component={NextLink}
+                    noHover
+                  >
+                    <MiniNftCard
+                      tooltip={`volume / ${period}`}
+                      price={
+                        getPeriodPrice(latestStats)
+                          ? formatNumber(getPeriodPrice(latestStats), {
+                              fromWei: true,
+                              kmbUnits: true,
+                              decimals: 2,
+                              prefix: 'ETHER',
+                            })
+                          : undefined
+                      }
+                      linkComponent={NextLink}
+                      name={name}
+                      type="collection"
+                      image={imageUrl}
+                      floorPrice={
+                        latestStats?.floor
+                          ? formatNumber(latestStats.floor, { fromWei: true })
+                          : undefined
+                      }
+                      sales={getSalesNumber(latestStats)}
+                      link={`/analytics/collection/${id}`}
+                    />
                   </Link>
                 ))}
             </>
