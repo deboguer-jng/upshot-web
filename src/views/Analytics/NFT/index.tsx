@@ -845,7 +845,12 @@ export default function NFTView() {
                                   </TableCell>
                                 </>
                               )}
-                              <TableCell sx={{ minWidth: 120, color: 'pink' }}>
+                              <TableCell
+                                sx={{
+                                  minWidth: [100, 100, 100, 180],
+                                  color: 'pink',
+                                }}
+                              >
                                 {'SALE' === type &&
                                   price &&
                                   formatNumber(price, {

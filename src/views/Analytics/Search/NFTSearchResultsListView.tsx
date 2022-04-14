@@ -77,7 +77,7 @@ function NFTSearchResultsHead({
       ) : (
         <TableHead>
           <TableRow>
-            <TableCell></TableCell>
+            <TableCell />
             <TableCell
               color="grey-500"
               sx={{
@@ -85,6 +85,7 @@ function NFTSearchResultsHead({
                 color: selectedColumn === 0 ? 'white' : null,
                 userSelect: 'none',
                 transition: 'default',
+                width: '100%!important',
                 '& svg path': {
                   transition: 'default',
                   '&:nth-of-type(1)': {
@@ -101,7 +102,7 @@ function NFTSearchResultsHead({
                   },
                 },
               }}
-            ></TableCell>
+            />
             {Object.values(columns).map((col, idx) => (
               <TableCell
                 key={idx}
@@ -113,7 +114,7 @@ function NFTSearchResultsHead({
                   color: selectedColumn === idx ? 'white' : null,
                   transition: 'default',
                   userSelect: 'none',
-                  minWidth: 120,
+                  minWidth: [100, 100, 100, 180],
                   '& svg path': {
                     transition: 'default',
                     '&:nth-child(1)': {
