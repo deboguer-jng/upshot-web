@@ -11,13 +11,13 @@ import {
   useBreakpointIndex,
 } from '@upshot-tech/upshot-ui'
 import { PIXELATED_CONTRACTS } from 'constants/'
-import { formatDistance } from 'date-fns'
 import { BigNumber as BN } from 'ethers'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { shortenAddress } from 'utils/address'
 
+import { formatDistance } from '../../../utils/time'
 import {
   GET_COLLECTIONS_BY_METRIC,
   GET_TOP_SALES,
@@ -288,7 +288,7 @@ export default function TopSellingCollectionNFTs({
                       fromLink={`/analytics/user/${txFromAddress}`}
                       rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
                       image={previewImageUrl ?? mediaUrl}
-                      date={formatDistance(txAt * 1000, new Date())}
+                      date={formatDistance(txAt * 1000)}
                       pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
                       link={`/analytics/collection/${collection?.id}`}
                     />
