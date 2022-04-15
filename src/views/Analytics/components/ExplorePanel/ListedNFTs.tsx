@@ -425,7 +425,7 @@ export default function ExploreListedNFTs({
                   <TableCell
                     sx={{
                       color: getPriceChangeColor(listAppraisalRatio),
-                      maxWidth: [100, 100, 200],
+                      maxWidth: 100,
                     }}
                   >
                     <Link

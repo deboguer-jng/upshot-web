@@ -355,7 +355,7 @@ export default function ExploreCollections({
                 </Grid>
               ) : (
                 <>
-                  <TableCell sx={{ maxWidth: 50 }}>
+                  <TableCell sx={{ maxWidth: 100 }}>
                     <Link
                       href={`/analytics/collection/${id}`}
                       component={NextLink}
@@ -371,7 +371,7 @@ export default function ExploreCollections({
                         : '-'}
                     </Link>
                   </TableCell>
-                  <TableCell sx={{ maxWidth: 50 }}>
+                  <TableCell sx={{ maxWidth: 100 }}>
                     <Link
                       href={`/analytics/collection/${id}`}
                       component={NextLink}
@@ -387,7 +387,7 @@ export default function ExploreCollections({
                         : '-'}
                     </Link>
                   </TableCell>
-                  <TableCell sx={{ maxWidth: 50 }}>
+                  <TableCell sx={{ maxWidth: 100 }}>
                     <Link
                       href={`/analytics/collection/${id}`}
                       component={NextLink}
