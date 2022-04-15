@@ -90,13 +90,13 @@ function TraitStatsHead({
                   color: null,
                   transition: 'default',
                   userSelect: 'none',
-                  minWidth: 100,
+                  minWidth: [100, 100, 100, 180],
                 }}
               >
                 <Flex sx={{ alignItems: 'center' }}>
                   <Flex
                     sx={{
-                      whiteSpace: 'pre-wrap',
+                      'white-space': 'nowarp',
                       fontSize: '.85rem',
                     }}
                   >

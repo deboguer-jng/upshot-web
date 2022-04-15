@@ -77,7 +77,7 @@ function NFTSearchResultsHead({
       ) : (
         <TableHead>
           <TableRow>
-            <TableCell></TableCell>
+            <TableCell />
             <TableCell
               color="grey-500"
               sx={{
@@ -85,6 +85,7 @@ function NFTSearchResultsHead({
                 color: selectedColumn === 0 ? 'white' : null,
                 userSelect: 'none',
                 transition: 'default',
+                width: '100%!important',
                 '& svg path': {
                   transition: 'default',
                   '&:nth-of-type(1)': {
@@ -101,18 +102,19 @@ function NFTSearchResultsHead({
                   },
                 },
               }}
-            ></TableCell>
+            />
             {Object.values(columns).map((col, idx) => (
               <TableCell
                 key={idx}
                 color="grey-500"
+                colSpan={idx === Object.keys(columns).length - 1 ? 2 : 1}
                 onClick={() => onChangeSelection?.(idx)}
                 sx={{
                   cursor: 'pointer',
                   color: selectedColumn === idx ? 'white' : null,
                   transition: 'default',
                   userSelect: 'none',
-                  minWidth: 100,
+                  minWidth: [100, 100, 100, 180],
                   '& svg path': {
                     transition: 'default',
                     '&:nth-child(1)': {
@@ -133,7 +135,7 @@ function NFTSearchResultsHead({
                 <Flex sx={{ alignItems: 'center' }}>
                   <Flex
                     sx={{
-                      whiteSpace: 'pre-wrap',
+                      'white-space': 'nowarp',
                       fontSize: '.85rem',
                     }}
                   >
@@ -143,7 +145,6 @@ function NFTSearchResultsHead({
                 </Flex>
               </TableCell>
             ))}
-            <TableCell sx={{ width: '40px !important' }} />
           </TableRow>
         </TableHead>
       )}
@@ -213,6 +214,7 @@ export default function NFTSearchResults({
 }) {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
+  const isMobileOrTablet = breakpointIndex <= 2
 
   return (
     <>
@@ -359,7 +361,7 @@ export default function NFTSearchResults({
                         : '-'}
                     </Text>
                   </TableCell>
-                  <TableCell sx={{ maxWidth: 50 }}>
+                  <TableCell sx={{ maxWidth: [100, 100, null] }}>
                     <Text
                       variant="medium"
                       sx={{ color: getPriceChangeColor(listAppraisalRatio) }}

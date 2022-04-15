@@ -13,12 +13,12 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { PAGE_SIZE } from 'constants/'
-import { formatDistance } from 'date-fns'
 import NextLink from 'next/link'
 import router from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
 import { getUnderOverPricedLabel } from 'utils/number'
+import { formatDistance } from 'utils/time'
 
 import {
   GET_EXPLORE_NFTS,
@@ -63,18 +63,15 @@ function NFTTableHead({
       {!isMobile && (
         <TableHead>
           <TableRow>
-            <TableCell></TableCell>
+            <TableCell />
             <TableCell
               color="grey-500"
-              /**
-               * Collection sorting currently not available from API.
-               */
-              // onClick={() => handleChangeSelection(0)}
               sx={{
                 cursor: 'pointer',
                 color: selectedColumn === 0 ? 'white' : null,
                 userSelect: 'none',
                 transition: 'default',
+                width: '100%!important',
                 '& svg path': {
                   transition: 'default',
                   '&:nth-of-type(1)': {
@@ -91,20 +88,19 @@ function NFTTableHead({
                   },
                 },
               }}
-            >
-              {/* Unsortable name column */}
-            </TableCell>
+            />
             {Object.values(nftColumns).map((col, idx) => (
               <TableCell
                 key={idx}
                 color="grey-500"
+                colSpan={idx === Object.keys(nftColumns).length - 1 ? 2 : 1}
                 onClick={() => onChangeSelection?.(idx)}
                 sx={{
                   cursor: 'pointer',
                   color: selectedColumn === idx ? 'white' : null,
                   transition: 'default',
                   userSelect: 'none',
-                  minWidth: 100,
+                  minWidth: [100, 100, 100, 180],
                   '& svg path': {
                     transition: 'default',
                     '&:nth-child(1)': {
@@ -125,7 +121,7 @@ function NFTTableHead({
                 <Flex sx={{ alignItems: 'center', gap: 1 }}>
                   <Flex
                     sx={{
-                      whiteSpace: 'pre-wrap',
+                      'white-space': 'nowarp',
                       fontSize: '.85rem',
                     }}
                   >
@@ -135,7 +131,6 @@ function NFTTableHead({
                 </Flex>
               </TableCell>
             ))}
-            <TableCell sx={{ width: '40px !important' }} />
           </TableRow>
         </TableHead>
       )}
@@ -171,6 +166,7 @@ export function ExplorePanelSkeleton({
 const NFTItemsWrapper = ({ children, ...props }: NFTTableHeadProps) => {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
+
   return (
     <>
       {isMobile ? (
@@ -206,6 +202,8 @@ export default function ExploreNFTs({
 }) {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
+  const isMobileOrTablet = breakpointIndex <= 2
+
   const [page, setPage] = useState(0)
 
   const handlePageChange = ({ selected }: { selected: number }) => {
@@ -309,10 +307,7 @@ export default function ExploreNFTs({
                     </Text>
                     <Text>
                       {lastSale?.timestamp
-                        ? formatDistance(
-                            lastSale.timestamp * 1000,
-                            new Date()
-                          ) + ' ago'
+                        ? formatDistance(lastSale.timestamp * 1000) + ' ago'
                         : '-'}
                     </Text>
                   </Flex>
@@ -377,21 +372,18 @@ export default function ExploreNFTs({
                 </Grid>
               ) : (
                 <>
-                  <TableCell sx={{ maxWidth: 100 }}>
+                  <TableCell>
                     <Link
                       href={`/analytics/nft/${id}`}
                       component={NextLink}
                       noHover
                     >
                       {lastSale?.timestamp
-                        ? formatDistance(
-                            lastSale.timestamp * 1000,
-                            new Date()
-                          ) + ' ago'
+                        ? formatDistance(lastSale.timestamp * 1000) + ' ago'
                         : '-'}
                     </Link>
                   </TableCell>
-                  <TableCell sx={{ maxWidth: 100 }}>
+                  <TableCell>
                     <Link
                       href={`/analytics/nft/${id}`}
                       component={NextLink}
@@ -406,7 +398,7 @@ export default function ExploreNFTs({
                         : '-'}
                     </Link>
                   </TableCell>
-                  <TableCell sx={{ maxWidth: 100 }}>
+                  <TableCell>
                     <Link
                       href={`/analytics/nft/${id}`}
                       component={NextLink}
@@ -423,8 +415,8 @@ export default function ExploreNFTs({
                   </TableCell>
                   <TableCell
                     sx={{
-                      maxWidth: 100,
                       color: getPriceChangeColor(lastAppraisalSaleRatio),
+                      maxWidth: [100, 100, 200],
                     }}
                   >
                     <Link

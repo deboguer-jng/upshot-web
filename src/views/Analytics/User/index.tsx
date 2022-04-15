@@ -30,7 +30,7 @@ import { imageOptimizer, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import { OPENSEA_REFERRAL_LINK, PIXELATED_CONTRACTS } from 'constants/'
-import { format, formatDistance } from 'date-fns'
+import { format } from 'date-fns'
 import makeBlockie from 'ethereum-blockies-base64'
 import { ethers } from 'ethers'
 import { Masonry, useInfiniteLoader } from 'masonic'
@@ -48,6 +48,7 @@ import {
 } from 'react-virtualized'
 import { Label as LabelUI } from 'theme-ui'
 import { extractEns, shortenAddress } from 'utils/address'
+import { formatDistance } from 'utils/time'
 
 import Breadcrumbs from '../components/Breadcrumbs'
 import {
@@ -1115,8 +1116,7 @@ export default function UserView() {
                           {data?.getUser?.firstAssetPurchaseTime &&
                           !noCollection
                             ? formatDistance(
-                                data.getUser.firstAssetPurchaseTime * 1000,
-                                new Date()
+                                data.getUser.firstAssetPurchaseTime * 1000
                               )
                             : '-'}
                         </Text>
@@ -1259,10 +1259,7 @@ export default function UserView() {
                           }}
                         >
                           {data?.getUser?.avgHoldTime
-                            ? formatDistance(
-                                data.getUser.avgHoldTime * 1000,
-                                new Date(0)
-                              )
+                            ? formatDistance(data.getUser.avgHoldTime * 1000)
                             : '-'}
                         </Text>
                         <Text
