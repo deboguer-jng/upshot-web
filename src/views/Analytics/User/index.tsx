@@ -1116,8 +1116,7 @@ export default function UserView() {
                           {data?.getUser?.firstAssetPurchaseTime &&
                           !noCollection
                             ? formatDistance(
-                                data.getUser.firstAssetPurchaseTime * 1000,
-                                new Date()
+                                data.getUser.firstAssetPurchaseTime * 1000
                               )
                             : '-'}
                         </Text>
@@ -1260,10 +1259,7 @@ export default function UserView() {
                           }}
                         >
                           {data?.getUser?.avgHoldTime
-                            ? formatDistance(
-                                data.getUser.avgHoldTime * 1000,
-                                new Date(0)
-                              )
+                            ? formatDistance(data.getUser.avgHoldTime * 1000)
                             : '-'}
                         </Text>
                         <Text
