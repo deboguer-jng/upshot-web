@@ -416,7 +416,7 @@ export default function ExploreNFTs({
                   <TableCell
                     sx={{
                       color: getPriceChangeColor(lastAppraisalSaleRatio),
-                      maxWidth: [100, 100, 200],
+                      maxWidth: 100,
                     }}
                   >
                     <Link
