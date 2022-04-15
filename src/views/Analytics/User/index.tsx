@@ -30,6 +30,7 @@ import { imageOptimizer, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import { OPENSEA_REFERRAL_LINK, PIXELATED_CONTRACTS } from 'constants/'
+import { format } from 'date-fns'
 import makeBlockie from 'ethereum-blockies-base64'
 import { ethers } from 'ethers'
 import { Masonry, useInfiniteLoader } from 'masonic'
@@ -47,7 +48,7 @@ import {
 } from 'react-virtualized'
 import { Label as LabelUI } from 'theme-ui'
 import { extractEns, shortenAddress } from 'utils/address'
-import { format, formatDistance } from 'utils/time'
+import { formatDistance } from 'utils/time'
 
 import Breadcrumbs from '../components/Breadcrumbs'
 import {
