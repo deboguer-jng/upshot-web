@@ -213,7 +213,7 @@ export default function TopSellingCollectionNFTs({
   }
 
   const getSalesNumber = (state) => {
-    if (!state) return null
+    if (!state) return undefined
 
     switch (period) {
       case '1 day':
@@ -230,7 +230,7 @@ export default function TopSellingCollectionNFTs({
   }
 
   const getPeriodPrice = (state) => {
-    if (!state) return null
+    if (!state) return undefined
 
     switch (period) {
       case '1 day':
