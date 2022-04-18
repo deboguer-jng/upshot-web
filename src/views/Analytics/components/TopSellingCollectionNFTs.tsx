@@ -146,7 +146,12 @@ export default function TopSellingCollectionNFTs({
     {
       errorPolicy: 'all',
       variables: {
-        orderColumn: 'PAST_WEEK_VOLUME',
+        orderColumn:
+          period === '1 month'
+            ? 'PAST_MONTH_VOLUME'
+            : period === '1 week'
+            ? 'PAST_WEEK_VOLUME'
+            : 'PAST_DAY_VOLUME',
         orderDirection: 'DESC',
         limit: 100,
         offset: page * 100,
@@ -207,6 +212,8 @@ export default function TopSellingCollectionNFTs({
   }
 
   const getSalesNumber = (state) => {
+    if (!state) return null
+
     switch (period) {
       case '1 day':
         return `${BN.from(state.pastDayWeiVolume)
@@ -222,6 +229,8 @@ export default function TopSellingCollectionNFTs({
   }
 
   const getPeriodPrice = (state) => {
+    if (!state) return null
+
     switch (period) {
       case '1 day':
         return state.pastDayWeiVolume
@@ -302,15 +311,8 @@ export default function TopSellingCollectionNFTs({
             </>
           ) : (
             <>
-              {[...collectionData?.searchCollectionByMetric.assetSets]
-                ?.sort((a, b) => {
-                  let aVolume = parseInt(getPeriodPrice(a.latestStats))
-                  let bVolume = parseInt(getPeriodPrice(b.latestStats))
-                  if (aVolume < bVolume) return 1
-                  if (aVolume === bVolume) return 0
-                  return -1
-                })
-                .map(({ id, name, imageUrl, latestStats }) => (
+              {collectionData?.searchCollectionByMetric.assetSets?.map(
+                ({ id, name, imageUrl, latestStats }) => (
                   <Link key={id} href={`/analytics/collection/${id}`}>
                     <Link noHover>
                       <MiniNftCard
@@ -338,7 +340,8 @@ export default function TopSellingCollectionNFTs({
                       />
                     </Link>
                   </Link>
-                ))}
+                )
+              )}
             </>
           )}
         </MiniNFTContainer>
