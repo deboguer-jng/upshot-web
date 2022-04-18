@@ -20,6 +20,7 @@ import {
   useTheme,
 } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE } from 'constants/'
+import NextLink from 'next/link'
 import router from 'next/router'
 import { useEffect, useState } from 'react'
 
@@ -64,7 +65,7 @@ function TraitsTableHead({
       ) : (
         <TableHead>
           <TableRow>
-            <TableCell></TableCell>
+            <TableCell />
             <TableCell
               color="grey-500"
               sx={{
@@ -72,6 +73,7 @@ function TraitsTableHead({
                 color: selectedColumn === 0 ? 'white' : null,
                 userSelect: 'none',
                 transition: 'default',
+                width: '100%!important',
                 '& svg path': {
                   transition: 'default',
                   '&:nth-of-type(1)': {
@@ -88,18 +90,19 @@ function TraitsTableHead({
                   },
                 },
               }}
-            ></TableCell>
+            />
             {Object.values(traitColumns).map((col, idx) => (
               <TableCell
                 key={idx}
                 color="grey-500"
+                colSpan={idx === Object.keys(traitColumns).length - 1 ? 2 : 1}
                 onClick={() => onChangeSelection?.(idx)}
                 sx={{
                   cursor: 'pointer',
                   color: selectedColumn === idx ? 'white' : null,
                   transition: 'default',
                   userSelect: 'none',
-                  minWidth: 100,
+                  minWidth: [100, 100, 100, 180],
                   '& svg path': {
                     transition: 'default',
                     '&:nth-child(1)': {
@@ -120,7 +123,7 @@ function TraitsTableHead({
                 <Flex sx={{ alignItems: 'center' }}>
                   <Flex
                     sx={{
-                      whiteSpace: 'pre-wrap',
+                      'white-space': 'nowarp',
                       fontSize: '.85rem',
                     }}
                   >
@@ -130,7 +133,6 @@ function TraitsTableHead({
                 </Flex>
               </TableCell>
             ))}
-            <TableCell sx={{ width: '40px !important' }} />
           </TableRow>
         </TableHead>
       )}
@@ -257,6 +259,7 @@ export default function ExploreTraits({
               defaultOpen={idx === 0 ? true : false}
               onClick={() => handleRedirectToSearch(id, collectionId)}
               href={`/analytics/search?traits=${id}&collectionId=${collectionId}`}
+              linkComponent={NextLink}
             >
               {isMobile ? (
                 <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>
@@ -332,19 +335,31 @@ export default function ExploreTraits({
               ) : (
                 <>
                   <TableCell sx={{ maxWidth: 50 }}>
-                    <Link href={`/analytics/search?traits=${id}&collectionId=${collectionId}`} noHover>
+                    <Link
+                      href={`/analytics/search?traits=${id}&collectionId=${collectionId}`}
+                      component={NextLink}
+                      noHover
+                    >
                       {dataCheck(traitType)}
                     </Link>
                   </TableCell>
                   <TableCell sx={{ maxWidth: 50 }}>
-                    <Link href={`/analytics/search?traits=${id}&collectionId=${collectionId}`} noHover>
+                    <Link
+                      href={`/analytics/search?traits=${id}&collectionId=${collectionId}`}
+                      component={NextLink}
+                      noHover
+                    >
                       {rarity
                         ? (100 - rarity * 100).toFixed(2).toString() + '%'
                         : '-'}
                     </Link>
                   </TableCell>
-                  <TableCell sx={{ maxWidth: 50 }}>
-                    <Link href={`/analytics/search?traits=${id}&collectionId=${collectionId}`} noHover>
+                  <TableCell sx={{ maxWidth: [100, 100, 200] }}>
+                    <Link
+                      href={`/analytics/search?traits=${id}&collectionId=${collectionId}`}
+                      component={NextLink}
+                      noHover
+                    >
                       {floor
                         ? formatNumber(floor, {
                             fromWei: true,
@@ -354,8 +369,12 @@ export default function ExploreTraits({
                         : '-'}
                     </Link>
                   </TableCell>
-                  <TableCell sx={{ maxWidth: 50 }}>
-                    <Link href={`/analytics/search?traits=${id}&collectionId=${collectionId}`} noHover>
+                  <TableCell sx={{ maxWidth: [100, 100, 200] }}>
+                    <Link
+                      href={`/analytics/search?traits=${id}&collectionId=${collectionId}`}
+                      component={NextLink}
+                      noHover
+                    >
                       {floorUsd
                         ? formatNumber(floorUsd, {
                             fromWei: true,

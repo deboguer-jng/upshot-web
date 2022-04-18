@@ -1,4 +1,5 @@
 import { Icon, Link } from '@upshot-tech/upshot-ui'
+import NextLink from 'next/link'
 import { Flex, Text } from 'theme-ui'
 
 import { BetaBannerBase } from './Styled'
@@ -32,6 +33,7 @@ export const BetaBanner = ({ variant = 'beta' }: BetaBannerProps) => {
         <Text color="grey-400" sx={{ fontSize: 2 }}>
           This is a beta version of Upshot Analytics.{' '}
           <Link
+            component={NextLink}
             href="https://jv3yfpod32j.typeform.com/to/CZ28JWz9"
             target="_blank"
             rel="noopener noreferrer nofollow"

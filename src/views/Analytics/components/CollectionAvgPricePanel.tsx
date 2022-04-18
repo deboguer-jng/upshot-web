@@ -10,6 +10,7 @@ import {
   Link,
   useTheme,
 } from '@upshot-tech/upshot-ui'
+import NextLink from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 
 import {
@@ -105,7 +106,7 @@ export default function CollectionAvgPricePanel({
       </CollectionPanel>
     )
 
-  if (!data?.searchCollectionByMetric.assetSets.length)
+  if (!data?.searchCollectionByMetric?.assetSets?.length)
     return (
       <CollectionPanel {...{ title, subtitle }}>
         No results available.
@@ -142,6 +143,7 @@ export default function CollectionAvgPricePanel({
               <CollectionButton
                 icon={
                   <Link
+                    component={NextLink}
                     href={`/analytics/collection/${id}`}
                     sx={{
                       width: '100%',

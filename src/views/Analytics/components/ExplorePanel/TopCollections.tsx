@@ -16,6 +16,7 @@ import {
   TableRow,
 } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE } from 'constants/'
+import NextLink from 'next/link'
 import router from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
@@ -90,18 +91,15 @@ function CollectionTableHead({
       ) : (
         <TableHead>
           <TableRow>
-            <TableCell></TableCell>
+            <TableCell />
             <TableCell
               color="grey-500"
-              /**
-               * Collection sorting currently not available from API.
-               */
-              // onClick={() => handleChangeSelection(0)}
               sx={{
                 cursor: 'pointer',
                 color: selectedColumn === 0 ? 'white' : null,
                 transition: 'default',
                 userSelect: 'none',
+                width: '100%!important',
                 '& svg path': {
                   transition: 'default',
                   '&:nth-of-type(1)': {
@@ -118,20 +116,21 @@ function CollectionTableHead({
                   },
                 },
               }}
-            >
-              {/* Unsortable name column */}
-            </TableCell>
+            />
             {Object.values(collectionColumns).map((col, idx) => (
               <TableCell
                 key={idx}
                 color="grey-500"
+                colSpan={
+                  idx === Object.keys(collectionColumns).length - 1 ? 2 : 1
+                }
                 onClick={() => onChangeSelection?.(idx)}
                 sx={{
                   cursor: 'pointer',
                   color: selectedColumn === idx ? 'white' : null,
                   transition: 'default',
                   userSelect: 'none',
-                  minWidth: 100,
+                  minWidth: [100, 100, 100, 180],
                   '& svg path': {
                     transition: 'default',
                     '&:nth-child(1)': {
@@ -152,7 +151,7 @@ function CollectionTableHead({
                 <Flex sx={{ alignItems: 'center' }}>
                   <Flex
                     sx={{
-                      whiteSpace: 'pre-wrap',
+                      'white-space': 'nowarp',
                       fontSize: '.85rem',
                     }}
                   >
@@ -162,7 +161,6 @@ function CollectionTableHead({
                 </Flex>
               </TableCell>
             ))}
-            <TableCell sx={{ width: '40px !important' }} />
           </TableRow>
         </TableHead>
       )}
@@ -289,6 +287,7 @@ export default function ExploreCollections({
                   : undefined
               }
               fullWidth={isMobile}
+              linkComponent={NextLink}
               {...{ variant }}
             >
               {isMobile ? (
@@ -356,8 +355,12 @@ export default function ExploreCollections({
                 </Grid>
               ) : (
                 <>
-                  <TableCell sx={{ maxWidth: 50 }}>
-                    <Link href={`/analytics/collection/${id}`} noHover>
+                  <TableCell sx={{ maxWidth: 100 }}>
+                    <Link
+                      href={`/analytics/collection/${id}`}
+                      component={NextLink}
+                      noHover
+                    >
                       {latestStats?.pastWeekWeiVolume
                         ? formatNumber(latestStats.pastWeekWeiVolume, {
                             fromWei: true,
@@ -368,8 +371,12 @@ export default function ExploreCollections({
                         : '-'}
                     </Link>
                   </TableCell>
-                  <TableCell sx={{ maxWidth: 50 }}>
-                    <Link href={`/analytics/collection/${id}`} noHover>
+                  <TableCell sx={{ maxWidth: 100 }}>
+                    <Link
+                      href={`/analytics/collection/${id}`}
+                      component={NextLink}
+                      noHover
+                    >
                       {latestStats?.pastDayWeiAverage
                         ? formatNumber(latestStats.pastDayWeiAverage, {
                             fromWei: true,
@@ -380,8 +387,12 @@ export default function ExploreCollections({
                         : '-'}
                     </Link>
                   </TableCell>
-                  <TableCell sx={{ maxWidth: 50 }}>
-                    <Link href={`/analytics/collection/${id}`} noHover>
+                  <TableCell sx={{ maxWidth: 100 }}>
+                    <Link
+                      href={`/analytics/collection/${id}`}
+                      component={NextLink}
+                      noHover
+                    >
                       {latestStats?.floor
                         ? formatNumber(latestStats.floor, {
                             fromWei: true,
@@ -393,11 +404,15 @@ export default function ExploreCollections({
                   </TableCell>
                   <TableCell
                     sx={{
-                      maxWidth: 50,
+                      maxWidth: [100, 100, 200],
                       color: getPriceChangeColor(latestStats?.weekFloorChange),
                     }}
                   >
-                    <Link href={`/analytics/collection/${id}`} noHover>
+                    <Link
+                      href={`/analytics/collection/${id}`}
+                      component={NextLink}
+                      noHover
+                    >
                       {getPriceChangeLabel(latestStats?.weekFloorChange)}
                     </Link>
                   </TableCell>
