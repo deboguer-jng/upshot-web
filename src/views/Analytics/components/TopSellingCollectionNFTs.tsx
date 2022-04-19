@@ -147,7 +147,12 @@ export default function TopSellingCollectionNFTs({
     {
       errorPolicy: 'all',
       variables: {
-        orderColumn: 'PAST_WEEK_VOLUME',
+        orderColumn:
+          period === '1 month'
+            ? 'PAST_MONTH_VOLUME'
+            : period === '1 week'
+            ? 'PAST_WEEK_VOLUME'
+            : 'PAST_DAY_VOLUME',
         orderDirection: 'DESC',
         limit: 100,
         offset: page * 100,
@@ -208,17 +213,35 @@ export default function TopSellingCollectionNFTs({
   }
 
   const getSalesNumber = (state) => {
+    if (!state) return undefined
     switch (period) {
       case '1 day':
-        return `${BN.from(state.pastDayWeiVolume)
-          .div(BN.from(state.pastDayWeiAverage))
-          .toNumber()}`
+        return state.pastDayWeiAverage
+          ? `${BN.from(state.pastDayWeiVolume)
+              .div(BN.from(state.pastDayWeiAverage))
+              .toNumber()}`
+          : '0'
       case '1 week':
-        return `${BN.from(state.pastWeekWeiVolume)
-          .div(BN.from(state.pastWeekWeiAverage))
-          .toNumber()}`
+        return state.pastWeekWeiAverage
+          ? `${BN.from(state.pastWeekWeiVolume)
+              .div(BN.from(state.pastWeekWeiAverage))
+              .toNumber()}`
+          : '0'
       case '1 month':
         return `${state.pastMonthNumTxs}`
+    }
+  }
+
+  const getPeriodPrice = (state) => {
+    if (!state) return undefined
+
+    switch (period) {
+      case '1 day':
+        return state.pastDayWeiVolume
+      case '1 week':
+        return state.pastWeekWeiVolume
+      case '1 month':
+        return state.pastMonthWeiVolume
     }
   }
 
@@ -298,7 +321,7 @@ export default function TopSellingCollectionNFTs({
             </>
           ) : (
             <>
-              {collectionData?.searchCollectionByMetric.assetSets.map(
+              {collectionData?.searchCollectionByMetric.assetSets?.map(
                 ({ id, name, imageUrl, latestStats }) => (
                   <Link
                     key={id}
@@ -309,8 +332,8 @@ export default function TopSellingCollectionNFTs({
                     <MiniNftCard
                       tooltip={`volume / ${period}`}
                       price={
-                        latestStats?.pastDayWeiVolume
-                          ? formatNumber(latestStats.pastDayWeiVolume, {
+                        getPeriodPrice(latestStats)
+                          ? formatNumber(getPeriodPrice(latestStats), {
                               fromWei: true,
                               kmbUnits: true,
                               decimals: 2,
@@ -324,11 +347,7 @@ export default function TopSellingCollectionNFTs({
                       image={imageUrl}
                       floorPrice={
                         latestStats?.floor
-                          ? formatNumber(latestStats.floor, {
-                              fromWei: true,
-                              decimals: 2,
-                              prefix: 'ETHER',
-                            })
+                          ? formatNumber(latestStats.floor, { fromWei: true })
                           : undefined
                       }
                       sales={getSalesNumber(latestStats)}
