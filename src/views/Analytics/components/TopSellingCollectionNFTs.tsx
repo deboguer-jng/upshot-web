@@ -214,16 +214,19 @@ export default function TopSellingCollectionNFTs({
 
   const getSalesNumber = (state) => {
     if (!state) return undefined
-
     switch (period) {
       case '1 day':
-        return `${BN.from(state.pastDayWeiVolume)
-          .div(BN.from(state.pastDayWeiAverage))
-          .toNumber()}`
+        return state.pastDayWeiAverage
+          ? `${BN.from(state.pastDayWeiVolume)
+              .div(BN.from(state.pastDayWeiAverage))
+              .toNumber()}`
+          : 0
       case '1 week':
-        return `${BN.from(state.pastWeekWeiVolume)
-          .div(BN.from(state.pastWeekWeiAverage))
-          .toNumber()}`
+        return state.pastWeekWeiAverage
+          ? `${BN.from(state.pastWeekWeiVolume)
+              .div(BN.from(state.pastWeekWeiAverage))
+              .toNumber()}`
+          : 0
       case '1 month':
         return `${state.pastMonthNumTxs}`
     }
