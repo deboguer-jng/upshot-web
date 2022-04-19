@@ -60,11 +60,13 @@ yarn build
 ### Shortcuts
 
 Update the current branch and start development
+
 ```bash
 yarn pulld
 ```
 
 Checkout to the main branch of the repo, update, and start development
+
 ```bash
 yarn maind
 ```
