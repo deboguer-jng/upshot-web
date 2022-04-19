@@ -130,7 +130,7 @@ function CollectionTableHead({
                   color: selectedColumn === idx ? 'white' : null,
                   transition: 'default',
                   userSelect: 'none',
-                  minWidth: [100, 100, 100, 180],
+                  minWidth: [100, 100, 100, 120, 180],
                   '& svg path': {
                     transition: 'default',
                     '&:nth-child(1)': {
