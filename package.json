@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build && next export",
     "lint": "prettier --write . && eslint . --fix",
-    "storybook": "start-storybook -p 6006 -s ./public"
+    "pulld": "git pull && yarn install && yarn dev",
+    "maind": "git checkout staging && git pull && yarn install && yarn dev"
   },
   "dependencies": {
     "@apollo/client": "^3.5.8",

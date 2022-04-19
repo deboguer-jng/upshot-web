@@ -45,12 +45,6 @@ yarn
 yarn dev
 ```
 
-### Start storybook server
-
-```bash
-yarn storybook
-```
-
 ### Fix code formatting
 
 ```bash
@@ -61,4 +55,16 @@ yarn lint
 
 ```bash
 yarn build
+```
+
+### Shortcuts
+
+Update the current branch and start development
+```bash
+yarn pulld
+```
+
+Checkout to the main branch of the repo, update, and start development
+```bash
+yarn maind
 ```
