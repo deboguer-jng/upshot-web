@@ -70,3 +70,19 @@ Checkout to the main branch of the repo, update, and start development
 ```bash
 yarn maind
 ```
+
+# ENV variables
+
+In Next, all environment variables are bundled into the web app and should be considered public. We prefix these variables with NEXT_PUBLIC (see: https://nextjs.org/docs/basic-features/environment-variables#exposing-environment-variables-to-the-browser).
+
+These are maintained by GitHub Actions: Repository secrets.
+
+# Deployments
+
+We use GitHub Actions to deploy via Netlify. Previews are triggered by pull requests and updates to the main / staging branches.
+
+The general recommended flow is to build the UI dependency first under a new version number. Once staging CI tests have passed and a manual audit has been performed, it can be queued for deployment to production via PR from staging to main.
+
+# Rollbacks
+
+Should a critical error be discovered immediately following deployment, navigate to the Production Deploys page for the app.upshot.xyz Site, select a previous (safe) build, then "Publish deploy."
