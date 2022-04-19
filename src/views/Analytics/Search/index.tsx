@@ -431,7 +431,6 @@ export default function SearchView() {
                                 {
                                   id,
                                   contractAddress,
-                                  previewImageUrl,
                                   mediaUrl,
                                   name,
                                   collection,
@@ -465,7 +464,7 @@ export default function SearchView() {
                                         ? (rarity * 100).toFixed(2) + '%'
                                         : '-'
                                     }
-                                    image={previewImageUrl ?? mediaUrl}
+                                    image={mediaUrl}
                                     creator={
                                       creatorUsername ||
                                       shortenAddress(creatorAddress, 2, 4)

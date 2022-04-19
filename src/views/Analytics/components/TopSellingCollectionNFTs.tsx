@@ -280,7 +280,6 @@ export default function TopSellingCollectionNFTs({
                     asset: {
                       id,
                       contractAddress,
-                      previewImageUrl,
                       mediaUrl,
                       rarity,
                       collection,
@@ -310,7 +309,7 @@ export default function TopSellingCollectionNFTs({
                       from={shortenAddress(txFromAddress, 2, 4)}
                       fromLink={`/analytics/user/${txFromAddress}`}
                       rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
-                      image={previewImageUrl ?? mediaUrl}
+                      image={mediaUrl}
                       date={formatDistance(txAt * 1000)}
                       pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
                       link={`/analytics/collection/${collection?.id}`}

@@ -197,7 +197,6 @@ export default function NFTView() {
 
   const {
     name,
-    previewImageUrl,
     mediaUrl,
     collection,
     tokenId,
@@ -255,7 +254,7 @@ export default function NFTView() {
     shortenAddress(txHistory?.[0]?.txToAddress) ??
     'Unknown'
 
-  const image = previewImageUrl ?? mediaUrl
+  const image = mediaUrl
   const optimizedSrc = imageOptimizer(image, { width: 340 }) ?? image
   const finalImageSrc = PIXELATED_CONTRACTS.includes(contractAddress)
     ? image

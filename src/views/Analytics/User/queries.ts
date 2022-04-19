@@ -42,7 +42,6 @@ export type GetCollectorData = {
             assets: {
               id: string
               contractAddress: string
-              previewImageUrl?: string
               mediaUrl?: string
               name?: string
               description?: string
@@ -102,7 +101,6 @@ export const GET_COLLECTOR = gql`
               assets {
                 id
                 contractAddress
-                previewImageUrl
                 mediaUrl
                 name
                 description
@@ -227,7 +225,6 @@ export type GetCollectionAssetsData = {
         id: string
         name?: string
         description?: string
-        previewImageUrl?: string
         mediaUrl?: string
         lastAppraisalWeiPrice?: string
         lastAppraisalUsdPrice?: string
@@ -255,7 +252,6 @@ export const GET_COLLECTION_ASSETS = gql`
           id
           name
           description
-          previewImageUrl
           mediaUrl
           lastAppraisalWeiPrice
           lastAppraisalUsdPrice

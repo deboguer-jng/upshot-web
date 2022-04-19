@@ -46,7 +46,6 @@ export type GetExploreNFTsData = {
       id: string
       name: string
       contractAddress: string
-      previewImageUrl?: string
       mediaUrl: string
       totalSaleCount: number
       priceChangeFromFirstSale: number
@@ -91,7 +90,6 @@ export const GET_EXPLORE_NFTS = gql`
         id
         name
         contractAddress
-        previewImageUrl
         mediaUrl
         totalSaleCount
         priceChangeFromFirstSale
@@ -132,7 +130,6 @@ export type GetTopSalesData = {
     asset: {
       id: string
       contractAddress: string
-      previewImageUrl?: string
       mediaUrl: string
       rarity: number
       collection: {
@@ -388,7 +385,6 @@ export const GET_TOP_SALES = gql`
       asset {
         id
         contractAddress
-        previewImageUrl
         mediaUrl
         rarity
         collection {
@@ -473,7 +469,7 @@ export type GetCollectorsData = {
         count: number
         assets: {
           id: string
-          previewImageUrl: string
+          mediaUrl: string
         }[]
       }
       extraCollections: {
@@ -487,7 +483,7 @@ export type GetCollectorsData = {
               count: number
               assets: {
                 id: string
-                previewImageUrl: string
+                mediaUrl: string
               }
             }
           }
@@ -535,7 +531,7 @@ export const GET_COLLECTORS = gql`
           count
           assets {
             id
-            previewImageUrl
+            mediaUrl
           }
         }
         extraCollections(limit: 10, collectionId: $id) {
@@ -549,7 +545,7 @@ export const GET_COLLECTORS = gql`
                 count
                 assets {
                   id
-                  previewImageUrl
+                  mediaUrl
                 }
               }
             }
@@ -584,7 +580,7 @@ export type GetPreviousOwnersData = {
         count: number
         assets: {
           id: string
-          previewImageUrl: string
+          mediaUrl: string
         }[]
       }
       ownedAppraisalValue: {
@@ -601,7 +597,7 @@ export type GetPreviousOwnersData = {
               count: number
               assets: {
                 id: string
-                previewImageUrl: string
+                mediaUrl: string
               }[]
             }
           }
@@ -633,7 +629,7 @@ export const GET_PREVIOUS_OWNERS = gql`
           count
           assets {
             id
-            previewImageUrl
+            mediaUrl
           }
         }
         extraCollections(limit: 10, collectionId: $id) {
@@ -647,7 +643,7 @@ export const GET_PREVIOUS_OWNERS = gql`
                 count
                 assets {
                   id
-                  previewImageUrl
+                  mediaUrl
                 }
               }
             }
@@ -669,7 +665,7 @@ export type GetUserOwnedAssetsData = {
       count: number
       assets: {
         id: number
-        previewImageUrl: string
+        mediaUrl: string
       }[]
     }
   }
@@ -682,7 +678,7 @@ export const GET_USER_OWNED_ASSETS = gql`
         count
         assets {
           id
-          previewImageUrl
+          mediaUrl
         }
       }
     }

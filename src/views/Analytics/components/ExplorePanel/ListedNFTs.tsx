@@ -278,7 +278,6 @@ export default function ExploreListedNFTs({
               id,
               name,
               contractAddress,
-              previewImageUrl,
               mediaUrl,
               lastAppraisalWeiPrice,
               listPrice,
@@ -290,7 +289,7 @@ export default function ExploreListedNFTs({
             <CollectionRow
               variant="black"
               title={name}
-              imageSrc={previewImageUrl ?? mediaUrl}
+              imageSrc={mediaUrl}
               key={idx}
               defaultOpen={idx === 0 ? true : false}
               onClick={() => handleShowNFT(id)}
