@@ -46,6 +46,8 @@ import {
   InfiniteLoader,
   Table,
 } from 'react-virtualized'
+import { useAppSelector } from 'redux/hooks'
+import { selectAddress, selectEns } from 'redux/reducers/web3'
 import { Label as LabelUI } from 'theme-ui'
 import { extractEns, shortenAddress } from 'utils/address'
 import { formatDistance } from 'utils/time'
@@ -216,6 +218,8 @@ export default function UserView() {
   const [address, setAddress] = useState('')
   const [addressFormatted, setAddressFormatted] = useState<string>()
   const [errorAddress, setErrorAddress] = useState(false)
+  const userAddress = useAppSelector(selectAddress)
+  const userEns = useAppSelector(selectEns)
   const shortAddress = useMemo(() => shortenAddress(address), [address])
   const loadingAddressFormatted = !addressFormatted && !errorAddress
 
@@ -998,11 +1002,16 @@ export default function UserView() {
     </div>
   )
 
+  const getDisplayName = () => {
+    if (address.toLowerCase() === userAddress.toLowerCase() && userEns?.name) {
+      return userEns.name
+    }
+    return extractEns(data?.getUser?.addresses, address) ?? shortAddress
+  }
+
   return (
     <>
-      <Layout
-        title={extractEns(data?.getUser?.addresses, address) ?? shortAddress}
-      >
+      <Layout title={getDisplayName()}>
         {data?.getUser?.warningBanner && (
           <Text
             backgroundColor={'primary'}
@@ -1019,8 +1028,7 @@ export default function UserView() {
               key={address}
               {...{
                 address,
-                displayName:
-                  extractEns(data?.getUser?.addresses, address) ?? shortAddress,
+                displayName: getDisplayName(),
               }}
             />
           )}
