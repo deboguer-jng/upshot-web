@@ -114,7 +114,13 @@ function NFTSearchResultsHead({
                   color: selectedColumn === idx ? 'white' : null,
                   transition: 'default',
                   userSelect: 'none',
-                  minWidth: [100, 100, 100, 180],
+                  minWidth: [
+                    100,
+                    100,
+                    100,
+                    idx === Object.keys(columns).length - 1 ? 216 : 120,
+                    idx === Object.keys(columns).length - 1 ? 216 : 180,
+                  ],
                   '& svg path': {
                     transition: 'default',
                     '&:nth-child(1)': {
