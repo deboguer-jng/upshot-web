@@ -622,7 +622,7 @@ export default function UserView() {
         linkComponent={NextLink}
         hasSeeAll={count > 5}
         seeAllImageSrc={
-          collection.ownerAssetsInCollection.assets[0]?.previewImageUrl
+          collection.ownerAssetsInCollection.assets[0]?.mediaUrl
         }
         avatarImage={collection.imageUrl}
         link={`/analytics/collection/${collection.id}`}
@@ -640,7 +640,7 @@ export default function UserView() {
       >
         {collection.ownerAssetsInCollection.assets
           .slice(0, 5)
-          .map(({ id, previewImageUrl, mediaUrl, contractAddress }, idx) => (
+          .map(({ id, mediaUrl, contractAddress }, idx) => (
             <Link
               href={`/analytics/nft/${id}`}
               component={NextLink}
@@ -656,12 +656,10 @@ export default function UserView() {
                     display: 'block',
                     paddingTop: '100%',
                     backgroundImage: `url(${
-                      imageOptimizer(previewImageUrl ?? mediaUrl, {
+                      imageOptimizer(mediaUrl, {
                         width: 180,
                         height: 180,
-                      }) ??
-                      previewImageUrl ??
-                      mediaUrl
+                      }) ?? mediaUrl
                     })`,
                     backgroundSize: 'cover',
                     backgroundRepeat: 'no-repeat',
@@ -2073,7 +2071,6 @@ export default function UserView() {
                         name,
                         lastAppraisalWeiPrice,
                         lastAppraisalUsdPrice,
-                        previewImageUrl,
                         mediaUrl,
                         contractAddress,
                       }) => ({
@@ -2081,7 +2078,7 @@ export default function UserView() {
                         expanded: isMobile,
                         avatarImage:
                           showCollection?.imageUrl ?? '/img/defaultAvatar.png',
-                        imageSrc: previewImageUrl ?? mediaUrl,
+                        imageSrc: mediaUrl,
                         collection: showCollection?.name ?? '',
                         isPixelated:
                           PIXELATED_CONTRACTS.includes(contractAddress),

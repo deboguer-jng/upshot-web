@@ -232,7 +232,7 @@ export default function NFTSearchResults({
             {
               id,
               tokenId,
-              previewImageUrl,
+              mediaUrl,
               name,
               lastSale,
               latestAppraisal,
@@ -246,7 +246,7 @@ export default function NFTSearchResults({
               key={idx}
               defaultOpen={idx === 0 ? true : false}
               variant="normal"
-              imageSrc={previewImageUrl ?? ''}
+              imageSrc={mediaUrl ?? ''}
               subtitle={isMobile ? name : undefined}
               onClick={() => handleShowNFT(id)}
               linkComponent={NextLink}

@@ -205,9 +205,9 @@ export default function Collectors({
                   setSelectedExtraCollectionId(collectionId)
                 }}
                 nftCollection={(selectedExtraCollections[id] || assets).map(
-                  ({ previewImageUrl, id }) => ({
+                  ({ mediaUrl, id }) => ({
                     id,
-                    imageUrl: previewImageUrl,
+                    imageUrl: mediaUrl,
                     url: `/analytics/nft/${id}`,
                     pixelated: PIXELATED_CONTRACTS.includes(
                       id.toString().split('/')[0]
