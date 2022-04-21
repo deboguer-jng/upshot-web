@@ -177,7 +177,7 @@ export default function TraitStats({
       <TraitStatsWrapper
         {...{ selectedColumn, sortAscending, onChangeSelection }}
       >
-        {traits.map(({ value, traitType, rarity, floor, image }, idx) => (
+        {traits.map(({ id, value, traitType, rarity, floor, image }, idx) => (
           <CollectionRow
             title={value}
             key={idx}
@@ -185,6 +185,7 @@ export default function TraitStats({
             variant="normal"
             imageSrc={image ?? ''}
             subtitle={isMobile ? traitType : undefined}
+            href={`/analytics/search?traits=${id}&collectionId=${collectionId}`}
             linkComponent={NextLink}
           >
             {isMobile ? (

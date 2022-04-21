@@ -329,7 +329,6 @@ export const Nav = () => {
             setNavSearchTerm(e.currentTarget.value)
           }
           onSearch={handleNavSearch}
-          onLogoClick={() => router.push('/')}
           onSearchSuggestionChange={handleSearchSuggestionChange}
           onSearchKeyUp={handleNavKeyUp}
           onConnectClick={() => {
