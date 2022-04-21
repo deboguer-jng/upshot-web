@@ -249,6 +249,7 @@ export default function NFTSearchResults({
               imageSrc={mediaUrl ?? ''}
               subtitle={isMobile ? name : undefined}
               onClick={() => handleShowNFT(id)}
+              href={`/analytics/nft/${id}`}
               linkComponent={NextLink}
             >
               {isMobile ? (
