@@ -12,8 +12,8 @@ const formatDistanceLocale = {
   xDays: '{{count}}d',
   aboutXWeeks: '{{count}}w',
   xWeeks: '{{count}}w',
-  aboutXMonths: '{{count}}m',
-  xMonths: '{{count}}m',
+  aboutXMonths: '{{count}} month{{plural}}',
+  xMonths: '{{count}} month{{plural}}',
   aboutXYears: '{{count}}y',
   xYears: '{{count}}y',
   overXYears: '{{count}}y',
@@ -27,7 +27,9 @@ export const formatDistance = (datems: number, fromms?: number) =>
       formatDistance: (token, count, options) => {
         options = options || {}
 
-        const result = formatDistanceLocale[token].replace('{{count}}', count)
+        const result = formatDistanceLocale[token]
+          .replace('{{count}}', count)
+          .replace('{{plural}}', count > 1 ? 's' : '')
 
         return result
       },

@@ -621,9 +621,7 @@ export default function UserView() {
         {...price}
         linkComponent={NextLink}
         hasSeeAll={count > 5}
-        seeAllImageSrc={
-          collection.ownerAssetsInCollection.assets[0]?.mediaUrl
-        }
+        seeAllImageSrc={collection.ownerAssetsInCollection.assets[0]?.mediaUrl}
         avatarImage={collection.imageUrl}
         link={`/analytics/collection/${collection.id}`}
         total={collection?.ownerAssetsInCollection?.count}
@@ -1262,10 +1260,11 @@ export default function UserView() {
                             fontSize: 4,
                             color: 'grey-500',
                             textAlign: 'center',
+                            textTransform: 'capitalize',
                           }}
                         >
                           {data?.getUser?.avgHoldTime
-                            ? formatDistance(data.getUser.avgHoldTime * 1000)
+                            ? formatDistance(0, data.getUser.avgHoldTime * 1000)
                             : '-'}
                         </Text>
                         <Text
