@@ -185,8 +185,6 @@ export default function TraitStats({
             variant="normal"
             imageSrc={image ?? ''}
             subtitle={isMobile ? traitType : undefined}
-            href={`/analytics/search?traits=${id}&collectionId=${collectionId}`}
-            linkComponent={NextLink}
           >
             {isMobile ? (
               <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>
