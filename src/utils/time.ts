@@ -11,6 +11,7 @@ const formatDistanceLocale = {
   xHours: '{{count}}h',
   xDays: '{{count}}d',
   aboutXWeeks: '{{count}}w',
+  xWeeks: '{{count}}w',
   aboutXMonths: '{{count}} month{{plural}}',
   xMonths: '{{count}} month{{plural}}',
   aboutXYears: '{{count}}y',
