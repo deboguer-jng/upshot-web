@@ -99,14 +99,8 @@ export default function TopCollectionsCharts({
   )
   if (!assetSets?.length) return <Chart noData />
 
-  const minDate = Math.max(
+  const minDate = Math.min(
     ...assetSets.map(({ timeSeries }) => timeSeries?.[0].timestamp ?? 0)
-  )
-
-  const maxDate = Math.max(
-    ...assetSets.map(
-      ({ timeSeries }) => timeSeries?.slice(-1)[0].timestamp ?? 0
-    )
   )
 
   /**
@@ -149,13 +143,7 @@ export default function TopCollectionsCharts({
           metric === 'PAST_WEEK_VOLUME' && latestStats?.pastWeekWeiVolume
             ? Number(ethers.utils.formatEther(latestStats.pastWeekWeiVolume))
             : 0,
-        data: data.map((val, i) =>
-          i === 0
-            ? [minDate * 1000, val[1]] // Align window start
-            : i === data.length - 1
-            ? [maxDate * 1000, val[1]] // Align window end
-            : val
-        ),
+        data: data.map((val, i) => val),
         metric,
         currentFloor: latestStats?.floor
           ? parseUint256(latestStats.floor)
