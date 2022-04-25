@@ -75,6 +75,9 @@ import {
   GetUnsupportedCollectionsVars,
   GetUnsupportedFloorsData,
   GetUnsupportedFloorsVars,
+  GetAllOwnedCollectionsWrapperData,
+  GetAllOwnedCollectionsWrapperVar,
+  GET_ALL_OWNED_COLLECTIONS_WRAPPER,
 } from './queries'
 
 type Collection = {
@@ -309,6 +312,28 @@ export default function UserView() {
       skip: !showCollection?.id || !addressFormatted,
     }
   )
+
+  const {
+    data: dataAllOwnedCollections,
+    error: errorAllOwnedCollections,
+    loading: loadingAllOwnedCollections,
+    fetchMore: fetchMoreAllOwnedCollections,
+  } = useQuery<
+    GetAllOwnedCollectionsWrapperData,
+    GetAllOwnedCollectionsWrapperVar
+  >(GET_ALL_OWNED_COLLECTIONS_WRAPPER, {
+    errorPolicy: 'all',
+    variables: {
+      userAddress: addressFormatted,
+      limit: collectionLimit ?? 0,
+      offset: 0,
+      userId: data?.getUser?.id,
+      dbCount: null,
+    },
+    skip: !addressFormatted || !data?.getUser?.id,
+  })
+
+  console.log({ dataAllOwnedCollections })
 
   /* Request unsupported assets */
   const {
