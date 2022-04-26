@@ -1,3 +1,4 @@
+import { useMutation } from '@apollo/client'
 import { useWeb3React } from '@web3-react/core'
 import { connectorsByName } from 'constants/connectors'
 import { ethers } from 'ethers'
@@ -17,6 +18,7 @@ import {
   setEns,
 } from 'redux/reducers/web3'
 
+import { LOG_EVENT, LogEventData, LogEventVars } from '../graphql/mutations'
 import { logEvent } from '../utils/googleAnalytics'
 import WaitList from '../views/WaitList'
 
@@ -29,6 +31,32 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const address = useAppSelector(selectAddress)
   const isBeta = useAppSelector(selectIsBeta)
   const router = useRouter()
+  const [logUpshotEvent] = useMutation<LogEventData, LogEventVars>(LOG_EVENT, {
+    onError: (err) => {
+      console.error(err)
+    },
+  })
+
+  useEffect(() => {
+    const handleRouteChange = (url) => {
+      if (!address) return // Only log events for authenticated users.
+
+      logUpshotEvent({
+        variables: {
+          timestamp: Math.floor(Date.now() / 1000),
+          address,
+          type: 'route',
+          value: url,
+        },
+      })
+    }
+
+    router.events.on('routeChangeComplete', handleRouteChange)
+
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange)
+    }
+  }, [address, logUpshotEvent, router.events])
 
   useEffect(() => {
     dispatch(fetchFeatures())
@@ -63,6 +91,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
     if (account && (!address || account !== address)) {
       logEvent('auth', 'signin', account)
+      logUpshotEvent({
+        variables: {
+          timestamp: Math.floor(Date.now() / 1000),
+          address: account,
+          type: 'auth',
+        },
+      })
+
       dispatch(setAddress(account))
     }
 
