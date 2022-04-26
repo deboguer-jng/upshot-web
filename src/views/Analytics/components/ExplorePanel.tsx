@@ -176,9 +176,17 @@ export default function ExplorePanel({
   const handleSearch = (searchTerm: string) => setSearchTerm(searchTerm)
 
   const handleChangeSelection = (columnIdx: number) => {
+    const ascendingColumns = {
+      'Listed NFTs': [0, 1, 2],
+      NFTs: [0, 1, 2],
+      Collections: [],
+      Traits: [0],
+    }
     if (columnIdx === selectedColumn) {
       // Toggle sort order for current selection.
       setSortAscending(!sortAscending)
+    } else {
+      setSortAscending(ascendingColumns[tab].includes(columnIdx))
     }
 
     setSelectedColumn(columnIdx)

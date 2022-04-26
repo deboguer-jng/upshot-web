@@ -107,8 +107,12 @@ export default function SearchView() {
   const [selectedNFTColumn, setSelectedNFTColumn] = useState<number>(3)
   const [sortNFTsAscending, setSortNFTsAscending] = useState(false)
   const handleChangeNFTColumnSelection = (columnIdx: number) => {
+    const ascendingColumns = [0, 1, 2]
+
     if (columnIdx === selectedNFTColumn) {
       setSortNFTsAscending(!sortNFTsAscending)
+    } else {
+      setSortAscending(ascendingColumns.includes(columnIdx))
     }
 
     setSelectedNFTColumn(columnIdx)
