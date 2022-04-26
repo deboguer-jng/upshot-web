@@ -199,7 +199,7 @@ export const GET_ALL_OWNED_COLLECTIONS_WRAPPER = gql`
             name
             imageUrl
             isAppraised
-            ownerAssetsInCollection(limit: $limit) {
+            ownerAssetsInCollection(limit: $limit, userAddress: $userAddress) {
               count
               assets {
                 id
