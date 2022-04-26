@@ -66,7 +66,7 @@ export default function CollectionAvgPricePanel({
   useEffect(() => {
     if (data && !selectedCollections.length) {
       const defaultSelected = data.searchCollectionByMetric.assetSets
-        .slice(0, 3)
+        .slice(0, 5)
         .map((val) => val.id)
       setSelectedCollections(defaultSelected)
     }
