@@ -188,7 +188,7 @@ export default function ExplorePanel({
     // Reset sort + selection on new tab selection.
     switch (tab) {
       case 'Listed NFTs': {
-        setSelectedColumn(isAppraised ? 3 : 1)
+        setSelectedColumn(isAppraised ? 3 : 2)
         setSortAscending(isAppraised ? false : true)
         break
       }
