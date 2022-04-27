@@ -180,7 +180,7 @@ export default function ExplorePanel({
       'Listed NFTs': [0, 1, 2],
       NFTs: [0, 1, 2],
       Collections: [],
-      Traits: [0],
+      Traits: [0, 1],
     }
     if (columnIdx === selectedColumn) {
       // Toggle sort order for current selection.
@@ -196,11 +196,16 @@ export default function ExplorePanel({
     // Reset sort + selection on new tab selection.
     switch (tab) {
       case 'Listed NFTs': {
-        setSelectedColumn(isAppraised ? 3 : 2)
-        setSortAscending(isAppraised ? false : true)
+        setSelectedColumn(isAppraised || !collectionId ? 3 : 1)
+        setSortAscending(isAppraised || !collectionId ? false : true)
         break
       }
       case 'NFTs': {
+        setSelectedColumn(0)
+        setSortAscending(true)
+        break
+      }
+      case 'Traits': {
         setSelectedColumn(0)
         setSortAscending(true)
         break
