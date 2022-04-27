@@ -176,9 +176,17 @@ export default function ExplorePanel({
   const handleSearch = (searchTerm: string) => setSearchTerm(searchTerm)
 
   const handleChangeSelection = (columnIdx: number) => {
+    const ascendingColumns = {
+      'Listed NFTs': [0, 1, 2],
+      NFTs: [0, 1, 2],
+      Collections: [],
+      Traits: [0],
+    }
     if (columnIdx === selectedColumn) {
       // Toggle sort order for current selection.
       setSortAscending(!sortAscending)
+    } else {
+      setSortAscending(ascendingColumns[tab].includes(columnIdx))
     }
 
     setSelectedColumn(columnIdx)
@@ -188,7 +196,7 @@ export default function ExplorePanel({
     // Reset sort + selection on new tab selection.
     switch (tab) {
       case 'Listed NFTs': {
-        setSelectedColumn(isAppraised ? 3 : 2)
+        setSelectedColumn(isAppraised ? 3 : 1)
         setSortAscending(isAppraised ? false : true)
         break
       }
