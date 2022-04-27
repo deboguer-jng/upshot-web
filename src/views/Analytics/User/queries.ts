@@ -122,7 +122,7 @@ export const GET_COLLECTOR = gql`
   }
 `
 
-export type GetAllOwnedCollectionsWrapperVar = {
+export type GetAllOwnedCollectionsWrapperVars = {
   dbCount: number | null
   userAddress: string | undefined
   userId: number | undefined
