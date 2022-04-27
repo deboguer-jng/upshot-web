@@ -7,7 +7,7 @@ import { GetExploreNFTsVars } from '../../queries'
  * after calculating NOW - timestamp.)
  */
 export const getOrderDirection = (col: string, isAscending: boolean) => {
-  const reversedColumns = ['LAST_SALE_DATE', 'LIST_TIMESTAMP']
+  const reversedColumns = ['LAST_SALE_DATE', 'LIST_TIMESTAMP', 'RARITY']
 
   if (reversedColumns.includes(col)) return !isAscending ? 'ASC' : 'DESC'
 

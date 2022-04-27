@@ -180,7 +180,7 @@ export default function ExplorePanel({
       'Listed NFTs': [0, 1, 2],
       NFTs: [0, 1, 2],
       Collections: [],
-      Traits: [0, 1],
+      Traits: [0],
     }
     if (columnIdx === selectedColumn) {
       // Toggle sort order for current selection.

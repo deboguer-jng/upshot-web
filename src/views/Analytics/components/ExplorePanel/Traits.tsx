@@ -26,6 +26,7 @@ import { useEffect, useState } from 'react'
 
 import { TRAIT_SEARCH, TraitSearchData, TraitSearchVars } from '../../queries'
 import { ExplorePanelSkeleton } from './NFTs'
+import { getOrderDirection } from './util'
 
 interface TraitsTableHeadProps extends React.HTMLAttributes<HTMLElement> {
   /**
@@ -193,6 +194,9 @@ export default function ExploreTraits({
     setPage(selected)
   }
 
+  const orderColumn = Object.keys(traitColumns)[selectedColumn]
+  const orderDirection = getOrderDirection(orderColumn, sortAscending)
+
   const { loading, error, data } = useQuery<TraitSearchData, TraitSearchVars>(
     TRAIT_SEARCH,
     {
@@ -203,8 +207,8 @@ export default function ExploreTraits({
         offset: page * PAGE_SIZE,
         searchTerm,
         traitType,
-        orderColumn: Object.keys(traitColumns)[selectedColumn],
-        orderDirection: sortAscending ? 'ASC' : 'DESC',
+        orderColumn,
+        orderDirection,
       },
       skip: !collectionId,
     }

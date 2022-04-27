@@ -18,6 +18,7 @@ import {
 import NextLink from 'next/link'
 import React from 'react'
 
+import { getOrderDirection } from '../components/ExplorePanel/util'
 import {
   GET_TRAIT_STATS,
   GetTraitStatsData,
@@ -149,6 +150,9 @@ export default function TraitStats({
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
 
+  const orderColumn = Object.keys(traitStatsColumns)[selectedColumn]
+  const orderDirection = getOrderDirection(orderColumn, sortAscending)
+
   const { data } = useQuery<GetTraitStatsData, GetTraitStatsVars>(
     GET_TRAIT_STATS,
     {
@@ -157,8 +161,8 @@ export default function TraitStats({
         collectionId,
         limit: 1000,
         offset: 0,
-        orderColumn: Object.keys(traitStatsColumns)[selectedColumn],
-        orderDirection: sortAscending ? 'ASC' : 'DESC',
+        orderColumn,
+        orderDirection,
       },
     }
   )
