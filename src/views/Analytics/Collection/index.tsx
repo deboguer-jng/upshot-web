@@ -346,8 +346,8 @@ export default function CollectionView() {
               />
               <CollectionStat
                 value={
-                  latestStats?.totalWeiVolume
-                    ? formatNumber(latestStats.totalWeiVolume, {
+                  latestStats?.floorCap
+                    ? formatNumber(latestStats.floorCap, {
                         fromWei: true,
                         decimals: 2,
                         kmbUnits: true,

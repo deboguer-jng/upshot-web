@@ -409,7 +409,7 @@ export type GetTreemapCollectionsData = {
       id: number
       name: string
       latestStats: {
-        totalWeiVolume: string
+        marketCap: string
         weekCapChange: number
       }
     }[]
@@ -427,7 +427,7 @@ export const GET_TREEMAP_COLLECTIONS = gql`
         id
         name
         latestStats {
-          totalWeiVolume
+          marketCap
           weekCapChange
         }
       }
