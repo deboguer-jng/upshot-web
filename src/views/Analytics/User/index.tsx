@@ -38,7 +38,7 @@ import Head from 'next/head'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { transparentize } from 'polished'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   AutoSizer,
   Column,
@@ -225,6 +225,150 @@ function Header({
     </Flex>
   )
 }
+
+const MasonryItem = memo<{
+  index: any
+  data: any
+  setShowCollection: any
+  collectionFloors: any
+}>(({ index, data, setShowCollection, collectionFloors }) => {
+  if ('ownedAppraisedValue' in data) {
+    const { ownedAppraisedValue, count, collection } =
+      data as AppraisedCollection
+    const formattedAppraisedValue = ownedAppraisedValue
+      ? formatNumber(ownedAppraisedValue, { fromWei: true, decimals: 2 })
+      : ownedAppraisedValue
+    const price = collection.isAppraised
+      ? { appraisalPrice: formattedAppraisedValue }
+      : { floorPrice: formattedAppraisedValue }
+
+    return (
+      <CollectionCard
+        {...price}
+        linkComponent={NextLink}
+        hasSeeAll={count > 5}
+        seeAllImageSrc={collection.ownerAssetsInCollection.assets[0]?.mediaUrl}
+        avatarImage={collection.imageUrl}
+        link={`/analytics/collection/${collection.id}`}
+        total={collection?.ownerAssetsInCollection?.count}
+        name={collection.name}
+        key={index}
+        onExpand={() =>
+          setShowCollection({
+            id: collection.id,
+            name: collection.name,
+            imageUrl: collection.imageUrl,
+            numOwnedAssets: collection?.ownerAssetsInCollection?.count,
+          })
+        }
+      >
+        {collection.ownerAssetsInCollection.assets
+          .slice(0, 5)
+          .map(({ id, mediaUrl, contractAddress }, idx) => (
+            <Link
+              href={`/analytics/nft/${id}`}
+              component={NextLink}
+              key={idx}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Box
+                sx={{
+                  width: '100%',
+                  cursor: 'pointer',
+                  '&::after': {
+                    content: "''",
+                    display: 'block',
+                    paddingTop: '100%',
+                    backgroundImage: `url(${
+                      imageOptimizer(mediaUrl, {
+                        width: 180,
+                        height: 180,
+                      }) ?? mediaUrl
+                    })`,
+                    backgroundSize: 'cover',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'center',
+                    borderRadius: 'sm',
+                    imageRendering: PIXELATED_CONTRACTS.includes(
+                      contractAddress
+                    )
+                      ? 'pixelated'
+                      : 'auto',
+                  },
+                }}
+              />
+            </Link>
+          ))}
+      </CollectionCard>
+    )
+  } else {
+    const {
+      name,
+      imageUrl,
+      address,
+      osCollectionSlug,
+      floorEth,
+      numOwnedAssets,
+    } = data as UnappraisedCollection
+    return (
+      <>
+        <CollectionCard
+          isUnsupported
+          linkComponent={NextLink}
+          link={`https://opensea.io/collection/${osCollectionSlug}?ref=${OPENSEA_REFERRAL_LINK}`}
+          avatarImage={imageUrl}
+          name={name}
+          key={index}
+          total={numOwnedAssets}
+          floorPrice={
+            floorEth?.toFixed(2) ??
+            collectionFloors[osCollectionSlug]?.toFixed(2)
+          }
+          onExpand={() =>
+            setShowCollection({
+              id: null,
+              osCollectionSlug,
+              numOwnedAssets,
+              name,
+              imageUrl,
+            })
+          }
+        >
+          <Box
+            onClick={() =>
+              setShowCollection({
+                id: null,
+                osCollectionSlug,
+                name,
+                imageUrl,
+              })
+            }
+            sx={{
+              width: '100%',
+              cursor: 'pointer',
+              '&::after': {
+                content: "''",
+                display: 'block',
+                paddingTop: '50%',
+                backgroundImage: `url(${imageOptimizer(imageUrl, {
+                  width: 500,
+                  height: 500,
+                })})`,
+                backgroundSize: 'cover',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+                borderRadius: 'sm',
+                imageRendering: PIXELATED_CONTRACTS.includes(address)
+                  ? 'pixelated'
+                  : 'auto',
+              },
+            }}
+          />
+        </CollectionCard>
+      </>
+    )
+  }
+})
 
 export default function UserView() {
   const router = useRouter()
@@ -574,7 +718,6 @@ export default function UserView() {
     if (!assetOffset) return
 
     fetchMoreAssets({
-      variables: { offset: assetOffset },
       updateQuery: (prev, { fetchMoreResult }) => {
         if (!fetchMoreResult?.collectionById) return prev
 
@@ -635,144 +778,14 @@ export default function UserView() {
     index: number
     data: UnappraisedCollection | AppraisedCollection
   }) => {
-    if ('ownedAppraisedValue' in data) {
-      const { ownedAppraisedValue, count, collection } =
-        data as AppraisedCollection
-      const formattedAppraisedValue = ownedAppraisedValue
-        ? formatNumber(ownedAppraisedValue, { fromWei: true, decimals: 2 })
-        : ownedAppraisedValue
-      const price = collection.isAppraised
-        ? { appraisalPrice: formattedAppraisedValue }
-        : { floorPrice: formattedAppraisedValue }
-
-      return (
-        <CollectionCard
-          {...price}
-          linkComponent={NextLink}
-          hasSeeAll={count > 5}
-          seeAllImageSrc={
-            collection.ownerAssetsInCollection.assets[0]?.mediaUrl
-          }
-          avatarImage={collection.imageUrl}
-          link={`/analytics/collection/${collection.id}`}
-          total={collection?.ownerAssetsInCollection?.count}
-          name={collection.name}
-          key={index}
-          onExpand={() =>
-            setShowCollection({
-              id: collection.id,
-              name: collection.name,
-              imageUrl: collection.imageUrl,
-              numOwnedAssets: collection?.ownerAssetsInCollection?.count,
-            })
-          }
-        >
-          {collection.ownerAssetsInCollection.assets
-            .slice(0, 5)
-            .map(({ id, mediaUrl, contractAddress }, idx) => (
-              <Link
-                href={`/analytics/nft/${id}`}
-                component={NextLink}
-                key={idx}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <Box
-                  sx={{
-                    width: '100%',
-                    cursor: 'pointer',
-                    '&::after': {
-                      content: "''",
-                      display: 'block',
-                      paddingTop: '100%',
-                      backgroundImage: `url(${
-                        imageOptimizer(mediaUrl, {
-                          width: 180,
-                          height: 180,
-                        }) ?? mediaUrl
-                      })`,
-                      backgroundSize: 'cover',
-                      backgroundRepeat: 'no-repeat',
-                      backgroundPosition: 'center',
-                      borderRadius: 'sm',
-                      imageRendering: PIXELATED_CONTRACTS.includes(
-                        contractAddress
-                      )
-                        ? 'pixelated'
-                        : 'auto',
-                    },
-                  }}
-                />
-              </Link>
-            ))}
-        </CollectionCard>
-      )
-    } else {
-      const {
-        name,
-        imageUrl,
-        address,
-        osCollectionSlug,
-        floorEth,
-        numOwnedAssets,
-      } = data as UnappraisedCollection
-      return (
-        <>
-          <CollectionCard
-            isUnsupported
-            linkComponent={NextLink}
-            link={`https://opensea.io/collection/${osCollectionSlug}?ref=${OPENSEA_REFERRAL_LINK}`}
-            avatarImage={imageUrl}
-            name={name}
-            key={index}
-            total={numOwnedAssets}
-            floorPrice={
-              floorEth?.toFixed(2) ??
-              collectionFloors[osCollectionSlug]?.toFixed(2)
-            }
-            onExpand={() =>
-              setShowCollection({
-                id: null,
-                osCollectionSlug,
-                numOwnedAssets,
-                name,
-                imageUrl,
-              })
-            }
-          >
-            <Box
-              onClick={() =>
-                setShowCollection({
-                  id: null,
-                  osCollectionSlug,
-                  name,
-                  imageUrl,
-                })
-              }
-              sx={{
-                width: '100%',
-                cursor: 'pointer',
-                '&::after': {
-                  content: "''",
-                  display: 'block',
-                  paddingTop: '50%',
-                  backgroundImage: `url(${imageOptimizer(imageUrl, {
-                    width: 500,
-                    height: 500,
-                  })})`,
-                  backgroundSize: 'cover',
-                  backgroundRepeat: 'no-repeat',
-                  backgroundPosition: 'center',
-                  borderRadius: 'sm',
-                  imageRendering: PIXELATED_CONTRACTS.includes(address)
-                    ? 'pixelated'
-                    : 'auto',
-                },
-              }}
-            />
-          </CollectionCard>
-        </>
-      )
-    }
+    return (
+      <MasonryItem
+        index={index}
+        data={data}
+        setShowCollection={setShowCollection}
+        collectionFloors={collectionFloors}
+      />
+    )
   }
 
   const distributionTable = (
@@ -2040,7 +2053,11 @@ export default function UserView() {
             onRender={maybeLoadMoreCollections}
             style={{ outline: 'none' }}
             key={
-              dataAllOwnedCollections?.getAllOwnedCollectionsWrapper?.nextOffset
+              dataAllOwnedCollections?.getAllOwnedCollectionsWrapper
+                ?.extraCollections?.collectionAssetCounts?.length ??
+              0 +
+                (dataAllOwnedCollections?.getAllOwnedCollectionsWrapper
+                  ?.unsupportedCollections?.collections?.length ?? 0)
             }
           />
         </Flex>
