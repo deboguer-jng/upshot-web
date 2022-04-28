@@ -24,7 +24,7 @@ export type GetCollectionData = {
       weekFloorChange: number
       floor: string
       marketCap: string
-      totalWeiVolume: string
+      floorCap: string
       average: string
       pastWeekWeiVolume: string
     }
@@ -48,7 +48,7 @@ export const GET_COLLECTION = gql`
         weekFloorChange
         floor
         marketCap
-        totalWeiVolume
+        floorCap
         average
         pastWeekWeiVolume
       }
