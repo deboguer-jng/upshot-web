@@ -38,7 +38,7 @@ export default function CollectionsTreeMap() {
       name,
       delta: latestStats?.weekCapChange ?? 0,
       marketCap: parseFloat(
-        ethers.utils.formatEther(latestStats?.floorCap ?? 0)
+        ethers.utils.formatEther(latestStats?.marketCap ?? 0)
       ),
     }))
 
