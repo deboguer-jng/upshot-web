@@ -15,6 +15,7 @@ export type GetCollectorVars = {
 
 export type GetCollectorData = {
   getUser: {
+    id: number
     ownedAppraisalValue: {
       appraisalWei: string
       appraisalUsd: string
@@ -70,6 +71,7 @@ export const GET_COLLECTOR = gql`
     $assetOffset: Int!
   ) {
     getUser(userId: $userId, address: $address) {
+      id
       ownedAppraisalValue {
         appraisalWei
         appraisalUsd
@@ -116,6 +118,113 @@ export const GET_COLLECTOR = gql`
         txAt
       }
       avgHoldTime
+    }
+  }
+`
+
+export type GetAllOwnedCollectionsWrapperVars = {
+  dbCount: number | null
+  userAddress: string | undefined
+  userId: number | undefined
+  limit: number
+  offset: number
+}
+
+export type GetAllOwnedCollectionsWrapperData = {
+  getAllOwnedCollectionsWrapper: {
+    nextOffset: number
+    extraCollections?: {
+      count: number
+      collectionAssetCounts: {
+        count: number
+        ownedAppraisedValue: string
+        collection: {
+          id: number
+          name: string
+          imageUrl: string
+          isAppraised: boolean
+          ownerAssetsInCollection: {
+            count: number
+            assets: {
+              id: string
+              contractAddress: string
+              mediaUrl?: string
+              name?: string
+              description?: string
+            }[]
+          }
+        }
+      }[]
+    }
+    unsupportedCollections?: {
+      nextOffset: number
+      slugsWithNullFloors: string
+      collections: {
+        imageUrl: string
+        osCollectionSlug: string
+        floorEth: number
+        floorUsd: number
+        name: string
+        address: string
+        numOwnedAssets: number
+      }[]
+    }
+  }
+}
+
+export const GET_ALL_OWNED_COLLECTIONS_WRAPPER = gql`
+  query getAllOwnedCollectionsWrapper(
+    $dbCount: Int
+    $userAddress: String!
+    $userId: Int!
+    $limit: Int!
+    $offset: Int
+  ) {
+    getAllOwnedCollectionsWrapper(
+      dbCount: $dbCount
+      userId: $userId
+      userAddress: $userAddress
+      # collectionId: null,
+      limit: $limit
+      offset: $offset
+    ) {
+      nextOffset
+      extraCollections {
+        count
+        collectionAssetCounts {
+          count
+          ownedAppraisedValue
+          collection {
+            id
+            name
+            imageUrl
+            isAppraised
+            ownerAssetsInCollection(limit: $limit, userAddress: $userAddress) {
+              count
+              assets {
+                id
+                contractAddress
+                mediaUrl
+                name
+                description
+              }
+            }
+          }
+        }
+      }
+      unsupportedCollections {
+        nextOffset
+        slugsWithNullFloors
+        collections {
+          imageUrl
+          osCollectionSlug
+          floorEth
+          floorUsd
+          name
+          address
+          numOwnedAssets
+        }
+      }
     }
   }
 `

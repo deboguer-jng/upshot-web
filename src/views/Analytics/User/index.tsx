@@ -38,7 +38,7 @@ import Head from 'next/head'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { transparentize } from 'polished'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   AutoSizer,
   Column,
@@ -59,7 +59,6 @@ import {
   GET_COLLECTOR_TX_HISTORY,
   GET_UNSUPPORTED_AGGREGATE_COLLECTION_STATS,
   GET_UNSUPPORTED_ASSETS,
-  GET_UNSUPPORTED_COLLECTIONS,
   GET_UNSUPPORTED_FLOORS,
   GetCollectionAssetsData,
   GetCollectionAssetsVars,
@@ -71,10 +70,11 @@ import {
   GetUnsupportedAggregateCollectionStatsVars,
   GetUnsupportedAssetsData,
   GetUnsupportedAssetsVars,
-  GetUnsupportedCollectionsData,
-  GetUnsupportedCollectionsVars,
   GetUnsupportedFloorsData,
   GetUnsupportedFloorsVars,
+  GetAllOwnedCollectionsWrapperData,
+  GetAllOwnedCollectionsWrapperVars,
+  GET_ALL_OWNED_COLLECTIONS_WRAPPER,
 } from './queries'
 
 type Collection = {
@@ -83,6 +83,36 @@ type Collection = {
   numOwnedAssets?: number
   name: string
   imageUrl?: string
+}
+
+type UnappraisedCollection = {
+  name: string
+  imageUrl: string
+  address: string
+  floorEth: number
+  osCollectionSlug: string
+  numOwnedAssets: number
+}
+
+type AppraisedCollection = {
+  count: number
+  ownedAppraisedValue: string
+  collection: {
+    id: number
+    name: string
+    imageUrl: string
+    isAppraised: boolean
+    ownerAssetsInCollection: {
+      count: number
+      assets: {
+        id: string
+        contractAddress: string
+        mediaUrl?: string
+        name?: string
+        description?: string
+      }[]
+    }
+  }
 }
 
 function Layout({
@@ -196,6 +226,150 @@ function Header({
   )
 }
 
+const MasonryItem = memo<{
+  index: any
+  data: any
+  setShowCollection: any
+  collectionFloors: any
+}>(({ index, data, setShowCollection, collectionFloors }) => {
+  if ('ownedAppraisedValue' in data) {
+    const { ownedAppraisedValue, count, collection } =
+      data as AppraisedCollection
+    const formattedAppraisedValue = ownedAppraisedValue
+      ? formatNumber(ownedAppraisedValue, { fromWei: true, decimals: 2 })
+      : ownedAppraisedValue
+    const price = collection.isAppraised
+      ? { appraisalPrice: formattedAppraisedValue }
+      : { floorPrice: formattedAppraisedValue }
+
+    return (
+      <CollectionCard
+        {...price}
+        linkComponent={NextLink}
+        hasSeeAll={count > 5}
+        seeAllImageSrc={collection.ownerAssetsInCollection.assets[0]?.mediaUrl}
+        avatarImage={collection.imageUrl}
+        link={`/analytics/collection/${collection.id}`}
+        total={collection?.ownerAssetsInCollection?.count}
+        name={collection.name}
+        key={index}
+        onExpand={() =>
+          setShowCollection({
+            id: collection.id,
+            name: collection.name,
+            imageUrl: collection.imageUrl,
+            numOwnedAssets: collection?.ownerAssetsInCollection?.count,
+          })
+        }
+      >
+        {collection.ownerAssetsInCollection.assets
+          .slice(0, 5)
+          .map(({ id, mediaUrl, contractAddress }, idx) => (
+            <Link
+              href={`/analytics/nft/${id}`}
+              component={NextLink}
+              key={idx}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Box
+                sx={{
+                  width: '100%',
+                  cursor: 'pointer',
+                  '&::after': {
+                    content: "''",
+                    display: 'block',
+                    paddingTop: '100%',
+                    backgroundImage: `url(${
+                      imageOptimizer(mediaUrl, {
+                        width: 180,
+                        height: 180,
+                      }) ?? mediaUrl
+                    })`,
+                    backgroundSize: 'cover',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'center',
+                    borderRadius: 'sm',
+                    imageRendering: PIXELATED_CONTRACTS.includes(
+                      contractAddress
+                    )
+                      ? 'pixelated'
+                      : 'auto',
+                  },
+                }}
+              />
+            </Link>
+          ))}
+      </CollectionCard>
+    )
+  } else {
+    const {
+      name,
+      imageUrl,
+      address,
+      osCollectionSlug,
+      floorEth,
+      numOwnedAssets,
+    } = data as UnappraisedCollection
+    return (
+      <>
+        <CollectionCard
+          isUnsupported
+          linkComponent={NextLink}
+          link={`https://opensea.io/collection/${osCollectionSlug}?ref=${OPENSEA_REFERRAL_LINK}`}
+          avatarImage={imageUrl}
+          name={name}
+          key={index}
+          total={numOwnedAssets}
+          floorPrice={
+            floorEth?.toFixed(2) ??
+            collectionFloors[osCollectionSlug]?.toFixed(2)
+          }
+          onExpand={() =>
+            setShowCollection({
+              id: null,
+              osCollectionSlug,
+              numOwnedAssets,
+              name,
+              imageUrl,
+            })
+          }
+        >
+          <Box
+            onClick={() =>
+              setShowCollection({
+                id: null,
+                osCollectionSlug,
+                name,
+                imageUrl,
+              })
+            }
+            sx={{
+              width: '100%',
+              cursor: 'pointer',
+              '&::after': {
+                content: "''",
+                display: 'block',
+                paddingTop: '50%',
+                backgroundImage: `url(${imageOptimizer(imageUrl, {
+                  width: 500,
+                  height: 500,
+                })})`,
+                backgroundSize: 'cover',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+                borderRadius: 'sm',
+                imageRendering: PIXELATED_CONTRACTS.includes(address)
+                  ? 'pixelated'
+                  : 'auto',
+              },
+            }}
+          />
+        </CollectionCard>
+      </>
+    )
+  }
+})
+
 export default function UserView() {
   const router = useRouter()
   const { theme } = useTheme()
@@ -206,13 +380,8 @@ export default function UserView() {
   /* Collection & Asset offsets */
   const [showCollection, setShowCollection] = useState<Collection>()
   const [collectionOffset, setCollectionOffset] = useState(0)
-  const [unsupportedCollectionOffset, setUnsupportedCollectionOffset] =
-    useState(0)
   const [assetOffset, setAssetOffset] = useState(0)
-  let promiseResolve
   const [unsupportedAssetOffset, setUnsupportedAssetOffset] = useState(0)
-  const [hasAllSupportedCollections, setHasAllSupportedCollections] =
-    useState(false)
 
   /* Address formatting */
   const [address, setAddress] = useState('')
@@ -285,10 +454,6 @@ export default function UserView() {
     router.push('/analytics/collection/' + id)
   }
 
-  /* Waiting for collector data or query string address param to format. */
-  const isLoading =
-    loadingCollection || loadingAddressFormatted || loadingTxHistory
-
   const noCollection =
     data?.getUser === null || data?.getUser?.extraCollections?.count === 0
 
@@ -310,24 +475,32 @@ export default function UserView() {
     }
   )
 
-  /* Request unsupported assets */
   const {
-    data: dataUnsupportedCollections,
-    error: errorUnsupportedCollections,
-    loading: loadingUnsupportedCollection,
-    fetchMore: fetchMoreUnsupportedCollections,
-  } = useQuery<GetUnsupportedCollectionsData, GetUnsupportedCollectionsVars>(
-    GET_UNSUPPORTED_COLLECTIONS,
-    {
-      errorPolicy: 'all',
-      variables: {
-        userAddress: addressFormatted,
-        limit: collectionLimit,
-        offset: 0,
-      },
-      skip: !addressFormatted || !hasAllSupportedCollections,
-    }
-  )
+    data: dataAllOwnedCollections,
+    error: errorAllOwnedCollections,
+    loading: loadingAllOwnedCollections,
+    fetchMore: fetchMoreAllOwnedCollections,
+  } = useQuery<
+    GetAllOwnedCollectionsWrapperData,
+    GetAllOwnedCollectionsWrapperVars
+  >(GET_ALL_OWNED_COLLECTIONS_WRAPPER, {
+    errorPolicy: 'all',
+    variables: {
+      userAddress: addressFormatted,
+      limit: collectionLimit ?? 0,
+      offset: 0,
+      userId: data?.getUser?.id,
+      dbCount: null,
+    },
+    skip: !addressFormatted || !data?.getUser?.id,
+  })
+
+  /* Waiting for collector data or query string address param to format. */
+  const isLoading =
+    loadingCollection ||
+    loadingAddressFormatted ||
+    loadingTxHistory ||
+    loadingAllOwnedCollections
 
   /* Request unsupported aggregate collection stats */
   const { data: dataUnsupportedAggregateCollectionStats } = useQuery<
@@ -369,19 +542,19 @@ export default function UserView() {
         errorPolicy: 'all',
         variables: {
           stringifiedSlugs:
-            dataUnsupportedCollections?.getUnsupportedCollectionPage
-              ?.slugsWithNullFloors ?? '[]',
+            dataAllOwnedCollections?.getAllOwnedCollectionsWrapper
+              .unsupportedCollections?.slugsWithNullFloors ?? '[]',
         },
-        skip: !dataUnsupportedCollections?.getUnsupportedCollectionPage
-          ?.slugsWithNullFloors,
+        skip: !dataAllOwnedCollections?.getAllOwnedCollectionsWrapper
+          .unsupportedCollections?.slugsWithNullFloors,
       }
     )
 
-  const collectionSlugs = dataUnsupportedCollections
-    ?.getUnsupportedCollectionPage?.slugsWithNullFloors
+  const collectionSlugs = dataAllOwnedCollections?.getAllOwnedCollectionsWrapper
+    .unsupportedCollections?.slugsWithNullFloors
     ? JSON.parse(
-        dataUnsupportedCollections.getUnsupportedCollectionPage
-          .slugsWithNullFloors
+        dataAllOwnedCollections?.getAllOwnedCollectionsWrapper
+          .unsupportedCollections.slugsWithNullFloors
       )
     : []
 
@@ -416,12 +589,6 @@ export default function UserView() {
 
   const handleFetchMoreCollections = useCallback(
     (startIndex: number) => {
-      if (
-        loadingCollection ||
-        collectionOffset === startIndex ||
-        startIndex < collectionLimit
-      )
-        return setHasAllSupportedCollections(true)
       setCollectionOffset(startIndex)
     },
     [loadingCollection, collectionOffset]
@@ -434,20 +601,6 @@ export default function UserView() {
     },
     [loadingAssets, assetOffset]
   )
-
-  const handleFetchMoreUnsupportedCollections = useCallback(() => {
-    if (
-      loadingUnsupportedCollection ||
-      !dataUnsupportedCollections?.getUnsupportedCollectionPage?.nextOffset
-    )
-      return
-    setUnsupportedCollectionOffset(
-      dataUnsupportedCollections.getUnsupportedCollectionPage.nextOffset
-    )
-  }, [
-    loadingUnsupportedCollection,
-    dataUnsupportedCollections?.getUnsupportedCollectionPage?.nextOffset,
-  ])
 
   const handleFetchMoreUnsupportedAssets = useCallback(() => {
     if (
@@ -467,32 +620,77 @@ export default function UserView() {
   useEffect(() => {
     if (!collectionOffset) return
 
-    const hasAllCollections =
-      data?.getUser?.extraCollections?.count === collectionOffset
-    if (hasAllCollections) return setHasAllSupportedCollections(true)
+    console.log({
+      offset:
+        dataAllOwnedCollections?.getAllOwnedCollectionsWrapper?.nextOffset,
+    })
 
-    fetchMoreCollections({
-      variables: { collectionOffset },
+    fetchMoreAllOwnedCollections({
+      variables: {
+        offset:
+          dataAllOwnedCollections?.getAllOwnedCollectionsWrapper?.nextOffset,
+        dbCount:
+          dataAllOwnedCollections?.getAllOwnedCollectionsWrapper
+            ?.extraCollections?.count,
+      },
       updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult?.getUser) return prev
+        if (
+          !fetchMoreResult?.getAllOwnedCollectionsWrapper ||
+          prev.getAllOwnedCollectionsWrapper.nextOffset === null
+        ) {
+          return prev
+        }
 
-        return {
-          getUser: {
-            ...prev.getUser,
-            extraCollections: {
-              count: fetchMoreResult.getUser?.extraCollections?.count ?? 0,
-              collectionAssetCounts: [
-                ...(prev.getUser?.extraCollections?.collectionAssetCounts ??
-                  []),
-                ...(fetchMoreResult.getUser?.extraCollections
-                  ?.collectionAssetCounts ?? []),
-              ],
+        if (fetchMoreResult?.getAllOwnedCollectionsWrapper?.extraCollections) {
+          return {
+            getAllOwnedCollectionsWrapper: {
+              ...prev.getAllOwnedCollectionsWrapper,
+              nextOffset:
+                fetchMoreResult?.getAllOwnedCollectionsWrapper?.nextOffset,
+              extraCollections: {
+                count:
+                  fetchMoreResult.getAllOwnedCollectionsWrapper
+                    ?.extraCollections?.count ?? 0,
+                collectionAssetCounts: [
+                  ...(prev.getAllOwnedCollectionsWrapper?.extraCollections
+                    ?.collectionAssetCounts ?? []),
+                  ...(fetchMoreResult.getAllOwnedCollectionsWrapper
+                    ?.extraCollections?.collectionAssetCounts ?? []),
+                ],
+              },
             },
-          },
+          }
+        } else if (
+          fetchMoreResult?.getAllOwnedCollectionsWrapper.unsupportedCollections
+        ) {
+          return {
+            getAllOwnedCollectionsWrapper: {
+              ...prev.getAllOwnedCollectionsWrapper,
+              nextOffset:
+                fetchMoreResult?.getAllOwnedCollectionsWrapper?.nextOffset,
+              unsupportedCollections: {
+                ...prev.getAllOwnedCollectionsWrapper,
+                slugsWithNullFloors:
+                  fetchMoreResult.getAllOwnedCollectionsWrapper
+                    .unsupportedCollections?.slugsWithNullFloors,
+                nextOffset:
+                  fetchMoreResult.getAllOwnedCollectionsWrapper
+                    .unsupportedCollections?.nextOffset,
+                collections: [
+                  ...(prev.getAllOwnedCollectionsWrapper.unsupportedCollections
+                    ?.collections ?? []),
+                  ...(fetchMoreResult.getAllOwnedCollectionsWrapper
+                    .unsupportedCollections?.collections ?? []),
+                ],
+              },
+            },
+          }
+        } else {
+          return prev
         }
       },
     })
-  }, [collectionOffset, fetchMoreCollections])
+  }, [collectionOffset, fetchMoreAllOwnedCollections])
 
   const fetchTxHistories = (offset: number) => {
     fetchMoreTxHistories({
@@ -514,39 +712,12 @@ export default function UserView() {
       },
     })
   }
-  /* Infinite scroll: Unsupported Collections */
-  useEffect(() => {
-    if (!unsupportedCollectionOffset) return
-
-    fetchMoreUnsupportedCollections({
-      variables: { offset: unsupportedCollectionOffset },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult?.getUnsupportedCollectionPage) return prev
-
-        return {
-          getUnsupportedCollectionPage: {
-            ...prev.getUnsupportedCollectionPage,
-            slugsWithNullFloors:
-              fetchMoreResult.getUnsupportedCollectionPage?.slugsWithNullFloors,
-            nextOffset:
-              fetchMoreResult.getUnsupportedCollectionPage?.nextOffset,
-            collections: [
-              ...(prev.getUnsupportedCollectionPage?.collections ?? []),
-              ...(fetchMoreResult.getUnsupportedCollectionPage?.collections ??
-                []),
-            ],
-          },
-        }
-      },
-    })
-  }, [unsupportedCollectionOffset, fetchMoreUnsupportedCollections])
 
   /* Infinite scroll: Assets */
   useEffect(() => {
     if (!assetOffset) return
 
     fetchMoreAssets({
-      variables: { offset: assetOffset },
       updateQuery: (prev, { fetchMoreResult }) => {
         if (!fetchMoreResult?.collectionById) return prev
 
@@ -594,166 +765,26 @@ export default function UserView() {
   const maybeLoadMoreCollections = useInfiniteLoader(
     handleFetchMoreCollections,
     {
-      isItemLoaded: (index, items) => !!items[index],
+      isItemLoaded: (index, items) => {
+        return !!items[index]
+      },
     }
   )
 
-  const maybeLoadMoreUnsupportedCollections = useInfiniteLoader(
-    handleFetchMoreUnsupportedCollections,
-    {
-      isItemLoaded: (index, items) => !!items[index],
-    }
-  )
-
-  const RenderSupportedMasonry = ({
+  const RenderMasonryItem = ({
     index,
-    data: { count, collection, ownedAppraisedValue },
-  }) => {
-    const formattedAppraisedValue = ownedAppraisedValue
-      ? formatNumber(ownedAppraisedValue, { fromWei: true, decimals: 2 })
-      : ownedAppraisedValue
-    const price = collection.isAppraised
-      ? { appraisalPrice: formattedAppraisedValue }
-      : { floorPrice: formattedAppraisedValue }
-
-    return (
-      <CollectionCard
-        {...price}
-        linkComponent={NextLink}
-        hasSeeAll={count > 5}
-        seeAllImageSrc={collection.ownerAssetsInCollection.assets[0]?.mediaUrl}
-        avatarImage={collection.imageUrl}
-        link={`/analytics/collection/${collection.id}`}
-        total={collection?.ownerAssetsInCollection?.count}
-        name={collection.name}
-        key={index}
-        onExpand={() =>
-          setShowCollection({
-            id: collection.id,
-            name: collection.name,
-            imageUrl: collection.imagrl,
-            numOwnedAssets: collection?.ownerAssetsInCollection?.count,
-          })
-        }
-      >
-        {collection.ownerAssetsInCollection.assets
-          .slice(0, 5)
-          .map(({ id, mediaUrl, contractAddress }, idx) => (
-            <Link
-              href={`/analytics/nft/${id}`}
-              component={NextLink}
-              key={idx}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <Box
-                sx={{
-                  width: '100%',
-                  cursor: 'pointer',
-                  '&::after': {
-                    content: "''",
-                    display: 'block',
-                    paddingTop: '100%',
-                    backgroundImage: `url(${
-                      imageOptimizer(mediaUrl, {
-                        width: 180,
-                        height: 180,
-                      }) ?? mediaUrl
-                    })`,
-                    backgroundSize: 'cover',
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'center',
-                    borderRadius: 'sm',
-                    imageRendering: PIXELATED_CONTRACTS.includes(
-                      contractAddress
-                    )
-                      ? 'pixelated'
-                      : 'auto',
-                  },
-                }}
-              />
-            </Link>
-          ))}
-      </CollectionCard>
-    )
-  }
-
-  const RenderUnsupportedMasonry = ({
-    index,
-    data: {
-      name,
-      imageUrl,
-      address,
-      osCollectionSlug,
-      floorEth,
-      numOwnedAssets,
-    },
+    data,
   }: {
     index: number
-    data: {
-      name: string
-      imageUrl: string
-      address: string
-      floorEth: number
-      osCollectionSlug: string
-      numOwnedAssets: number
-    }
+    data: UnappraisedCollection | AppraisedCollection
   }) => {
     return (
-      <>
-        <CollectionCard
-          isUnsupported
-          linkComponent={NextLink}
-          link={`https://opensea.io/collection/${osCollectionSlug}?ref=${OPENSEA_REFERRAL_LINK}`}
-          avatarImage={imageUrl}
-          name={name}
-          key={index}
-          total={numOwnedAssets}
-          floorPrice={
-            floorEth?.toFixed(2) ??
-            collectionFloors[osCollectionSlug]?.toFixed(2)
-          }
-          onExpand={() =>
-            setShowCollection({
-              id: null,
-              osCollectionSlug,
-              numOwnedAssets,
-              name,
-              imageUrl,
-            })
-          }
-        >
-          <Box
-            onClick={() =>
-              setShowCollection({
-                id: null,
-                osCollectionSlug,
-                name,
-                imageUrl,
-              })
-            }
-            sx={{
-              width: '100%',
-              cursor: 'pointer',
-              '&::after': {
-                content: "''",
-                display: 'block',
-                paddingTop: '50%',
-                backgroundImage: `url(${imageOptimizer(imageUrl, {
-                  width: 500,
-                  height: 500,
-                })})`,
-                backgroundSize: 'cover',
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'center',
-                borderRadius: 'sm',
-                imageRendering: PIXELATED_CONTRACTS.includes(address)
-                  ? 'pixelated'
-                  : 'auto',
-              },
-            }}
-          />
-        </CollectionCard>
-      </>
+      <MasonryItem
+        index={index}
+        data={data}
+        setShowCollection={setShowCollection}
+        collectionFloors={collectionFloors}
+      />
     )
   }
 
@@ -2004,37 +2035,31 @@ export default function UserView() {
             )} */}
           </Box>
 
-          {!!data?.getUser?.extraCollections?.count && (
+          {!!dataAllOwnedCollections?.getAllOwnedCollectionsWrapper
+            ?.extraCollections?.count && (
             <Text variant="h1Primary">Collection</Text>
           )}
           <Masonry
             columnWidth={300}
             columnGutter={16}
             rowGutter={16}
-            items={data?.getUser?.extraCollections?.collectionAssetCounts ?? []}
-            render={RenderSupportedMasonry}
+            items={[
+              ...(dataAllOwnedCollections?.getAllOwnedCollectionsWrapper
+                ?.extraCollections?.collectionAssetCounts ?? []),
+              ...(dataAllOwnedCollections?.getAllOwnedCollectionsWrapper
+                .unsupportedCollections?.collections ?? []),
+            ]}
+            render={RenderMasonryItem}
             onRender={maybeLoadMoreCollections}
             style={{ outline: 'none' }}
-            key={data?.getUser?.extraCollections?.collectionAssetCounts?.length}
+            key={
+              dataAllOwnedCollections?.getAllOwnedCollectionsWrapper
+                ?.extraCollections?.collectionAssetCounts?.length ??
+              0 +
+                (dataAllOwnedCollections?.getAllOwnedCollectionsWrapper
+                  ?.unsupportedCollections?.collections?.length ?? 0)
+            }
           />
-          {!!dataUnsupportedCollections?.getUnsupportedCollectionPage
-            ?.collections?.length && (
-            <>
-              <Text variant="h1Primary">Unappraised</Text>
-              <Masonry
-                columnWidth={300}
-                columnGutter={16}
-                rowGutter={16}
-                items={
-                  dataUnsupportedCollections?.getUnsupportedCollectionPage
-                    ?.collections ?? []
-                }
-                render={RenderUnsupportedMasonry}
-                onRender={maybeLoadMoreUnsupportedCollections}
-                style={{ outline: 'none' }}
-              />
-            </>
-          )}
         </Flex>
       </Layout>
       <Modal
