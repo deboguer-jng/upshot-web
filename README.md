@@ -73,6 +73,8 @@ yarn maind
 
 # ENV variables
 
+You will need to copy the .env.example to a new .env file (these are ignored by the .gitignore list.)
+
 In Next, all environment variables are bundled into the web app and should be considered public. We prefix these variables with NEXT_PUBLIC (see: https://nextjs.org/docs/basic-features/environment-variables#exposing-environment-variables-to-the-browser).
 
 These are maintained by GitHub Actions: Repository secrets.
