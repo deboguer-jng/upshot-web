@@ -345,11 +345,16 @@ export default function NFTView() {
                       target="_blank"
                       rel="noreferrer"
                     >
-                      <Icon
-                        icon="openSeaBlock"
-                        color="primary"
-                        sx={{ width: 20, height: 20 }}
-                      />
+                      <Tooltip
+                        tooltip={'View on OpenSea'}
+                        sx={{ color: theme.colors.white }}
+                      >
+                        <Icon
+                          icon="openSeaBlock"
+                          color="primary"
+                          sx={{ width: 20, height: 20 }}
+                        />
+                      </Tooltip>
                     </a>
                     {ART_BLOCKS_CONTRACTS.includes(contractAddress) && (
                       <a
