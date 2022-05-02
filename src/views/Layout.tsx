@@ -144,5 +144,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   if (!ready) return null
 
-  return <>{router.route === '/' || isBeta ? children : <WaitList />}</>
+  return (
+    <>
+      {['/', '/gmi'].includes(router.route) || isBeta ? children : <WaitList />}
+    </>
+  )
 }

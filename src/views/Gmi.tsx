@@ -37,7 +37,7 @@ const StyledLink = styled.a`
   }
 `
 
-export default function WaitListView() {
+export default function GmiView() {
   const [open, setOpen] = useState(false)
   const modalRef = useRef<HTMLDivElement>(null)
   const toggleModal = () => setOpen(!open)
@@ -90,7 +90,7 @@ export default function WaitListView() {
   return (
     <>
       <Head>
-        <title>Waitlist | Upshot Analytics</title>
+        <title>gmi Score | Upshot Analytics</title>
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:site" content="@UpshotHQ" />
         <meta name="twitter:creator" content="@UpshotHQ" />
@@ -108,9 +108,10 @@ export default function WaitListView() {
       <Box
         sx={{
           position: 'fixed',
-          backgroundImage: 'url(/img/waitlist.svg)',
+          backgroundImage: 'url(/img/arch_planets.svg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
           width: '100vw',
           height: '100vh',
           pointerEvents: 'none',
@@ -133,7 +134,6 @@ export default function WaitListView() {
             gap: 8,
             margin: '0 auto',
             flexDirection: 'column',
-            justifyContent: 'center',
             width: '100%',
             maxWidth: 640,
             flex: '1 1 auto',
@@ -144,76 +144,16 @@ export default function WaitListView() {
             src="/img/upshot_logo_white.svg"
             width="100%"
             alt="Upshot Logo"
-            style={{ margin: '0 auto', maxWidth: 360 }}
+            style={{ margin: '32px auto 0 auto', maxWidth: 192 }}
           />
-          <Text variant="h3Primary" sx={{ textAlign: 'center' }}>
-            Upshot provides deep insight into NFT markets and unlocks a wave of
-            exotic new DeFi possibilities.
-          </Text>
-          <Flex sx={{ flexDirection: 'column', margin: '0 auto', gap: 4 }}>
-            <Button
-              as="a"
-              rel="noopener nofollow noreferrer"
-              target="_blank"
-              href="https://airtable.com/shr6XDMGxrNqjdMkT"
-              sx={{
-                //@ts-ignore
-                '& span': {
-                  textTransform: 'none!important',
-                  fontSize: 4,
-                  fontWeight: 700,
-                },
-                borderRadius: '8px !important',
-              }}
-            >
-              Join The Waitlist
-            </Button>
-            <Flex sx={{ alignItems: 'center', gap: 1 }}>
-              {loading ? (
-                <img
-                  src="/img/Logo_bounce_spin.gif"
-                  width={256}
-                  alt="Loading"
-                />
-              ) : address && !isBeta ? (
-                <Flex sx={{ flexDirection: 'column' }}>
-                  <Text color="grey-500">
-                    Looks like {shortAddr} hasn&apos;t been approved yet.
-                  </Text>
-                  <Text color="grey-500">
-                    Join the waitlist or{' '}
-                    <StyledLink
-                      style={{ color: theme.rawColors.blue }}
-                      onClick={() => setOpen(true)}
-                    >
-                      connect a wallet
-                    </StyledLink>{' '}
-                    that has been approved.
-                  </Text>
-                </Flex>
-              ) : (
-                <>
-                  <Text
-                    color="blue"
-                    sx={{
-                      fontSize: 2,
-                      cursor: 'pointer',
-                      '&:hover': {
-                        textDecoration: 'underline',
-                      },
-                    }}
-                    onClick={toggleModal}
-                  >
-                    Already Approved? Connect Here
-                  </Text>
-                  <Icon color="blue" icon="arrowStylizedRight" size={12} />
-                </>
-              )}
-            </Flex>
-
-            <Text color="blue" variant="xLarge" sx={{ margin: '0 auto' }}>
-              <StyledLink href="/">Return to Home</StyledLink>
-            </Text>
+          <Flex
+            sx={{
+              flexGrow: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            Content
           </Flex>
         </Box>
 
