@@ -150,6 +150,26 @@ export default function LandingView() {
                 </Box>
                 <Box>
                   <Link
+                    href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
+                    target="_blank"
+                    component={NextLink}
+                    noHover
+                  >
+                    <Button
+                      capitalize={true}
+                      style={{
+                        borderRadius: '8px',
+                        height: '32px',
+                        padding: '8px 12px',
+                      }}
+                    >
+                      Read our blog
+                    </Button>
+                  </Link>
+                </Box>
+
+                <Box>
+                  <Link
                     href="https://jobs.lever.co/upshot.io"
                     target="_blank"
                     component={NextLink}
@@ -311,7 +331,7 @@ export default function LandingView() {
                 </Panel>
               </Link>
               <Link
-                href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
+                href="/gmi"
                 rel="noopener noreferrer"
                 sx={{
                   color: theme.colors.text + ' !important',
@@ -359,12 +379,12 @@ export default function LandingView() {
                     alt="Upshot One"
                   ></Image>
                   <div style={{ position: 'relative' }}>
-                    <Text variant="h1Secondary">Blog</Text>
+                    <Text variant="h1Secondary">gmi Score</Text>
                     <Text
                       variant="large"
                       sx={{ display: 'block', whiteSpace: 'normal' }}
                     >
-                      Learn more about NFTxDeFI
+                      View and share your gmi score
                     </Text>
                   </div>
                 </Panel>
