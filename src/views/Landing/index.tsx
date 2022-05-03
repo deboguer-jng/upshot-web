@@ -379,12 +379,12 @@ export default function LandingView() {
                     alt="Upshot One"
                   ></Image>
                   <div style={{ position: 'relative' }}>
-                    <Text variant="h1Secondary">gmi Score</Text>
+                    <Text variant="h1Secondary">gmi</Text>
                     <Text
                       variant="large"
                       sx={{ display: 'block', whiteSpace: 'normal' }}
                     >
-                      View and share your gmi score
+                      View and share your gmi.
                     </Text>
                   </div>
                 </Panel>

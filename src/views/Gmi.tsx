@@ -38,7 +38,7 @@ const StyledLink = styled.a`
 `
 
 export default function GmiView() {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(true)
   const modalRef = useRef<HTMLDivElement>(null)
   const toggleModal = () => setOpen(!open)
   const { activate, connector } = useWeb3React()
@@ -228,7 +228,7 @@ export default function GmiView() {
         </Flex>
       </Box>
 
-      <Modal ref={modalRef} onClose={toggleModal} {...{ open }}>
+      <Modal backdropBlur ref={modalRef} onClose={toggleModal} {...{ open }}>
         <ConnectModal {...{ hideMetaMask }} onConnect={handleConnect} />
       </Modal>
     </>
