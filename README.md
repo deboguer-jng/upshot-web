@@ -79,6 +79,16 @@ In Next, all environment variables are bundled into the web app and should be co
 
 These are maintained by GitHub Actions: Repository secrets.
 
+# GraphQL Playground
+
+To explore the GraphQL API documentation and run queries to the staging and production environments, visit https://stage.api.upshot.io/graphql.
+
+Staging:
+https://stage.api.upshot.io/graphql
+
+Production:
+https://v2.client.upshot.io/graphql
+
 # Deployments
 
 We use GitHub Actions to deploy via Netlify. Previews are triggered by pull requests and updates to the main / staging branches.
