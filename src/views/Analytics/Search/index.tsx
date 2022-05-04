@@ -4,6 +4,7 @@ import { Container } from '@upshot-tech/upshot-ui'
 import {
   Accordion,
   Box,
+  ButtonDropdown,
   Flex,
   formatNumber,
   Grid,
@@ -116,6 +117,34 @@ export default function SearchView() {
     }
 
     setSelectedNFTColumn(columnIdx)
+  }
+
+  const sortOptions = [
+    'Sale price: low to high',
+    'Sale price: high to low',
+    'Appraisal: low to high',
+    'Appraisal: high to low',
+    'List price: low to high',
+    'List price: high to low',
+    'Difference: low to high',
+    'Difference: high to low',
+  ]
+
+  const handleChangeNFTColumnSortRadio = (value: string) => {
+    const index = sortOptions.indexOf(value)
+    /* it maps 0, 1 -> 0
+    2, 3 -> 1
+    4, 5 -> 2 */
+    const columnIndex = Math.floor(index/2)
+    setSelectedNFTColumn(columnIndex)
+
+    setSortNFTsAscending(index % 2 === 0)  // index is even make it ascending
+  }
+
+  const getDropdownValue = () => {
+    const strIndex = selectedNFTColumn * 2
+    const strIndexSorted = strIndex + (sortNFTsAscending ? 0 : 1)
+    return sortOptions[strIndexSorted]
   }
 
   // Used to wait for the router to mount before showing collectors.
@@ -377,6 +406,17 @@ export default function SearchView() {
                           />
                         </IconButton>
                       </Flex>
+                        { !listView && (
+                          <ButtonDropdown
+                            hideRadio
+                            label="Sort by"
+                            name="sortBy"
+                            onChange={(val) => handleChangeNFTColumnSortRadio(val)}
+                            options={sortOptions}
+                            value={getDropdownValue()}
+                            closeOnSelect={true}
+                          />
+                          )}
                     </Flex>
                   )}
                   {!collectionId && ready && (
