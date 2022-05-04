@@ -3,8 +3,8 @@ import styled from '@emotion/styled'
 import {
   Box,
   Button,
-  ConnectModal,
   Flex,
+  GmiModal,
   Icon,
   IconButton,
   Modal,
@@ -229,7 +229,7 @@ export default function GmiView() {
       </Box>
 
       <Modal backdropBlur ref={modalRef} onClose={toggleModal} {...{ open }}>
-        <ConnectModal {...{ hideMetaMask }} onConnect={handleConnect} />
+        <GmiModal {...{ hideMetaMask }} onConnect={handleConnect} />
       </Modal>
     </>
   )
