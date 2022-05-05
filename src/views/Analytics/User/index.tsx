@@ -218,9 +218,20 @@ function Header({
         <Text variant="h1Primary" sx={{ lineHeight: 1 }}>
           {displayName}&apos;s Collection
         </Text>
-        <Text color="grey-400" sx={{ lineHeight: 1 }}>
-          {shortAddress}
-        </Text>
+        <Flex sx={{ alignItems: 'center', gap: 1 }}>
+          <Text color="grey-400" sx={{ lineHeight: 1 }}>
+            {shortAddress}
+          </Text>
+          <Icon
+            icon="copy"
+            size="13"
+            color="grey-400"
+            sx={{ cursor: 'pointer' }}
+            onClick={() => {
+              navigator.clipboard.writeText(address)
+            }}
+          />
+        </Flex>
       </Flex>
     </Flex>
   )

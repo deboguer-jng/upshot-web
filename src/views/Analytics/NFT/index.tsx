@@ -512,27 +512,43 @@ export default function NFTView() {
                           >
                             Owned By
                           </Text>
-                          <Link
-                            href={`/analytics/user/${txHistory?.[0]?.txToAddress}`}
-                            sx={{
-                              whiteSpace: 'nowrap',
-                              textOverflow: 'ellipsis',
-                              overflow: 'hidden',
-                            }}
-                            title={displayName}
-                            component={NextLink}
+                          <Grid
+                            columns={['auto 13px']}
+                            sx={{ gap: 1, alignItems: 'center', width: '100%' }}
                           >
-                            <Text
-                              color="grey-300"
+                            <Link
+                              href={`/analytics/user/${txHistory?.[0]?.txToAddress}`}
                               sx={{
-                                fontWeight: 'bold',
-                                lineHeight: 1.25,
-                                fontSize: [3, 3, 4],
+                                whiteSpace: 'nowrap',
+                                textOverflow: 'ellipsis',
+                                overflow: 'hidden',
                               }}
+                              title={displayName}
+                              component={NextLink}
                             >
-                              {displayName}
-                            </Text>
-                          </Link>
+                              <Text
+                                color="grey-300"
+                                sx={{
+                                  fontWeight: 'bold',
+                                  lineHeight: 1.25,
+                                  fontSize: [3, 3, 4],
+                                }}
+                              >
+                                {displayName}
+                              </Text>
+                            </Link>
+                            <Icon
+                              icon="copy"
+                              color="grey-300"
+                              size="13"
+                              sx={{ cursor: 'pointer' }}
+                              onClick={() => {
+                                navigator.clipboard.writeText(
+                                  txHistory?.[0]?.txToAddress
+                                )
+                              }}
+                            />
+                          </Grid>
                         </Flex>
                       </Flex>
                     </Flex>
