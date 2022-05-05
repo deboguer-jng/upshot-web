@@ -226,8 +226,9 @@ function Header({
             icon="copy"
             size="13"
             color="grey-400"
+            sx={{ cursor: 'pointer' }}
             onClick={() => {
-              navigator.clipboard.writeText(shortAddress)
+              navigator.clipboard.writeText(address)
             }}
           />
         </Flex>

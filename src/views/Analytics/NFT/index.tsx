@@ -541,6 +541,7 @@ export default function NFTView() {
                               icon="copy"
                               color="grey-300"
                               size="13"
+                              sx={{ cursor: 'pointer' }}
                               onClick={() => {
                                 navigator.clipboard.writeText(
                                   txHistory?.[0]?.txToAddress
