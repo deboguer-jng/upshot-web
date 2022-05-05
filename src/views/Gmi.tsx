@@ -2,11 +2,11 @@ import { useLazyQuery } from '@apollo/client'
 import styled from '@emotion/styled'
 import {
   Box,
-  Button,
   Flex,
   GmiModal,
   Icon,
   IconButton,
+  Link,
   Modal,
   Text,
   useTheme,
@@ -14,12 +14,8 @@ import {
 import { useWeb3React } from '@web3-react/core'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { ConnectorName, connectorsByName } from 'constants/connectors'
-import {
-  GET_WAIT_LIST,
-  GetWaitListData,
-  GetWaitListVars,
-} from 'graphql/queries'
 import Head from 'next/head'
+import NextLink from 'next/link'
 import React, { useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { selectIsBeta, setIsBeta } from 'redux/reducers/user'
@@ -37,37 +33,76 @@ const StyledLink = styled.a`
   }
 `
 
+function GmiCard({ address }: { address: string }) {
+  return <div>{address}</div>
+}
+
+function GmiFooter() {
+  return (
+    <Flex
+      sx={{
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 24,
+        padding: 4,
+      }}
+    >
+      <Link
+        href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
+        target="_blank"
+        rel="noreferrer"
+        component={NextLink}
+      >
+        <IconButton sx={{ '&:hover': { color: 'white' } }}>
+          <Icon icon="mirror" size={32} />
+        </IconButton>
+      </Link>
+      <Link
+        href="https://twitter.com/upshothq"
+        target="_blank"
+        rel="noreferrer"
+        component={NextLink}
+      >
+        <IconButton sx={{ '&:hover': { color: 'white' } }}>
+          <Icon icon="twitterCircle" size={32} />
+        </IconButton>
+      </Link>
+      <Link
+        href="https://discord.gg/upshot"
+        target="_blank"
+        rel="noreferrer"
+        component={NextLink}
+      >
+        <IconButton sx={{ '&:hover': { color: 'white' } }}>
+          <Icon icon="discord" size={32} />
+        </IconButton>
+      </Link>
+      <Link
+        href="https://www.instagram.com/upshot.hq/"
+        target="_blank"
+        rel="noreferrer"
+        component={NextLink}
+      >
+        <IconButton sx={{ '&:hover': { color: 'white' } }}>
+          <Icon icon="instagramCircle" size={32} />
+        </IconButton>
+      </Link>
+    </Flex>
+  )
+}
+
 export default function GmiView() {
-  const [open, setOpen] = useState(true)
   const modalRef = useRef<HTMLDivElement>(null)
-  const toggleModal = () => setOpen(!open)
   const { activate, connector } = useWeb3React()
   const dispatch = useAppDispatch()
   const address = useAppSelector(selectAddress)
+  const [walletAddress, setWalletAddress] = useState('')
   const { theme } = useTheme()
-
-  const shortAddr = shortenAddress(address)
-  const isBeta = useAppSelector(selectIsBeta)
-
-  const [getWaitlistStatus, { loading }] = useLazyQuery<
-    GetWaitListData,
-    GetWaitListVars
-  >(GET_WAIT_LIST, {
-    fetchPolicy: 'no-cache',
-    onCompleted: (data) => {
-      const isBeta = Boolean(data?.getUser?.isBeta)
-      dispatch(setIsBeta(isBeta))
-    },
-    onError: (err) => {
-      console.error(err)
-    },
-  })
 
   useEffect(() => {
     if (!address) return
-    dispatch(setIsBeta(undefined))
 
-    getWaitlistStatus({ variables: { address } })
+    setWalletAddress(address)
   }, [address])
 
   const handleConnect = (provider: ConnectorName) => {
@@ -77,10 +112,10 @@ export default function GmiView() {
     ) {
       connector.walletConnectProvider = undefined
     }
+    setWalletAddress('')
 
     dispatch(setActivatingConnector(provider))
     activate(connectorsByName[provider], (err) => console.error(err))
-    modalRef?.current?.click()
   }
 
   const hideMetaMask =
@@ -140,12 +175,6 @@ export default function GmiView() {
             padding: 4,
           }}
         >
-          <img
-            src="/img/upshot_logo_white.svg"
-            width="100%"
-            alt="Upshot Logo"
-            style={{ margin: '32px auto 0 auto', maxWidth: 192 }}
-          />
           <Flex
             sx={{
               flexGrow: 1,
@@ -228,8 +257,51 @@ export default function GmiView() {
         </Flex>
       </Box>
 
-      <Modal backdropBlur ref={modalRef} onClose={toggleModal} {...{ open }}>
-        <GmiModal {...{ hideMetaMask }} onConnect={handleConnect} />
+      <Modal backdropBlur ref={modalRef} open>
+        {address ? (
+          <GmiCard {...{ address }} />
+        ) : (
+          <Flex sx={{ flexDirection: 'column', gap: 8 }}>
+            <img
+              src="/img/upshot_logo_white.svg"
+              width="100%"
+              alt="Upshot Logo"
+              style={{ margin: '32px auto 0 auto', maxWidth: 192 }}
+            />
+            <GmiModal {...{ hideMetaMask }} onConnect={handleConnect} />
+
+            <Flex
+              sx={{
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Flex sx={{ gap: 3, color: 'grey-500' }}>
+                <Link
+                  href="/privacy.pdf"
+                  sx={{
+                    transition: 'all .1s ease',
+                    '&:hover': { color: 'white' },
+                  }}
+                >
+                  Privacy
+                </Link>
+                <span>|</span>
+                <Link
+                  href="/terms.pdf"
+                  sx={{
+                    transition: 'all .1s ease',
+                    '&:hover': { color: 'white' },
+                  }}
+                >
+                  Terms
+                </Link>
+              </Flex>
+              <GmiFooter />
+            </Flex>
+          </Flex>
+        )}
       </Modal>
     </>
   )
