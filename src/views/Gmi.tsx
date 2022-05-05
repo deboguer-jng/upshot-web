@@ -18,9 +18,16 @@ import Head from 'next/head'
 import NextLink from 'next/link'
 import React, { useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
-import { selectIsBeta, setIsBeta } from 'redux/reducers/user'
-import { selectAddress, setActivatingConnector } from 'redux/reducers/web3'
+import { setIsBeta } from 'redux/reducers/user'
+import {
+  selectAddress,
+  setActivatingConnector,
+  setAddress,
+  setEns,
+} from 'redux/reducers/web3'
 import { shortenAddress } from 'utils/address'
+
+import { GET_GMI, GetGmiData, GetGmiVars } from '../graphql/queries'
 
 const StyledLink = styled.a`
   cursor: pointer;
@@ -33,8 +40,19 @@ const StyledLink = styled.a`
   }
 `
 
-function GmiCard({ address }: { address: string }) {
-  return <div>{address}</div>
+function GmiCard({
+  wallet,
+  onReset,
+}: {
+  wallet: string
+  onReset?: () => void
+}) {
+  return (
+    <>
+      <div>{wallet}</div>
+      <div onClick={onReset}>Back</div>
+    </>
+  )
 }
 
 function GmiFooter() {
@@ -93,17 +111,21 @@ function GmiFooter() {
 
 export default function GmiView() {
   const modalRef = useRef<HTMLDivElement>(null)
-  const { activate, connector } = useWeb3React()
+  const { activate, connector, deactivate } = useWeb3React()
   const dispatch = useAppDispatch()
   const address = useAppSelector(selectAddress)
-  const [walletAddress, setWalletAddress] = useState('')
+  const [wallet, setWallet] = useState('')
   const { theme } = useTheme()
 
   useEffect(() => {
     if (!address) return
 
-    setWalletAddress(address)
+    setWallet(address)
   }, [address])
+
+  const handleSearch = (value: string) => {
+    setWallet(value)
+  }
 
   const handleConnect = (provider: ConnectorName) => {
     if (
@@ -112,10 +134,18 @@ export default function GmiView() {
     ) {
       connector.walletConnectProvider = undefined
     }
-    setWalletAddress('')
+    setWallet(address)
 
     dispatch(setActivatingConnector(provider))
     activate(connectorsByName[provider], (err) => console.error(err))
+  }
+
+  const handleReset = () => {
+    setWallet('')
+    deactivate()
+    dispatch(setAddress(undefined))
+    dispatch(setEns({ name: undefined }))
+    dispatch(setIsBeta(undefined))
   }
 
   const hideMetaMask =
@@ -258,8 +288,8 @@ export default function GmiView() {
       </Box>
 
       <Modal backdropBlur ref={modalRef} open>
-        {address ? (
-          <GmiCard {...{ address }} />
+        {wallet ? (
+          <GmiCard onReset={handleReset} {...{ wallet }} />
         ) : (
           <Flex sx={{ flexDirection: 'column', gap: 8 }}>
             <img
@@ -268,7 +298,11 @@ export default function GmiView() {
               alt="Upshot Logo"
               style={{ margin: '32px auto 0 auto', maxWidth: 192 }}
             />
-            <GmiModal {...{ hideMetaMask }} onConnect={handleConnect} />
+            <GmiModal
+              {...{ hideMetaMask }}
+              onSearch={handleSearch}
+              onConnect={handleConnect}
+            />
 
             <Flex
               sx={{

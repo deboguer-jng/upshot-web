@@ -47,3 +47,48 @@ export const GET_WAIT_LIST = gql`
     }
   }
 `
+
+/**
+ * Get gmi score
+ * @see /gmi
+ */
+export type GetGmiVars = {
+  address: string
+  ens: string
+}
+
+export type GetGmiData = {
+  getUser: {
+    addresses: {
+      address: string
+      gmi: number
+      volume: string
+      startAt: number
+      numTxs: number
+      unrealizedGain: number
+      realizedGain: number
+      numAssetsOwned: number
+      numBlueChipsOwned: number
+      numCollectionsOwned: number
+    }[]
+  }
+}
+
+export const GET_GMI = gql`
+  query GetGmi($address: String, $ens: String) {
+    getUser(address: $address, ens: $ens) {
+      addresses {
+        address
+        gmi
+        volume
+        startAt
+        numTxs
+        unrealizedGain
+        realizedGain
+        numAssetsOwned
+        numBlueChipsOwned
+        numCollectionsOwned
+      }
+    }
+  }
+`
