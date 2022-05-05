@@ -65,8 +65,8 @@ export type GetGmiData = {
       volume: string
       startAt: number
       numTxs: number
-      unrealizedGain: number
-      realizedGain: number
+      unrealizedGain: string
+      realizedGain: string
       numAssetsOwned: number
       numBlueChipsOwned: number
       numCollectionsOwned: number
