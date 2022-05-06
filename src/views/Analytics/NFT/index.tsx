@@ -395,8 +395,7 @@ export default function NFTView() {
             {listPrice &&
               listPriceUsd &&
               listMarketplace &&
-              listUrl &&
-              listAppraisalRatio && (
+              listUrl && (
                 <BuyNowPanel
                   variant="wide"
                   listPriceETH={Number(
@@ -404,7 +403,7 @@ export default function NFTView() {
                   )}
                   sx={{ width: '100%' }}
                   listPriceUSD={parseUint256(listPriceUsd, 6, 2)}
-                  listAppraisalPercentage={listAppraisalRatio}
+                  listAppraisalPercentage={listAppraisalRatio && listAppraisalRatio}
                   marketplaceName={
                     listUrl.includes('larvalabs.com')
                       ? 'Larva Labs'
