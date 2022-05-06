@@ -62,7 +62,7 @@ const ShareButton = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  height: 60px;
+  height: 54px;
   padding: 0 16px;
   background: ${({ theme }) => theme['colors']['blue']};
   border-radius: ${({ theme }) => theme['radii']['md']};
