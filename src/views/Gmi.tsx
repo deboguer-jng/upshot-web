@@ -47,9 +47,9 @@ const StyledLink = styled.a`
 
 const GmiCardBase = styled(Flex)`
   flex-direction: column;
-  gap: 8px;
+  gap: 32px;
   width: calc(100vw - 32px);
-  max-width: 1280px;
+  max-width: 1024px;
   background: ${({ theme }) => theme['colors']['grey-900']};
   border-radius: ${({ theme }) => theme['radii']['md']};
   padding: 40px;
@@ -158,7 +158,7 @@ function GmiCard({
         <Flex
           sx={{
             flexShrink: 0,
-            gap: 4,
+            gap: 2,
             width: ['100%', '100%', 'auto'],
             justifyContent: ['center', 'center', 'auto'],
           }}
@@ -189,11 +189,11 @@ function GmiCard({
 
       <Grid
         sx={{
-          gridTemplateColumns: isMobile ? '1fr' : '2fr 1fr',
+          gridTemplateColumns: isMobile ? '1fr' : '2.5fr 1fr',
           columnGap: '24px',
         }}
       >
-        <Flex sx={{ flexDirection: 'column', gap: 5 }}>
+        <Flex sx={{ flexDirection: 'column', gap: 7 }}>
           <Flex sx={{ alignItems: 'baseline' }}>
             <Text
               color="blue"
@@ -351,9 +351,8 @@ function GmiCard({
         >
           <Box
             sx={{
-              width: ['200px', '200px', '75%'],
+              width: ['200px', '200px', '80%'],
               height: ['200px', '200px', 'auto'],
-              paddingTop: [0, 0, '50%'],
               backgroundImage: 'url(/img/upshotBall.svg)',
               backgroundSize: 'contain',
               backgroundRepeat: 'no-repeat',
