@@ -392,27 +392,24 @@ export default function NFTView() {
           </Flex>
 
           <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-            {listPrice &&
-              listPriceUsd &&
-              listMarketplace &&
-              listUrl && (
-                <BuyNowPanel
-                  variant="wide"
-                  listPriceETH={Number(
-                    parseFloat(ethers.utils.formatEther(listPrice)).toFixed(2)
-                  )}
-                  sx={{ width: '100%' }}
-                  listPriceUSD={parseUint256(listPriceUsd, 6, 2)}
-                  listAppraisalPercentage={listAppraisalRatio && listAppraisalRatio}
-                  marketplaceName={
-                    listUrl.includes('larvalabs.com')
-                      ? 'Larva Labs'
-                      : listMarketplace
-                  }
-                  marketplaceUrl={listUrl}
-                  linkComponent={NextLink}
-                />
-              )}
+            {listPrice && listPriceUsd && listMarketplace && listUrl && (
+              <BuyNowPanel
+                variant="wide"
+                listPriceETH={Number(
+                  parseFloat(ethers.utils.formatEther(listPrice)).toFixed(2)
+                )}
+                sx={{ width: '100%' }}
+                listPriceUSD={parseUint256(listPriceUsd, 6, 2)}
+                listAppraisalPercentage={listAppraisalRatio}
+                marketplaceName={
+                  listUrl.includes('larvalabs.com')
+                    ? 'Larva Labs'
+                    : listMarketplace
+                }
+                marketplaceUrl={listUrl}
+                linkComponent={NextLink}
+              />
+            )}
             <Flex
               sx={{
                 gap: 4,
