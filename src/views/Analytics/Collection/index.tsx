@@ -201,10 +201,16 @@ export default function CollectionView() {
         <Container
           sx={{
             justifyContent: 'center',
-            flexGrow: 1,
+            alignItems: 'center',
+            height: '75vh',
+            width: '100%',
           }}
         >
-          Loading...
+          <img
+            src="/img/Logo_bounce_spin.gif"
+            width={256}
+            alt="Loading"
+          />
         </Container>
       </Layout>
     )
