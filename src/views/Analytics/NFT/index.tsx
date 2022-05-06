@@ -41,7 +41,11 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useAppDispatch } from 'redux/hooks'
-import { selectShowHelpModal, setShowHelpModal } from 'redux/reducers/layout'
+import {
+  selectShowHelpModal,
+  setAlertState,
+  setShowHelpModal,
+} from 'redux/reducers/layout'
 import { extractEns, shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
 import { getPriceChangeColor } from 'utils/color'
@@ -548,17 +552,39 @@ export default function NFTView() {
                                 {displayName}
                               </Text>
                             </Link>
-                            <Icon
-                              icon="copy"
-                              color="grey-300"
-                              size="13"
-                              sx={{ cursor: 'pointer' }}
-                              onClick={() => {
-                                navigator.clipboard.writeText(
-                                  txHistory?.[0]?.txToAddress
-                                )
+                            <Tooltip
+                              tooltip={'Copy to clipboard'}
+                              placement="top"
+                              sx={{
+                                marginLeft: '0',
+                                height: '13px',
+                                '&:hover': {
+                                  svg: {
+                                    color: theme.colors['grey-500'],
+                                  },
+                                },
                               }}
-                            />
+                            >
+                              <Icon
+                                icon="copy"
+                                color="grey-300"
+                                size="13"
+                                sx={{
+                                  cursor: 'pointer',
+                                }}
+                                onClick={() => {
+                                  dispatch(
+                                    setAlertState({
+                                      showAlert: true,
+                                      alertText: 'Address copied to clipboard!',
+                                    })
+                                  )
+                                  navigator.clipboard.writeText(
+                                    txHistory?.[0]?.txToAddress
+                                  )
+                                }}
+                              />
+                            </Tooltip>
                           </Grid>
                         </Flex>
                       </Flex>

@@ -17,6 +17,8 @@ import { ethers } from 'ethers'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { setAlertState } from 'redux/reducers/layout'
 import { shortenAddress } from 'utils/address'
 
 import {
@@ -42,6 +44,7 @@ export default function Collectors({
   assetId?: string
   searchTerm?: string
 }) {
+  const dispatch = useDispatch()
   const [selectedExtraCollections, setSelectedExtraCollections] = useState({})
   const [selectedExtraCollectionId, setSelectedExtraCollectionId] = useState<
     number | undefined
@@ -203,6 +206,14 @@ export default function Collectors({
                 extraCollectionChanged={(collectionId) => {
                   setSelectedCollectorId(id)
                   setSelectedExtraCollectionId(collectionId)
+                }}
+                onCopyAddress={() => {
+                  dispatch(
+                    setAlertState({
+                      showAlert: true,
+                      alertText: 'Address copied to clipboard!',
+                    })
+                  )
                 }}
                 nftCollection={(selectedExtraCollections[id] || assets).map(
                   ({ mediaUrl, id }) => ({
