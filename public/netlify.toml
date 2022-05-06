@@ -22,3 +22,8 @@
   from = "/analytics/search"
   to = "/dashboard/search.html"
   status = 200
+
+[[redirects]]
+  from = "/gmi/:address"
+  to = "/gmi/[address].html?address=:address"
+  status = 200

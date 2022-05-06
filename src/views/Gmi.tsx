@@ -355,7 +355,7 @@ function GmiCard({
               width: ['200px', '200px', '100%'],
               height: ['200px', '200px', 'auto'],
               paddingTop: [0, 0, '100%'],
-              backgroundImage: 'url(img/upshotBall.svg)',
+              backgroundImage: 'url(/img/upshotBall.svg)',
               backgroundSize: 'contain',
               backgroundRepeat: 'no-repeat',
               backgroundPosition: 'bottom center',
@@ -363,15 +363,28 @@ function GmiCard({
             }}
           />
 
-          <ShareButton>
-            <Text
-              color="white"
-              sx={{ fontWeight: 'heading', fontSize: '18px' }}
-            >
-              Share
-            </Text>
-            <Icon color="white" icon="twitter" size={32} />
-          </ShareButton>
+          <Link
+            component={NextLink}
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
+              `View my Upshot gmi:\nhttps://upshot.xyz/gmi/${displayName}`
+            )}`}
+            sx={{ width: '100%', textDecoration: 'none !important' }}
+          >
+            <ShareButton>
+              <Text
+                color="white"
+                sx={{
+                  fontWeight: 'heading',
+                  fontSize: '18px',
+                }}
+              >
+                Share
+              </Text>
+              <Icon color="white" icon="twitter" size={32} />
+            </ShareButton>
+          </Link>
         </Flex>
       </Grid>
     </GmiCardBase>
