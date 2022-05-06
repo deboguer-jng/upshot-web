@@ -189,8 +189,8 @@ function GmiCard({
 
       <Grid
         sx={{
-          gridTemplateColumns: isMobile ? '1fr' : '2.5fr 1fr',
-          columnGap: '32px',
+          gridTemplateColumns: isMobile ? '1fr' : '2fr 1fr',
+          columnGap: '24px',
         }}
       >
         <Flex sx={{ flexDirection: 'column', gap: 4 }}>
@@ -222,6 +222,7 @@ function GmiCard({
               gridTemplateColumns: ['1fr', '1fr', '1fr 1fr 1fr'],
               columnGap: '24px',
               rowGap: '24px',
+              flexGrow: 1,
             }}
           >
             <Flex
@@ -230,7 +231,7 @@ function GmiCard({
                 justifyContent: 'space-between',
                 border: `1px solid #545454`,
                 borderRadius: '10px',
-                minHeight: '116px',
+                minHeight: '100px',
                 padding: '20px',
               }}
             >
@@ -248,7 +249,7 @@ function GmiCard({
                 justifyContent: 'space-between',
                 border: `1px solid #545454`,
                 borderRadius: '10px',
-                minHeight: '116px',
+                minHeight: '100px',
                 padding: '20px',
               }}
             >
@@ -266,7 +267,7 @@ function GmiCard({
                 justifyContent: 'space-between',
                 border: `1px solid #545454`,
                 borderRadius: '10px',
-                minHeight: '116px',
+                minHeight: '100px',
                 padding: '20px',
               }}
             >
@@ -284,7 +285,7 @@ function GmiCard({
                 justifyContent: 'space-between',
                 border: `1px solid #545454`,
                 borderRadius: '10px',
-                minHeight: '116px',
+                minHeight: '100px',
                 padding: '20px',
               }}
             >
@@ -305,7 +306,7 @@ function GmiCard({
                 justifyContent: 'space-between',
                 border: `1px solid #545454`,
                 borderRadius: '10px',
-                minHeight: '116px',
+                minHeight: '100px',
                 padding: '20px',
               }}
             >
@@ -326,7 +327,7 @@ function GmiCard({
                 justifyContent: 'space-between',
                 border: `1px solid #545454`,
                 borderRadius: '10px',
-                minHeight: '116px',
+                minHeight: '100px',
                 padding: '20px',
               }}
             >
