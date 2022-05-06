@@ -10,14 +10,16 @@ import { providers } from 'ethers'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
-import { Provider } from 'react-redux'
+import { ReactNode, useEffect } from 'react'
+import { Provider, useDispatch, useSelector } from 'react-redux'
 import { useAppDispatch } from 'redux/hooks'
 import { persistor, store } from 'redux/store'
 import { PersistGate } from 'redux-persist/integration/react'
 import client from 'utils/apolloClient'
 import { initGA } from 'utils/googleAnalytics'
 import Layout from 'views/Layout'
+import { Alert } from 'theme-ui'
+import { selectAlertState, setAlertState } from 'redux/reducers/layout'
 
 /**
  * Instantiate an Ethers web3 provider library.
@@ -48,6 +50,48 @@ function PreviousRouterWrapper({ children }) {
   }
 
   return <> {children} </>
+}
+
+const AlertWrapper = ({ children }: { children: ReactNode }) => {
+  const dispatch = useDispatch()
+  const { showAlert, alertText } = useSelector(selectAlertState)
+
+  const closeAlert = () => {
+    dispatch(
+      setAlertState({
+        showAlert: false,
+        alertText: '',
+      })
+    )
+  }
+
+  useEffect(() => {
+    if (showAlert) {
+      setTimeout(() => {
+        closeAlert()
+      }, 3000)
+    }
+  }, [showAlert])
+
+  return (
+    <>
+      {showAlert && (
+        <Alert
+          variant="primary"
+          sx={{
+            position: 'fixed',
+            bottom: 4,
+            right: 4,
+            zIndex: 100,
+            width: '300px',
+          }}
+        >
+          {alertText}
+        </Alert>
+      )}
+      {children}
+    </>
+  )
 }
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -82,7 +126,9 @@ export default function App({ Component, pageProps }: AppProps) {
               <PersistGate {...{ persistor }}>
                 <PreviousRouterWrapper>
                   <Layout>
-                    <Component {...pageProps} />
+                    <AlertWrapper>
+                      <Component {...pageProps} />
+                    </AlertWrapper>
                   </Layout>
                 </PreviousRouterWrapper>
               </PersistGate>

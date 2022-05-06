@@ -39,6 +39,7 @@ import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { transparentize } from 'polished'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useDispatch } from 'react-redux'
 import {
   AutoSizer,
   Column,
@@ -47,6 +48,7 @@ import {
   Table,
 } from 'react-virtualized'
 import { useAppSelector } from 'redux/hooks'
+import { setAlertState } from 'redux/reducers/layout'
 import { selectAddress, selectEns } from 'redux/reducers/web3'
 import { Label as LabelUI } from 'theme-ui'
 import { extractEns, shortenAddress } from 'utils/address'
@@ -200,6 +202,8 @@ function Header({
   displayName?: string
 }) {
   const shortAddress = shortenAddress(address)
+  const { theme } = useTheme()
+  const dispatch = useDispatch()
 
   useEffect(() => {
     if (!displayName) return
@@ -222,15 +226,35 @@ function Header({
           <Text color="grey-400" sx={{ lineHeight: 1 }}>
             {shortAddress}
           </Text>
-          <Icon
-            icon="copy"
-            size="13"
-            color="grey-400"
-            sx={{ cursor: 'pointer' }}
-            onClick={() => {
-              navigator.clipboard.writeText(address)
+          <Tooltip
+            tooltip={'Copy to clipboard'}
+            placement="top"
+            sx={{
+              marginLeft: '0',
+              height: '13px',
+              '&:hover': {
+                svg: {
+                  color: theme.colors['grey-500'],
+                },
+              },
             }}
-          />
+          >
+            <Icon
+              icon="copy"
+              size="13"
+              color="grey-400"
+              sx={{ cursor: 'pointer' }}
+              onClick={() => {
+                dispatch(
+                  setAlertState({
+                    showAlert: true,
+                    alertText: 'Address copied to clipboard!',
+                  })
+                )
+                navigator.clipboard.writeText(address)
+              }}
+            />
+          </Tooltip>
         </Flex>
       </Flex>
     </Flex>
