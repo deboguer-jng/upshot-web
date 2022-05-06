@@ -193,7 +193,7 @@ function GmiCard({
           columnGap: '24px',
         }}
       >
-        <Flex sx={{ flexDirection: 'column', gap: 4 }}>
+        <Flex sx={{ flexDirection: 'column', gap: 8 }}>
           <Flex sx={{ alignItems: 'baseline' }}>
             <Text
               color="blue"
@@ -220,9 +220,8 @@ function GmiCard({
           <Grid
             sx={{
               gridTemplateColumns: ['1fr', '1fr', '1fr 1fr 1fr'],
-              columnGap: '24px',
-              rowGap: '24px',
-              flexGrow: 1,
+              columnGap: '16px',
+              rowGap: '16px',
             }}
           >
             <Flex
@@ -231,7 +230,7 @@ function GmiCard({
                 justifyContent: 'space-between',
                 border: `1px solid #545454`,
                 borderRadius: '10px',
-                minHeight: '100px',
+                minHeight: '92px',
                 padding: '20px',
               }}
             >
@@ -249,7 +248,7 @@ function GmiCard({
                 justifyContent: 'space-between',
                 border: `1px solid #545454`,
                 borderRadius: '10px',
-                minHeight: '100px',
+                minHeight: '92px',
                 padding: '20px',
               }}
             >
@@ -267,7 +266,7 @@ function GmiCard({
                 justifyContent: 'space-between',
                 border: `1px solid #545454`,
                 borderRadius: '10px',
-                minHeight: '100px',
+                minHeight: '92px',
                 padding: '20px',
               }}
             >
@@ -285,7 +284,7 @@ function GmiCard({
                 justifyContent: 'space-between',
                 border: `1px solid #545454`,
                 borderRadius: '10px',
-                minHeight: '100px',
+                minHeight: '92px',
                 padding: '20px',
               }}
             >
@@ -306,7 +305,7 @@ function GmiCard({
                 justifyContent: 'space-between',
                 border: `1px solid #545454`,
                 borderRadius: '10px',
-                minHeight: '100px',
+                minHeight: '92px',
                 padding: '20px',
               }}
             >
@@ -327,7 +326,7 @@ function GmiCard({
                 justifyContent: 'space-between',
                 border: `1px solid #545454`,
                 borderRadius: '10px',
-                minHeight: '100px',
+                minHeight: '92px',
                 padding: '20px',
               }}
             >
@@ -348,18 +347,17 @@ function GmiCard({
           sx={{
             flexDirection: 'column',
             alignItems: 'center',
-            gap: 4,
           }}
         >
           <Box
             sx={{
-              width: ['200px', '200px', '100%'],
+              width: ['200px', '200px', '90%'],
               height: ['200px', '200px', 'auto'],
               paddingTop: [0, 0, '100%'],
               backgroundImage: 'url(/img/upshotBall.svg)',
               backgroundSize: 'contain',
               backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'bottom center',
+              backgroundPosition: 'center',
               flexGrow: 1,
             }}
           />
