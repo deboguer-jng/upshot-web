@@ -1,19 +1,24 @@
-import { useLazyQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client'
 import styled from '@emotion/styled'
 import {
   Box,
   Flex,
+  formatNumber,
   GmiModal,
+  Grid,
   Icon,
   IconButton,
   Link,
   Modal,
+  ProgressBar,
   Text,
+  useBreakpointIndex,
   useTheme,
 } from '@upshot-tech/upshot-ui'
 import { useWeb3React } from '@web3-react/core'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { ConnectorName, connectorsByName } from 'constants/connectors'
+import { format } from 'date-fns'
 import Head from 'next/head'
 import NextLink from 'next/link'
 import React, { useEffect, useRef, useState } from 'react'
@@ -40,6 +45,29 @@ const StyledLink = styled.a`
   }
 `
 
+const GmiCardBase = styled(Flex)`
+  flex-direction: column;
+  gap: 16px;
+  width: calc(100vw - 16px);
+  max-width: 940px;
+  background: ${({ theme }) => theme['colors']['grey-900']};
+  border-radius: ${({ theme }) => theme['radii']['md']};
+  padding: 40px;
+  border: 1px solid ${({ theme }) => theme['rawColors']['grey-700']};
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.7);
+`
+
+const ShareButton = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 60px;
+  padding: 0 16px;
+  background: ${({ theme }) => theme['colors']['blue']};
+  border-radius: ${({ theme }) => theme['radii']['md']};
+`
+
 function GmiCard({
   wallet,
   onReset,
@@ -47,11 +75,306 @@ function GmiCard({
   wallet: string
   onReset?: () => void
 }) {
+  const breakpointIndex = useBreakpointIndex()
+  const isMobile = breakpointIndex <= 1
+
+  const { loading, data } = useQuery<GetGmiData, GetGmiVars>(GET_GMI, {
+    errorPolicy: 'all',
+    variables: {
+      address: wallet.startsWith('0x') ? wallet : undefined,
+      ens: wallet.endsWith('.eth') ? wallet : undefined,
+    },
+    skip: !wallet,
+  })
+
+  const userAddr = data?.getUser.addresses?.[0].address
+  const userEns = data?.getUser.addresses?.[0].ens
+  const displayName = userEns || (userAddr ? shortenAddress(userAddr) : '-')
+  const gmi = data?.getUser?.addresses?.[0].gmi
+  const txs = data?.getUser?.addresses?.[0].numTxs ?? 0
+  const firstPurchase = data?.getUser?.addresses?.[0]?.startAt
+    ? format(data.getUser.addresses[0].startAt * 1000, 'M/d/yyyy')
+    : '-'
+  const txVolume = data?.getUser?.addresses?.[0]?.volume
+    ? formatNumber(data.getUser.addresses[0].volume, {
+        fromWei: true,
+        prefix: 'ETHER',
+        decimals: 2,
+      })
+    : '-'
+  const isGainsRealizedProfit =
+    data?.getUser?.addresses?.[0]?.realizedGain &&
+    Number(data.getUser.addresses[0].realizedGain) > 0
+  const gainsRealized = data?.getUser?.addresses?.[0]?.realizedGain
+    ? formatNumber(data.getUser.addresses[0].realizedGain, {
+        fromWei: true,
+        prefix: 'ETHER',
+        decimals: 2,
+      })
+    : '-'
+
+  const isGainsUnrealizedProfit =
+    data?.getUser?.addresses?.[0]?.unrealizedGain &&
+    Number(data.getUser.addresses[0].unrealizedGain) > 0
+  const gainsUnrealized = data?.getUser?.addresses?.[0]?.unrealizedGain
+    ? formatNumber(data.getUser.addresses[0].unrealizedGain, {
+        fromWei: true,
+        prefix: 'ETHER',
+        decimals: 2,
+      })
+    : '-'
+
+  const isGainsTotalProfit =
+    data?.getUser?.addresses?.[0]?.unrealizedGain &&
+    data?.getUser?.addresses?.[0]?.realizedGain &&
+    Number(data.getUser.addresses[0].unrealizedGain) +
+      Number(data.getUser.addresses[0].realizedGain) >
+      0
+  const gainsTotal =
+    data?.getUser?.addresses?.[0]?.unrealizedGain &&
+    data?.getUser?.addresses?.[0]?.realizedGain
+      ? formatNumber(
+          Number(data.getUser.addresses[0].realizedGain) +
+            Number(data.getUser.addresses[0].unrealizedGain),
+          {
+            fromWei: true,
+            prefix: 'ETHER',
+            decimals: 2,
+          }
+        )
+      : '-'
+
   return (
-    <>
-      <div>{wallet}</div>
-      <div onClick={onReset}>Back</div>
-    </>
+    <GmiCardBase>
+      <Flex sx={{ flexGrow: 1, width: '100%' }}>
+        {!isMobile && (
+          <Flex sx={{ flexGrow: 1, width: '100%' }}>
+            <Text sx={{ fontWeight: 'bold', fontSize: '18px' }}>
+              {displayName}
+            </Text>
+          </Flex>
+        )}
+
+        <Flex
+          sx={{
+            flexShrink: 0,
+            gap: 4,
+            width: ['100%', '100%', 'auto'],
+            justifyContent: ['center', 'center', 'auto'],
+          }}
+        >
+          <Text
+            color={isMobile ? 'white' : 'grey-500'}
+            sx={{ fontWeight: 'heading', fontSize: ['16px', '18px', '14px'] }}
+          >
+            {displayName}
+          </Text>
+          <Text
+            onClick={onReset}
+            color="blue"
+            sx={{
+              fontSize: '14px',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+              fontWeight: 'heading',
+              '&:hover': {
+                textDecoration: 'underline',
+              },
+            }}
+          >
+            Try another wallet?
+          </Text>
+        </Flex>
+      </Flex>
+
+      <Grid
+        sx={{
+          gridTemplateColumns: isMobile ? '1fr' : '2.5fr 1fr',
+          columnGap: '32px',
+        }}
+      >
+        <Flex sx={{ flexDirection: 'column', gap: 4 }}>
+          <Flex sx={{ alignItems: 'baseline' }}>
+            <Text
+              color="blue"
+              sx={{
+                fontFamily: 'degular-display',
+                fontSize: '54px',
+                fontWeight: 'bold',
+                lineHeight: '54px',
+              }}
+            >
+              {gmi ? Math.floor(gmi) : '-'}
+            </Text>
+            <Text
+              color="grey-500"
+              sx={{
+                fontSize: '24px',
+                fontWeight: 'bold',
+              }}
+            >
+              &nbsp;/&nbsp;1000
+            </Text>
+          </Flex>
+          <ProgressBar percent={67} bgColor="grey-900" />
+          <Grid
+            sx={{
+              gridTemplateColumns: ['1fr', '1fr', '1fr 1fr 1fr'],
+              columnGap: '24px',
+              rowGap: '24px',
+            }}
+          >
+            <Flex
+              sx={{
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                border: `1px solid #545454`,
+                borderRadius: '10px',
+                minHeight: '116px',
+                padding: '20px',
+              }}
+            >
+              <Text sx={{ fontSize: '16px', fontWeight: 'heading' }}>
+                Total Transactions
+              </Text>
+              <Text color="blue" sx={{ fontSize: '26px', fontWeight: 'bold' }}>
+                {txs}
+              </Text>
+            </Flex>
+
+            <Flex
+              sx={{
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                border: `1px solid #545454`,
+                borderRadius: '10px',
+                minHeight: '116px',
+                padding: '20px',
+              }}
+            >
+              <Text sx={{ fontSize: '16px', fontWeight: 'heading' }}>
+                First Purchase
+              </Text>
+              <Text color="blue" sx={{ fontSize: '26px', fontWeight: 'bold' }}>
+                {firstPurchase}
+              </Text>
+            </Flex>
+
+            <Flex
+              sx={{
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                border: `1px solid #545454`,
+                borderRadius: '10px',
+                minHeight: '116px',
+                padding: '20px',
+              }}
+            >
+              <Text sx={{ fontSize: '16px', fontWeight: 'heading' }}>
+                Trade Volume
+              </Text>
+              <Text color="blue" sx={{ fontSize: '26px', fontWeight: 'bold' }}>
+                {txVolume}
+              </Text>
+            </Flex>
+
+            <Flex
+              sx={{
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                border: `1px solid #545454`,
+                borderRadius: '10px',
+                minHeight: '116px',
+                padding: '20px',
+              }}
+            >
+              <Text sx={{ fontSize: '16px', fontWeight: 'heading' }}>
+                Total Gains
+              </Text>
+              <Text
+                color={isGainsTotalProfit ? 'green' : 'red'}
+                sx={{ fontSize: '26px', fontWeight: 'bold' }}
+              >
+                {gainsTotal}
+              </Text>
+            </Flex>
+
+            <Flex
+              sx={{
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                border: `1px solid #545454`,
+                borderRadius: '10px',
+                minHeight: '116px',
+                padding: '20px',
+              }}
+            >
+              <Text sx={{ fontSize: '16px', fontWeight: 'heading' }}>
+                Unrealized Gains
+              </Text>
+              <Text
+                color={isGainsUnrealizedProfit ? 'green' : 'red'}
+                sx={{ fontSize: '26px', fontWeight: 'bold' }}
+              >
+                {gainsUnrealized}
+              </Text>
+            </Flex>
+
+            <Flex
+              sx={{
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                border: `1px solid #545454`,
+                borderRadius: '10px',
+                minHeight: '116px',
+                padding: '20px',
+              }}
+            >
+              <Text sx={{ fontSize: '16px', fontWeight: 'heading' }}>
+                Realized Gains
+              </Text>
+              <Text
+                color={isGainsRealizedProfit ? 'green' : 'red'}
+                sx={{ fontSize: '26px', fontWeight: 'bold' }}
+              >
+                {gainsRealized}
+              </Text>
+            </Flex>
+          </Grid>
+        </Flex>
+
+        <Flex
+          sx={{
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 4,
+          }}
+        >
+          <Box
+            sx={{
+              width: ['200px', '200px', '100%'],
+              height: ['200px', '200px', 'auto'],
+              paddingTop: [0, 0, '100%'],
+              backgroundImage: 'url(img/upshotBall.svg)',
+              backgroundSize: 'contain',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'bottom center',
+              flexGrow: 1,
+            }}
+          />
+
+          <ShareButton>
+            <Text
+              color="white"
+              sx={{ fontWeight: 'heading', fontSize: '18px' }}
+            >
+              Share
+            </Text>
+            <Icon color="white" icon="twitter" size={32} />
+          </ShareButton>
+        </Flex>
+      </Grid>
+    </GmiCardBase>
   )
 }
 
@@ -155,7 +478,7 @@ export default function GmiView() {
   return (
     <>
       <Head>
-        <title>gmi Score | Upshot Analytics</title>
+        <title>gmi | Upshot Analytics</title>
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:site" content="@UpshotHQ" />
         <meta name="twitter:creator" content="@UpshotHQ" />
@@ -200,7 +523,7 @@ export default function GmiView() {
             margin: '0 auto',
             flexDirection: 'column',
             width: '100%',
-            maxWidth: 640,
+            maxWidth: '800px',
             flex: '1 1 auto',
             padding: 4,
           }}
@@ -288,54 +611,54 @@ export default function GmiView() {
       </Box>
 
       <Modal backdropBlur ref={modalRef} open>
-        {wallet ? (
-          <GmiCard onReset={handleReset} {...{ wallet }} />
-        ) : (
-          <Flex sx={{ flexDirection: 'column', gap: 8 }}>
-            <img
-              src="/img/upshot_logo_white.svg"
-              width="100%"
-              alt="Upshot Logo"
-              style={{ margin: '32px auto 0 auto', maxWidth: 192 }}
-            />
+        <Flex sx={{ flexDirection: 'column', gap: 8 }}>
+          <img
+            src="/img/upshot_logo_white.svg"
+            width="100%"
+            alt="Upshot Logo"
+            style={{ margin: '32px auto 0 auto', maxWidth: 192 }}
+          />
+          {wallet ? (
+            <GmiCard onReset={handleReset} {...{ wallet }} />
+          ) : (
             <GmiModal
               {...{ hideMetaMask }}
               onSearch={handleSearch}
               onConnect={handleConnect}
             />
+          )}
 
-            <Flex
-              sx={{
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Flex sx={{ gap: 3, color: 'grey-500' }}>
-                <Link
-                  href="/privacy.pdf"
-                  sx={{
-                    transition: 'all .1s ease',
-                    '&:hover': { color: 'white' },
-                  }}
-                >
-                  Privacy
-                </Link>
-                <span>|</span>
-                <Link
-                  href="/terms.pdf"
-                  sx={{
-                    transition: 'all .1s ease',
-                    '&:hover': { color: 'white' },
-                  }}
-                >
-                  Terms
-                </Link>
-              </Flex>
-              <GmiFooter />
+          <Flex
+            sx={{
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Flex sx={{ gap: 3, color: 'grey-500' }}>
+              <Link
+                href="/privacy.pdf"
+                sx={{
+                  transition: 'all .1s ease',
+                  '&:hover': { color: 'white' },
+                }}
+              >
+                Privacy
+              </Link>
+              <span>|</span>
+              <Link
+                href="/terms.pdf"
+                sx={{
+                  transition: 'all .1s ease',
+                  '&:hover': { color: 'white' },
+                }}
+              >
+                Terms
+              </Link>
             </Flex>
+            <GmiFooter />
           </Flex>
-        )}
+        </Flex>
       </Modal>
     </>
   )

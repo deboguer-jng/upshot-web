@@ -53,14 +53,15 @@ export const GET_WAIT_LIST = gql`
  * @see /gmi
  */
 export type GetGmiVars = {
-  address: string
-  ens: string
+  address?: string
+  ens?: string
 }
 
 export type GetGmiData = {
   getUser: {
     addresses: {
       address: string
+      ens: string
       gmi: number
       volume: string
       startAt: number
@@ -79,6 +80,7 @@ export const GET_GMI = gql`
     getUser(address: $address, ens: $ens) {
       addresses {
         address
+        ens
         gmi
         volume
         startAt
