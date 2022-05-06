@@ -169,8 +169,19 @@ export default function NFTView() {
   if (loading)
     return (
       <Layout>
-        <Container sx={{ justifyContent: 'center', flexGrow: 1 }}>
-          Loading...
+        <Container
+          sx={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '75vh',
+            width: '100%',
+          }}
+        >
+          <img
+            src="/img/Logo_bounce_spin.gif"
+            width={256}
+            alt="Loading"
+          />
         </Container>
       </Layout>
     )
