@@ -13,13 +13,13 @@ import { useRouter } from 'next/router'
 import { ReactNode, useEffect } from 'react'
 import { Provider, useDispatch, useSelector } from 'react-redux'
 import { useAppDispatch } from 'redux/hooks'
+import { selectAlertState, setAlertState } from 'redux/reducers/layout'
 import { persistor, store } from 'redux/store'
 import { PersistGate } from 'redux-persist/integration/react'
+import { Alert } from 'theme-ui'
 import client from 'utils/apolloClient'
 import { initGA } from 'utils/googleAnalytics'
 import Layout from 'views/Layout'
-import { Alert } from 'theme-ui'
-import { selectAlertState, setAlertState } from 'redux/reducers/layout'
 
 /**
  * Instantiate an Ethers web3 provider library.
