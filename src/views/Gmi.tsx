@@ -62,11 +62,18 @@ const ShareButton = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  height: 54px;
-  padding: 0 16px;
+  padding: 8px 16px;
   background: ${({ theme }) => theme['colors']['blue']};
-  border-radius: ${({ theme }) => theme['radii']['md']};
+  border-radius: 9999px;
 `
+
+function GmiError() {
+  return (
+    <Box sx={{ background: 'grey-800', borderRadius: '30px' }}>
+      <Text sx={{ fontWeight: 'bold' }}>Oops, failure to launch!</Text>
+    </Box>
+  )
+}
 
 function GmiCard({
   wallet,
@@ -78,7 +85,7 @@ function GmiCard({
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
 
-  const { loading, data } = useQuery<GetGmiData, GetGmiVars>(GET_GMI, {
+  const { loading, error, data } = useQuery<GetGmiData, GetGmiVars>(GET_GMI, {
     errorPolicy: 'all',
     variables: {
       address: wallet.startsWith('0x') ? wallet : undefined,
@@ -87,11 +94,23 @@ function GmiCard({
     skip: !wallet,
   })
 
-  const userAddr = data?.getUser.addresses?.[0].address
-  const userEns = data?.getUser.addresses?.[0].ens
+  if (loading) {
+    return (
+      <div>
+        <img src="/img/Logo_bounce_spin.gif" width={256} alt="Loading" />
+      </div>
+    )
+  }
+
+  if (error || !data?.getUser?.addresses?.length) {
+    return <div>Dang</div>
+  }
+
+  const userAddr = data?.getUser?.addresses?.[0]?.address
+  const userEns = data?.getUser?.addresses?.[0]?.ens
   const displayName = userEns || (userAddr ? shortenAddress(userAddr) : '-')
-  const gmi = data?.getUser?.addresses?.[0].gmi
-  const txs = data?.getUser?.addresses?.[0].numTxs ?? 0
+  const gmi = data?.getUser?.addresses?.[0]?.gmi
+  const txs = data?.getUser?.addresses?.[0]?.numTxs ?? 0
   const firstPurchase = data?.getUser?.addresses?.[0]?.startAt
     ? format(data.getUser.addresses[0].startAt * 1000, 'M/d/yyyy')
     : '-'
@@ -189,7 +208,7 @@ function GmiCard({
 
       <Grid
         sx={{
-          gridTemplateColumns: isMobile ? '1fr' : '2.5fr 1fr',
+          gridTemplateColumns: isMobile ? '1fr' : '3fr 1fr',
           columnGap: '24px',
         }}
       >
@@ -351,7 +370,7 @@ function GmiCard({
         >
           <Box
             sx={{
-              width: ['200px', '200px', '80%'],
+              width: ['200px', '200px', '100%'],
               height: ['200px', '200px', 'auto'],
               backgroundImage: 'url(/img/upshotBall.svg)',
               backgroundSize: 'contain',
