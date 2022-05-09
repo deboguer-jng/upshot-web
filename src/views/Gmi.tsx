@@ -10,6 +10,7 @@ import {
   IconButton,
   Link,
   Modal,
+  parseUint256,
   ProgressBar,
   Text,
   useBreakpointIndex,
@@ -109,7 +110,7 @@ function GmiCard({
   const userAddr = data?.getUser?.addresses?.[0]?.address
   const userEns = data?.getUser?.addresses?.[0]?.ens
   const displayName = userEns || (userAddr ? shortenAddress(userAddr) : '-')
-  const gmi = data?.getUser?.addresses?.[0]?.gmi
+  const gmi = data?.getUser?.addresses?.[0]?.gmi ?? 0
   const txs = data?.getUser?.addresses?.[0]?.numTxs ?? 0
   const firstPurchase = data?.getUser?.addresses?.[0]?.startAt
     ? format(data.getUser.addresses[0].startAt * 1000, 'M/d/yyyy')
@@ -144,24 +145,17 @@ function GmiCard({
     : '-'
 
   const isGainsTotalProfit =
-    data?.getUser?.addresses?.[0]?.unrealizedGain &&
-    data?.getUser?.addresses?.[0]?.realizedGain &&
-    Number(data.getUser.addresses[0].unrealizedGain) +
-      Number(data.getUser.addresses[0].realizedGain) >
-      0
-  const gainsTotal =
-    data?.getUser?.addresses?.[0]?.unrealizedGain &&
-    data?.getUser?.addresses?.[0]?.realizedGain
-      ? formatNumber(
-          Number(data.getUser.addresses[0].realizedGain) +
-            Number(data.getUser.addresses[0].unrealizedGain),
-          {
-            fromWei: true,
-            prefix: 'ETHER',
-            decimals: 2,
-          }
-        )
-      : '-'
+    (parseUint256(data.getUser.addresses[0].realizedGain) || 0) +
+      (parseUint256(data.getUser.addresses[0].unrealizedGain) || 0) >
+    0
+  const gainsTotal = formatNumber(
+    (parseUint256(data.getUser.addresses[0].realizedGain) || 0) +
+      (parseUint256(data.getUser.addresses[0].unrealizedGain) || 0),
+    {
+      prefix: 'ETHER',
+      decimals: 2,
+    }
+  )
 
   return (
     <GmiCardBase>
@@ -235,7 +229,7 @@ function GmiCard({
               &nbsp;/&nbsp;1000
             </Text>
           </Flex>
-          <ProgressBar percent={67} bgColor="grey-900" />
+          <ProgressBar percent={(gmi / 1000) * 100} bgColor="grey-900" />
           <Grid
             sx={{
               gridTemplateColumns: ['1fr', '1fr', '1fr 1fr 1fr'],
