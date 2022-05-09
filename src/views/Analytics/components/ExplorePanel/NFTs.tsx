@@ -50,7 +50,7 @@ export const nftColumns = {
 }
 
 const colSpacing =
-  '46px minmax(100px,3fr) repeat(4, minmax(80px, 1fr)) minmax(0,50px)'
+  '46px minmax(100px,3fr) minmax(80px, 1fr) minmax(110px, 1fr) minmax(120px, 1fr) minmax(80px, 1fr) 40px'
 
 function NFTTableHead({
   selectedColumn,
