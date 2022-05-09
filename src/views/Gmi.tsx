@@ -522,6 +522,12 @@ export default function GmiView() {
   }, [address])
 
   const handleSearch = (value: string) => {
+    if (
+      !value.toLowerCase().endsWith('.eth') &&
+      !(value.startsWith('0x') && value.length === 42)
+    )
+      return
+
     setWallet(value)
   }
 
