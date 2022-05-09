@@ -111,7 +111,7 @@ function GmiCard({
   const userEns = data?.getUser?.addresses?.[0]?.ens
   const displayName = userEns || (userAddr ? shortenAddress(userAddr) : '-')
   const gmi = data?.getUser?.addresses?.[0]?.gmi ?? 0
-  const txs = data?.getUser?.addresses?.[0]?.numTxs ?? 0
+  const blueChips = data?.getUser?.addresses?.[0]?.numBlueChipsOwned ?? 0
   const firstPurchase = data?.getUser?.addresses?.[0]?.startAt
     ? format(data.getUser.addresses[0].startAt * 1000, 'M/d/yyyy')
     : '-'
@@ -248,10 +248,10 @@ function GmiCard({
               }}
             >
               <Text sx={{ fontSize: '16px', fontWeight: 'heading' }}>
-                Total Transactions
+                Blue Chips Owned
               </Text>
               <Text color="blue" sx={{ fontSize: '26px', fontWeight: 'bold' }}>
-                {txs}
+                {blueChips}
               </Text>
             </Flex>
 
