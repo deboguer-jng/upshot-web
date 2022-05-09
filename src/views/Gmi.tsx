@@ -22,7 +22,7 @@ import { ConnectorName, connectorsByName } from 'constants/connectors'
 import { format } from 'date-fns'
 import Head from 'next/head'
 import NextLink from 'next/link'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { setIsBeta } from 'redux/reducers/user'
 import {
@@ -83,11 +83,16 @@ function GmiCard({
   wallet: string
   onReset?: () => void
 }) {
+  const MIN_LOADING_SECONDS = 2
+  const LOAD_UPDATE_SECONDS = 0.25
+  const [lastLoadingAt, setLastLoadingAt] = useState<number>()
+  const [loadWait, setLoadWait] = useState(0)
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
 
   const { loading, error, data } = useQuery<GetGmiData, GetGmiVars>(GET_GMI, {
     errorPolicy: 'all',
+    fetchPolicy: 'no-cache',
     variables: {
       address: wallet.startsWith('0x') ? wallet : undefined,
       ens: wallet.endsWith('.eth') ? wallet : undefined,
@@ -95,7 +100,23 @@ function GmiCard({
     skip: !wallet,
   })
 
-  if (loading) {
+  useEffect(() => {
+    if (!loading) return
+    console.log('LOAD')
+    setLastLoadingAt(Date.now())
+  }, [loading])
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLoadWait(lastLoadingAt ? (Date.now() - lastLoadingAt) / 1000 : 0)
+    }, 1000 * LOAD_UPDATE_SECONDS)
+
+    return () => {
+      clearInterval(interval)
+    }
+  }, [lastLoadingAt])
+
+  if (loading || loadWait < MIN_LOADING_SECONDS) {
     return (
       <div>
         <img src="/img/Logo_bounce_spin.gif" width={256} alt="Loading" />
