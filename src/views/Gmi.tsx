@@ -406,52 +406,82 @@ function GmiFooter() {
   return (
     <Flex
       sx={{
-        justifyContent: 'center',
+        flexDirection: 'column',
         alignItems: 'center',
-        gap: 24,
-        padding: 4,
+        justifyContent: 'center',
       }}
     >
-      <Link
-        href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
-        target="_blank"
-        rel="noreferrer"
-        component={NextLink}
+      <Flex sx={{ gap: 3, color: 'grey-500' }}>
+        <Link
+          href="/privacy.pdf"
+          sx={{
+            transition: 'all .1s ease',
+            '&:hover': { color: 'white' },
+          }}
+        >
+          Privacy
+        </Link>
+        <span>|</span>
+        <Link
+          href="/terms.pdf"
+          sx={{
+            transition: 'all .1s ease',
+            '&:hover': { color: 'white' },
+          }}
+        >
+          Terms
+        </Link>
+      </Flex>
+
+      <Flex
+        sx={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: 24,
+          padding: 4,
+        }}
       >
-        <IconButton sx={{ '&:hover': { color: 'white' } }}>
-          <Icon icon="mirror" size={32} />
-        </IconButton>
-      </Link>
-      <Link
-        href="https://twitter.com/upshothq"
-        target="_blank"
-        rel="noreferrer"
-        component={NextLink}
-      >
-        <IconButton sx={{ '&:hover': { color: 'white' } }}>
-          <Icon icon="twitterCircle" size={32} />
-        </IconButton>
-      </Link>
-      <Link
-        href="https://discord.gg/upshot"
-        target="_blank"
-        rel="noreferrer"
-        component={NextLink}
-      >
-        <IconButton sx={{ '&:hover': { color: 'white' } }}>
-          <Icon icon="discord" size={32} />
-        </IconButton>
-      </Link>
-      <Link
-        href="https://www.instagram.com/upshot.hq/"
-        target="_blank"
-        rel="noreferrer"
-        component={NextLink}
-      >
-        <IconButton sx={{ '&:hover': { color: 'white' } }}>
-          <Icon icon="instagramCircle" size={32} />
-        </IconButton>
-      </Link>
+        <Link
+          href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
+          target="_blank"
+          rel="noreferrer"
+          component={NextLink}
+        >
+          <IconButton sx={{ '&:hover': { color: 'white' } }}>
+            <Icon icon="mirror" size={32} />
+          </IconButton>
+        </Link>
+        <Link
+          href="https://twitter.com/upshothq"
+          target="_blank"
+          rel="noreferrer"
+          component={NextLink}
+        >
+          <IconButton sx={{ '&:hover': { color: 'white' } }}>
+            <Icon icon="twitterCircle" size={32} />
+          </IconButton>
+        </Link>
+        <Link
+          href="https://discord.gg/upshot"
+          target="_blank"
+          rel="noreferrer"
+          component={NextLink}
+        >
+          <IconButton sx={{ '&:hover': { color: 'white' } }}>
+            <Icon icon="discord" size={32} />
+          </IconButton>
+        </Link>
+        <Link
+          href="https://www.instagram.com/upshot.hq/"
+          target="_blank"
+          rel="noreferrer"
+          component={NextLink}
+        >
+          <IconButton sx={{ '&:hover': { color: 'white' } }}>
+            <Icon icon="instagramCircle" size={32} />
+          </IconButton>
+        </Link>
+      </Flex>
     </Flex>
   )
 }
@@ -530,158 +560,43 @@ export default function GmiView() {
           zIndex: 0,
         }}
       />
-      <Box
-        sx={{
-          position: 'absolute',
-          margin: '0 auto',
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          minHeight: '100vh',
-        }}
-      >
-        <Box
-          sx={{
-            display: 'flex',
-            gap: 8,
-            margin: '0 auto',
-            flexDirection: 'column',
-            width: '100%',
-            maxWidth: '800px',
-            flex: '1 1 auto',
-            padding: 4,
-          }}
-        >
-          <Flex
-            sx={{
-              flexGrow: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            Content
-          </Flex>
-        </Box>
-
-        <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-          <Box
-            sx={{
-              width: '100%',
-              maxWidth: 640,
-              textAlign: 'center',
-              justifyContent: 'center',
-              alignItems: 'center',
-              margin: '0 auto',
-            }}
-          >
-            <StyledLink
-              href="https://jobs.lever.co/upshot.io"
-              rel="noopener noreferrer nofollow"
-              target="_blank"
-            >
-              Join Our Team
-            </StyledLink>
-            <Text sx={{ fontSize: 1, margin: '0 8px' }}>|</Text>
-            <StyledLink target="_blank" href="/privacy.pdf">
-              Privacy
-            </StyledLink>
-            <Text sx={{ fontSize: 1, margin: '0 8px' }}>|</Text>
-            <StyledLink target="_blank" href="/terms.pdf">
-              Terms
-            </StyledLink>
-          </Box>
-
-          <Box
-            sx={{
-              width: '100%',
-              maxWidth: 640,
-              textAlign: 'center',
-              justifyContent: 'center',
-              alignItems: 'center',
-              margin: '0 auto 64px auto',
-            }}
-          >
-            <StyledLink
-              href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
-              target="_blank"
-            >
-              <IconButton>
-                <Icon color="grey-700" icon="mirror" size={24} />
-              </IconButton>
-            </StyledLink>
-
-            <StyledLink href="https://twitter.com/upshothq" target="_blank">
-              <IconButton>
-                <Icon color="grey-700" icon="twitterCircle" size={24} />
-              </IconButton>
-            </StyledLink>
-
-            <StyledLink href="https://discord.gg/upshot" target="_blank">
-              <IconButton>
-                <Icon color="grey-700" icon="discord" size={24} />
-              </IconButton>
-            </StyledLink>
-
-            <StyledLink
-              href="https://www.instagram.com/upshot.hq/"
-              target="_blank"
-            >
-              <IconButton>
-                <Icon color="grey-700" icon="instagramCircle" size={24} />
-              </IconButton>
-            </StyledLink>
-          </Box>
-        </Flex>
-      </Box>
 
       <Modal backdropBlur ref={modalRef} open>
-        <Flex sx={{ flexDirection: 'column', gap: 8 }}>
+        <Flex
+          sx={{
+            flexDirection: 'column',
+            gap: 8,
+            minHeight: '100vh',
+            width: '100%',
+          }}
+        >
           <img
             src="/img/upshot_logo_white.svg"
             width="100%"
             alt="Upshot Logo"
             style={{ margin: '32px auto 0 auto', maxWidth: 192 }}
           />
-          {wallet ? (
-            <GmiCard onReset={handleReset} {...{ wallet }} />
-          ) : (
-            <GmiModal
-              {...{ hideMetaMask }}
-              onSearch={handleSearch}
-              onConnect={handleConnect}
-            />
-          )}
 
           <Flex
             sx={{
-              flexDirection: 'column',
               alignItems: 'center',
+              flexDirection: 'column',
+              flexGrow: 1,
               justifyContent: 'center',
             }}
           >
-            <Flex sx={{ gap: 3, color: 'grey-500' }}>
-              <Link
-                href="/privacy.pdf"
-                sx={{
-                  transition: 'all .1s ease',
-                  '&:hover': { color: 'white' },
-                }}
-              >
-                Privacy
-              </Link>
-              <span>|</span>
-              <Link
-                href="/terms.pdf"
-                sx={{
-                  transition: 'all .1s ease',
-                  '&:hover': { color: 'white' },
-                }}
-              >
-                Terms
-              </Link>
-            </Flex>
-            <GmiFooter />
+            {wallet ? (
+              <GmiCard onReset={handleReset} {...{ wallet }} />
+            ) : (
+              <GmiModal
+                {...{ hideMetaMask }}
+                onSearch={handleSearch}
+                onConnect={handleConnect}
+              />
+            )}
           </Flex>
+
+          <GmiFooter />
         </Flex>
       </Modal>
     </>
