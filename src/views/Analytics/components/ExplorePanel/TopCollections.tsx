@@ -5,16 +5,10 @@ import {
   Icon,
   useBreakpointIndex,
 } from '@upshot-tech/upshot-ui'
-import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
+import { CollectionGridRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { Pagination, useTheme } from '@upshot-tech/upshot-ui'
-import { Box, Flex, Grid, Link, Text } from '@upshot-tech/upshot-ui'
-import {
-  formatNumber,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-} from '@upshot-tech/upshot-ui'
+import { Box, Flex, Grid, Text } from '@upshot-tech/upshot-ui'
+import { formatNumber } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE } from 'constants/'
 import NextLink from 'next/link'
 import router from 'next/router'
@@ -69,6 +63,9 @@ export const collectionColumns: Partial<OrderedAssetColumns> = {
   PAST_WEEK_FLOOR_CHANGE: 'Floor Change (1W)',
 }
 
+const colSpacing =
+  '46px minmax(100px,3fr) repeat(4, minmax(80px, 1fr)) minmax(0,50px)'
+
 function CollectionTableHead({
   selectedColumn,
   sortAscending,
@@ -89,80 +86,53 @@ function CollectionTableHead({
           </Flex>
         </Box>
       ) : (
-        <TableHead>
-          <TableRow>
-            <TableCell />
-            <TableCell
+        <Grid
+          columns={colSpacing}
+          sx={{ padding: [1, 3].map((n) => theme.space[n] + 'px').join(' ') }}
+        >
+          <Box />
+          <Box />
+          {Object.values(collectionColumns).map((col, idx) => (
+            <Box
+              key={idx}
               color="grey-500"
+              onClick={() => onChangeSelection?.(idx)}
               sx={{
                 cursor: 'pointer',
-                color: selectedColumn === 0 ? 'white' : null,
+                color: selectedColumn === idx ? 'white' : null,
                 transition: 'default',
                 userSelect: 'none',
-                width: '100%!important',
                 '& svg path': {
                   transition: 'default',
-                  '&:nth-of-type(1)': {
+                  '&:nth-child(1)': {
                     fill:
-                      selectedColumn === 0 && sortAscending
+                      selectedColumn === idx && sortAscending
                         ? 'white'
                         : theme.rawColors['grey-500'],
                   },
-                  '&:nth-of-type(2)': {
+                  '&:nth-child(2)': {
                     fill:
-                      !sortAscending && selectedColumn === 0
+                      !sortAscending && selectedColumn === idx
                         ? 'white'
                         : theme.rawColors['grey-500'],
                   },
                 },
               }}
-            />
-            {Object.values(collectionColumns).map((col, idx) => (
-              <TableCell
-                key={idx}
-                color="grey-500"
-                colSpan={
-                  idx === Object.keys(collectionColumns).length - 1 ? 2 : 1
-                }
-                onClick={() => onChangeSelection?.(idx)}
+            >
+              <Flex
                 sx={{
-                  cursor: 'pointer',
-                  color: selectedColumn === idx ? 'white' : null,
-                  transition: 'default',
-                  userSelect: 'none',
-                  minWidth: [100, 100, 100, 120, 180],
-                  '& svg path': {
-                    transition: 'default',
-                    '&:nth-child(1)': {
-                      fill:
-                        selectedColumn === idx && sortAscending
-                          ? 'white'
-                          : theme.rawColors['grey-500'],
-                    },
-                    '&:nth-child(2)': {
-                      fill:
-                        !sortAscending && selectedColumn === idx
-                          ? 'white'
-                          : theme.rawColors['grey-500'],
-                    },
-                  },
+                  alignItems: 'center',
+                  'white-space': 'nowrap',
+                  fontSize: '.85rem',
                 }}
               >
-                <Flex sx={{ alignItems: 'center' }}>
-                  <Flex
-                    sx={{
-                      'white-space': 'nowarp',
-                      fontSize: '.85rem',
-                    }}
-                  >
-                    {col}
-                  </Flex>
-                  <Icon icon="tableSort" height={16} width={16} />
-                </Flex>
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
+                {col}
+                <Icon icon="tableSort" height={16} width={16} />
+              </Flex>
+            </Box>
+          ))}
+          <Box />
+        </Grid>
       )}
     </>
   )
@@ -187,10 +157,10 @@ const CollectionItemsWrapper = ({
           <CollectorAccordion fullWidth>{children}</CollectorAccordion>
         </>
       ) : (
-        <CollectionTable>
+        <Box>
           <CollectionTableHead {...props} />
-          <TableBody>{children}</TableBody>
-        </CollectionTable>
+          <Box>{children}</Box>
+        </Box>
       )}
     </>
   )
@@ -269,7 +239,7 @@ export default function ExploreCollections({
       >
         {data.searchCollectionByMetric.assetSets.map(
           ({ id, name, imageUrl, latestStats }, idx) => (
-            <CollectionRow
+            <CollectionGridRow
               title={name}
               imageSrc={imageUrl!}
               key={idx}
@@ -288,6 +258,7 @@ export default function ExploreCollections({
               }
               fullWidth={isMobile}
               linkComponent={NextLink}
+              columns={colSpacing}
               {...{ variant }}
             >
               {isMobile ? (
@@ -355,70 +326,46 @@ export default function ExploreCollections({
                 </Grid>
               ) : (
                 <>
-                  <TableCell sx={{ maxWidth: 100 }}>
-                    <Link
-                      href={`/analytics/collection/${id}`}
-                      component={NextLink}
-                      noHover
-                    >
-                      {latestStats?.pastWeekWeiVolume
-                        ? formatNumber(latestStats.pastWeekWeiVolume, {
-                            fromWei: true,
-                            decimals: 2,
-                            kmbUnits: true,
-                            prefix: 'ETHER',
-                          })
-                        : '-'}
-                    </Link>
-                  </TableCell>
-                  <TableCell sx={{ maxWidth: 100 }}>
-                    <Link
-                      href={`/analytics/collection/${id}`}
-                      component={NextLink}
-                      noHover
-                    >
-                      {latestStats?.pastDayWeiAverage
-                        ? formatNumber(latestStats.pastDayWeiAverage, {
-                            fromWei: true,
-                            decimals: 2,
-                            kmbUnits: true,
-                            prefix: 'ETHER',
-                          })
-                        : '-'}
-                    </Link>
-                  </TableCell>
-                  <TableCell sx={{ maxWidth: 100 }}>
-                    <Link
-                      href={`/analytics/collection/${id}`}
-                      component={NextLink}
-                      noHover
-                    >
-                      {latestStats?.floor
-                        ? formatNumber(latestStats.floor, {
-                            fromWei: true,
-                            decimals: 2,
-                            prefix: 'ETHER',
-                          })
-                        : '-'}
-                    </Link>
-                  </TableCell>
-                  <TableCell
+                  <Box>
+                    {latestStats?.pastWeekWeiVolume
+                      ? formatNumber(latestStats.pastWeekWeiVolume, {
+                          fromWei: true,
+                          decimals: 2,
+                          kmbUnits: true,
+                          prefix: 'ETHER',
+                        })
+                      : '-'}
+                  </Box>
+                  <Box>
+                    {latestStats?.pastDayWeiAverage
+                      ? formatNumber(latestStats.pastDayWeiAverage, {
+                          fromWei: true,
+                          decimals: 2,
+                          kmbUnits: true,
+                          prefix: 'ETHER',
+                        })
+                      : '-'}
+                  </Box>
+                  <Box>
+                    {latestStats?.floor
+                      ? formatNumber(latestStats.floor, {
+                          fromWei: true,
+                          decimals: 2,
+                          prefix: 'ETHER',
+                        })
+                      : '-'}
+                  </Box>
+                  <Box
                     sx={{
                       maxWidth: [100, 100, 200],
                       color: getPriceChangeColor(latestStats?.weekFloorChange),
                     }}
                   >
-                    <Link
-                      href={`/analytics/collection/${id}`}
-                      component={NextLink}
-                      noHover
-                    >
-                      {getPriceChangeLabel(latestStats?.weekFloorChange)}
-                    </Link>
-                  </TableCell>
+                    {getPriceChangeLabel(latestStats?.weekFloorChange)}
+                  </Box>
                 </>
               )}
-            </CollectionRow>
+            </CollectionGridRow>
           )
         )}
       </CollectionItemsWrapper>

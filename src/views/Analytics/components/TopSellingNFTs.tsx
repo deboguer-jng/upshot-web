@@ -181,13 +181,7 @@ export default function TopSellingNFTs({
                 txFromAddress,
                 txToAddress,
                 price,
-                asset: {
-                  id,
-                  contractAddress,
-                  mediaUrl,
-                  rarity,
-                  collection,
-                },
+                asset: { id, contractAddress, mediaUrl, rarity, collection },
               },
               key
             ) => (
