@@ -126,7 +126,7 @@ export type GetTopSalesData = {
     txFromAddress: string
     txToAddress: string
     txAt: number
-    price: string
+    ethSalePrice: string
     asset: {
       id: string
       contractAddress: string
@@ -381,7 +381,7 @@ export const GET_TOP_SALES = gql`
       txFromAddress
       txToAddress
       txAt
-      price
+      ethSalePrice
       asset {
         id
         contractAddress
