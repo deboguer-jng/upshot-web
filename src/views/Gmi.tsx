@@ -289,7 +289,7 @@ function GmiCard({
         }}
       >
         <Flex sx={{ flexDirection: 'column', gap: 7 }}>
-          <Flex sx={{ alignItems: 'baseline' }}>
+          <Flex sx={{ alignItems: 'baseline', gap: 2 }}>
             <Text
               color="blue"
               sx={{
@@ -308,8 +308,38 @@ function GmiCard({
                 fontWeight: 'bold',
               }}
             >
-              &nbsp;/&nbsp;1000
+              /
             </Text>
+            <Box sx={{ position: 'relative' }}>
+              <Text
+                color="grey-500"
+                sx={{
+                  position: 'absolute',
+                  marginTop: '-1.33rem',
+                  fontSize: '.85rem',
+                }}
+              >
+                gmi
+              </Text>
+              <Text
+                color="grey-500"
+                sx={{
+                  fontSize: '24px',
+                  fontWeight: 'bold',
+                }}
+              >
+                1000
+              </Text>
+            </Box>
+            <IconButton
+              sx={{
+                background: 'grey-800',
+                width: '28px',
+                height: '28px',
+              }}
+            >
+              <Icon icon="question" size={14} />
+            </IconButton>
             <Flex sx={{ flexGrow: 1, justifyContent: 'flex-end' }}>
               <Text variant="h3Primary">{rank}</Text>
             </Flex>
