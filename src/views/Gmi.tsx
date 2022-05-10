@@ -94,11 +94,36 @@ const ShareButton = styled.div`
   border-radius: 9999px;
 `
 
-function GmiError() {
+function GmiError({
+  wallet,
+  onReset,
+}: {
+  wallet: string
+  onReset?: () => void
+}) {
   return (
-    <Box sx={{ background: 'grey-800', borderRadius: '30px' }}>
-      <Text sx={{ fontWeight: 'bold' }}>Oops, failure to launch!</Text>
-    </Box>
+    <Flex
+      sx={{
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: 8,
+        padding: '30px',
+        background: 'grey-800',
+        borderRadius: '30px',
+      }}
+    >
+      <Text variant="h1Primary" color="grey-300">
+        Oops, failure to launch.
+      </Text>
+      <img src="/img/failShip.svg" width={196} alt="Error requesting gmi." />
+      <Flex sx={{ flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+        <Text color="grey-300">
+          Sorry, this wallet does not have a gmi yet.
+        </Text>
+        <Text color="red">{wallet}</Text>
+      </Flex>
+      <WideButton onClick={onReset}>Try another wallet.</WideButton>
+    </Flex>
   )
 }
 
@@ -141,31 +166,8 @@ function GmiCard({
     }
   }, [lastLoadingAt])
 
-  if (error || !data?.getUser?.addresses?.length) {
-    return (
-      <Flex
-        sx={{
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: 8,
-          padding: '30px',
-          background: 'grey-800',
-          borderRadius: '30px',
-        }}
-      >
-        <Text variant="h1Primary" color="grey-300">
-          Oops, failure to launch.
-        </Text>
-        <img src="/img/failShip.svg" width={196} alt="Error requesting gmi." />
-        <Flex sx={{ flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-          <Text color="grey-300">
-            Sorry, this wallet does not have a gmi yet.
-          </Text>
-          <Text color="red">{wallet}</Text>
-        </Flex>
-        <WideButton onClick={onReset}>Try another wallet.</WideButton>
-      </Flex>
-    )
+  if (error || (data && !data?.getUser?.addresses?.length)) {
+    return <GmiError {...{ wallet, onReset }} />
   }
 
   if (loading || loadWait < MIN_LOADING_SECONDS) {
