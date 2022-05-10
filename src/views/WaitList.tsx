@@ -288,7 +288,13 @@ export default function WaitListView() {
         </Flex>
       </Box>
 
-      <Modal backdropBlur ref={modalRef} onClose={toggleModal} {...{ open }}>
+      <Modal
+        hideScroll
+        backdropBlur
+        ref={modalRef}
+        onClose={toggleModal}
+        {...{ open }}
+      >
         <ConnectModal {...{ hideMetaMask }} onConnect={handleConnect} />
       </Modal>
     </>

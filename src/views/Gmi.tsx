@@ -2,7 +2,6 @@ import { useQuery } from '@apollo/client'
 import styled from '@emotion/styled'
 import {
   Box,
-  Button,
   Flex,
   formatNumber,
   GmiModal,
@@ -637,21 +636,23 @@ export default function GmiView() {
         }}
       />
 
-      <Modal backdropBlur ref={modalRef} open>
+      <Modal backdropBlur ref={modalRef} fullWidth open>
         <Flex
           sx={{
             flexDirection: 'column',
+            alignItems: 'center',
             gap: 8,
             minHeight: '100vh',
-            width: '100%',
           }}
         >
-          <img
-            src="/img/upshot_logo_white.svg"
-            width="100%"
-            alt="Upshot Logo"
-            style={{ margin: '32px auto 0 auto', maxWidth: 192 }}
-          />
+          <Link href="/" component={NextLink}>
+            <img
+              src="/img/upshot_logo_white.svg"
+              width="100%"
+              alt="Upshot Logo"
+              style={{ margin: '32px auto 0 auto', maxWidth: 192 }}
+            />
+          </Link>
 
           <Flex
             sx={{

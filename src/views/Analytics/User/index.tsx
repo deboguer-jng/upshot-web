@@ -56,12 +56,15 @@ import { formatDistance } from 'utils/time'
 
 import Breadcrumbs from '../components/Breadcrumbs'
 import {
+  GET_ALL_OWNED_COLLECTIONS_WRAPPER,
   GET_COLLECTION_ASSETS,
   GET_COLLECTOR,
   GET_COLLECTOR_TX_HISTORY,
   GET_UNSUPPORTED_AGGREGATE_COLLECTION_STATS,
   GET_UNSUPPORTED_ASSETS,
   GET_UNSUPPORTED_FLOORS,
+  GetAllOwnedCollectionsWrapperData,
+  GetAllOwnedCollectionsWrapperVars,
   GetCollectionAssetsData,
   GetCollectionAssetsVars,
   GetCollectorData,
@@ -74,9 +77,6 @@ import {
   GetUnsupportedAssetsVars,
   GetUnsupportedFloorsData,
   GetUnsupportedFloorsVars,
-  GetAllOwnedCollectionsWrapperData,
-  GetAllOwnedCollectionsWrapperVars,
-  GET_ALL_OWNED_COLLECTIONS_WRAPPER,
 } from './queries'
 
 type Collection = {
@@ -2098,6 +2098,7 @@ export default function UserView() {
         </Flex>
       </Layout>
       <Modal
+        hideScroll
         ref={modalRef}
         onClose={() => setShowCollection(undefined)}
         open={showCollection?.id !== undefined}
