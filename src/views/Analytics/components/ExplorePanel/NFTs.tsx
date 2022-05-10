@@ -153,19 +153,19 @@ const NFTItemsWrapper = ({ children, ...props }: NFTTableHeadProps) => {
   const isMobile = breakpointIndex <= 1
 
   return (
-    <>
+    <Box sx={{ paddingTop: '8px' }}>
       {isMobile ? (
         <>
           <NFTTableHead {...props} />
           <CollectorAccordion> {children} </CollectorAccordion>
         </>
       ) : (
-        <Box>
+        <>
           <NFTTableHead {...props} />
           <Box>{children}</Box>
-        </Box>
+        </>
       )}
-    </>
+    </Box>
   )
 }
 

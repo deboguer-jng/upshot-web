@@ -150,19 +150,19 @@ const CollectionItemsWrapper = ({
   const isMobile = breakpointIndex <= 1
 
   return (
-    <>
+    <Box sx={{ paddingTop: '8px' }}>
       {isMobile ? (
         <>
           <CollectionTableHead {...props} />
           <CollectorAccordion fullWidth>{children}</CollectorAccordion>
         </>
       ) : (
-        <Box>
+        <>
           <CollectionTableHead {...props} />
           <Box>{children}</Box>
-        </Box>
+        </>
       )}
-    </>
+    </Box>
   )
 }
 
