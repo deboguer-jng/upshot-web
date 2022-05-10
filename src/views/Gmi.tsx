@@ -2,6 +2,7 @@ import { useQuery } from '@apollo/client'
 import styled from '@emotion/styled'
 import {
   Box,
+  Button,
   Flex,
   formatNumber,
   GmiModal,
@@ -43,6 +44,32 @@ const StyledLink = styled.a`
 
   &:hover {
     text-decoration: underline;
+  }
+`
+
+export const WideButton = styled(Flex)`
+  align-items: center;
+  justify-content: center;
+  background: ${({ theme }) => theme.colors.blue};
+  height: 60px;
+  border-radius: 14px;
+  transition: ${({ theme }) => theme.transitions.default};
+  padding: 0 16px;
+  min-width: 200px;
+  cursor: pointer;
+  color: ${({ theme }) => theme.rawColors['grey-200']};
+  font-size: ${({ theme }) => theme.fontSizes[3]};
+  font-weight: ${({ theme }) => theme.fontWeights.bold};
+  user-select: none;
+  flex-shrink: 0;
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:hover {
+    box-shadow: ${({ theme }) => theme.shadow.default};
+    color: ${({ theme }) => theme.rawColors.white};
   }
 `
 
@@ -102,7 +129,6 @@ function GmiCard({
 
   useEffect(() => {
     if (!loading) return
-    console.log('LOAD')
     setLastLoadingAt(Date.now())
   }, [loading])
 
@@ -116,16 +142,39 @@ function GmiCard({
     }
   }, [lastLoadingAt])
 
+  if (error || !data?.getUser?.addresses?.length) {
+    return (
+      <Flex
+        sx={{
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 8,
+          padding: '30px',
+          background: 'grey-800',
+          borderRadius: '30px',
+        }}
+      >
+        <Text variant="h1Primary" color="grey-300">
+          Oops, failure to launch.
+        </Text>
+        <img src="/img/failShip.svg" width={196} alt="Error requesting gmi." />
+        <Flex sx={{ flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+          <Text color="grey-300">
+            Sorry, this wallet does not have a gmi yet.
+          </Text>
+          <Text color="red">{wallet}</Text>
+        </Flex>
+        <WideButton onClick={onReset}>Try another wallet.</WideButton>
+      </Flex>
+    )
+  }
+
   if (loading || loadWait < MIN_LOADING_SECONDS) {
     return (
       <div>
         <img src="/img/Logo_bounce_spin.gif" width={256} alt="Loading" />
       </div>
     )
-  }
-
-  if (error || !data?.getUser?.addresses?.length) {
-    return <div>Dang</div>
   }
 
   const userAddr = data?.getUser?.addresses?.[0]?.address
