@@ -289,37 +289,24 @@ function GmiCard({
         }}
       >
         <Flex sx={{ flexDirection: 'column', gap: 7 }}>
-          <Flex sx={{ alignItems: 'baseline', gap: 2 }}>
-            <Text
-              color="blue"
-              sx={{
-                fontFamily: 'degular-display',
-                fontSize: '54px',
-                fontWeight: 'bold',
-                lineHeight: '54px',
-              }}
-            >
-              {gmi ? Math.floor(gmi) : '-'}
-            </Text>
-            <Text
-              color="grey-500"
-              sx={{
-                fontSize: '24px',
-                fontWeight: 'bold',
-              }}
-            >
-              /
-            </Text>
-            <Box sx={{ position: 'relative' }}>
+          <Flex
+            sx={{
+              alignItems: 'baseline',
+              gap: 2,
+              flexDirection: ['column', 'row'],
+            }}
+          >
+            <Flex sx={{ alignItems: 'baseline', gap: 2 }}>
               <Text
-                color="grey-500"
+                color="blue"
                 sx={{
-                  position: 'absolute',
-                  marginTop: '-1.33rem',
-                  fontSize: '.85rem',
+                  fontFamily: 'degular-display',
+                  fontSize: '54px',
+                  fontWeight: 'bold',
+                  lineHeight: '54px',
                 }}
               >
-                gmi
+                {gmi ? Math.floor(gmi) : '-'}
               </Text>
               <Text
                 color="grey-500"
@@ -328,18 +315,40 @@ function GmiCard({
                   fontWeight: 'bold',
                 }}
               >
-                1000
+                /
               </Text>
-            </Box>
-            <IconButton
-              sx={{
-                background: 'grey-800',
-                width: '28px',
-                height: '28px',
-              }}
-            >
-              <Icon icon="question" size={14} />
-            </IconButton>
+              <Box sx={{ position: 'relative' }}>
+                <Text
+                  color="grey-500"
+                  sx={{
+                    position: 'absolute',
+                    marginTop: '-1.33rem',
+                    fontSize: '.85rem',
+                  }}
+                >
+                  gmi
+                </Text>
+                <Text
+                  color="grey-500"
+                  sx={{
+                    fontSize: '24px',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  1000
+                </Text>
+              </Box>
+              <IconButton
+                sx={{
+                  background: 'grey-800',
+                  width: '28px',
+                  height: '28px',
+                }}
+              >
+                <Icon icon="question" size={14} />
+              </IconButton>
+            </Flex>
+
             <Flex sx={{ flexGrow: 1, justifyContent: 'flex-end' }}>
               <Text variant="h3Primary">{rank}</Text>
             </Flex>
