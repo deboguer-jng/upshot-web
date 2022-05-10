@@ -216,17 +216,28 @@ function GmiCard({
     : '-'
 
   const isGainsTotalProfit =
-    (parseUint256(data.getUser.addresses[0].realizedGain) || 0) +
-      (parseUint256(data.getUser.addresses[0].unrealizedGain) || 0) >
+    parseUint256(data?.getUser?.addresses?.[0]?.realizedGain || '0') +
+      parseUint256(data?.getUser?.addresses?.[0]?.unrealizedGain || '0') >
     0
   const gainsTotal = formatNumber(
-    (parseUint256(data.getUser.addresses[0].realizedGain) || 0) +
-      (parseUint256(data.getUser.addresses[0].unrealizedGain) || 0),
+    parseUint256(data?.getUser?.addresses?.[0]?.realizedGain || '0') +
+      parseUint256(data?.getUser?.addresses?.[0]?.unrealizedGain || '0'),
     {
       prefix: 'ETHER',
       decimals: 2,
     }
   )
+
+  const getRank = (gmi: number) => {
+    if (gmi < 100) return 'ngmi'
+    if (gmi < 400) return 'Tourist'
+    if (gmi < 700) return 'Part Degen'
+    if (gmi < 900) return 'Full Degen'
+    if (gmi < 975) return 'Based'
+    return 'Based God'
+  }
+
+  const rank = getRank(gmi)
 
   return (
     <GmiCardBase>
@@ -299,6 +310,9 @@ function GmiCard({
             >
               &nbsp;/&nbsp;1000
             </Text>
+            <Flex sx={{ flexGrow: 1, justifyContent: 'flex-end' }}>
+              <Text variant="h3Primary">{rank}</Text>
+            </Flex>
           </Flex>
           <ProgressBar percent={(gmi / 1000) * 100} bgColor="grey-900" />
           <Grid
