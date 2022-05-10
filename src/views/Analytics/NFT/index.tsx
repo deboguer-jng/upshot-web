@@ -41,7 +41,11 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useAppDispatch } from 'redux/hooks'
-import { selectShowHelpModal, setShowHelpModal } from 'redux/reducers/layout'
+import {
+  selectShowHelpModal,
+  setAlertState,
+  setShowHelpModal,
+} from 'redux/reducers/layout'
 import { extractEns, shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
 import { getPriceChangeColor } from 'utils/color'
@@ -169,8 +173,19 @@ export default function NFTView() {
   if (loading)
     return (
       <Layout>
-        <Container sx={{ justifyContent: 'center', flexGrow: 1 }}>
-          Loading...
+        <Container
+          sx={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '75vh',
+            width: '100%',
+          }}
+        >
+          <img
+            src="/img/Logo_bounce_spin.gif"
+            width={256}
+            alt="Loading"
+          />
         </Container>
       </Layout>
     )
@@ -392,28 +407,24 @@ export default function NFTView() {
           </Flex>
 
           <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-            {listPrice &&
-              listPriceUsd &&
-              listMarketplace &&
-              listUrl &&
-              listAppraisalRatio && (
-                <BuyNowPanel
-                  variant="wide"
-                  listPriceETH={Number(
-                    parseFloat(ethers.utils.formatEther(listPrice)).toFixed(2)
-                  )}
-                  sx={{ width: '100%' }}
-                  listPriceUSD={parseUint256(listPriceUsd, 6, 2)}
-                  listAppraisalPercentage={listAppraisalRatio}
-                  marketplaceName={
-                    listUrl.includes('larvalabs.com')
-                      ? 'Larva Labs'
-                      : listMarketplace
-                  }
-                  marketplaceUrl={listUrl}
-                  linkComponent={NextLink}
-                />
-              )}
+            {listPrice && listPriceUsd && listMarketplace && listUrl && (
+              <BuyNowPanel
+                variant="wide"
+                listPriceETH={Number(
+                  parseFloat(ethers.utils.formatEther(listPrice)).toFixed(2)
+                )}
+                sx={{ width: '100%' }}
+                listPriceUSD={parseUint256(listPriceUsd, 6, 2)}
+                listAppraisalPercentage={listAppraisalRatio}
+                marketplaceName={
+                  listUrl.includes('larvalabs.com')
+                    ? 'Larva Labs'
+                    : listMarketplace
+                }
+                marketplaceUrl={listUrl}
+                linkComponent={NextLink}
+              />
+            )}
             <Flex
               sx={{
                 gap: 4,
@@ -512,27 +523,65 @@ export default function NFTView() {
                           >
                             Owned By
                           </Text>
-                          <Link
-                            href={`/analytics/user/${txHistory?.[0]?.txToAddress}`}
-                            sx={{
-                              whiteSpace: 'nowrap',
-                              textOverflow: 'ellipsis',
-                              overflow: 'hidden',
-                            }}
-                            title={displayName}
-                            component={NextLink}
+                          <Grid
+                            columns={['auto 13px']}
+                            sx={{ gap: 1, alignItems: 'center', width: '100%' }}
                           >
-                            <Text
-                              color="grey-300"
+                            <Link
+                              href={`/analytics/user/${txHistory?.[0]?.txToAddress}`}
                               sx={{
-                                fontWeight: 'bold',
-                                lineHeight: 1.25,
-                                fontSize: [3, 3, 4],
+                                whiteSpace: 'nowrap',
+                                textOverflow: 'ellipsis',
+                                overflow: 'hidden',
+                              }}
+                              title={displayName}
+                              component={NextLink}
+                            >
+                              <Text
+                                color="grey-300"
+                                sx={{
+                                  fontWeight: 'bold',
+                                  lineHeight: 1.25,
+                                  fontSize: [3, 3, 4],
+                                }}
+                              >
+                                {displayName}
+                              </Text>
+                            </Link>
+                            <Tooltip
+                              tooltip={'Copy to clipboard'}
+                              placement="top"
+                              sx={{
+                                marginLeft: '0',
+                                height: '13px',
+                                '&:hover': {
+                                  svg: {
+                                    color: theme.colors['grey-500'],
+                                  },
+                                },
                               }}
                             >
-                              {displayName}
-                            </Text>
-                          </Link>
+                              <Icon
+                                icon="copy"
+                                color="grey-300"
+                                size="13"
+                                sx={{
+                                  cursor: 'pointer',
+                                }}
+                                onClick={() => {
+                                  dispatch(
+                                    setAlertState({
+                                      showAlert: true,
+                                      alertText: 'Address copied to clipboard!',
+                                    })
+                                  )
+                                  navigator.clipboard.writeText(
+                                    txHistory?.[0]?.txToAddress
+                                  )
+                                }}
+                              />
+                            </Tooltip>
+                          </Grid>
                         </Flex>
                       </Flex>
                     </Flex>

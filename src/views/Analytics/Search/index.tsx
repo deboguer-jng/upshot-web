@@ -4,6 +4,7 @@ import { Container } from '@upshot-tech/upshot-ui'
 import {
   Accordion,
   Box,
+  ButtonDropdown,
   Flex,
   formatNumber,
   Grid,
@@ -116,6 +117,34 @@ export default function SearchView() {
     }
 
     setSelectedNFTColumn(columnIdx)
+  }
+
+  const sortOptions = [
+    'Sale price: low to high',
+    'Sale price: high to low',
+    'Appraisal: low to high',
+    'Appraisal: high to low',
+    'List price: low to high',
+    'List price: high to low',
+    'Difference: low to high',
+    'Difference: high to low',
+  ]
+
+  const handleChangeNFTColumnSortRadio = (value: string) => {
+    const index = sortOptions.indexOf(value)
+    /* it maps 0, 1 -> 0
+    2, 3 -> 1
+    4, 5 -> 2 */
+    const columnIndex = Math.floor(index/2)
+    setSelectedNFTColumn(columnIndex)
+
+    setSortNFTsAscending(index % 2 === 0)  // index is even make it ascending
+  }
+
+  const getDropdownValue = () => {
+    const strIndex = selectedNFTColumn * 2
+    const strIndexSorted = strIndex + (sortNFTsAscending ? 0 : 1)
+    return sortOptions[strIndexSorted]
   }
 
   // Used to wait for the router to mount before showing collectors.
@@ -330,169 +359,190 @@ export default function SearchView() {
             ) : data?.assetGlobalSearch?.assets.length === 0 ? (
               <div>No results available.</div>
             ) : (
-              <>
-                <Flex
-                  sx={{
-                    flexDirection: 'column',
-                    gap: 5,
-                  }}
-                >
-                  {!!collectionId && (
-                    <Flex
+              <Flex
+                sx={{
+                  flexDirection: 'column',
+                  gap: 5,
+                }}
+              >
+                {!!collectionId && (
+                  <Box
+                    sx={{
+                      width: '100%',
+                      flexDirection: 'row',
+                      gap: 6,
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text
+                      variant="h3Primary"
+                      color="grey-600"
+                      sx={{ display: 'inline-block', mr: 10}}
+                    >
+                      NFTs
+                    </Text>
+                    <Box
                       sx={{
-                        width: '100%',
+                        display: 'inline-flex',
                         flexDirection: 'row',
-                        gap: 6,
                         alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: 1,
+                        mr: 10
                       }}
                     >
-                      <Text variant="h3Primary">NFTs</Text>
-                      <Flex
-                        sx={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          gap: 1,
-                        }}
+                      <Text
+                        variant="large"
+                        color="grey-600"
+                        sx={{ marginRight: 2 }}
                       >
-                        <Text
-                          variant="large"
-                          color="grey-600"
-                          sx={{ marginRight: 2 }}
-                        >
-                          View as
-                        </Text>
-                        <IconButton onClick={() => toggleListView(false)}>
-                          <Icon
-                            color={listView ? 'grey-700' : 'grey-300'}
-                            icon={'gridViewV2'}
-                            size={32}
-                          />
-                        </IconButton>
-                        <IconButton onClick={() => toggleListView(true)}>
-                          <Icon
-                            color={listView ? 'grey-300' : 'grey-700'}
-                            icon={'listViewV2'}
-                            size={32}
-                          />
-                        </IconButton>
-                      </Flex>
-                    </Flex>
-                  )}
-                  {!collectionId && ready && (
-                    <TopCollections
-                      variant="normal"
-                      searchTerm={collectionSearch}
-                      onChangeSelection={handleChangeSelection}
-                      {...{ selectedColumn, sortAscending }}
-                    />
-                  )}
-                  {
-                    /* Chunk results into non-wrapping rows. */
-                    loading && collectionId ? (
-                      listView ? (
-                        <NFTSearchResultsSkeleton
-                          columns={nftSearchResultsColumns}
-                          selectedColumn={selectedNFTColumn}
-                          sortAscending={sortNFTsAscending}
+                        View as
+                      </Text>
+                      <IconButton onClick={() => toggleListView(false)} >
+                        <Icon
+                          color={listView ? 'grey-700' : 'grey-300'}
+                          icon={'gridViewV2'}
+                          size={32}
                         />
-                      ) : (
-                        loadArr
-                          .map((_, i) =>
-                            i % chunkSize === 0
-                              ? loadArr.slice(i, i + chunkSize)
-                              : null
-                          )
-                          .filter(Boolean)
-                          .map((items, idx) => (
-                            <Flex key={idx} sx={{ gap: 5 }}>
-                              {items?.map((_, idx) => (
-                                <BlurrySquareTemplate key={idx} />
-                              ))}
-                            </Flex>
-                          ))
-                      )
-                    ) : assetArr && listView ? (
-                      <NFTSearchResults
-                        assetArr={assetArr}
+                      </IconButton>
+                      <IconButton onClick={() => toggleListView(true)} >
+                        <Icon
+                          color={listView ? 'grey-300' : 'grey-700'}
+                          icon={'listViewV2'}
+                          size={32}
+                        />
+                      </IconButton>
+                    </Box>
+                      { (!listView || isMobile) && (
+                        <ButtonDropdown
+                          hideRadio
+                          label="Sort by"
+                          name="sortBy"
+                          onChange={(val) => handleChangeNFTColumnSortRadio(val)}
+                          options={sortOptions}
+                          value={getDropdownValue()}
+                          closeOnSelect={true}
+                          style={{
+                            display: 'inline-block', 
+                            marginLeft: '-12px',
+                            marginTop: isMobile ? '10px' : ''}}
+                        />
+                        )}
+                  </Box>
+                )}
+                {!collectionId && ready && (
+                  <TopCollections
+                    variant="normal"
+                    searchTerm={collectionSearch}
+                    onChangeSelection={handleChangeSelection}
+                    {...{ selectedColumn, sortAscending }}
+                  />
+                )}
+                {
+                  /* Chunk results into non-wrapping rows. */
+                  loading && collectionId ? (
+                    listView ? (
+                      <NFTSearchResultsSkeleton
                         columns={nftSearchResultsColumns}
                         selectedColumn={selectedNFTColumn}
                         sortAscending={sortNFTsAscending}
-                        onChangeSelection={handleChangeNFTColumnSelection}
                       />
                     ) : (
-                      assetArr
-                        ?.map((_, i) =>
+                      loadArr
+                        .map((_, i) =>
                           i % chunkSize === 0
-                            ? assetArr.slice(i, i + chunkSize)
+                            ? loadArr.slice(i, i + chunkSize)
                             : null
                         )
                         .filter(Boolean)
                         .map((items, idx) => (
                           <Flex key={idx} sx={{ gap: 5 }}>
-                            {items?.map(
-                              (
-                                {
-                                  id,
-                                  contractAddress,
-                                  mediaUrl,
-                                  name,
-                                  collection,
-                                  tokenId,
-                                  lastSale,
-                                  rarity,
-                                  creatorUsername,
-                                  creatorAddress,
-                                },
-                                idx
-                              ) => (
-                                <Link
-                                  key={idx}
-                                  href={'/analytics/nft/' + id}
-                                  component={NextLink}
-                                  noHover
-                                >
-                                  <MiniNftCard
-                                    linkComponent={NextLink}
-                                    price={
-                                      lastSale?.ethSalePrice
-                                        ? formatNumber(lastSale.ethSalePrice, {
-                                            fromWei: true,
-                                            decimals: 2,
-                                            prefix: 'ETHER',
-                                          })
-                                        : undefined
-                                    }
-                                    rarity={
-                                      rarity
-                                        ? (rarity * 100).toFixed(2) + '%'
-                                        : '-'
-                                    }
-                                    image={mediaUrl}
-                                    creator={
-                                      creatorUsername ||
-                                      shortenAddress(creatorAddress, 2, 4)
-                                    }
-                                    pixelated={PIXELATED_CONTRACTS.includes(
-                                      contractAddress
-                                    )}
-                                    type="search"
-                                    name={getAssetName(
-                                      name,
-                                      collection?.name,
-                                      tokenId
-                                    )}
-                                    link={`/analytics/collection/${collection?.id}`}
-                                  />
-                                </Link>
-                              )
-                            )}
+                            {items?.map((_, idx) => (
+                              <BlurrySquareTemplate key={idx} />
+                            ))}
                           </Flex>
                         ))
                     )
-                  }
-                </Flex>
-              </>
+                  ) : assetArr && listView ? (
+                    <NFTSearchResults
+                      assetArr={assetArr}
+                      columns={nftSearchResultsColumns}
+                      selectedColumn={selectedNFTColumn}
+                      sortAscending={sortNFTsAscending}
+                      onChangeSelection={handleChangeNFTColumnSelection}
+                    />
+                  ) : (
+                    assetArr
+                      ?.map((_, i) =>
+                        i % chunkSize === 0
+                          ? assetArr.slice(i, i + chunkSize)
+                          : null
+                      )
+                      .filter(Boolean)
+                      .map((items, idx) => (
+                        <Flex key={idx} sx={{ gap: 5 }}>
+                          {items?.map(
+                            (
+                              {
+                                id,
+                                contractAddress,
+                                mediaUrl,
+                                name,
+                                collection,
+                                tokenId,
+                                lastSale,
+                                rarity,
+                                creatorUsername,
+                                creatorAddress,
+                              },
+                              idx
+                            ) => (
+                              <Link
+                                key={idx}
+                                href={'/analytics/nft/' + id}
+                                component={NextLink}
+                                noHover
+                              >
+                                <MiniNftCard
+                                  linkComponent={NextLink}
+                                  price={
+                                    lastSale?.ethSalePrice
+                                      ? formatNumber(lastSale.ethSalePrice, {
+                                          fromWei: true,
+                                          decimals: 2,
+                                          prefix: 'ETHER',
+                                        })
+                                      : undefined
+                                  }
+                                  rarity={
+                                    rarity
+                                      ? (rarity * 100).toFixed(2) + '%'
+                                      : '-'
+                                  }
+                                  image={mediaUrl}
+                                  creator={
+                                    creatorUsername ||
+                                    shortenAddress(creatorAddress, 2, 4)
+                                  }
+                                  pixelated={PIXELATED_CONTRACTS.includes(
+                                    contractAddress
+                                  )}
+                                  type="search"
+                                  name={getAssetName(
+                                    name,
+                                    collection?.name,
+                                    tokenId
+                                  )}
+                                  link={`/analytics/collection/${collection?.id}`}
+                                />
+                              </Link>
+                            )
+                          )}
+                        </Flex>
+                      ))
+                  )
+                }
+              </Flex>
             )}
 
             <Flex sx={{ justifyContent: 'center', width: '100%' }}>
