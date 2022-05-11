@@ -23,8 +23,8 @@ import AnalyticsSVG from './panelBackgrounds/Analytics.svg'
 import AnalyticsHoverSVG from './panelBackgrounds/AnalyticsHover.svg'
 import ApiSVG from './panelBackgrounds/Api.svg'
 import ApiHoverSVG from './panelBackgrounds/ApiHover.svg'
-import BlogSVG from './panelBackgrounds/Blog.svg'
-import BlogHoverSVG from './panelBackgrounds/BlogHover.svg'
+import GmiSvg from './panelBackgrounds/Gmi.svg'
+import GmiHoverSvg from './panelBackgrounds/GmiHover.svg'
 import UpshotArtworkSVG from './panelBackgrounds/UpshotArtwork.svg'
 
 type PanelData = {
@@ -45,16 +45,16 @@ export default function LandingView() {
       original: ApiSVG,
       hover: ApiHoverSVG,
     },
-    blog: {
-      original: BlogSVG,
-      hover: BlogHoverSVG,
+    gmi: {
+      original: GmiSvg,
+      hover: GmiHoverSvg,
     },
   }
   const [analyticsImage, setAnalyticsImage] = useState(
     images.analytics.original.src
   )
   const [apiImage, setApiImage] = useState(images.api.original.src)
-  const [blogImage, setBlogImage] = useState(images.blog.original.src)
+  const [gmiImage, setGmiImage] = useState(images.gmi.original.src)
 
   return (
     <>
@@ -360,11 +360,11 @@ export default function LandingView() {
                       backgroundColor: theme.colors.black + ' !important',
                     },
                   }}
-                  onMouseEnter={() => setBlogImage(images.blog.hover.src)}
-                  onMouseLeave={() => setBlogImage(images.blog.original.src)}
+                  onMouseEnter={() => setGmiImage(images.gmi.hover.src)}
+                  onMouseLeave={() => setGmiImage(images.gmi.original.src)}
                 >
                   <Image
-                    src={blogImage}
+                    src={gmiImage}
                     sx={{
                       opacity: '0.7',
                       position: 'absolute',
