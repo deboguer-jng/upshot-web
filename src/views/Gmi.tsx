@@ -208,12 +208,44 @@ function GmiArtwork({ gmi }: { gmi?: number }) {
   )
 }
 
+function GmiFAQ({ onBack }: { onBack: () => void }) {
+  return (
+    <GmiCardBase sx={{ gap: '16px !important' }}>
+      <Flex
+        onClick={onBack}
+        sx={{ alignItems: 'center', gap: 2, cursor: 'pointer' }}
+      >
+        <Icon icon="arrowSmallLeft" size={24} />
+        <Text variant="h1Primary">FAQ</Text>
+      </Flex>
+      {[...new Array(3)].map((_, idx) => (
+        <Flex key={idx} sx={{ flexDirection: 'column' }}>
+          <Text sx={{ fontSize: 5, lineHeight: '3rem' }}>
+            Info on how what the gmi is, how it&apos;s calculated, etc
+          </Text>
+          <Text color="grey-500" sx={{ fontSize: 3, lineHeight: '1.4rem' }}>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+            aliquip ex ea commodo consequat. Duis aute irure dolor in
+            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+            culpa qui officia deserunt mollit anim id est laborum.
+          </Text>
+        </Flex>
+      ))}
+    </GmiCardBase>
+  )
+}
+
 function GmiCard({
   wallet,
   onReset,
+  onShowFaq,
 }: {
   wallet: string
-  onReset?: () => void
+  onShowFaq: () => void
+  onReset: () => void
 }) {
   const MIN_LOADING_SECONDS = 2
   const LOAD_UPDATE_SECONDS = 0.25
@@ -411,6 +443,7 @@ function GmiCard({
                 </Text>
               </Box>
               <IconButton
+                onClick={onShowFaq}
                 sx={{
                   background: 'grey-800',
                   width: '28px',
@@ -687,6 +720,7 @@ export default function GmiView() {
   const dispatch = useAppDispatch()
   const address = useAppSelector(selectAddress)
   const [wallet, setWallet] = useState('')
+  const [showFaq, setShowFaq] = useState(false)
   const { theme } = useTheme()
 
   useEffect(() => {
@@ -789,7 +823,16 @@ export default function GmiView() {
             }}
           >
             {wallet ? (
-              <GmiCard onReset={handleReset} {...{ wallet }} />
+              showFaq ? (
+                <GmiFAQ onBack={() => setShowFaq(!showFaq)} />
+              ) : (
+                <GmiCard
+                  onShowFaq={() => setShowFaq(true)}
+                  onReset={handleReset}
+                  key={wallet}
+                  {...{ wallet }}
+                />
+              )
             ) : (
               <GmiModal
                 {...{ hideMetaMask }}
