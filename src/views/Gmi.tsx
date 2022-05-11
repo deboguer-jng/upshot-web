@@ -455,7 +455,7 @@ function GmiCard({
             </Flex>
 
             <Flex sx={{ flexGrow: 1, justifyContent: 'flex-end' }}>
-              <Text variant="h3Primary">{rank}</Text>
+              <Text sx={{ fontSize: 6, fontWeight: 'bold' }}>{rank}</Text>
             </Flex>
           </Flex>
           <ProgressBar percent={(gmi / 1000) * 100} bgColor="grey-900" />
