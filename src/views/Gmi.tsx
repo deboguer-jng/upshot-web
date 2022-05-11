@@ -218,22 +218,36 @@ function GmiFAQ({ onBack }: { onBack: () => void }) {
         <Icon icon="arrowSmallLeft" size={24} />
         <Text variant="h1Primary">FAQ</Text>
       </Flex>
-      {[...new Array(3)].map((_, idx) => (
-        <Flex key={idx} sx={{ flexDirection: 'column' }}>
-          <Text sx={{ fontSize: 5, lineHeight: '3rem' }}>
-            Info on how what the gmi is, how it&apos;s calculated, etc
-          </Text>
-          <Text color="grey-500" sx={{ fontSize: 3, lineHeight: '1.4rem' }}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-          </Text>
-        </Flex>
-      ))}
+      <Flex sx={{ flexDirection: 'column' }}>
+        <Text sx={{ fontSize: 5, lineHeight: '3rem' }}>Q: What is gmi?</Text>
+        <Text color="grey-500" sx={{ fontSize: 3, lineHeight: '1.4rem' }}>
+          A: The answer.
+        </Text>
+      </Flex>
+      <Flex sx={{ flexDirection: 'column' }}>
+        <Text sx={{ fontSize: 5, lineHeight: '3rem' }}>
+          Q: How is gmi calculated?
+        </Text>
+        <Text color="grey-500" sx={{ fontSize: 3, lineHeight: '1.4rem' }}>
+          A: The answer.
+        </Text>
+      </Flex>
+      <Flex sx={{ flexDirection: 'column' }}>
+        <Text sx={{ fontSize: 5, lineHeight: '3rem' }}>
+          Q: What are the different levels of gmi?
+        </Text>
+        <Text color="grey-500" sx={{ fontSize: 3, lineHeight: '1.4rem' }}>
+          A: The answer.
+        </Text>
+      </Flex>
+      <Flex sx={{ flexDirection: 'column' }}>
+        <Text sx={{ fontSize: 5, lineHeight: '3rem' }}>
+          Q: Why even calculate someone&apos;s gmi?
+        </Text>
+        <Text color="grey-500" sx={{ fontSize: 3, lineHeight: '1.4rem' }}>
+          A: The answer.
+        </Text>
+      </Flex>
     </GmiCardBase>
   )
 }
