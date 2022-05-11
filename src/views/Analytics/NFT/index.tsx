@@ -219,7 +219,6 @@ export default function NFTView() {
     txHistory,
     appraisalHistory,
     contractAddress,
-    warningBanner,
     listPrice,
     listPriceUsd,
     listMarketplace,
