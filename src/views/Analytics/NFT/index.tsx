@@ -3,6 +3,7 @@ import { useQuery } from '@apollo/client'
 import {
   BuyNowPanel,
   imageOptimizer,
+  MiniNftCard,
   Pagination,
   Tooltip,
   useBreakpointIndex,
@@ -52,7 +53,15 @@ import { getPriceChangeColor } from 'utils/color'
 
 import Breadcrumbs from '../components/Breadcrumbs'
 import Collectors from '../components/ExplorePanel/Collectors'
-import { GET_ASSET, GetAssetData, GetAssetVars } from './queries'
+import { MiniNFTContainer } from '../components/Styled'
+import {
+  GET_ASSET,
+  GetAssetData,
+  GetAssetVars,
+  GetSimilarAssetsData,
+  GetSimilarAssetsVars,
+  GET_SIMILAR_ASSETS,
+} from './queries'
 
 function Layout({ children }: { children: React.ReactNode }) {
   const storage = globalThis?.sessionStorage
@@ -149,6 +158,16 @@ export default function NFTView() {
     }
   )
 
+  const {
+    loading: similarLoading,
+    error: similarError,
+    data: similarData,
+  } = useQuery<GetSimilarAssetsData, GetSimilarAssetsVars>(GET_SIMILAR_ASSETS, {
+    errorPolicy: 'all',
+    variables: { id },
+    skip: !id,
+  })
+
   useEffect(() => {
     if (!data?.assetById) return
 
@@ -181,11 +200,7 @@ export default function NFTView() {
             width: '100%',
           }}
         >
-          <img
-            src="/img/Logo_bounce_spin.gif"
-            width={256}
-            alt="Loading"
-          />
+          <img src="/img/Logo_bounce_spin.gif" width={256} alt="Loading" />
         </Container>
       </Layout>
     )
@@ -954,6 +969,48 @@ export default function NFTView() {
                 />
               </Flex>
             </Panel>
+            <Box>
+              <Text variant="h3Secondary">More like this</Text>
+              <MiniNFTContainer>
+                {similarData?.similarAssets?.map((asset, key) => {
+                  return (
+                    <Link
+                      key={key}
+                      href={'/analytics/nft/' + id}
+                      component={NextLink}
+                      noHover
+                    >
+                      <MiniNftCard
+                        price={
+                          asset.similarAsset.lastSale?.ethSalePrice
+                            ? formatNumber(
+                                asset.similarAsset.lastSale?.ethSalePrice,
+                                {
+                                  fromWei: true,
+                                  decimals: 2,
+                                  prefix: 'ETHER',
+                                }
+                              )
+                            : undefined
+                        }
+                        linkComponent={NextLink}
+                        to={shortenAddress(txToAddress, 2, 4)}
+                        toLink={`/analytics/user/${txToAddress}`}
+                        from={shortenAddress(txFromAddress, 2, 4)}
+                        fromLink={`/analytics/user/${txFromAddress}`}
+                        rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
+                        image={mediaUrl}
+                        date={formatDistance(txAt * 1000)}
+                        pixelated={PIXELATED_CONTRACTS.includes(
+                          contractAddress
+                        )}
+                        link={`/analytics/collection/${collection?.id}`}
+                      />
+                    </Link>
+                  )
+                })}
+              </MiniNFTContainer>
+            </Box>
           </Flex>
         </Grid>
       </Layout>
