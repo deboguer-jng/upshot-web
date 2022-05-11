@@ -14,7 +14,6 @@ import {
   ProgressBar,
   Text,
   useBreakpointIndex,
-  useTheme,
 } from '@upshot-tech/upshot-ui'
 import { useWeb3React } from '@web3-react/core'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
@@ -23,7 +22,7 @@ import { format } from 'date-fns'
 import Head from 'next/head'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { setIsBeta } from 'redux/reducers/user'
 import {
@@ -84,7 +83,7 @@ const ShareButton = styled.div`
   border-radius: 9999px;
 `
 
-const getRank = (gmi: number) => {
+export const getRank = (gmi: number) => {
   if (gmi < 100) return 0
   if (gmi < 400) return 1
   if (gmi < 700) return 2
@@ -93,7 +92,7 @@ const getRank = (gmi: number) => {
   return 5
 }
 
-const rankTitles = {
+export const rankTitles = {
   0: 'ngmi',
   1: 'Tourist',
   2: 'Part Degen',
@@ -135,9 +134,62 @@ function GmiError({
   )
 }
 
-function GmiArtwork({ gmi }: { gmi?: number }) {
-  if (!gmi) return null
+export function GmiScore({
+  gmi,
+  children,
+}: {
+  gmi?: number
+  children?: React.ReactNode
+}) {
+  return (
+    <Flex sx={{ alignItems: 'baseline', gap: 2 }}>
+      <Text
+        color="blue"
+        sx={{
+          fontFamily: 'degular-display',
+          fontSize: '54px',
+          fontWeight: 'bold',
+          lineHeight: '54px',
+        }}
+      >
+        {gmi ? Math.round(gmi) : '-'}
+      </Text>
+      <Text
+        color="grey-500"
+        sx={{
+          fontSize: '24px',
+          fontWeight: 'bold',
+        }}
+      >
+        /
+      </Text>
+      <Box sx={{ position: 'relative' }}>
+        <Text
+          color="grey-500"
+          sx={{
+            position: 'absolute',
+            marginTop: '-1.33rem',
+            fontSize: '.85rem',
+          }}
+        >
+          gmi
+        </Text>
+        <Text
+          color="grey-500"
+          sx={{
+            fontSize: '24px',
+            fontWeight: 'bold',
+          }}
+        >
+          1000
+        </Text>
+      </Box>
+      {children}
+    </Flex>
+  )
+}
 
+export function GmiArtwork({ gmi = 0 }: { gmi?: number }) {
   const rank = getRank(gmi)
 
   return (
@@ -415,48 +467,7 @@ function GmiCard({
               flexDirection: ['column', 'row'],
             }}
           >
-            <Flex sx={{ alignItems: 'baseline', gap: 2 }}>
-              <Text
-                color="blue"
-                sx={{
-                  fontFamily: 'degular-display',
-                  fontSize: '54px',
-                  fontWeight: 'bold',
-                  lineHeight: '54px',
-                }}
-              >
-                {gmi ? Math.floor(gmi) : '-'}
-              </Text>
-              <Text
-                color="grey-500"
-                sx={{
-                  fontSize: '24px',
-                  fontWeight: 'bold',
-                }}
-              >
-                /
-              </Text>
-              <Box sx={{ position: 'relative' }}>
-                <Text
-                  color="grey-500"
-                  sx={{
-                    position: 'absolute',
-                    marginTop: '-1.33rem',
-                    fontSize: '.85rem',
-                  }}
-                >
-                  gmi
-                </Text>
-                <Text
-                  color="grey-500"
-                  sx={{
-                    fontSize: '24px',
-                    fontWeight: 'bold',
-                  }}
-                >
-                  1000
-                </Text>
-              </Box>
+            <GmiScore {...{ gmi }}>
               <IconButton
                 onClick={onShowFaq}
                 sx={{
@@ -467,7 +478,7 @@ function GmiCard({
               >
                 <Icon icon="question" size={14} />
               </IconButton>
-            </Flex>
+            </GmiScore>
 
             <Flex sx={{ flexGrow: 1, justifyContent: 'flex-end' }}>
               <Text sx={{ fontSize: 6, fontWeight: 'bold' }}>{rank}</Text>
@@ -737,12 +748,11 @@ export default function GmiView() {
   const [wallet, setWallet] = useState('')
   const [showFaq, setShowFaq] = useState(false)
   const router = useRouter()
-  const { theme } = useTheme()
 
   useEffect(() => {
-    const urlAddress = router.query['address'] as string
+    const urlWallet = router.query['wallet'] as string
 
-    setWallet(urlAddress || address)
+    setWallet(urlWallet || address || '')
   }, [address, router.query])
 
   const handleSearch = (value: string) => {

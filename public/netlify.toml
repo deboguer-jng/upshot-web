@@ -24,8 +24,8 @@
   status = 200
 
 [[redirects]]
-  from = "/gmi/:address"
-  to = "/gmi/[address].html?address=:address"
+  from = "/gmi/:wallet"
+  to = "/gmi/[wallet].html?wallet=:wallet"
   status = 200
 
 [[redirects]]
