@@ -24,6 +24,10 @@ module.exports = {
         source: '/analytics/search',
         destination: '/dashboard/search',
       },
+      {
+        source: '/analytics/settings',
+        destination: '/dashboard/settings'
+      }
     ]
   },
 }
