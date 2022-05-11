@@ -30,5 +30,5 @@
 
 [[redirects]]
   from = "/share/gmi/:wallet"
-  to = "/share/gmi/[address].html?wallet=:wallet"
+  to = "/share/gmi/[wallet].html?wallet=:wallet"
   status = 200

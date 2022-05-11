@@ -22,6 +22,7 @@ import { ConnectorName, connectorsByName } from 'constants/connectors'
 import { format } from 'date-fns'
 import Head from 'next/head'
 import NextLink from 'next/link'
+import { useRouter } from 'next/router'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { setIsBeta } from 'redux/reducers/user'
@@ -735,13 +736,14 @@ export default function GmiView() {
   const address = useAppSelector(selectAddress)
   const [wallet, setWallet] = useState('')
   const [showFaq, setShowFaq] = useState(false)
+  const router = useRouter()
   const { theme } = useTheme()
 
   useEffect(() => {
-    if (!address) return
+    const urlAddress = router.query['address'] as string
 
-    setWallet(address)
-  }, [address])
+    setWallet(urlAddress || address)
+  }, [address, router.query])
 
   const handleSearch = (value: string) => {
     if (
@@ -772,6 +774,7 @@ export default function GmiView() {
     dispatch(setAddress(undefined))
     dispatch(setEns({ name: undefined }))
     dispatch(setIsBeta(undefined))
+    router.push('/gmi', undefined, { shallow: true })
   }
 
   const hideMetaMask =
