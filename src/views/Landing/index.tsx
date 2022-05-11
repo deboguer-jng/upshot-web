@@ -368,15 +368,15 @@ export default function LandingView() {
                     sx={{
                       opacity: '0.7',
                       position: 'absolute',
-                      bottom: '5%',
+                      bottom: '2%',
                       left: '50%',
                       transform: 'translateX(-50%)',
                       margin: 'auto',
                       width: 'auto',
-                      height: '50%',
+                      height: '60%',
                       objectFit: 'cover',
                     }}
-                    alt="Upshot One"
+                    alt="gmi"
                   ></Image>
                   <div style={{ position: 'relative' }}>
                     <Text variant="h1Secondary">gmi</Text>
