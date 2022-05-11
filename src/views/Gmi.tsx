@@ -35,17 +35,6 @@ import { shortenAddress } from 'utils/address'
 
 import { GET_GMI, GetGmiData, GetGmiVars } from '../graphql/queries'
 
-const StyledLink = styled.a`
-  cursor: pointer;
-  color: inherit;
-  font-size: inherit;
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
-`
-
 export const WideButton = styled(Flex)`
   align-items: center;
   justify-content: center;
@@ -94,6 +83,24 @@ const ShareButton = styled.div`
   border-radius: 9999px;
 `
 
+const getRank = (gmi: number) => {
+  if (gmi < 100) return 0
+  if (gmi < 400) return 1
+  if (gmi < 700) return 2
+  if (gmi < 900) return 3
+  if (gmi < 975) return 4
+  return 5
+}
+
+const rankTitles = {
+  0: 'ngmi',
+  1: 'Tourist',
+  2: 'Part Degen',
+  3: 'Full Degen',
+  4: 'Based',
+  5: 'Based God',
+}
+
 function GmiError({
   wallet,
   onReset,
@@ -124,6 +131,80 @@ function GmiError({
       </Flex>
       <WideButton onClick={onReset}>Try another wallet.</WideButton>
     </Flex>
+  )
+}
+
+function GmiArtwork({ gmi }: { gmi?: number }) {
+  if (!gmi) return null
+
+  const rank = getRank(gmi)
+
+  return (
+    <>
+      <Box
+        sx={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          backgroundImage: `url(/img/gmi/planet/${rank}.svg)`,
+          backgroundSize: 'contain',
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center',
+        }}
+      />
+      {rank > 1 && (
+        <Box
+          sx={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            backgroundImage: `url(/img/gmi/stars/${rank}.svg)`,
+            backgroundSize: 'contain',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+          }}
+        />
+      )}
+      {rank > 2 && (
+        <Box
+          sx={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            backgroundImage: `url(/img/gmi/moon_1/${rank}.svg)`,
+            backgroundSize: 'contain',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+          }}
+        />
+      )}
+      {rank > 3 && (
+        <Box
+          sx={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            backgroundImage: `url(/img/gmi/moon_2/${rank}.svg)`,
+            backgroundSize: 'contain',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+          }}
+        />
+      )}
+      {rank > 4 && (
+        <Box
+          sx={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            backgroundImage: `url(/img/gmi/spaceShip/${rank}.svg)`,
+            backgroundSize: 'contain',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+          }}
+        />
+      )}
+    </>
   )
 }
 
@@ -228,16 +309,7 @@ function GmiCard({
     }
   )
 
-  const getRank = (gmi: number) => {
-    if (gmi < 100) return 'ngmi'
-    if (gmi < 400) return 'Tourist'
-    if (gmi < 700) return 'Part Degen'
-    if (gmi < 900) return 'Full Degen'
-    if (gmi < 975) return 'Based'
-    return 'Based God'
-  }
-
-  const rank = getRank(gmi)
+  const rank = rankTitles[getRank(gmi)]
 
   return (
     <GmiCardBase>
@@ -488,15 +560,14 @@ function GmiCard({
         >
           <Box
             sx={{
+              position: 'relative',
               width: ['200px', '200px', '100%'],
               height: ['200px', '200px', 'auto'],
-              backgroundImage: 'url(/img/upshotBall.svg)',
-              backgroundSize: 'contain',
-              backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'center',
               flexGrow: 1,
             }}
-          />
+          >
+            <GmiArtwork {...{ gmi }} />
+          </Box>
 
           <Link
             component={NextLink}
