@@ -23,7 +23,6 @@ export type GetCollectorData = {
     firstAssetPurchaseTime: number
     bio: string
     numAssets: number
-    warningBanner: boolean
     addresses: {
       address: string
       ens: string
@@ -79,7 +78,6 @@ export const GET_COLLECTOR = gql`
       firstAssetPurchaseTime
       bio
       numAssets
-      warningBanner
       addresses {
         address
         ens

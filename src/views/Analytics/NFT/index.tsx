@@ -181,11 +181,7 @@ export default function NFTView() {
             width: '100%',
           }}
         >
-          <img
-            src="/img/Logo_bounce_spin.gif"
-            width={256}
-            alt="Loading"
-          />
+          <img src="/img/Logo_bounce_spin.gif" width={256} alt="Loading" />
         </Container>
       </Layout>
     )
@@ -223,7 +219,6 @@ export default function NFTView() {
     txHistory,
     appraisalHistory,
     contractAddress,
-    warningBanner,
     listPrice,
     listPriceUsd,
     listMarketplace,
@@ -660,24 +655,6 @@ export default function NFTView() {
                     <Flex sx={{ padding: '20px', paddingBottom: 0 }}>
                       <Text variant="h3Secondary">Pricing History</Text>
                     </Flex>
-                    {warningBanner &&
-                      !isFloor &&
-                      collection?.name !== 'CryptoPunks' && (
-                        <Text
-                          backgroundColor={'primary'}
-                          color="black"
-                          sx={{
-                            marginX: '20px',
-                            marginTop: '20px',
-                            padding: '10px',
-                            borderRadius: '10px',
-                            fontWeight: 600,
-                          }}
-                        >
-                          This is a valuable item. Our top-tier appraisals are
-                          under active development.
-                        </Text>
-                      )}
                     <Flex sx={{ gap: '40px', flexGrow: 1, padding: '20px' }}>
                       {appraisalHistory?.length > 0 && (
                         <Flex sx={{ flexDirection: 'column' }}>
