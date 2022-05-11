@@ -27,3 +27,8 @@
   from = "/gmi/:address"
   to = "/gmi/[address].html?address=:address"
   status = 200
+
+[[redirects]]
+  from = "/share/gmi/:wallet"
+  to = "/share/gmi/[address].html?wallet=:wallet"
+  status = 200
