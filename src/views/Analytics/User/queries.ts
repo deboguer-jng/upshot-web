@@ -26,6 +26,7 @@ export type GetCollectorData = {
     addresses: {
       address: string
       ens: string
+      gmi: number
     }[]
     extraCollections: {
       count: number
@@ -81,6 +82,7 @@ export const GET_COLLECTOR = gql`
       addresses {
         address
         ens
+        gmi
       }
       extraCollections(limit: $collectionLimit, offset: $collectionOffset) {
         count
