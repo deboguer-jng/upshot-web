@@ -75,6 +75,12 @@ export type GetAllCollectionSalesData = {
       }
       assetEvent: {
         txToAddress: string
+        txToUser: {
+          addresses: {
+            gmi: number
+            ens: string
+          }[]
+        }
       }
     }[]
   }
@@ -92,6 +98,12 @@ export const GET_ALL_COLLECTION_SALES = gql`
         }
         assetEvent {
           txToAddress
+          txToUser {
+            addresses {
+              gmi
+              ens
+            }
+          }
         }
       }
     }
