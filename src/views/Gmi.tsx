@@ -237,11 +237,13 @@ export function GmiArtwork({ gmi = 0 }: { gmi?: number }) {
 
 function GmiCard({
   wallet,
+  showFaq,
   onReset,
-  onShowFaq,
+  onToggleFaq,
 }: {
   wallet: string
-  onShowFaq: () => void
+  showFaq?: boolean
+  onToggleFaq: () => void
   onReset: () => void
 }) {
   const MIN_LOADING_SECONDS = 2
@@ -287,6 +289,8 @@ function GmiCard({
       </div>
     )
   }
+
+  if (showFaq) return <FaqPanel onBack={onToggleFaq} />
 
   const userAddr = data?.getUser?.addresses?.[0]?.address
   const userEns = data?.getUser?.addresses?.[0]?.ens
@@ -399,7 +403,7 @@ function GmiCard({
           >
             <GmiScore {...{ gmi }}>
               <IconButton
-                onClick={onShowFaq}
+                onClick={onToggleFaq}
                 sx={{
                   background: 'grey-800',
                   width: '28px',
@@ -698,16 +702,13 @@ export default function GmiView() {
             }}
           >
             {wallet ? (
-              showFaq ? (
-                <FaqPanel onBack={() => setShowFaq(!showFaq)} />
-              ) : (
-                <GmiCard
-                  onShowFaq={() => setShowFaq(true)}
-                  onReset={handleReset}
-                  key={wallet}
-                  {...{ wallet }}
-                />
-              )
+              <GmiCard
+                onReset={handleReset}
+                key={wallet}
+                showFaq={showFaq}
+                onToggleFaq={() => setShowFaq(!showFaq)}
+                {...{ wallet }}
+              />
             ) : (
               <GmiModal
                 {...{ hideMetaMask }}
