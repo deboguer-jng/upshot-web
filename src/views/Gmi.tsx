@@ -602,6 +602,8 @@ export default function GmiView() {
   useEffect(() => {
     const urlWallet = router.query['wallet'] as string
 
+    console.log({ urlWallet })
+
     setWallet(urlWallet || address || '')
   }, [address, router.query])
 
@@ -612,6 +614,9 @@ export default function GmiView() {
     )
       return
 
+    router.push(`/gmi/${encodeURIComponent(value)}`, undefined, {
+      shallow: true,
+    })
     setWallet(value)
   }
 
