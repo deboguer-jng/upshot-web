@@ -65,8 +65,7 @@ export const WideButton = styled(Flex)`
 const GmiCardBase = styled(Flex)`
   flex-direction: column;
   gap: 32px;
-  width: calc(100vw - 32px);
-  max-width: 1024px;
+  width: 100%;
   background: ${({ theme }) => theme['colors']['grey-900']};
   border-radius: ${({ theme }) => theme['radii']['md']};
   padding: 40px;
@@ -830,6 +829,8 @@ export default function GmiView() {
               flexDirection: 'column',
               flexGrow: 1,
               justifyContent: 'center',
+              padding: 4,
+              width: '100%',
             }}
           >
             {wallet ? (
