@@ -1,5 +1,5 @@
 exports.handler = async function (event, context) {
-  console.log(event.body)
+  console.log({ body: event.body, qs: event.queryStringParameters })
 
   return {
     statusCode: 200,
