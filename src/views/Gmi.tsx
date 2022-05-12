@@ -10,6 +10,7 @@ import {
   IconButton,
   Link,
   Modal,
+  Panel,
   parseUint256,
   ProgressBar,
   Text,
@@ -34,7 +35,9 @@ import {
 import { shortenAddress } from 'utils/address'
 import { gmiIndex, gmiLabel } from 'utils/gmi'
 
+import FooterModal from '../components/FooterModal'
 import { GET_GMI, GetGmiData, GetGmiVars } from '../graphql/queries'
+import { FaqPanel } from '../views/Faq'
 
 export const WideButton = styled(Flex)`
   align-items: center;
@@ -60,17 +63,6 @@ export const WideButton = styled(Flex)`
     box-shadow: ${({ theme }) => theme.shadow.default};
     color: ${({ theme }) => theme.rawColors.white};
   }
-`
-
-const GmiCardBase = styled(Flex)`
-  flex-direction: column;
-  gap: 32px;
-  width: 100%;
-  background: ${({ theme }) => theme['colors']['grey-900']};
-  border-radius: ${({ theme }) => theme['radii']['md']};
-  padding: 40px;
-  border: 1px solid ${({ theme }) => theme['rawColors']['grey-700']};
-  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.7);
 `
 
 const ShareButton = styled.div`
@@ -243,50 +235,6 @@ export function GmiArtwork({ gmi = 0 }: { gmi?: number }) {
   )
 }
 
-function GmiFAQ({ onBack }: { onBack: () => void }) {
-  return (
-    <GmiCardBase sx={{ gap: '16px !important' }}>
-      <Flex
-        onClick={onBack}
-        sx={{ alignItems: 'center', gap: 2, cursor: 'pointer' }}
-      >
-        <Icon icon="arrowSmallLeft" size={24} />
-        <Text variant="h1Primary">FAQ</Text>
-      </Flex>
-      <Flex sx={{ flexDirection: 'column' }}>
-        <Text sx={{ fontSize: 5, lineHeight: '3rem' }}>Q: What is gmi?</Text>
-        <Text color="grey-500" sx={{ fontSize: 3, lineHeight: '1.4rem' }}>
-          A: The answer.
-        </Text>
-      </Flex>
-      <Flex sx={{ flexDirection: 'column' }}>
-        <Text sx={{ fontSize: 5, lineHeight: '3rem' }}>
-          Q: How is gmi calculated?
-        </Text>
-        <Text color="grey-500" sx={{ fontSize: 3, lineHeight: '1.4rem' }}>
-          A: The answer.
-        </Text>
-      </Flex>
-      <Flex sx={{ flexDirection: 'column' }}>
-        <Text sx={{ fontSize: 5, lineHeight: '3rem' }}>
-          Q: What are the different levels of gmi?
-        </Text>
-        <Text color="grey-500" sx={{ fontSize: 3, lineHeight: '1.4rem' }}>
-          A: The answer.
-        </Text>
-      </Flex>
-      <Flex sx={{ flexDirection: 'column' }}>
-        <Text sx={{ fontSize: 5, lineHeight: '3rem' }}>
-          Q: Why even calculate someone&apos;s gmi?
-        </Text>
-        <Text color="grey-500" sx={{ fontSize: 3, lineHeight: '1.4rem' }}>
-          A: The answer.
-        </Text>
-      </Flex>
-    </GmiCardBase>
-  )
-}
-
 function GmiCard({
   wallet,
   onReset,
@@ -393,7 +341,7 @@ function GmiCard({
   const rank = gmiLabel(gmi)
 
   return (
-    <GmiCardBase>
+    <Panel outlined backgroundColor="grey-900">
       <Flex sx={{ flexGrow: 1, width: '100%' }}>
         {!isMobile && (
           <Flex sx={{ flexGrow: 1, width: '100%' }}>
@@ -634,91 +582,7 @@ function GmiCard({
           </Link>
         </Flex>
       </Grid>
-    </GmiCardBase>
-  )
-}
-
-function GmiFooter() {
-  return (
-    <Flex
-      sx={{
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      <Flex sx={{ gap: 3, color: 'grey-500' }}>
-        <Link
-          href="/privacy.pdf"
-          sx={{
-            transition: 'all .1s ease',
-            '&:hover': { color: 'white' },
-          }}
-        >
-          Privacy
-        </Link>
-        <span>|</span>
-        <Link
-          href="/terms.pdf"
-          sx={{
-            transition: 'all .1s ease',
-            '&:hover': { color: 'white' },
-          }}
-        >
-          Terms
-        </Link>
-      </Flex>
-
-      <Flex
-        sx={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: 24,
-          padding: 4,
-        }}
-      >
-        <Link
-          href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
-          target="_blank"
-          rel="noreferrer"
-          component={NextLink}
-        >
-          <IconButton sx={{ '&:hover': { color: 'white' } }}>
-            <Icon icon="mirror" size={32} />
-          </IconButton>
-        </Link>
-        <Link
-          href="https://twitter.com/upshothq"
-          target="_blank"
-          rel="noreferrer"
-          component={NextLink}
-        >
-          <IconButton sx={{ '&:hover': { color: 'white' } }}>
-            <Icon icon="twitterCircle" size={32} />
-          </IconButton>
-        </Link>
-        <Link
-          href="https://discord.gg/upshot"
-          target="_blank"
-          rel="noreferrer"
-          component={NextLink}
-        >
-          <IconButton sx={{ '&:hover': { color: 'white' } }}>
-            <Icon icon="discord" size={32} />
-          </IconButton>
-        </Link>
-        <Link
-          href="https://www.instagram.com/upshot.hq/"
-          target="_blank"
-          rel="noreferrer"
-          component={NextLink}
-        >
-          <IconButton sx={{ '&:hover': { color: 'white' } }}>
-            <Icon icon="instagramCircle" size={32} />
-          </IconButton>
-        </Link>
-      </Flex>
-    </Flex>
+    </Panel>
   )
 }
 
@@ -835,7 +699,7 @@ export default function GmiView() {
           >
             {wallet ? (
               showFaq ? (
-                <GmiFAQ onBack={() => setShowFaq(!showFaq)} />
+                <FaqPanel onBack={() => setShowFaq(!showFaq)} />
               ) : (
                 <GmiCard
                   onShowFaq={() => setShowFaq(true)}
@@ -853,7 +717,7 @@ export default function GmiView() {
             )}
           </Flex>
 
-          <GmiFooter />
+          <FooterModal />
         </Flex>
       </Modal>
     </>
