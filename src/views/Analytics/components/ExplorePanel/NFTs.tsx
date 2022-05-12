@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client'
 import { CollectorAccordion, useBreakpointIndex } from '@upshot-tech/upshot-ui'
-import { CollectionRow, CollectionTable } from '@upshot-tech/upshot-ui'
+import { CollectionGridRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { Pagination, useTheme } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Grid, Icon, Skeleton, Text } from '@upshot-tech/upshot-ui'
 import {
@@ -49,6 +49,9 @@ export const nftColumns = {
   LAST_APPRAISAL_SALE_RATIO: '% Difference',
 }
 
+const colSpacing =
+  '46px minmax(100px,3fr) minmax(80px, 1fr) minmax(110px, 1fr) minmax(120px, 1fr) minmax(80px, 1fr) 40px'
+
 function NFTTableHead({
   selectedColumn,
   sortAscending,
@@ -61,84 +64,60 @@ function NFTTableHead({
   return (
     <>
       {!isMobile && (
-        <TableHead>
-          <TableRow>
-            <TableCell />
-            <TableCell
+        <Grid
+          columns={colSpacing}
+          sx={{ padding: [1, 3].map((n) => theme.space[n] + 'px').join(' ') }}
+        >
+          <Box />
+          <Box />
+          {Object.values(nftColumns).map((col, idx) => (
+            <Box
+              key={idx}
               color="grey-500"
+              onClick={() => onChangeSelection?.(idx)}
               sx={{
                 cursor: 'pointer',
-                color: selectedColumn === 0 ? 'white' : null,
-                userSelect: 'none',
+                color: selectedColumn === idx ? 'white' : null,
                 transition: 'default',
-                width: '100%!important',
+                userSelect: 'none',
+                minWidth: [
+                  100,
+                  100,
+                  100,
+                  idx === Object.keys(nftColumns).length - 1 ? 216 : 120,
+                  idx === Object.keys(nftColumns).length - 1 ? 216 : 180,
+                ],
                 '& svg path': {
                   transition: 'default',
-                  '&:nth-of-type(1)': {
+                  '&:nth-child(1)': {
                     fill:
-                      selectedColumn === 0 && sortAscending
+                      selectedColumn === idx && sortAscending
                         ? 'white'
                         : theme.rawColors['grey-500'],
                   },
-                  '&:nth-of-type(2)': {
+                  '&:nth-child(2)': {
                     fill:
-                      !sortAscending && selectedColumn === 0
+                      !sortAscending && selectedColumn === idx
                         ? 'white'
                         : theme.rawColors['grey-500'],
                   },
                 },
               }}
-            />
-            {Object.values(nftColumns).map((col, idx) => (
-              <TableCell
-                key={idx}
-                color="grey-500"
-                colSpan={idx === Object.keys(nftColumns).length - 1 ? 2 : 1}
-                onClick={() => onChangeSelection?.(idx)}
-                sx={{
-                  cursor: 'pointer',
-                  color: selectedColumn === idx ? 'white' : null,
-                  transition: 'default',
-                  userSelect: 'none',
-                  minWidth: [
-                    100,
-                    100,
-                    100,
-                    idx === Object.keys(nftColumns).length - 1 ? 216 : 120,
-                    idx === Object.keys(nftColumns).length - 1 ? 216 : 180,
-                  ],
-                  '& svg path': {
-                    transition: 'default',
-                    '&:nth-child(1)': {
-                      fill:
-                        selectedColumn === idx && sortAscending
-                          ? 'white'
-                          : theme.rawColors['grey-500'],
-                    },
-                    '&:nth-child(2)': {
-                      fill:
-                        !sortAscending && selectedColumn === idx
-                          ? 'white'
-                          : theme.rawColors['grey-500'],
-                    },
-                  },
-                }}
-              >
-                <Flex sx={{ alignItems: 'center', gap: 1 }}>
-                  <Flex
-                    sx={{
-                      'white-space': 'nowarp',
-                      fontSize: '.85rem',
-                    }}
-                  >
-                    {col}
-                  </Flex>
-                  <Icon icon="tableSort" height={16} width={16} />
+            >
+              <Flex sx={{ alignItems: 'center', gap: 1 }}>
+                <Flex
+                  sx={{
+                    'white-space': 'nowarp',
+                    fontSize: '.85rem',
+                  }}
+                >
+                  {col}
                 </Flex>
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
+                <Icon icon="tableSort" height={16} width={16} />
+              </Flex>
+            </Box>
+          ))}
+        </Grid>
       )}
     </>
   )
@@ -174,19 +153,19 @@ const NFTItemsWrapper = ({ children, ...props }: NFTTableHeadProps) => {
   const isMobile = breakpointIndex <= 1
 
   return (
-    <>
+    <Box sx={{ paddingTop: '8px' }}>
       {isMobile ? (
         <>
           <NFTTableHead {...props} />
           <CollectorAccordion> {children} </CollectorAccordion>
         </>
       ) : (
-        <CollectionTable>
+        <>
           <NFTTableHead {...props} />
-          <TableBody>{children}</TableBody>
-        </CollectionTable>
+          <Box>{children}</Box>
+        </>
       )}
-    </>
+    </Box>
   )
 }
 
@@ -287,7 +266,7 @@ export default function ExploreNFTs({
             },
             idx
           ) => (
-            <CollectionRow
+            <CollectionGridRow
               variant="black"
               title={name}
               imageSrc={mediaUrl}
@@ -297,6 +276,7 @@ export default function ExploreNFTs({
               pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
               href={`/analytics/nft/${id}`}
               linkComponent={NextLink}
+              columns={colSpacing}
             >
               {isMobile ? (
                 <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>
@@ -377,64 +357,39 @@ export default function ExploreNFTs({
                 </Grid>
               ) : (
                 <>
-                  <TableCell>
-                    <Link
-                      href={`/analytics/nft/${id}`}
-                      component={NextLink}
-                      noHover
-                    >
-                      {lastSale?.timestamp
-                        ? formatDistance(lastSale.timestamp * 1000) + ' ago'
-                        : '-'}
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                    <Link
-                      href={`/analytics/nft/${id}`}
-                      component={NextLink}
-                      noHover
-                    >
-                      {lastSale?.ethSalePrice
-                        ? formatNumber(lastSale.ethSalePrice, {
-                            decimals: 4,
-                            prefix: 'ETHER',
-                            fromWei: true,
-                          })
-                        : '-'}
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                    <Link
-                      href={`/analytics/nft/${id}`}
-                      component={NextLink}
-                      noHover
-                    >
-                      {lastAppraisalWeiPrice
-                        ? formatNumber(lastAppraisalWeiPrice, {
-                            decimals: 4,
-                            prefix: 'ETHER',
-                            fromWei: true,
-                          })
-                        : '-'}
-                    </Link>
-                  </TableCell>
-                  <TableCell
+                  <Box>
+                    {lastSale?.timestamp
+                      ? formatDistance(lastSale.timestamp * 1000) + ' ago'
+                      : '-'}
+                  </Box>
+                  <Box>
+                    {lastSale?.ethSalePrice
+                      ? formatNumber(lastSale.ethSalePrice, {
+                          decimals: 4,
+                          prefix: 'ETHER',
+                          fromWei: true,
+                        })
+                      : '-'}
+                  </Box>
+                  <Box>
+                    {lastAppraisalWeiPrice
+                      ? formatNumber(lastAppraisalWeiPrice, {
+                          decimals: 4,
+                          prefix: 'ETHER',
+                          fromWei: true,
+                        })
+                      : '-'}
+                  </Box>
+                  <Box
                     sx={{
                       color: getPriceChangeColor(lastAppraisalSaleRatio),
-                      maxWidth: 100,
                     }}
                   >
-                    <Link
-                      href={`/analytics/nft/${id}`}
-                      component={NextLink}
-                      noHover
-                    >
-                      {getUnderOverPricedLabel(lastAppraisalSaleRatio)}
-                    </Link>
-                  </TableCell>
+                    {getUnderOverPricedLabel(lastAppraisalSaleRatio)}
+                  </Box>
                 </>
               )}
-            </CollectionRow>
+            </CollectionGridRow>
           )
         )}
       </NFTItemsWrapper>

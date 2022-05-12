@@ -276,7 +276,7 @@ export default function TopSellingCollectionNFTs({
                     txAt,
                     txFromAddress,
                     txToAddress,
-                    price,
+                    ethSalePrice,
                     asset: {
                       id,
                       contractAddress,
@@ -295,8 +295,8 @@ export default function TopSellingCollectionNFTs({
                   >
                     <MiniNftCard
                       price={
-                        price
-                          ? formatNumber(price, {
+                        ethSalePrice
+                          ? formatNumber(ethSalePrice, {
                               fromWei: true,
                               decimals: 2,
                               prefix: 'ETHER',

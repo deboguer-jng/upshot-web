@@ -20,7 +20,6 @@ export type GetAssetData = {
     creatorAddress: string
     creatorUsername: string
     creatorAvatar: string
-    warningBanner: boolean
     listPrice?: string
     listPriceUsd?: string
     listMarketplace?: string
@@ -101,7 +100,6 @@ export const GET_ASSET = gql`
       creatorAddress
       creatorUsername
       creatorAvatar
-      warningBanner
       listPrice
       listPriceUsd
       listMarketplace

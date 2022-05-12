@@ -1074,16 +1074,6 @@ export default function UserView() {
   return (
     <>
       <Layout title={getDisplayName()}>
-        {data?.getUser?.warningBanner && (
-          <Text
-            backgroundColor={'primary'}
-            color="black"
-            sx={{ padding: '10px 30px', borderRadius: '10px', fontWeight: 600 }}
-          >
-            This portfolio contains a valuable item. Our top-tier appraisals are
-            under active development.
-          </Text>
-        )}
         <Flex sx={{ flexDirection: 'column', gap: 4 }}>
           {!!address && (
             <Header
