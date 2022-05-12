@@ -32,6 +32,7 @@ exports.handler = async ({ queryStringParameters: qs }) => {
 
     if (result.ok()) {
       const buffer = await page.screenshot()
+      await browser.close()
 
       return {
         statusCode: 200,
@@ -43,10 +44,10 @@ exports.handler = async ({ queryStringParameters: qs }) => {
       }
     }
   } catch (err) {
+    await browser.close()
+
     return {
       statusCode: 500,
     }
   }
-
-  await browser.close()
 }
