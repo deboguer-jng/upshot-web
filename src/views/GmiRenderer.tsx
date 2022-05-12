@@ -5,10 +5,10 @@ import { format } from 'date-fns'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { shortenAddress } from 'utils/address'
+import { gmiLabel } from 'utils/gmi'
 
 import { GET_GMI, GetGmiData, GetGmiVars } from '../graphql/queries'
 import { GmiArtwork, GmiScore } from './Gmi'
-import { getRank, rankTitles } from './Gmi'
 
 interface GmiRowProps {
   label: string
@@ -177,7 +177,7 @@ export default function GmiRenderer() {
     }
   )
 
-  const rank = rankTitles[getRank(gmi)]
+  const rank = gmiLabel(gmi)
 
   return (
     <Flex

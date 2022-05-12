@@ -32,6 +32,7 @@ import {
   setEns,
 } from 'redux/reducers/web3'
 import { shortenAddress } from 'utils/address'
+import { gmiIndex, gmiLabel } from 'utils/gmi'
 
 import { GET_GMI, GetGmiData, GetGmiVars } from '../graphql/queries'
 
@@ -82,24 +83,6 @@ const ShareButton = styled.div`
   background: ${({ theme }) => theme['colors']['blue']};
   border-radius: 9999px;
 `
-
-export const getRank = (gmi: number) => {
-  if (gmi < 100) return 0
-  if (gmi < 400) return 1
-  if (gmi < 700) return 2
-  if (gmi < 900) return 3
-  if (gmi < 975) return 4
-  return 5
-}
-
-export const rankTitles = {
-  0: 'ngmi',
-  1: 'Tourist',
-  2: 'Part Degen',
-  3: 'Full Degen',
-  4: 'Based',
-  5: 'Based God',
-}
 
 function GmiError({
   wallet,
@@ -190,7 +173,7 @@ export function GmiScore({
 }
 
 export function GmiArtwork({ gmi = 0 }: { gmi?: number }) {
-  const rank = getRank(gmi)
+  const gmiIdx = gmiIndex(gmi)
 
   return (
     <>
@@ -199,58 +182,58 @@ export function GmiArtwork({ gmi = 0 }: { gmi?: number }) {
           position: 'absolute',
           width: '100%',
           height: '100%',
-          backgroundImage: `url(/img/gmi/planet/${rank}.svg)`,
+          backgroundImage: `url(/img/gmi/planet/${gmiIdx}.svg)`,
           backgroundSize: 'contain',
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center',
         }}
       />
-      {rank > 1 && (
+      {gmiIdx > 1 && (
         <Box
           sx={{
             position: 'absolute',
             width: '100%',
             height: '100%',
-            backgroundImage: `url(/img/gmi/stars/${rank}.svg)`,
+            backgroundImage: `url(/img/gmi/stars/${gmiIdx}.svg)`,
             backgroundSize: 'contain',
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center',
           }}
         />
       )}
-      {rank > 2 && (
+      {gmiIdx > 2 && (
         <Box
           sx={{
             position: 'absolute',
             width: '100%',
             height: '100%',
-            backgroundImage: `url(/img/gmi/moon_1/${rank}.svg)`,
+            backgroundImage: `url(/img/gmi/moon_1/${gmiIdx}.svg)`,
             backgroundSize: 'contain',
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center',
           }}
         />
       )}
-      {rank > 3 && (
+      {gmiIdx > 3 && (
         <Box
           sx={{
             position: 'absolute',
             width: '100%',
             height: '100%',
-            backgroundImage: `url(/img/gmi/moon_2/${rank}.svg)`,
+            backgroundImage: `url(/img/gmi/moon_2/${gmiIdx}.svg)`,
             backgroundSize: 'contain',
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center',
           }}
         />
       )}
-      {rank > 4 && (
+      {gmiIdx > 4 && (
         <Box
           sx={{
             position: 'absolute',
             width: '100%',
             height: '100%',
-            backgroundImage: `url(/img/gmi/spaceShip/${rank}.svg)`,
+            backgroundImage: `url(/img/gmi/spaceShip/${gmiIdx}.svg)`,
             backgroundSize: 'contain',
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center',
@@ -408,7 +391,7 @@ function GmiCard({
     }
   )
 
-  const rank = rankTitles[getRank(gmi)]
+  const rank = gmiLabel(gmi)
 
   return (
     <GmiCardBase>
