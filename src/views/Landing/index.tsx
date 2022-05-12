@@ -23,8 +23,8 @@ import AnalyticsSVG from './panelBackgrounds/Analytics.svg'
 import AnalyticsHoverSVG from './panelBackgrounds/AnalyticsHover.svg'
 import ApiSVG from './panelBackgrounds/Api.svg'
 import ApiHoverSVG from './panelBackgrounds/ApiHover.svg'
-import GmiSvg from './panelBackgrounds/Gmi.svg'
-import GmiHoverSvg from './panelBackgrounds/GmiHover.svg'
+import BlogSVG from './panelBackgrounds/Blog.svg'
+import BlogHoverSVG from './panelBackgrounds/BlogHover.svg'
 import UpshotArtworkSVG from './panelBackgrounds/UpshotArtwork.svg'
 
 type PanelData = {
@@ -45,16 +45,16 @@ export default function LandingView() {
       original: ApiSVG,
       hover: ApiHoverSVG,
     },
-    gmi: {
-      original: GmiSvg,
-      hover: GmiHoverSvg,
+    blog: {
+      original: BlogSVG,
+      hover: BlogHoverSVG,
     },
   }
   const [analyticsImage, setAnalyticsImage] = useState(
     images.analytics.original.src
   )
   const [apiImage, setApiImage] = useState(images.api.original.src)
-  const [gmiImage, setGmiImage] = useState(images.gmi.original.src)
+  const [blogImage, setBlogImage] = useState(images.blog.original.src)
 
   return (
     <>
@@ -148,26 +148,6 @@ export default function LandingView() {
                     </IconButton>
                   </Link>
                 </Box>
-                <Box>
-                  <Link
-                    href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
-                    target="_blank"
-                    component={NextLink}
-                    noHover
-                  >
-                    <Button
-                      capitalize={true}
-                      style={{
-                        borderRadius: '8px',
-                        height: '32px',
-                        padding: '8px 12px',
-                      }}
-                    >
-                      Read our blog
-                    </Button>
-                  </Link>
-                </Box>
-
                 <Box>
                   <Link
                     href="https://jobs.lever.co/upshot.io"
@@ -331,7 +311,7 @@ export default function LandingView() {
                 </Panel>
               </Link>
               <Link
-                href="/gmi"
+                href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
                 rel="noopener noreferrer"
                 sx={{
                   color: theme.colors.text + ' !important',
@@ -360,31 +340,31 @@ export default function LandingView() {
                       backgroundColor: theme.colors.black + ' !important',
                     },
                   }}
-                  onMouseEnter={() => setGmiImage(images.gmi.hover.src)}
-                  onMouseLeave={() => setGmiImage(images.gmi.original.src)}
+                  onMouseEnter={() => setBlogImage(images.blog.hover.src)}
+                  onMouseLeave={() => setBlogImage(images.blog.original.src)}
                 >
                   <Image
-                    src={gmiImage}
+                    src={blogImage}
                     sx={{
                       opacity: '0.7',
                       position: 'absolute',
-                      bottom: '2%',
+                      bottom: '5%',
                       left: '50%',
                       transform: 'translateX(-50%)',
                       margin: 'auto',
                       width: 'auto',
-                      height: '60%',
+                      height: '50%',
                       objectFit: 'cover',
                     }}
-                    alt="gmi"
+                    alt="Upshot One"
                   ></Image>
                   <div style={{ position: 'relative' }}>
-                    <Text variant="h1Secondary">gmi</Text>
+                    <Text variant="h1Secondary">Blog</Text>
                     <Text
                       variant="large"
                       sx={{ display: 'block', whiteSpace: 'normal' }}
                     >
-                      View and share your gmi.
+                      Learn more about NFTxDeFI
                     </Text>
                   </div>
                 </Panel>
