@@ -65,7 +65,7 @@ export const WideButton = styled(Flex)`
   }
 `
 
-const ShareButton = styled.div`
+const ShareButton = styled(Box)`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -73,7 +73,73 @@ const ShareButton = styled.div`
   padding: 8px 16px;
   background: ${({ theme }) => theme['colors']['blue']};
   border-radius: 9999px;
+  cursor: pointer;
 `
+
+function GmiPreview({
+  wallet,
+  onBack,
+}: {
+  wallet: string
+  onBack: () => void
+}) {
+  return (
+    <Panel
+      outlined
+      backgroundColor="grey-900"
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '16px !important',
+      }}
+    >
+      <Flex
+        sx={{
+          justifyContent: 'space-between',
+        }}
+      >
+        <Text variant="h1Primary" sx={{ lineHeight: 1 }}>
+          Share
+        </Text>
+        <IconButton onClick={onBack}>
+          <Icon icon="close" />
+        </IconButton>
+      </Flex>
+      <Text color="grey-300" sx={{ lineHeight: 1 }}>
+        Share your Upshot gmi card on Twitter! Flex your degen level.
+      </Text>
+      <img
+        src={`https://stage.analytics.upshot.io/.netlify/functions/gmi?wallet=${encodeURIComponent(
+          wallet
+        )}&filetype=.png`}
+        alt="gmi Preview"
+        width="100%"
+      />
+      <Link
+        component={NextLink}
+        target="_blank"
+        rel="noopener noreferrer nofollow"
+        href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
+          `View my Upshot gmi:\nhttps://upshot.xyz/gmi/${wallet}`
+        )}`}
+        sx={{ width: '100%', textDecoration: 'none !important' }}
+      >
+        <ShareButton sx={{ maxWidth: '200px', margin: '0 auto' }}>
+          <Text
+            color="white"
+            sx={{
+              fontWeight: 'heading',
+              fontSize: '18px',
+            }}
+          >
+            Share
+          </Text>
+          <Icon color="white" icon="twitter" size={32} />
+        </ShareButton>
+      </Link>
+    </Panel>
+  )
+}
 
 function GmiError({
   wallet,
@@ -238,12 +304,16 @@ export function GmiArtwork({ gmi = 0 }: { gmi?: number }) {
 function GmiCard({
   wallet,
   showFaq,
+  showPreview,
   onReset,
   onToggleFaq,
+  onShowPreview,
 }: {
   wallet: string
   showFaq?: boolean
+  showPreview?: boolean
   onToggleFaq: () => void
+  onShowPreview: () => void
   onReset: () => void
 }) {
   const MIN_LOADING_SECONDS = 2
@@ -307,6 +377,7 @@ function GmiCard({
   }
 
   if (showFaq) return <FaqPanel onBack={onToggleFaq} />
+  if (showPreview) return <GmiPreview {...{ wallet }} onBack={onReset} />
 
   const userAddr = data?.getUser?.addresses?.[0]?.address
   const userEns = data?.getUser?.addresses?.[0]?.ens
@@ -578,28 +649,18 @@ function GmiCard({
             <GmiArtwork {...{ gmi }} />
           </Box>
 
-          <Link
-            component={NextLink}
-            target="_blank"
-            rel="noopener noreferrer nofollow"
-            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
-              `View my Upshot gmi:\nhttps://upshot.xyz/gmi/${displayName}`
-            )}`}
-            sx={{ width: '100%', textDecoration: 'none !important' }}
-          >
-            <ShareButton>
-              <Text
-                color="white"
-                sx={{
-                  fontWeight: 'heading',
-                  fontSize: '18px',
-                }}
-              >
-                Share
-              </Text>
-              <Icon color="white" icon="twitter" size={32} />
-            </ShareButton>
-          </Link>
+          <ShareButton onClick={onShowPreview}>
+            <Text
+              color="white"
+              sx={{
+                fontWeight: 'heading',
+                fontSize: '18px',
+              }}
+            >
+              Share
+            </Text>
+            <Icon color="white" icon="twitter" size={32} />
+          </ShareButton>
         </Flex>
       </Grid>
     </Panel>
@@ -613,6 +674,7 @@ export default function GmiView() {
   const address = useAppSelector(selectAddress)
   const [wallet, setWallet] = useState('')
   const [showFaq, setShowFaq] = useState(false)
+  const [showPreview, setShowPreview] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
@@ -731,9 +793,9 @@ export default function GmiView() {
               <GmiCard
                 onReset={handleReset}
                 key={wallet}
-                showFaq={showFaq}
                 onToggleFaq={() => setShowFaq(!showFaq)}
-                {...{ wallet }}
+                onShowPreview={() => setShowPreview(true)}
+                {...{ wallet, showFaq, showPreview }}
               />
             ) : (
               <GmiModal
