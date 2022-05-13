@@ -729,7 +729,6 @@ export default function UserView() {
         if (!fetchMoreResult) return prev
         return {
           getTxHistory: {
-            id: prev.getTxHistory.id,
             txHistory: {
               count: fetchMoreResult?.getTxHistory?.txHistory?.count ?? 0,
               events: [
