@@ -971,7 +971,7 @@ export default function NFTView() {
             </Panel>
             <Box>
               <Text variant="h3Secondary">More like this</Text>
-              <MiniNFTContainer>
+              <MiniNFTContainer mt={3}>
                 {similarData?.similarAssets?.map((asset, key) => {
                   return (
                     <Link
@@ -993,18 +993,31 @@ export default function NFTView() {
                               )
                             : undefined
                         }
-                        linkComponent={NextLink}
-                        to={shortenAddress(txToAddress, 2, 4)}
-                        toLink={`/analytics/user/${txToAddress}`}
-                        from={shortenAddress(txFromAddress, 2, 4)}
-                        fromLink={`/analytics/user/${txFromAddress}`}
-                        rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
-                        image={mediaUrl}
-                        date={formatDistance(txAt * 1000)}
-                        pixelated={PIXELATED_CONTRACTS.includes(
-                          contractAddress
-                        )}
-                        link={`/analytics/collection/${collection?.id}`}
+                        name={name}
+                        type="recommend"
+                        image={asset.similarAsset.mediaUrl}
+                        listing={
+                          asset.similarAsset.listPrice
+                            ? formatNumber(asset.similarAsset.listPrice, {
+                                fromWei: true,
+                                decimals: 2,
+                                prefix: 'ETHER',
+                              })
+                            : null
+                        }
+                        appraisal={
+                          asset.similarAsset.lastAppraisalWeiPrice
+                            ? formatNumber(
+                                asset.similarAsset.lastAppraisalWeiPrice,
+                                {
+                                  fromWei: true,
+                                  decimals: 2,
+                                  prefix: 'ETHER',
+                                }
+                              )
+                            : null
+                        }
+                        link={`/analytics/collection/${id}`}
                       />
                     </Link>
                   )
