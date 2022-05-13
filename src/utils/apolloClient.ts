@@ -8,12 +8,12 @@ const client = new ApolloClient({
     typePolicies: {
       Query: {
         fields: {
-          getUser: {
-            keyArgs: ['id', 'userAddress'],
-            merge(existing = {}, incoming) {
-              return { ...existing, ...incoming }
-            },
-          },
+          // getUser: {
+          //   keyArgs: ['id', 'userAddress'],
+          //   merge(existing = {}, incoming) {
+          //     return { ...existing, ...incoming }
+          //   },
+          // },
         },
       },
     },
