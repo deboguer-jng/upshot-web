@@ -114,6 +114,7 @@ function GmiPreview({
         )}&filetype=.png`}
         alt="gmi Preview"
         width="100%"
+        style={{ maxWidth: '720px' }}
       />
       <Link
         component={NextLink}
@@ -726,7 +727,7 @@ export default function GmiView() {
     <>
       <Head>
         <title>gmi | Upshot Analytics</title>
-        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@UpshotHQ" />
         <meta
           name="twitter:title"
@@ -746,6 +747,7 @@ export default function GmiView() {
             content={`https://stage.analytics.upshot.io/.netlify/functions/gmi?wallet=${router.query['wallet']}&filetype=.png`}
           />
         )}
+        <meta property="og:type" content="website" />
       </Head>
       <Box
         sx={{
