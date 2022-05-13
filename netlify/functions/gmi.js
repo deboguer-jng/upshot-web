@@ -5,7 +5,6 @@ const config = {
   width: 1280,
   height: 640,
   port: 3001,
-  maxAge: 60 * 60,
   baseUrl: 'https://stage.analytics.upshot.io/share/gmi/',
 }
 
@@ -13,6 +12,7 @@ exports.handler = async ({ queryStringParameters: qs }) => {
   if (!qs.wallet)
     return {
       statusCode: 500,
+      body: 'Error: No wallet received.',
     }
 
   const browser = await puppeteer.launch({
@@ -25,6 +25,7 @@ exports.handler = async ({ queryStringParameters: qs }) => {
   const page = await browser.newPage()
 
   try {
+    const url = config.baseUrl + qs.wallet
     const result = await page.goto(url)
 
     await page.evaluateHandle('document.fonts.ready')
@@ -48,6 +49,7 @@ exports.handler = async ({ queryStringParameters: qs }) => {
 
     return {
       statusCode: 500,
+      body: 'Error: Unable to retrieve gmi.',
     }
   }
 }
