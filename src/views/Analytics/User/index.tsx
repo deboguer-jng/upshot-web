@@ -140,7 +140,7 @@ function Layout({
         },
       ]
     : prevPath?.includes('collection')
-    ? [
+    ? [ 
         {
           text: 'Analytics Home',
           link: '/analytics',
@@ -655,11 +655,6 @@ export default function UserView() {
   useEffect(() => {
     if (!collectionOffset) return
 
-    console.log({
-      offset:
-        dataAllOwnedCollections?.getAllOwnedCollectionsWrapper?.nextOffset,
-    })
-
     fetchMoreAllOwnedCollections({
       variables: {
         offset:
@@ -734,7 +729,7 @@ export default function UserView() {
         if (!fetchMoreResult) return prev
         return {
           getTxHistory: {
-            ...prev.getTxHistory,
+            id: prev.getTxHistory.id,
             txHistory: {
               count: fetchMoreResult?.getTxHistory?.txHistory?.count ?? 0,
               events: [
@@ -966,7 +961,7 @@ export default function UserView() {
   const loadMore = () => {
     // simulate a request
     fetchTxHistories(
-      txHistoryData?.getTxHistory?.txHistory?.events?.length ?? 0 + 1
+      (txHistoryData?.getTxHistory?.txHistory?.events?.length ?? 0) + 1
     )
     return new Promise((resolve, reject) => {})
   }
