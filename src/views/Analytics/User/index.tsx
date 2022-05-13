@@ -1072,11 +1072,18 @@ export default function UserView() {
     return extractEns(data?.getUser?.addresses, address) ?? shortAddress
   }
 
-  const getGmiLabel = (): string => {
+  const getGmiNum = () => {
     const gmi =  data?.getUser?.addresses[0]?.gmi;
 
-    if(gmi) return `${Math.round(gmi)} ${gmiLabel(gmi)}`
+    if (gmi) return `${Math.round(gmi)} /1000 gmi`
     else return '-'
+  }
+
+  const getGmiLabel = () => {
+    const gmi = data?.getUser?.addresses[0]?.gmi
+
+    if (gmi) return gmiLabel(gmi);
+    else '';
   }
 
   return (
@@ -1178,10 +1185,9 @@ export default function UserView() {
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
                             textAlign: 'center',
-                            textTransform: 'capitalize',
                           }}
                         >
-                          {getGmiLabel()}
+                          {getGmiNum()}
                         </Text>
                         <Text
                           color="blue"
@@ -1195,7 +1201,7 @@ export default function UserView() {
                             textAlign: 'center',
                           }}
                         >
-                          gmi
+                          {getGmiLabel()}
                         </Text>
                       </Panel>
                       <Panel
