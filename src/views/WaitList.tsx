@@ -114,10 +114,14 @@ export default function WaitListView() {
           width: '100vw',
           height: '100vh',
           pointerEvents: 'none',
+          zIndex: 0,
         }}
       />
       <Box
         sx={{
+          position: 'absolute',
+          margin: '0 auto',
+          width: '100%',
           display: 'flex',
           flexDirection: 'column',
           minHeight: '100vh',
@@ -284,7 +288,13 @@ export default function WaitListView() {
         </Flex>
       </Box>
 
-      <Modal ref={modalRef} onClose={toggleModal} {...{ open }}>
+      <Modal
+        hideScroll
+        backdropBlur
+        ref={modalRef}
+        onClose={toggleModal}
+        {...{ open }}
+      >
         <ConnectModal {...{ hideMetaMask }} onConnect={handleConnect} />
       </Modal>
     </>

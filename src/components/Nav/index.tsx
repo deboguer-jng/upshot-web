@@ -343,12 +343,13 @@ export const Nav = () => {
         >
           {showSidebar && sidebar}
         </Navbar>
-        <Modal ref={modalRef} onClose={toggleModal} {...{ open }}>
+        <Modal ref={modalRef} onClose={toggleModal} {...{ open }} hideScroll>
           <ConnectModal {...{ hideMetaMask }} onConnect={handleConnect} />
         </Modal>
         <Modal
           ref={helpModalRef}
           onClose={toggleHelpModal}
+          hideScroll
           {...{ open: helpOpen }}
         >
           <HelpModal
