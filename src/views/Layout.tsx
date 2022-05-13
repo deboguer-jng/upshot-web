@@ -142,19 +142,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   // React to Injected provider events, if it exists.
   useInactiveListener(!triedEager || !!activatingConnector)
 
-  if (!ready) return null
-
-  return (
-    <>
-      {router.route === '/' ||
-      router.route.startsWith('/gmi') ||
-      router.route.startsWith('/share') ||
-      router.route.startsWith('/faq') ||
-      isBeta ? (
-        children
-      ) : (
-        <WaitList />
-      )}
-    </>
+  return router.route === '/' ||
+    router.route.startsWith('/gmi') ||
+    router.route.startsWith('/share') ||
+    router.route.startsWith('/faq') ||
+    isBeta ? (
+    children
+  ) : (
+    <WaitList />
   )
 }
