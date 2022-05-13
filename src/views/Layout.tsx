@@ -147,7 +147,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     router.route.startsWith('/share') ||
     router.route.startsWith('/faq') ||
     isBeta ? (
-    children
+    <>{children}</>
   ) : (
     <WaitList />
   )
