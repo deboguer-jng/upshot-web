@@ -252,6 +252,7 @@ function GmiCard({
   const [loadWait, setLoadWait] = useState(0)
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
+  const router = useRouter()
 
   const { loading, error, data } = useQuery<GetGmiData, GetGmiVars>(GET_GMI, {
     errorPolicy: 'all',
@@ -277,6 +278,21 @@ function GmiCard({
       clearInterval(interval)
     }
   }, [lastLoadingAt])
+
+  useEffect(() => {
+    if (!data?.getUser) return
+
+    const userAddr = data.getUser.addresses?.[0]?.address
+    const userEns = data.getUser.addresses?.[0]?.ens
+
+    router.push(
+      `/gmi/${encodeURIComponent(userEns || userAddr || '')}`,
+      undefined,
+      {
+        shallow: true,
+      }
+    )
+  }, [data])
 
   if (error || (data && !data?.getUser?.addresses?.length)) {
     return <GmiError {...{ wallet, onReset }} />
