@@ -3,6 +3,7 @@ import { Box, Text } from '@upshot-tech/upshot-ui'
 
 export const MiniNFTContainer = styled(Box)`
   display: flex;
+  height: 255px;
   margin-bottom: ${({ theme }) => theme.sizes[3] + 'px'};
   gap: ${({ theme }) => theme.sizes[7] + 'px'};
   padding-bottom: ${({ theme }) => theme.sizes[5] + 'px'};
