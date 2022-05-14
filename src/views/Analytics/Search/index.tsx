@@ -491,6 +491,8 @@ export default function SearchView() {
                                 collection,
                                 tokenId,
                                 lastSale,
+                                latestAppraisal,
+                                listPrice,
                                 rarity,
                                 creatorUsername,
                                 creatorAddress,
@@ -506,13 +508,16 @@ export default function SearchView() {
                                 <MiniNftCard
                                   linkComponent={NextLink}
                                   price={
-                                    lastSale?.ethSalePrice
-                                      ? formatNumber(lastSale.ethSalePrice, {
-                                          fromWei: true,
-                                          decimals: 2,
-                                          prefix: 'ETHER',
-                                        })
-                                      : undefined
+                                    formatNumber(latestAppraisal?.estimatedPrice ?? listPrice ?? lastSale?.ethSalePrice ?? '', {
+                                      fromWei: true,
+                                      decimals: 2,
+                                      prefix: 'ETHER',
+                                    })
+                                  }
+                                  priceType={
+                                    latestAppraisal?.estimatedPrice ? 'appraisal' : 
+                                      listPrice ? 'listed' :
+                                        lastSale?.ethSalePrice ? 'last-sold' : ''
                                   }
                                   rarity={
                                     rarity
@@ -533,7 +538,6 @@ export default function SearchView() {
                                     collection?.name,
                                     tokenId
                                   )}
-                                  link={`/analytics/collection/${collection?.id}`}
                                 />
                               </Link>
                             )

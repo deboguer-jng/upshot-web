@@ -349,7 +349,13 @@ export default function TopSellingCollectionNFTs({
                           ? formatNumber(latestStats.floor, { fromWei: true })
                           : undefined
                       }
-                      sales={getSalesNumber(latestStats)}
+                      sales={
+                        getSalesNumber(latestStats) + ' / ' + (
+                          period === '1 month'
+                            ? '1 mth' : period === '1 week'
+                              ? '1 wk' : '1 d'
+                        )
+                      }
                       link={`/analytics/collection/${id}`}
                     />
                   </Link>
