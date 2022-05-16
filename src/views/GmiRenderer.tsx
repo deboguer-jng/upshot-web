@@ -16,6 +16,17 @@ interface GmiRowProps {
   color?: string
 }
 
+export interface GmiSocialCardProps {
+  displayName: string
+  gmi: number
+  totalBlueChips: number
+  firstPurchase?: number
+  tradeVolume: string
+  gainsRealized: string
+  gainsUnrealized: string
+  gainsTotal: number
+}
+
 function GmiRow({ label, value = '', color = 'grey-500' }: GmiRowProps) {
   const { theme } = useTheme()
 
@@ -46,18 +57,21 @@ function GmiRow({ label, value = '', color = 'grey-500' }: GmiRowProps) {
   )
 }
 
-function GmiRenderError({ wallet }: { wallet?: string }) {
+export function GmiRenderError({ wallet }: { wallet?: string }) {
   return (
     <Flex
       id="gmiResults"
       sx={{
-        minHeight: '100vh',
+        minHeight: '100%',
         flexDirection: 'column',
         justifyContent: 'space-between',
         padding: 40,
+        gap: 8,
       }}
     >
-      <Grid sx={{ gridTemplateColumns: '1fr 1fr' }}>
+      <Grid
+        sx={{ gridTemplateColumns: ['1fr', '1fr', '1fr 1fr'], flexGrow: 1 }}
+      >
         <Flex sx={{ flexDirection: 'column', gap: 3 }}>
           <Text variant="h1Primary" sx={{ lineHeight: 1 }}>
             Failure to launch!
@@ -79,13 +93,122 @@ function GmiRenderError({ wallet }: { wallet?: string }) {
           <Box
             sx={{
               position: 'relative',
-              width: '100%',
-              minHeight: 400,
-              height: 'auto',
+              width: ['auto', 'auto', '100%'],
+              height: ['300px', '300px', 'auto'],
               flexGrow: 1,
             }}
           >
             <GmiArtwork />
+          </Box>
+        </Flex>
+      </Grid>
+      <Flex sx={{ justifyContent: 'space-between', alignItems: 'baseline' }}>
+        <img src="/img/upshot_logo_white.svg" width={140} alt="Upshot Logo" />
+        <Text color="grey-500" sx={{ fontSize: 3 }}>
+          upshot.xyz/gmi
+        </Text>
+      </Flex>
+    </Flex>
+  )
+}
+
+export function GmiSocialCard({
+  displayName,
+  gmi,
+  totalBlueChips,
+  firstPurchase,
+  tradeVolume,
+  gainsRealized,
+  gainsUnrealized,
+  gainsTotal,
+}: GmiSocialCardProps) {
+  const rank = gmiLabel(gmi)
+
+  return (
+    <Flex
+      id="gmiResults"
+      sx={{
+        minHeight: '100%',
+        width: '100%',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        padding: 40,
+        gap: 8,
+      }}
+    >
+      <Grid
+        sx={{ gridTemplateColumns: ['1fr', '1fr', '1fr 1fr'], flexGrow: 1 }}
+      >
+        <Flex sx={{ flexDirection: 'column', gap: 6 }}>
+          <Text variant="h1Primary" sx={{ fontSize: 8 }}>
+            {rank}
+          </Text>
+          <Flex sx={{ flexDirection: 'column', gap: 4, marginBottom: 4 }}>
+            <GmiScore {...{ gmi }} />
+            <ProgressBar percent={(gmi / 1000) * 100} bgColor="grey-900" />
+          </Flex>
+          <GmiRow
+            label="Blue Chips Owned"
+            color="blue"
+            value={totalBlueChips}
+          />
+          <GmiRow
+            label="First Purchase"
+            color="blue"
+            value={
+              firstPurchase ? format(firstPurchase * 1000, 'M/d/yyyy') : '-'
+            }
+          />
+          <GmiRow
+            label="Trade Volume"
+            color="blue"
+            value={formatNumber(tradeVolume, {
+              fromWei: true,
+              prefix: 'ETHER',
+              decimals: 2,
+            })}
+          />
+          <GmiRow
+            label="Total Gains"
+            color={gainsTotal > 0 ? 'green' : 'red'}
+            value={formatNumber(gainsTotal, {
+              prefix: 'ETHER',
+              decimals: 2,
+            })}
+          />
+          <GmiRow
+            label="Unrealized Gains"
+            color={Number(gainsUnrealized) > 0 ? 'green' : 'red'}
+            value={formatNumber(gainsUnrealized, {
+              fromWei: true,
+              prefix: 'ETHER',
+              decimals: 2,
+            })}
+          />
+          <GmiRow
+            label="Realized Gains"
+            color={Number(gainsRealized) > 0 ? 'green' : 'red'}
+            value={formatNumber(gainsRealized, {
+              fromWei: true,
+              prefix: 'ETHER',
+              decimals: 2,
+            })}
+          />
+        </Flex>
+        <Flex sx={{ flexDirection: 'column' }}>
+          <Text color="grey-500" sx={{ fontSize: 3, textAlign: 'right' }}>
+            {displayName}
+          </Text>
+          <Box
+            sx={{
+              position: 'relative',
+              width: '100%',
+
+              height: 'auto',
+              flexGrow: 1,
+            }}
+          >
+            <GmiArtwork {...{ gmi }} />
           </Box>
         </Flex>
       </Grid>
@@ -119,127 +242,37 @@ export default function GmiRenderer() {
     setWallet(urlAddress)
   }, [router.query])
 
-  if (error || (data && !data?.getUser?.addresses?.length)) {
+  if (error || (data && !data?.getUser?.addresses?.length))
     return <GmiRenderError {...{ wallet }} />
-  }
-
-  if (loading || !data) {
-    return null
-  }
+  if (loading || !data) return null
 
   const userAddr = data?.getUser?.addresses?.[0]?.address
   const userEns = data?.getUser?.addresses?.[0]?.ens
   const displayName = userEns || (userAddr ? shortenAddress(userAddr) : '-')
   const gmi = data?.getUser?.addresses?.[0]?.gmi ?? 0
-  const blueChips = data?.getUser?.addresses?.[0]?.numBlueChipsOwned ?? 0
+  const totalBlueChips = data?.getUser?.addresses?.[0]?.numBlueChipsOwned ?? 0
   const firstPurchase = data?.getUser?.addresses?.[0]?.startAt
-    ? format(data.getUser.addresses[0].startAt * 1000, 'M/d/yyyy')
-    : '-'
-  const txVolume = data?.getUser?.addresses?.[0]?.volume
-    ? formatNumber(data.getUser.addresses[0].volume, {
-        fromWei: true,
-        prefix: 'ETHER',
-        decimals: 2,
-      })
-    : '-'
-  const isGainsRealizedProfit =
-    data?.getUser?.addresses?.[0]?.realizedGain &&
-    Number(data.getUser.addresses[0].realizedGain) > 0
-  const gainsRealized = data?.getUser?.addresses?.[0]?.realizedGain
-    ? formatNumber(data.getUser.addresses[0].realizedGain, {
-        fromWei: true,
-        prefix: 'ETHER',
-        decimals: 2,
-      })
-    : '-'
-
-  const isGainsUnrealizedProfit =
-    data?.getUser?.addresses?.[0]?.unrealizedGain &&
-    Number(data.getUser.addresses[0].unrealizedGain) > 0
-  const gainsUnrealized = data?.getUser?.addresses?.[0]?.unrealizedGain
-    ? formatNumber(data.getUser.addresses[0].unrealizedGain, {
-        fromWei: true,
-        prefix: 'ETHER',
-        decimals: 2,
-      })
-    : '-'
-
-  const isGainsTotalProfit =
-    parseUint256(data?.getUser?.addresses?.[0]?.realizedGain || '0') +
-      parseUint256(data?.getUser?.addresses?.[0]?.unrealizedGain || '0') >
-    0
-  const gainsTotal = formatNumber(
-    parseUint256(data?.getUser?.addresses?.[0]?.realizedGain || '0') +
-      parseUint256(data?.getUser?.addresses?.[0]?.unrealizedGain || '0'),
-    {
-      prefix: 'ETHER',
-      decimals: 2,
-    }
-  )
-
-  const rank = gmiLabel(gmi)
+  const tradeVolume = data?.getUser?.addresses?.[0]?.volume ?? '0'
+  const gainsRealized = data?.getUser?.addresses?.[0]?.realizedGain ?? '0'
+  const gainsUnrealized = data?.getUser?.addresses?.[0]?.unrealizedGain ?? '0'
+  const gainsTotal =
+    parseUint256(data?.getUser?.addresses?.[0]?.realizedGain ?? '0') +
+    parseUint256(data?.getUser?.addresses?.[0]?.unrealizedGain ?? '0')
 
   return (
-    <Flex
-      id="gmiResults"
-      sx={{
-        minHeight: '100vh',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        padding: 40,
-      }}
-    >
-      <Grid sx={{ gridTemplateColumns: '1fr 1fr', flexGrow: 1 }}>
-        <Flex sx={{ flexDirection: 'column', gap: 6 }}>
-          <Text variant="h1Primary" sx={{ fontSize: 8 }}>
-            {rank}
-          </Text>
-          <Flex sx={{ flexDirection: 'column', gap: 4, marginBottom: 4 }}>
-            <GmiScore {...{ gmi }} />
-            <ProgressBar percent={(gmi / 1000) * 100} bgColor="grey-900" />
-          </Flex>
-          <GmiRow label="Blue Chips Owned" color="blue" value={blueChips} />
-          <GmiRow label="First Purchase" color="blue" value={firstPurchase} />
-          <GmiRow label="Trade Volume" color="blue" value={txVolume} />
-          <GmiRow
-            label="Total Gains"
-            color={isGainsTotalProfit ? 'green' : 'red'}
-            value={gainsTotal}
-          />
-          <GmiRow
-            label="Unrealized Gains"
-            color={isGainsUnrealizedProfit ? 'green' : 'red'}
-            value={gainsUnrealized}
-          />
-          <GmiRow
-            label="Realized Gains"
-            color={isGainsRealizedProfit ? 'green' : 'red'}
-            value={gainsRealized}
-          />
-        </Flex>
-        <Flex sx={{ flexDirection: 'column' }}>
-          <Text color="grey-500" sx={{ fontSize: 3, textAlign: 'right' }}>
-            {displayName}
-          </Text>
-          <Box
-            sx={{
-              position: 'relative',
-              width: '100%',
-
-              height: 'auto',
-              flexGrow: 1,
-            }}
-          >
-            <GmiArtwork {...{ gmi }} />
-          </Box>
-        </Flex>
-      </Grid>
-      <Flex sx={{ justifyContent: 'space-between', alignItems: 'baseline' }}>
-        <img src="/img/upshot_logo_white.svg" width={140} alt="Upshot Logo" />
-        <Text color="grey-500" sx={{ fontSize: 3 }}>
-          upshot.xyz/gmi
-        </Text>
-      </Flex>
+    <Flex sx={{ minHeight: '100vh', minWidth: '100vw' }}>
+      <GmiSocialCard
+        {...{
+          displayName,
+          gmi,
+          totalBlueChips,
+          firstPurchase,
+          tradeVolume,
+          gainsRealized,
+          gainsUnrealized,
+          gainsTotal,
+        }}
+      />
     </Flex>
   )
 }

@@ -38,6 +38,17 @@ import { gmiIndex, gmiLabel } from 'utils/gmi'
 import FooterModal from '../components/FooterModal'
 import { GET_GMI, GetGmiData, GetGmiVars } from '../graphql/queries'
 import { FaqPanel } from '../views/Faq'
+import {
+  GmiRenderError,
+  GmiSocialCard,
+  GmiSocialCardProps,
+} from './GmiRenderer'
+
+interface GmiPanelProps {
+  onReset: () => void
+  onToggleFaq: () => void
+  onShowPreview: () => void
+}
 
 export const WideButton = styled(Flex)`
   align-items: center;
@@ -76,6 +87,276 @@ const ShareButton = styled(Box)`
   cursor: pointer;
 `
 
+function GmiPanel({
+  displayName,
+  gmi,
+  totalBlueChips,
+  firstPurchase,
+  tradeVolume,
+  gainsRealized,
+  gainsUnrealized,
+  gainsTotal,
+  onReset,
+  onToggleFaq,
+  onShowPreview,
+}: GmiSocialCardProps & GmiPanelProps) {
+  const breakpointIndex = useBreakpointIndex()
+  const isMobile = breakpointIndex <= 1
+
+  const rank = gmiLabel(gmi)
+
+  return (
+    <Panel outlined backgroundColor="grey-900">
+      <Flex sx={{ flexGrow: 1, width: '100%' }}>
+        {!isMobile && (
+          <Flex sx={{ flexGrow: 1, width: '100%' }}>
+            <Text sx={{ fontWeight: 'bold', fontSize: '18px' }}>
+              {displayName}
+            </Text>
+          </Flex>
+        )}
+
+        <Flex
+          sx={{
+            flexShrink: 0,
+            gap: 2,
+            width: ['100%', '100%', 'auto'],
+            justifyContent: ['center', 'center', 'auto'],
+          }}
+        >
+          <Text
+            color={isMobile ? 'white' : 'grey-500'}
+            sx={{ fontWeight: 'heading', fontSize: ['16px', '18px', '14px'] }}
+          >
+            {displayName}
+          </Text>
+          <Text
+            onClick={onReset}
+            color="blue"
+            sx={{
+              fontSize: '14px',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+              fontWeight: 'heading',
+              '&:hover': {
+                textDecoration: 'underline',
+              },
+            }}
+          >
+            Try another wallet?
+          </Text>
+        </Flex>
+      </Flex>
+
+      <Grid
+        sx={{
+          gridTemplateColumns: isMobile ? '1fr' : '3fr 1fr',
+          columnGap: '24px',
+        }}
+      >
+        <Flex sx={{ flexDirection: 'column', gap: 7 }}>
+          <Flex
+            sx={{
+              alignItems: 'baseline',
+              gap: 2,
+              flexDirection: ['column', 'row'],
+            }}
+          >
+            <GmiScore {...{ gmi }}>
+              <IconButton
+                onClick={onToggleFaq}
+                sx={{
+                  background: 'grey-800',
+                  width: '28px',
+                  height: '28px',
+                }}
+              >
+                <Icon icon="question" size={14} />
+              </IconButton>
+            </GmiScore>
+
+            <Flex sx={{ flexGrow: 1, justifyContent: 'flex-end' }}>
+              <Text sx={{ fontSize: 6, fontWeight: 'bold' }}>{rank}</Text>
+            </Flex>
+          </Flex>
+          <ProgressBar percent={(gmi / 1000) * 100} bgColor="grey-900" />
+          <Grid
+            sx={{
+              gridTemplateColumns: ['1fr', '1fr', '1fr 1fr 1fr'],
+              columnGap: '16px',
+              rowGap: '16px',
+            }}
+          >
+            <Flex
+              sx={{
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                border: `1px solid #545454`,
+                borderRadius: '10px',
+                minHeight: '92px',
+                padding: '20px',
+              }}
+            >
+              <Text sx={{ fontSize: '16px', fontWeight: 'heading' }}>
+                Blue Chips Owned
+              </Text>
+              <Text color="blue" sx={{ fontSize: '26px', fontWeight: 'bold' }}>
+                {totalBlueChips}
+              </Text>
+            </Flex>
+
+            <Flex
+              sx={{
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                border: `1px solid #545454`,
+                borderRadius: '10px',
+                minHeight: '92px',
+                padding: '20px',
+              }}
+            >
+              <Text sx={{ fontSize: '16px', fontWeight: 'heading' }}>
+                First Purchase
+              </Text>
+              <Text color="blue" sx={{ fontSize: '26px', fontWeight: 'bold' }}>
+                {firstPurchase ? format(firstPurchase * 1000, 'M/d/yyyy') : '-'}
+              </Text>
+            </Flex>
+
+            <Flex
+              sx={{
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                border: `1px solid #545454`,
+                borderRadius: '10px',
+                minHeight: '92px',
+                padding: '20px',
+              }}
+            >
+              <Text sx={{ fontSize: '16px', fontWeight: 'heading' }}>
+                Trade Volume
+              </Text>
+              <Text color="blue" sx={{ fontSize: '26px', fontWeight: 'bold' }}>
+                {formatNumber(tradeVolume, {
+                  fromWei: true,
+                  prefix: 'ETHER',
+                  decimals: 2,
+                })}
+              </Text>
+            </Flex>
+
+            <Flex
+              sx={{
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                border: `1px solid #545454`,
+                borderRadius: '10px',
+                minHeight: '92px',
+                padding: '20px',
+              }}
+            >
+              <Text sx={{ fontSize: '16px', fontWeight: 'heading' }}>
+                Total Gains
+              </Text>
+              <Text
+                color={gainsTotal > 0 ? 'green' : 'red'}
+                sx={{ fontSize: '26px', fontWeight: 'bold' }}
+              >
+                {formatNumber(gainsTotal, {
+                  fromWei: true,
+                  prefix: 'ETHER',
+                  decimals: 2,
+                })}
+              </Text>
+            </Flex>
+
+            <Flex
+              sx={{
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                border: `1px solid #545454`,
+                borderRadius: '10px',
+                minHeight: '92px',
+                padding: '20px',
+              }}
+            >
+              <Text sx={{ fontSize: '16px', fontWeight: 'heading' }}>
+                Unrealized Gains
+              </Text>
+              <Text
+                color={Number(gainsUnrealized) > 0 ? 'green' : 'red'}
+                sx={{ fontSize: '26px', fontWeight: 'bold' }}
+              >
+                {formatNumber(gainsUnrealized, {
+                  fromWei: true,
+                  prefix: 'ETHER',
+                  decimals: 2,
+                })}
+              </Text>
+            </Flex>
+
+            <Flex
+              sx={{
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                border: `1px solid #545454`,
+                borderRadius: '10px',
+                minHeight: '92px',
+                padding: '20px',
+              }}
+            >
+              <Text sx={{ fontSize: '16px', fontWeight: 'heading' }}>
+                Realized Gains
+              </Text>
+              <Text
+                color={Number(gainsRealized) > 0 ? 'green' : 'red'}
+                sx={{ fontSize: '26px', fontWeight: 'bold' }}
+              >
+                {formatNumber(gainsRealized, {
+                  fromWei: true,
+                  prefix: 'ETHER',
+                  decimals: 2,
+                })}
+              </Text>
+            </Flex>
+          </Grid>
+        </Flex>
+
+        <Flex
+          sx={{
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Box
+            sx={{
+              position: 'relative',
+              width: ['200px', '200px', '100%'],
+              height: ['200px', '200px', 'auto'],
+              flexGrow: 1,
+            }}
+          >
+            <GmiArtwork {...{ gmi }} />
+          </Box>
+
+          <ShareButton onClick={onShowPreview}>
+            <Text
+              color="white"
+              sx={{
+                fontWeight: 'heading',
+                fontSize: '18px',
+              }}
+            >
+              Share
+            </Text>
+            <Icon color="white" icon="twitter" size={32} />
+          </ShareButton>
+        </Flex>
+      </Grid>
+    </Panel>
+  )
+}
+
 function GmiPreview({
   wallet,
   onBack,
@@ -83,6 +364,37 @@ function GmiPreview({
   wallet: string
   onBack: () => void
 }) {
+  const { loading, error, data } = useQuery<GetGmiData, GetGmiVars>(GET_GMI, {
+    errorPolicy: 'all',
+    fetchPolicy: 'no-cache',
+    variables: {
+      address: wallet.startsWith('0x') ? wallet : undefined,
+      ens: wallet.endsWith('.eth') ? wallet : undefined,
+    },
+    skip: !wallet,
+  })
+
+  if (error || (data && !data?.getUser?.addresses?.length)) {
+    return <GmiRenderError {...{ wallet }} />
+  }
+
+  if (loading || !data) {
+    return null
+  }
+
+  const userAddr = data?.getUser?.addresses?.[0]?.address
+  const userEns = data?.getUser?.addresses?.[0]?.ens
+  const displayName = userEns || (userAddr ? shortenAddress(userAddr) : '-')
+  const gmi = data?.getUser?.addresses?.[0]?.gmi ?? 0
+  const totalBlueChips = data?.getUser?.addresses?.[0]?.numBlueChipsOwned ?? 0
+  const firstPurchase = data?.getUser?.addresses?.[0]?.startAt
+  const tradeVolume = data?.getUser?.addresses?.[0]?.volume ?? '0'
+  const gainsRealized = data?.getUser?.addresses?.[0]?.realizedGain ?? '0'
+  const gainsUnrealized = data?.getUser?.addresses?.[0]?.unrealizedGain ?? '0'
+  const gainsTotal =
+    parseUint256(data?.getUser?.addresses?.[0]?.realizedGain ?? '0') +
+    parseUint256(data?.getUser?.addresses?.[0]?.unrealizedGain ?? '0')
+
   return (
     <Panel
       outlined
@@ -91,6 +403,7 @@ function GmiPreview({
         display: 'flex',
         flexDirection: 'column',
         gap: '16px !important',
+        minWidth: ['100%', '100%', '720px', '940px'],
       }}
     >
       <Flex
@@ -108,13 +421,20 @@ function GmiPreview({
       <Text color="grey-300" sx={{ lineHeight: 1 }}>
         Share your Upshot gmi card on Twitter! Flex your degen level.
       </Text>
-      <img
-        src={`https://stage.analytics.upshot.io/.netlify/functions/gmi?wallet=${encodeURIComponent(
-          wallet
-        )}&filetype=.png`}
-        alt="gmi Preview"
-        width="100%"
+
+      <GmiSocialCard
+        {...{
+          displayName,
+          gmi,
+          totalBlueChips,
+          firstPurchase,
+          tradeVolume,
+          gainsRealized,
+          gainsUnrealized,
+          gainsTotal,
+        }}
       />
+
       <Link
         component={NextLink}
         target="_blank"
@@ -320,8 +640,6 @@ function GmiCard({
   const LOAD_UPDATE_SECONDS = 0.25
   const [lastLoadingAt, setLastLoadingAt] = useState<number>()
   const [loadWait, setLoadWait] = useState(0)
-  const breakpointIndex = useBreakpointIndex()
-  const isMobile = breakpointIndex <= 1
   const router = useRouter()
 
   const { loading, error, data } = useQuery<GetGmiData, GetGmiVars>(GET_GMI, {
@@ -383,287 +701,31 @@ function GmiCard({
   const userEns = data?.getUser?.addresses?.[0]?.ens
   const displayName = userEns || (userAddr ? shortenAddress(userAddr) : '-')
   const gmi = data?.getUser?.addresses?.[0]?.gmi ?? 0
-  const blueChips = data?.getUser?.addresses?.[0]?.numBlueChipsOwned ?? 0
+  const totalBlueChips = data?.getUser?.addresses?.[0]?.numBlueChipsOwned ?? 0
   const firstPurchase = data?.getUser?.addresses?.[0]?.startAt
-    ? format(data.getUser.addresses[0].startAt * 1000, 'M/d/yyyy')
-    : '-'
-  const txVolume = data?.getUser?.addresses?.[0]?.volume
-    ? formatNumber(data.getUser.addresses[0].volume, {
-        fromWei: true,
-        prefix: 'ETHER',
-        decimals: 2,
-      })
-    : '-'
-  const isGainsRealizedProfit =
-    data?.getUser?.addresses?.[0]?.realizedGain &&
-    Number(data.getUser.addresses[0].realizedGain) > 0
-  const gainsRealized = data?.getUser?.addresses?.[0]?.realizedGain
-    ? formatNumber(data.getUser.addresses[0].realizedGain, {
-        fromWei: true,
-        prefix: 'ETHER',
-        decimals: 2,
-      })
-    : '-'
-
-  const isGainsUnrealizedProfit =
-    data?.getUser?.addresses?.[0]?.unrealizedGain &&
-    Number(data.getUser.addresses[0].unrealizedGain) > 0
-  const gainsUnrealized = data?.getUser?.addresses?.[0]?.unrealizedGain
-    ? formatNumber(data.getUser.addresses[0].unrealizedGain, {
-        fromWei: true,
-        prefix: 'ETHER',
-        decimals: 2,
-      })
-    : '-'
-
-  const isGainsTotalProfit =
-    parseUint256(data?.getUser?.addresses?.[0]?.realizedGain || '0') +
-      parseUint256(data?.getUser?.addresses?.[0]?.unrealizedGain || '0') >
-    0
-  const gainsTotal = formatNumber(
-    parseUint256(data?.getUser?.addresses?.[0]?.realizedGain || '0') +
-      parseUint256(data?.getUser?.addresses?.[0]?.unrealizedGain || '0'),
-    {
-      prefix: 'ETHER',
-      decimals: 2,
-    }
-  )
-
-  const rank = gmiLabel(gmi)
+  const tradeVolume = data?.getUser?.addresses?.[0]?.volume ?? '0'
+  const gainsRealized = data?.getUser?.addresses?.[0]?.realizedGain ?? '0'
+  const gainsUnrealized = data?.getUser?.addresses?.[0]?.unrealizedGain ?? '0'
+  const gainsTotal =
+    parseUint256(data?.getUser?.addresses?.[0]?.realizedGain ?? '0') +
+    parseUint256(data?.getUser?.addresses?.[0]?.unrealizedGain ?? '0')
 
   return (
-    <Panel outlined backgroundColor="grey-900">
-      <Flex sx={{ flexGrow: 1, width: '100%' }}>
-        {!isMobile && (
-          <Flex sx={{ flexGrow: 1, width: '100%' }}>
-            <Text sx={{ fontWeight: 'bold', fontSize: '18px' }}>
-              {displayName}
-            </Text>
-          </Flex>
-        )}
-
-        <Flex
-          sx={{
-            flexShrink: 0,
-            gap: 2,
-            width: ['100%', '100%', 'auto'],
-            justifyContent: ['center', 'center', 'auto'],
-          }}
-        >
-          <Text
-            color={isMobile ? 'white' : 'grey-500'}
-            sx={{ fontWeight: 'heading', fontSize: ['16px', '18px', '14px'] }}
-          >
-            {displayName}
-          </Text>
-          <Text
-            onClick={onReset}
-            color="blue"
-            sx={{
-              fontSize: '14px',
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
-              fontWeight: 'heading',
-              '&:hover': {
-                textDecoration: 'underline',
-              },
-            }}
-          >
-            Try another wallet?
-          </Text>
-        </Flex>
-      </Flex>
-
-      <Grid
-        sx={{
-          gridTemplateColumns: isMobile ? '1fr' : '3fr 1fr',
-          columnGap: '24px',
-        }}
-      >
-        <Flex sx={{ flexDirection: 'column', gap: 7 }}>
-          <Flex
-            sx={{
-              alignItems: 'baseline',
-              gap: 2,
-              flexDirection: ['column', 'row'],
-            }}
-          >
-            <GmiScore {...{ gmi }}>
-              <IconButton
-                onClick={onToggleFaq}
-                sx={{
-                  background: 'grey-800',
-                  width: '28px',
-                  height: '28px',
-                }}
-              >
-                <Icon icon="question" size={14} />
-              </IconButton>
-            </GmiScore>
-
-            <Flex sx={{ flexGrow: 1, justifyContent: 'flex-end' }}>
-              <Text sx={{ fontSize: 6, fontWeight: 'bold' }}>{rank}</Text>
-            </Flex>
-          </Flex>
-          <ProgressBar percent={(gmi / 1000) * 100} bgColor="grey-900" />
-          <Grid
-            sx={{
-              gridTemplateColumns: ['1fr', '1fr', '1fr 1fr 1fr'],
-              columnGap: '16px',
-              rowGap: '16px',
-            }}
-          >
-            <Flex
-              sx={{
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                border: `1px solid #545454`,
-                borderRadius: '10px',
-                minHeight: '92px',
-                padding: '20px',
-              }}
-            >
-              <Text sx={{ fontSize: '16px', fontWeight: 'heading' }}>
-                Blue Chips Owned
-              </Text>
-              <Text color="blue" sx={{ fontSize: '26px', fontWeight: 'bold' }}>
-                {blueChips}
-              </Text>
-            </Flex>
-
-            <Flex
-              sx={{
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                border: `1px solid #545454`,
-                borderRadius: '10px',
-                minHeight: '92px',
-                padding: '20px',
-              }}
-            >
-              <Text sx={{ fontSize: '16px', fontWeight: 'heading' }}>
-                First Purchase
-              </Text>
-              <Text color="blue" sx={{ fontSize: '26px', fontWeight: 'bold' }}>
-                {firstPurchase}
-              </Text>
-            </Flex>
-
-            <Flex
-              sx={{
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                border: `1px solid #545454`,
-                borderRadius: '10px',
-                minHeight: '92px',
-                padding: '20px',
-              }}
-            >
-              <Text sx={{ fontSize: '16px', fontWeight: 'heading' }}>
-                Trade Volume
-              </Text>
-              <Text color="blue" sx={{ fontSize: '26px', fontWeight: 'bold' }}>
-                {txVolume}
-              </Text>
-            </Flex>
-
-            <Flex
-              sx={{
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                border: `1px solid #545454`,
-                borderRadius: '10px',
-                minHeight: '92px',
-                padding: '20px',
-              }}
-            >
-              <Text sx={{ fontSize: '16px', fontWeight: 'heading' }}>
-                Total Gains
-              </Text>
-              <Text
-                color={isGainsTotalProfit ? 'green' : 'red'}
-                sx={{ fontSize: '26px', fontWeight: 'bold' }}
-              >
-                {gainsTotal}
-              </Text>
-            </Flex>
-
-            <Flex
-              sx={{
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                border: `1px solid #545454`,
-                borderRadius: '10px',
-                minHeight: '92px',
-                padding: '20px',
-              }}
-            >
-              <Text sx={{ fontSize: '16px', fontWeight: 'heading' }}>
-                Unrealized Gains
-              </Text>
-              <Text
-                color={isGainsUnrealizedProfit ? 'green' : 'red'}
-                sx={{ fontSize: '26px', fontWeight: 'bold' }}
-              >
-                {gainsUnrealized}
-              </Text>
-            </Flex>
-
-            <Flex
-              sx={{
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                border: `1px solid #545454`,
-                borderRadius: '10px',
-                minHeight: '92px',
-                padding: '20px',
-              }}
-            >
-              <Text sx={{ fontSize: '16px', fontWeight: 'heading' }}>
-                Realized Gains
-              </Text>
-              <Text
-                color={isGainsRealizedProfit ? 'green' : 'red'}
-                sx={{ fontSize: '26px', fontWeight: 'bold' }}
-              >
-                {gainsRealized}
-              </Text>
-            </Flex>
-          </Grid>
-        </Flex>
-
-        <Flex
-          sx={{
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Box
-            sx={{
-              position: 'relative',
-              width: ['200px', '200px', '100%'],
-              height: ['200px', '200px', 'auto'],
-              flexGrow: 1,
-            }}
-          >
-            <GmiArtwork {...{ gmi }} />
-          </Box>
-
-          <ShareButton onClick={onShowPreview}>
-            <Text
-              color="white"
-              sx={{
-                fontWeight: 'heading',
-                fontSize: '18px',
-              }}
-            >
-              Share
-            </Text>
-            <Icon color="white" icon="twitter" size={32} />
-          </ShareButton>
-        </Flex>
-      </Grid>
-    </Panel>
+    <GmiPanel
+      {...{
+        displayName,
+        gmi,
+        totalBlueChips,
+        firstPurchase,
+        tradeVolume,
+        gainsRealized,
+        gainsUnrealized,
+        gainsTotal,
+        onReset,
+        onToggleFaq,
+        onShowPreview,
+      }}
+    />
   )
 }
 
