@@ -655,11 +655,6 @@ export default function UserView() {
   useEffect(() => {
     if (!collectionOffset) return
 
-    console.log({
-      offset:
-        dataAllOwnedCollections?.getAllOwnedCollectionsWrapper?.nextOffset,
-    })
-
     fetchMoreAllOwnedCollections({
       variables: {
         offset:
