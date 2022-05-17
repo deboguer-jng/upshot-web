@@ -28,6 +28,7 @@ import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { setIsBeta } from 'redux/reducers/user'
 import {
   selectAddress,
+  selectEns,
   setActivatingConnector,
   setAddress,
   setEns,
@@ -373,6 +374,19 @@ function GmiPreview({
   wallet: string
   onTogglePreview: () => void
 }) {
+  const address = useAppSelector(selectAddress)
+  const connectedEns = useAppSelector(selectEns)
+  const [userOwnedWallet, setUserOwnedWallet] = useState(false)
+
+  useEffect(() => {
+    if (wallet.startsWith('0x')) {
+      setUserOwnedWallet(address == wallet)
+    }
+    if (wallet.endsWith('.eth')) {
+      setUserOwnedWallet(connectedEns == wallet)
+    }
+  }, [address, connectedEns])
+
   const { loading, error, data } = useQuery<GetGmiData, GetGmiVars>(GET_GMI, {
     errorPolicy: 'all',
     fetchPolicy: 'no-cache',
@@ -428,7 +442,7 @@ function GmiPreview({
         </IconButton>
       </Flex>
       <Text color="grey-300" sx={{ lineHeight: 1 }}>
-        Share your Upshot gmi card on Twitter! Flex your degen level.
+        Share {userOwnedWallet ? 'your' : `${displayName}'s`} Upshot gmi on Twitter! {userOwnedWallet && 'Flex your degen level.'}
       </Text>
 
       <Panel backgroundColor="black" sx={{ padding: '0 !important' }}>
@@ -451,7 +465,7 @@ function GmiPreview({
         target="_blank"
         rel="noopener noreferrer nofollow"
         href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
-          `View my Upshot gmi:\nhttps://upshot.xyz/gmi/${wallet}`
+          `Check out ${userOwnedWallet ? 'my' : `${displayName}'s`} Upshot gmi:\nhttps://upshot.xyz/gmi/${wallet}`
         )}`}
         sx={{ width: '100%', textDecoration: 'none !important' }}
       >
