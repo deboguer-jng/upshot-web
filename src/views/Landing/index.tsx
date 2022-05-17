@@ -324,7 +324,7 @@ export default function LandingView() {
                       variant="large"
                       sx={{ display: 'block', whiteSpace: 'normal' }}
                     >
-                      View and share your gmi.
+                       A new grading index for NFT wallets.
                     </Text>
                   </div>
                 </Panel>
