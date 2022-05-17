@@ -176,7 +176,7 @@ function GmiPanel({
             </IconButton>
           </GmiScore>
 
-          <Text sx={{ fontSize: 6, fontWeight: 'bold' }}>{rank}</Text>
+          <Text sx={{ fontSize: 5, fontWeight: 'bold' }}>{rank}</Text>
         </Flex>
       </Grid>
 
