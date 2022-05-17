@@ -68,7 +68,10 @@ export default function Metadata() {
   const [subtitle, setSubtitle] = useState<string>()
   const [image, setImage] = useState<string>()
 
-  const parts = useMemo(() => router.asPath.slice(1).split('/'), [])
+  const parts = useMemo(
+    () => router.asPath.slice(1).split('/'),
+    [router.asPath]
+  )
 
   const [getMetaAsset] = useLazyQuery<GetMetaAssetData, GetMetaAssetVars>(
     GET_META_ASSET,
