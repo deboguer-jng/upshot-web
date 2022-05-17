@@ -69,7 +69,7 @@ export default function Metadata() {
   const [image, setImage] = useState<string>()
 
   const parts = useMemo(
-    () => router.asPath.slice(1).split('/'),
+    () => (router.asPath || '/').slice(1).split('/'),
     [router.asPath]
   )
 
@@ -125,7 +125,7 @@ export default function Metadata() {
   }, [getMetaAsset, getMetaCollection, getMetaCollector, parts])
 
   // Synchronous metadata
-  if (parts[0] === 'gmi') {
+  if (parts[0] === 'gmi' && parts[1]) {
     const wallet = parts[1].split('?')[0]
 
     return (
