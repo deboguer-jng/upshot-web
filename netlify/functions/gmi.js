@@ -17,12 +17,16 @@ exports.handler = async ({ queryStringParameters: qs }) => {
 
   const browser = await puppeteer.launch({
     args: chromium.args,
-    defaultViewport: { width: config.width, height: config.height },
     executablePath: await chromium.executablePath,
     headless: chromium.headless,
   })
 
   const page = await browser.newPage()
+  await page.setViewport({
+    width: config.width,
+    height: config.height,
+    deviceScaleFactor: 2,
+  })
 
   try {
     const url = config.baseUrl + qs.wallet
