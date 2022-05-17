@@ -1,3 +1,4 @@
+import styled from '@emotion/styled'
 import {
   Box,
   Button,
@@ -7,7 +8,6 @@ import {
   Icon,
   IconButton,
   Investors,
-  LandingPanel,
   Link,
   Panel,
   Text,
@@ -27,13 +27,22 @@ import GmiSvg from './panelBackgrounds/Gmi.svg'
 import GmiHoverSvg from './panelBackgrounds/GmiHover.svg'
 import UpshotArtworkSVG from './panelBackgrounds/UpshotArtwork.svg'
 
-type PanelData = {
-  projectType: string
-  title: string
-  description: string
-  image?: any
-  url: string
-}
+const BlogButton = styled(Button)`
+  border-radius: 8px;
+  height: 32px;
+  padding: 8px 12px;
+  background: ${({ theme }) => theme.colors.pink};
+  box-shadow: ${({ theme }) => `${theme.rawColors['pink']} 0px 0px 0px 1.8px`};
+
+  &:not(:disabled):not(:focus):hover {
+    box-shadow: ${({ theme }) =>
+      `${theme.rawColors['pink']} 0px 0px 0px 1.8px`};
+
+    & span {
+      color: ${({ theme }) => theme.colors.pink};
+    }
+  }
+`
 
 export default function LandingView() {
   const images = {
@@ -155,16 +164,7 @@ export default function LandingView() {
                     component={NextLink}
                     noHover
                   >
-                    <Button
-                      capitalize={true}
-                      style={{
-                        borderRadius: '8px',
-                        height: '32px',
-                        padding: '8px 12px',
-                      }}
-                    >
-                      Read our blog
-                    </Button>
+                    <BlogButton capitalize>Read our blog</BlogButton>
                   </Link>
                 </Box>
 
@@ -270,7 +270,7 @@ export default function LandingView() {
           </Link>
           <Box>
             <Grid gap={5} columns={[1, 1, 2, 2]}>
-            <Link
+              <Link
                 href="/gmi"
                 rel="noopener noreferrer"
                 sx={{
