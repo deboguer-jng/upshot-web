@@ -20,7 +20,6 @@ import { useWeb3React } from '@web3-react/core'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { ConnectorName, connectorsByName } from 'constants/connectors'
 import { format } from 'date-fns'
-import Head from 'next/head'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useRef, useState } from 'react'
@@ -762,30 +761,6 @@ export default function GmiView() {
 
   return (
     <>
-      <Head>
-        <title>gmi | Upshot Analytics</title>
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@UpshotHQ" />
-        <meta
-          name="twitter:title"
-          content={
-            router.query['wallet']
-              ? `${router.query['wallet']} | Upshot gmi`
-              : 'Upshot gmi'
-          }
-        />
-        <meta
-          name="twitter:description"
-          content="Search any wallet to see the Upshot gmi."
-        />
-        {!!router.query['wallet'] && (
-          <meta
-            name="twitter:image"
-            content={`https://stage.analytics.upshot.io/.netlify/functions/gmi?wallet=${router.query['wallet']}&filetype=.png`}
-          />
-        )}
-        <meta property="og:type" content="website" />
-      </Head>
       <Box
         sx={{
           position: 'fixed',

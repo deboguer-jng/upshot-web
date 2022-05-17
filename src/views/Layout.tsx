@@ -18,9 +18,16 @@ import {
   setEns,
 } from 'redux/reducers/web3'
 
+import Meta from '../components/Meta'
 import { LOG_EVENT, LogEventData, LogEventVars } from '../graphql/mutations'
 import { logEvent } from '../utils/googleAnalytics'
 import WaitList from '../views/WaitList'
+
+function Metadata() {
+  const router = useRouter()
+
+  return <Meta />
+}
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [ready, setReady] = useState(false)
@@ -146,6 +153,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <>
+      <Metadata />
       {router.route === '/' ||
       router.route.startsWith('/gmi') ||
       router.route.startsWith('/share') ||
