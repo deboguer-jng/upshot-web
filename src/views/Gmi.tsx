@@ -109,7 +109,11 @@ function GmiPanel({
   const rank = gmiLabel(gmi)
 
   return (
-    <Panel outlined backgroundColor="grey-900" sx={{ width: '100%' }}>
+    <Panel
+      outlined
+      backgroundColor="grey-900"
+      sx={{ width: ['100%', '100%', 'auto'] }}
+    >
       <Flex sx={{ flexGrow: 1, width: '100%' }}>
         {!isMobile && (
           <Flex sx={{ flexGrow: 1, width: '100%' }}>
