@@ -2,8 +2,8 @@ const chromium = require('chrome-aws-lambda')
 const puppeteer = require('puppeteer-core')
 
 const config = {
-  width: 1280,
-  height: 640,
+  width: 1200,
+  height: 600,
   port: 3001,
   baseUrl: 'https://stage.analytics.upshot.io/share/gmi/',
 }

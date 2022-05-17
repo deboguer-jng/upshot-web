@@ -35,7 +35,7 @@ function GmiRow({ label, isEth, value = '', color = 'grey-500' }: GmiRowProps) {
     <Flex sx={{ alignItems: 'baseline' }}>
       <Text
         color="grey-300"
-        sx={{ fontSize: 4, fontWeight: 'heading', lineHeight: 1 }}
+        sx={{ fontSize: 5, fontWeight: 'heading', lineHeight: 1 }}
       >
         {label}
       </Text>
@@ -134,7 +134,7 @@ export function GmiSocialCard({
         width: '100%',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        padding: 40,
+        padding: 60,
         gap: 8,
         overflow: 'hidden',
       }}
@@ -156,7 +156,7 @@ export function GmiSocialCard({
         <Grid
           sx={{ gridTemplateColumns: ['1fr', '1fr', '1.5fr 1fr'], flexGrow: 1 }}
         >
-          <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+          <Flex sx={{ flexDirection: 'column', gap: 4 }}>
             <Flex sx={{ flexDirection: 'column', gap: 4, marginBottom: 4 }}>
               <ProgressBar percent={(gmi / 1000) * 100} bgColor="grey-900" />
             </Flex>
