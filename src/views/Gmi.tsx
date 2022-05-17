@@ -522,7 +522,7 @@ export function GmiScore({
           lineHeight: '54px',
         }}
       >
-        {gmi ? Math.round(gmi) : '-'}
+        {gmi ? Math.floor(gmi) : '-'}
       </Text>
       <Text
         color="grey-500"
