@@ -976,7 +976,7 @@ export default function NFTView() {
                   return (
                     <Link
                       key={key}
-                      href={'/analytics/nft/' + id}
+                      href={'/analytics/nft/' + asset.similarAsset.id}
                       component={NextLink}
                       noHover
                     >
@@ -1017,7 +1017,8 @@ export default function NFTView() {
                               )
                             : null
                         }
-                        link={`/analytics/collection/${id}`}
+                        linkComponent={NextLink}
+                        link={`https://opensea.io/assets/${asset.similarAsset.id}`}
                       />
                     </Link>
                   )
