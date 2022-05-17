@@ -270,6 +270,65 @@ export default function LandingView() {
           </Link>
           <Box>
             <Grid gap={5} columns={[1, 1, 2, 2]}>
+            <Link
+                href="/gmi"
+                rel="noopener noreferrer"
+                sx={{
+                  color: theme.colors.text + ' !important',
+                  display: 'grid',
+                }}
+                component={NextLink}
+                noHover
+              >
+                <Panel
+                  hoverUnderglow="red"
+                  hoverBorder="red"
+                  sx={{
+                    height: ['225px', null, null, '250px'],
+                    position: 'relative',
+                    padding: '22px !important',
+                    paddingRight: '88px !important',
+                    paddingTop: '10px !important',
+                    backgroundColor: theme.colors['grey-900'] + ' !important',
+                    '&:hover img': {
+                      opacity: '1',
+                    },
+                    '&:hover span:first-of-type': {
+                      color: theme.colors.red,
+                    },
+                    '&:hover': {
+                      backgroundColor: theme.colors.black + ' !important',
+                    },
+                  }}
+                  onMouseEnter={() => setGmiImage(images.gmi.hover.src)}
+                  onMouseLeave={() => setGmiImage(images.gmi.original.src)}
+                >
+                  <Image
+                    src={gmiImage}
+                    sx={{
+                      opacity: '0.7',
+                      position: 'absolute',
+                      bottom: '2%',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      margin: 'auto',
+                      width: 'auto',
+                      height: '60%',
+                      objectFit: 'cover',
+                    }}
+                    alt="gmi"
+                  ></Image>
+                  <div style={{ position: 'relative' }}>
+                    <Text variant="h1Secondary">gmi</Text>
+                    <Text
+                      variant="large"
+                      sx={{ display: 'block', whiteSpace: 'normal' }}
+                    >
+                      View and share your gmi.
+                    </Text>
+                  </div>
+                </Panel>
+              </Link>
               <Link
                 href="https://docs.upshot.xyz/"
                 rel="noopener noreferrer"
@@ -326,65 +385,6 @@ export default function LandingView() {
                       sx={{ display: 'block', whiteSpace: 'normal' }}
                     >
                       Integrate Upshot data into your project.
-                    </Text>
-                  </div>
-                </Panel>
-              </Link>
-              <Link
-                href="/gmi"
-                rel="noopener noreferrer"
-                sx={{
-                  color: theme.colors.text + ' !important',
-                  display: 'grid',
-                }}
-                component={NextLink}
-                noHover
-              >
-                <Panel
-                  hoverUnderglow="red"
-                  hoverBorder="red"
-                  sx={{
-                    height: ['225px', null, null, '250px'],
-                    position: 'relative',
-                    padding: '22px !important',
-                    paddingRight: '88px !important',
-                    paddingTop: '10px !important',
-                    backgroundColor: theme.colors['grey-900'] + ' !important',
-                    '&:hover img': {
-                      opacity: '1',
-                    },
-                    '&:hover span:first-of-type': {
-                      color: theme.colors.red,
-                    },
-                    '&:hover': {
-                      backgroundColor: theme.colors.black + ' !important',
-                    },
-                  }}
-                  onMouseEnter={() => setGmiImage(images.gmi.hover.src)}
-                  onMouseLeave={() => setGmiImage(images.gmi.original.src)}
-                >
-                  <Image
-                    src={gmiImage}
-                    sx={{
-                      opacity: '0.7',
-                      position: 'absolute',
-                      bottom: '2%',
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      margin: 'auto',
-                      width: 'auto',
-                      height: '60%',
-                      objectFit: 'cover',
-                    }}
-                    alt="gmi"
-                  ></Image>
-                  <div style={{ position: 'relative' }}>
-                    <Text variant="h1Secondary">gmi</Text>
-                    <Text
-                      variant="large"
-                      sx={{ display: 'block', whiteSpace: 'normal' }}
-                    >
-                      View and share your gmi.
                     </Text>
                   </div>
                 </Panel>
