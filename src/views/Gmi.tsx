@@ -580,7 +580,14 @@ export function GmiArtwork({ gmi = 0 }: { gmi?: number }) {
   const gmiIdx = gmiIndex(gmi)
 
   return (
-    <Box sx={{ transform: 'scale(1.5)', width: '100%', height: '100%' }}>
+    <Box
+      sx={{
+        transform: 'scale(1.5)',
+        width: '100%',
+        height: '100%',
+        pointerEvents: 'none',
+      }}
+    >
       <GmiArtworkLayer layer="planet" {...{ gmiIdx }} />
       {gmiIdx > 1 && <GmiArtworkLayer layer="stars" {...{ gmiIdx }} />}
       {gmiIdx > 2 && <GmiArtworkLayer layer="moon_1" {...{ gmiIdx }} />}
