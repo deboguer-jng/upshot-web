@@ -5,7 +5,6 @@ import { Container } from '@upshot-tech/upshot-ui'
 import { Avatar, Flex, Grid, Panel, Text } from '@upshot-tech/upshot-ui'
 import {
   Box,
-  Checkbox,
   CollectionCard,
   CollectionCardExpanded,
   CollectionRow,
@@ -34,7 +33,6 @@ import { format } from 'date-fns'
 import makeBlockie from 'ethereum-blockies-base64'
 import { ethers } from 'ethers'
 import { Masonry, useInfiniteLoader } from 'masonic'
-import Head from 'next/head'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { transparentize } from 'polished'
@@ -172,9 +170,6 @@ function Layout({
 
   return (
     <>
-      <Head>
-        <title>{title ? title + ' | ' : ''}Upshot Analytics</title>
-      </Head>
       <Nav />
       <Container
         maxBreakpoint="lg"
