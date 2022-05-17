@@ -8,7 +8,6 @@ import { UpshotThemeProvider } from '@upshot-tech/upshot-ui'
 import { Web3ReactProvider } from '@web3-react/core'
 import { providers } from 'ethers'
 import type { AppProps } from 'next/app'
-import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { ReactNode, useEffect } from 'react'
 import { Provider, useDispatch, useSelector } from 'react-redux'
@@ -106,21 +105,18 @@ function Metadata() {
       switch (parts[1]) {
         case 'collection': {
           const collectionId = parts[2]
-          console.log({ collectionId })
-          break
+          return <Meta subtitle={collectionId} />
         }
         case 'nft': {
           const assetId = parts[2]
-          console.log({ assetId })
-          break
+          return <Meta subtitle={assetId} />
         }
         case 'search':
           return <Meta subtitle="Search" />
 
         case 'user': {
           const wallet = parts[2]
-          console.log({ wallet })
-          break
+          return <Meta subtitle={wallet} />
         }
       }
       break

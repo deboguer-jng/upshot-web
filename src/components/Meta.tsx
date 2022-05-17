@@ -19,7 +19,7 @@ export default function Meta({
     <Head>
       <title>
         {subtitle}
-        {!!subtitle && ' | '}
+        {!!subtitle ? ' | ' : null}
         {title}
       </title>
       <meta name="description" content={description} />
