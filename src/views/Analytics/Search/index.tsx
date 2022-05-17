@@ -135,10 +135,10 @@ export default function SearchView() {
     /* it maps 0, 1 -> 0
     2, 3 -> 1
     4, 5 -> 2 */
-    const columnIndex = Math.floor(index/2)
+    const columnIndex = Math.floor(index / 2)
     setSelectedNFTColumn(columnIndex)
 
-    setSortNFTsAscending(index % 2 === 0)  // index is even make it ascending
+    setSortNFTsAscending(index % 2 === 0) // index is even make it ascending
   }
 
   const getDropdownValue = () => {
@@ -377,7 +377,7 @@ export default function SearchView() {
                     <Text
                       variant="h3Primary"
                       color="grey-600"
-                      sx={{ display: 'inline-block', mr: 10}}
+                      sx={{ display: 'inline-block', mr: 10 }}
                     >
                       NFTs
                     </Text>
@@ -388,7 +388,7 @@ export default function SearchView() {
                         alignItems: 'center',
                         justifyContent: 'center',
                         gap: 1,
-                        mr: 10
+                        mr: 10,
                       }}
                     >
                       <Text
@@ -398,14 +398,14 @@ export default function SearchView() {
                       >
                         View as
                       </Text>
-                      <IconButton onClick={() => toggleListView(false)} >
+                      <IconButton onClick={() => toggleListView(false)}>
                         <Icon
                           color={listView ? 'grey-700' : 'grey-300'}
                           icon={'gridViewV2'}
                           size={32}
                         />
                       </IconButton>
-                      <IconButton onClick={() => toggleListView(true)} >
+                      <IconButton onClick={() => toggleListView(true)}>
                         <Icon
                           color={listView ? 'grey-300' : 'grey-700'}
                           icon={'listViewV2'}
@@ -413,21 +413,22 @@ export default function SearchView() {
                         />
                       </IconButton>
                     </Box>
-                      { (!listView || isMobile) && (
-                        <ButtonDropdown
-                          hideRadio
-                          label="Sort by"
-                          name="sortBy"
-                          onChange={(val) => handleChangeNFTColumnSortRadio(val)}
-                          options={sortOptions}
-                          value={getDropdownValue()}
-                          closeOnSelect={true}
-                          style={{
-                            display: 'inline-block', 
-                            marginLeft: '-12px',
-                            marginTop: isMobile ? '10px' : ''}}
-                        />
-                        )}
+                    {(!listView || isMobile) && (
+                      <ButtonDropdown
+                        hideRadio
+                        label="Sort by"
+                        name="sortBy"
+                        onChange={(val) => handleChangeNFTColumnSortRadio(val)}
+                        options={sortOptions}
+                        value={getDropdownValue()}
+                        closeOnSelect={true}
+                        style={{
+                          display: 'inline-block',
+                          marginLeft: '-12px',
+                          marginTop: isMobile ? '10px' : '',
+                        }}
+                      />
+                    )}
                   </Box>
                 )}
                 {!collectionId && ready && (
@@ -507,17 +508,25 @@ export default function SearchView() {
                               >
                                 <MiniNftCard
                                   linkComponent={NextLink}
-                                  price={
-                                    formatNumber(latestAppraisal?.estimatedPrice ?? listPrice ?? lastSale?.ethSalePrice ?? '', {
+                                  price={formatNumber(
+                                    latestAppraisal?.estimatedPrice ??
+                                      listPrice ??
+                                      lastSale?.ethSalePrice ??
+                                      '',
+                                    {
                                       fromWei: true,
                                       decimals: 2,
                                       prefix: 'ETHER',
-                                    })
-                                  }
+                                    }
+                                  )}
                                   priceType={
-                                    latestAppraisal?.estimatedPrice ? 'appraisal' : 
-                                      listPrice ? 'listed' :
-                                        lastSale?.ethSalePrice ? 'last-sold' : ''
+                                    latestAppraisal?.estimatedPrice
+                                      ? 'appraisal'
+                                      : listPrice
+                                      ? 'listed'
+                                      : lastSale?.ethSalePrice
+                                      ? 'last-sold'
+                                      : undefined
                                   }
                                   rarity={
                                     rarity
