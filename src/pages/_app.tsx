@@ -6,6 +6,7 @@ import Bugsnag from '@bugsnag/js'
 import BugsnagPluginReact from '@bugsnag/plugin-react'
 import { UpshotThemeProvider } from '@upshot-tech/upshot-ui'
 import { Web3ReactProvider } from '@web3-react/core'
+import Metadata from 'components/Meta'
 import { providers } from 'ethers'
 import type { AppProps } from 'next/app'
 import { useRouter } from 'next/router'
@@ -18,8 +19,6 @@ import { Alert } from 'theme-ui'
 import client from 'utils/apolloClient'
 import { initGA } from 'utils/googleAnalytics'
 import Layout from 'views/Layout'
-
-import Meta from '../components/Meta'
 
 /**
  * Instantiate an Ethers web3 provider library.
@@ -94,56 +93,6 @@ const AlertWrapper = ({ children }: { children: ReactNode }) => {
   )
 }
 
-function Metadata() {
-  const parts =
-    typeof window === 'undefined'
-      ? []
-      : window.location.pathname.slice(1).split('/')
-
-  switch (parts[0]) {
-    case 'analytics': {
-      switch (parts[1]) {
-        case 'collection': {
-          const collectionId = parts[2]
-          return <Meta subtitle={collectionId} />
-        }
-        case 'nft': {
-          const assetId = parts[2]
-          return <Meta subtitle={assetId} />
-        }
-        case 'search':
-          return <Meta subtitle="Search" />
-
-        case 'user': {
-          const wallet = parts[2]
-          return <Meta subtitle={wallet} />
-        }
-      }
-      break
-    }
-    case 'faq':
-      return <Meta subtitle="FAQ" />
-
-    case 'gmi': {
-      const wallet = parts[1].split('?')[0]
-
-      return (
-        <Meta
-          subtitle="gmi score"
-          image={`https://stage.analytics.upshot.io/.netlify/functions/gmi?wallet=${encodeURIComponent(
-            wallet
-          )}&filetype=.png`}
-        />
-      )
-      break
-    }
-    case 'waitlist':
-      return <Meta subtitle="Waitlist" />
-  }
-
-  return <Meta />
-}
-
 export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     /* Initialize telemetry on enabled release stages. */
@@ -161,13 +110,14 @@ export default function App({ Component, pageProps }: AppProps) {
       })
     }
   }, [])
+  const router = useRouter()
 
   return (
     <>
-      <Metadata />
-
       <UpshotThemeProvider>
         <ApolloProvider {...{ client }}>
+          <Metadata key={router.asPath} />
+
           <Web3ReactProvider {...{ getLibrary }}>
             <Provider store={store}>
               <PersistGate {...{ persistor }}>

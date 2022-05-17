@@ -94,3 +94,80 @@ export const GET_GMI = gql`
     }
   }
 `
+
+/**
+ * Get collection metadata
+ * @see Meta
+ */
+export type GetMetaCollectionVars = {
+  id: number
+}
+
+export type GetMetaCollectionData = {
+  collectionById: {
+    name?: string
+    imageUrl?: string
+  }
+}
+
+export const GET_META_COLLECTION = gql`
+  query GetMetaCollection($id: Int!) {
+    collectionById(id: $id) {
+      name
+      imageUrl
+    }
+  }
+`
+
+/**
+ * Get asset metadata
+ * @see Meta
+ */
+export type GetMetaAssetVars = {
+  id: string
+}
+
+export type GetMetaAssetData = {
+  assetById: {
+    name?: string
+    previewImageUrl?: string
+  }
+}
+
+export const GET_META_ASSET = gql`
+  query GetMetaAsset($id: String!) {
+    assetById(id: $id) {
+      name
+      previewImageUrl
+    }
+  }
+`
+
+/**
+ * Get collector metadata
+ * @see Meta
+ */
+export type GetMetaCollectorVars = {
+  address?: string
+  ens?: string
+}
+
+export type GetMetaCollectorData = {
+  getUser: {
+    addresses: {
+      address: string
+      ens: string
+    }[]
+  }
+}
+
+export const GET_META_COLLECTOR = gql`
+  query GetMetaCollector($address: String, $ens: String) {
+    getUser(address: $address, ens: $ens) {
+      addresses {
+        address
+        ens
+      }
+    }
+  }
+`
