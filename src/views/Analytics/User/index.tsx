@@ -52,17 +52,20 @@ import { setAlertState } from 'redux/reducers/layout'
 import { selectAddress, selectEns } from 'redux/reducers/web3'
 import { Label as LabelUI } from 'theme-ui'
 import { extractEns, shortenAddress } from 'utils/address'
-import { formatDistance } from 'utils/time'
 import { gmiLabel } from 'utils/gmi'
+import { formatDistance } from 'utils/time'
 
 import Breadcrumbs from '../components/Breadcrumbs'
 import {
+  GET_ALL_OWNED_COLLECTIONS_WRAPPER,
   GET_COLLECTION_ASSETS,
   GET_COLLECTOR,
   GET_COLLECTOR_TX_HISTORY,
   GET_UNSUPPORTED_AGGREGATE_COLLECTION_STATS,
   GET_UNSUPPORTED_ASSETS,
   GET_UNSUPPORTED_FLOORS,
+  GetAllOwnedCollectionsWrapperData,
+  GetAllOwnedCollectionsWrapperVars,
   GetCollectionAssetsData,
   GetCollectionAssetsVars,
   GetCollectorData,
@@ -75,9 +78,6 @@ import {
   GetUnsupportedAssetsVars,
   GetUnsupportedFloorsData,
   GetUnsupportedFloorsVars,
-  GetAllOwnedCollectionsWrapperData,
-  GetAllOwnedCollectionsWrapperVars,
-  GET_ALL_OWNED_COLLECTIONS_WRAPPER,
 } from './queries'
 
 type Collection = {
@@ -1073,17 +1073,17 @@ export default function UserView() {
   }
 
   const getGmiNum = () => {
-    const gmi =  data?.getUser?.addresses[0]?.gmi;
+    const gmi = data?.getUser?.addresses[0]?.gmi
 
-    if (gmi) return `${Math.round(gmi)} /1000 gmi`
+    if (gmi) return `${Math.floor(gmi)} /1000 gmi`
     else return '-'
   }
 
   const getGmiLabel = () => {
     const gmi = data?.getUser?.addresses[0]?.gmi
 
-    if (gmi) return gmiLabel(gmi);
-    else '';
+    if (gmi) return gmiLabel(gmi)
+    else ''
   }
 
   return (
