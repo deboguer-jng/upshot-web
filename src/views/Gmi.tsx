@@ -23,7 +23,9 @@ import { format } from 'date-fns'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useRef, useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
+import { setAlertState } from 'redux/reducers/layout'
 import { setIsBeta } from 'redux/reducers/user'
 import {
   selectAddress,
@@ -376,6 +378,7 @@ function GmiPreview({
   const address = useAppSelector(selectAddress)
   const connectedEns = useAppSelector(selectEns)
   const [userOwnedWallet, setUserOwnedWallet] = useState(false)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     if (wallet.startsWith('0x')) {
@@ -416,6 +419,20 @@ function GmiPreview({
   const gainsTotal =
     parseUint256(data?.getUser?.addresses?.[0]?.realizedGain ?? '0') +
     parseUint256(data?.getUser?.addresses?.[0]?.unrealizedGain ?? '0')
+
+  const handleCopyGmiLink = () => {
+    const gmiLink = `https://stage.analytics.upshot.io/.netlify/functions/gmi?wallet=${encodeURIComponent(
+      wallet
+    )}&lastUpdated=${Date.now()}&filetype=.png`
+
+    navigator.clipboard.writeText(gmiLink)
+    dispatch(
+      setAlertState({
+        showAlert: true,
+        alertText: 'Link copied to clipboard!',
+      })
+    )
+  }
 
   return (
     <Panel
@@ -483,6 +500,10 @@ function GmiPreview({
           </Text>
           <Icon color="white" icon="twitter" size={32} />
         </ShareButton>
+      </Link>
+
+      <Link sx={{ textAlign: 'center' }} onClick={handleCopyGmiLink}>
+        Copy to clipboard
       </Link>
     </Panel>
   )
