@@ -12,6 +12,7 @@ import { GmiArtwork, GmiScore } from './Gmi'
 
 interface GmiRowProps {
   label: string
+  isEth?: boolean
   value?: string | number
   color?: string
 }
@@ -27,15 +28,14 @@ export interface GmiSocialCardProps {
   gainsTotal: number
 }
 
-function GmiRow({ label, value = '', color = 'grey-500' }: GmiRowProps) {
+function GmiRow({ label, isEth, value = '', color = 'grey-500' }: GmiRowProps) {
   const { theme } = useTheme()
 
   return (
     <Flex sx={{ alignItems: 'baseline' }}>
       <Text
         color="grey-300"
-        variant="h3Primary"
-        sx={{ fontWeight: 'heading', lineHeight: 1 }}
+        sx={{ fontSize: 4, fontWeight: 'heading', lineHeight: 1 }}
       >
         {label}
       </Text>
@@ -51,6 +51,7 @@ function GmiRow({ label, value = '', color = 'grey-500' }: GmiRowProps) {
         variant="h3Primary"
         sx={{ fontWeight: 'bold', lineHeight: 1 }}
       >
+        {!!isEth && <Text sx={{ fontWeight: '400 !important' }}>Ξ</Text>}
         {value}
       </Text>
     </Flex>
@@ -136,82 +137,90 @@ export function GmiSocialCard({
         gap: 8,
       }}
     >
-      <Grid
-        sx={{ gridTemplateColumns: ['1fr', '1fr', '1fr 1fr'], flexGrow: 1 }}
-      >
-        <Flex sx={{ flexDirection: 'column', gap: 6 }}>
-          <Text variant="h1Primary" sx={{ fontSize: 8 }}>
+      <Flex sx={{ flexDirection: 'column' }}>
+        <Flex sx={{ justifyContent: 'space-between' }}>
+          <Text variant="h1Primary" sx={{ fontSize: 7 }}>
             {rank}
           </Text>
-          <Flex sx={{ flexDirection: 'column', gap: 4, marginBottom: 4 }}>
-            <GmiScore {...{ gmi }} />
-            <ProgressBar percent={(gmi / 1000) * 100} bgColor="grey-900" />
-          </Flex>
-          <GmiRow
-            label="Blue Chips Owned"
-            color="blue"
-            value={totalBlueChips}
-          />
-          <GmiRow
-            label="First Purchase"
-            color="blue"
-            value={
-              firstPurchase ? format(firstPurchase * 1000, 'M/d/yyyy') : '-'
-            }
-          />
-          <GmiRow
-            label="Trade Volume"
-            color="blue"
-            value={formatNumber(tradeVolume, {
-              fromWei: true,
-              prefix: 'ETHER',
-              decimals: 2,
-            })}
-          />
-          <GmiRow
-            label="Total Gains"
-            color={gainsTotal > 0 ? 'green' : 'red'}
-            value={formatNumber(gainsTotal, {
-              prefix: 'ETHER',
-              decimals: 2,
-            })}
-          />
-          <GmiRow
-            label="Unrealized Gains"
-            color={Number(gainsUnrealized) > 0 ? 'green' : 'red'}
-            value={formatNumber(gainsUnrealized, {
-              fromWei: true,
-              prefix: 'ETHER',
-              decimals: 2,
-            })}
-          />
-          <GmiRow
-            label="Realized Gains"
-            color={Number(gainsRealized) > 0 ? 'green' : 'red'}
-            value={formatNumber(gainsRealized, {
-              fromWei: true,
-              prefix: 'ETHER',
-              decimals: 2,
-            })}
-          />
-        </Flex>
-        <Flex sx={{ flexDirection: 'column' }}>
           <Text color="grey-500" sx={{ fontSize: 3, textAlign: 'right' }}>
             {displayName}
           </Text>
-          <Box
-            sx={{
-              position: 'relative',
-              width: '100%',
-
-              height: 'auto',
-              flexGrow: 1,
-            }}
-          >
-            <GmiArtwork {...{ gmi }} />
-          </Box>
         </Flex>
-      </Grid>
+
+        <Flex sx={{ marginBottom: 2 }}>
+          <GmiScore {...{ gmi }} />
+        </Flex>
+
+        <Grid
+          sx={{ gridTemplateColumns: ['1fr', '1fr', '1.5fr 1fr'], flexGrow: 1 }}
+        >
+          <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+            <Flex sx={{ flexDirection: 'column', gap: 4, marginBottom: 4 }}>
+              <ProgressBar percent={(gmi / 1000) * 100} bgColor="grey-900" />
+            </Flex>
+            <GmiRow
+              label="Blue Chips Owned"
+              color="blue"
+              value={totalBlueChips}
+            />
+            <GmiRow
+              label="First Purchase"
+              color="blue"
+              value={
+                firstPurchase ? format(firstPurchase * 1000, 'M/d/yyyy') : '-'
+              }
+            />
+            <GmiRow
+              isEth
+              label="Trade Volume"
+              color="blue"
+              value={formatNumber(tradeVolume, {
+                fromWei: true,
+                decimals: 2,
+              })}
+            />
+            <GmiRow
+              isEth
+              label="Total Gains"
+              color={gainsTotal > 0 ? 'green' : 'red'}
+              value={formatNumber(gainsTotal, {
+                decimals: 2,
+              })}
+            />
+            <GmiRow
+              isEth
+              label="Unrealized Gains"
+              color={Number(gainsUnrealized) > 0 ? 'green' : 'red'}
+              value={formatNumber(gainsUnrealized, {
+                fromWei: true,
+                decimals: 2,
+              })}
+            />
+            <GmiRow
+              isEth
+              label="Realized Gains"
+              color={Number(gainsRealized) > 0 ? 'green' : 'red'}
+              value={formatNumber(gainsRealized, {
+                fromWei: true,
+                decimals: 2,
+              })}
+            />
+          </Flex>
+          <Flex sx={{ flexDirection: 'column' }}>
+            <Box
+              sx={{
+                position: 'relative',
+                width: '100%',
+
+                height: 'auto',
+                flexGrow: 1,
+              }}
+            >
+              <GmiArtwork {...{ gmi }} />
+            </Box>
+          </Flex>
+        </Grid>
+      </Flex>
       <Flex sx={{ justifyContent: 'space-between', alignItems: 'baseline' }}>
         <img src="/img/upshot_logo_white.svg" width={140} alt="Upshot Logo" />
         <Text color="grey-500" sx={{ fontSize: 3 }}>

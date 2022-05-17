@@ -47,7 +47,7 @@ import {
 interface GmiPanelProps {
   onReset: () => void
   onToggleFaq: () => void
-  onShowPreview: () => void
+  onTogglePreview: () => void
 }
 
 export const WideButton = styled(Flex)`
@@ -98,7 +98,7 @@ function GmiPanel({
   gainsTotal,
   onReset,
   onToggleFaq,
-  onShowPreview,
+  onTogglePreview,
 }: GmiSocialCardProps & GmiPanelProps) {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
@@ -339,7 +339,7 @@ function GmiPanel({
             <GmiArtwork {...{ gmi }} />
           </Box>
 
-          <ShareButton onClick={onShowPreview}>
+          <ShareButton onClick={onTogglePreview}>
             <Text
               color="white"
               sx={{
@@ -359,10 +359,10 @@ function GmiPanel({
 
 function GmiPreview({
   wallet,
-  onBack,
+  onTogglePreview,
 }: {
   wallet: string
-  onBack: () => void
+  onTogglePreview: () => void
 }) {
   const { loading, error, data } = useQuery<GetGmiData, GetGmiVars>(GET_GMI, {
     errorPolicy: 'all',
@@ -414,7 +414,7 @@ function GmiPreview({
         <Text variant="h1Primary" sx={{ lineHeight: 1 }}>
           Share
         </Text>
-        <IconButton onClick={onBack}>
+        <IconButton onClick={onTogglePreview}>
           <Icon icon="close" />
         </IconButton>
       </Flex>
@@ -422,18 +422,20 @@ function GmiPreview({
         Share your Upshot gmi card on Twitter! Flex your degen level.
       </Text>
 
-      <GmiSocialCard
-        {...{
-          displayName,
-          gmi,
-          totalBlueChips,
-          firstPurchase,
-          tradeVolume,
-          gainsRealized,
-          gainsUnrealized,
-          gainsTotal,
-        }}
-      />
+      <Panel backgroundColor="black" sx={{ padding: '0 !important' }}>
+        <GmiSocialCard
+          {...{
+            displayName,
+            gmi,
+            totalBlueChips,
+            firstPurchase,
+            tradeVolume,
+            gainsRealized,
+            gainsUnrealized,
+            gainsTotal,
+          }}
+        />
+      </Panel>
 
       <Link
         component={NextLink}
@@ -627,13 +629,13 @@ function GmiCard({
   showPreview,
   onReset,
   onToggleFaq,
-  onShowPreview,
+  onTogglePreview,
 }: {
   wallet: string
   showFaq?: boolean
   showPreview?: boolean
   onToggleFaq: () => void
-  onShowPreview: () => void
+  onTogglePreview: () => void
   onReset: () => void
 }) {
   const MIN_LOADING_SECONDS = 2
@@ -695,7 +697,7 @@ function GmiCard({
   }
 
   if (showFaq) return <FaqPanel onBack={onToggleFaq} />
-  if (showPreview) return <GmiPreview {...{ wallet }} onBack={onReset} />
+  if (showPreview) return <GmiPreview {...{ wallet, onTogglePreview }} />
 
   const userAddr = data?.getUser?.addresses?.[0]?.address
   const userEns = data?.getUser?.addresses?.[0]?.ens
@@ -723,7 +725,7 @@ function GmiCard({
         gainsTotal,
         onReset,
         onToggleFaq,
-        onShowPreview,
+        onTogglePreview,
       }}
     />
   )
@@ -857,7 +859,7 @@ export default function GmiView() {
                 onReset={handleReset}
                 key={wallet}
                 onToggleFaq={() => setShowFaq(!showFaq)}
-                onShowPreview={() => setShowPreview(true)}
+                onTogglePreview={() => setShowPreview(!showPreview)}
                 {...{ wallet, showFaq, showPreview }}
               />
             ) : (
