@@ -13,6 +13,9 @@ export default function FooterModal() {
       <Flex sx={{ gap: 3, color: 'grey-500' }}>
         <Link
           href="/privacy.pdf"
+          target="_blank"
+          rel="noreferrer"
+          component={NextLink}
           sx={{
             transition: 'all .1s ease',
             '&:hover': { color: 'white' },
@@ -23,6 +26,9 @@ export default function FooterModal() {
         <span>|</span>
         <Link
           href="/terms.pdf"
+          target="_blank"
+          rel="noreferrer"
+          component={NextLink}
           sx={{
             transition: 'all .1s ease',
             '&:hover': { color: 'white' },
