@@ -12,7 +12,6 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { ReactNode, useEffect } from 'react'
 import { Provider, useDispatch, useSelector } from 'react-redux'
-import { useAppDispatch } from 'redux/hooks'
 import { selectAlertState, setAlertState } from 'redux/reducers/layout'
 import { persistor, store } from 'redux/store'
 import { PersistGate } from 'redux-persist/integration/react'
@@ -20,6 +19,8 @@ import { Alert } from 'theme-ui'
 import client from 'utils/apolloClient'
 import { initGA } from 'utils/googleAnalytics'
 import Layout from 'views/Layout'
+
+import Meta from '../components/Meta'
 
 /**
  * Instantiate an Ethers web3 provider library.
@@ -94,6 +95,59 @@ const AlertWrapper = ({ children }: { children: ReactNode }) => {
   )
 }
 
+function Metadata() {
+  const parts =
+    typeof window === 'undefined'
+      ? []
+      : window.location.pathname.slice(1).split('/')
+
+  switch (parts[0]) {
+    case 'analytics': {
+      switch (parts[1]) {
+        case 'collection': {
+          const collectionId = parts[2]
+          console.log({ collectionId })
+          break
+        }
+        case 'nft': {
+          const assetId = parts[2]
+          console.log({ assetId })
+          break
+        }
+        case 'search':
+          return <Meta subtitle="Search" />
+
+        case 'user': {
+          const wallet = parts[2]
+          console.log({ wallet })
+          break
+        }
+      }
+      break
+    }
+    case 'faq':
+      return <Meta subtitle="FAQ" />
+
+    case 'gmi': {
+      const wallet = parts[1].split('?')[0]
+
+      return (
+        <Meta
+          subtitle="gmi score"
+          image={`https://stage.analytics.upshot.io/.netlify/functions/gmi?wallet=${encodeURIComponent(
+            wallet
+          )}&filetype=.png`}
+        />
+      )
+      break
+    }
+    case 'waitlist':
+      return <Meta subtitle="Waitlist" />
+  }
+
+  return <Meta />
+}
+
 export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     /* Initialize telemetry on enabled release stages. */
@@ -114,10 +168,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <>
-      <Head>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <Metadata />
 
       <UpshotThemeProvider>
         <ApolloProvider {...{ client }}>
