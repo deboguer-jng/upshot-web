@@ -154,32 +154,41 @@ function GmiPanel({
           columnGap: '24px',
         }}
       >
-        <Flex sx={{ flexDirection: 'column', gap: 7 }}>
-          <Flex
-            sx={{
-              alignItems: 'baseline',
-              gap: 2,
-              flexDirection: ['column', 'row'],
-            }}
-          >
-            <GmiScore {...{ gmi }}>
-              <IconButton
-                onClick={onToggleFaq}
-                sx={{
-                  background: 'grey-800',
-                  width: '28px',
-                  height: '28px',
-                }}
-              >
-                <Icon icon="question" size={14} />
-              </IconButton>
-            </GmiScore>
+        <Flex
+          sx={{
+            alignItems: 'baseline',
+            gap: 2,
+            flexDirection: ['column', 'row'],
+            marginBottom: 2,
+            justifyContent: 'space-between',
+          }}
+        >
+          <GmiScore {...{ gmi }}>
+            <IconButton
+              onClick={onToggleFaq}
+              sx={{
+                background: 'grey-800',
+                width: '28px',
+                height: '28px',
+              }}
+            >
+              <Icon icon="question" size={14} />
+            </IconButton>
+          </GmiScore>
 
-            <Flex sx={{ flexGrow: 1, justifyContent: 'flex-end' }}>
-              <Text sx={{ fontSize: 6, fontWeight: 'bold' }}>{rank}</Text>
-            </Flex>
-          </Flex>
+          <Text sx={{ fontSize: 6, fontWeight: 'bold' }}>{rank}</Text>
+        </Flex>
+      </Grid>
+
+      <Grid
+        sx={{
+          gridTemplateColumns: isMobile ? '1fr' : '3fr 1fr',
+          columnGap: '24px',
+        }}
+      >
+        <Flex sx={{ flexDirection: 'column', gap: 7 }}>
           <ProgressBar percent={(gmi / 1000) * 100} bgColor="grey-900" />
+
           <Grid
             sx={{
               gridTemplateColumns: ['1fr', '1fr', '1fr 1fr 1fr'],
@@ -237,9 +246,9 @@ function GmiPanel({
                 Trade Volume
               </Text>
               <Text color="blue" sx={{ fontSize: '26px', fontWeight: 'bold' }}>
+                <Text sx={{ fontWeight: '400 !important' }}>Ξ</Text>
                 {formatNumber(tradeVolume, {
                   fromWei: true,
-                  prefix: 'ETHER',
                   decimals: 2,
                 })}
               </Text>
@@ -262,9 +271,9 @@ function GmiPanel({
                 color={gainsTotal > 0 ? 'green' : 'red'}
                 sx={{ fontSize: '26px', fontWeight: 'bold' }}
               >
+                <Text sx={{ fontWeight: '400 !important' }}>Ξ</Text>
                 {formatNumber(gainsTotal, {
                   fromWei: true,
-                  prefix: 'ETHER',
                   decimals: 2,
                 })}
               </Text>
@@ -287,9 +296,9 @@ function GmiPanel({
                 color={Number(gainsUnrealized) > 0 ? 'green' : 'red'}
                 sx={{ fontSize: '26px', fontWeight: 'bold' }}
               >
+                <Text sx={{ fontWeight: '400 !important' }}>Ξ</Text>
                 {formatNumber(gainsUnrealized, {
                   fromWei: true,
-                  prefix: 'ETHER',
                   decimals: 2,
                 })}
               </Text>
@@ -312,9 +321,9 @@ function GmiPanel({
                 color={Number(gainsRealized) > 0 ? 'green' : 'red'}
                 sx={{ fontSize: '26px', fontWeight: 'bold' }}
               >
+                <Text sx={{ fontWeight: '400 !important' }}>Ξ</Text>
                 {formatNumber(gainsRealized, {
                   fromWei: true,
-                  prefix: 'ETHER',
                   decimals: 2,
                 })}
               </Text>
