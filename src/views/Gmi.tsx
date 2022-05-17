@@ -85,6 +85,7 @@ const ShareButton = styled(Box)`
   background: ${({ theme }) => theme['colors']['blue']};
   border-radius: 9999px;
   cursor: pointer;
+  z-index: 1;
 `
 
 function GmiPanel({
@@ -273,7 +274,6 @@ function GmiPanel({
               >
                 <Text sx={{ fontWeight: '400 !important' }}>Ξ</Text>
                 {formatNumber(gainsTotal, {
-                  fromWei: true,
                   decimals: 2,
                 })}
               </Text>
@@ -582,7 +582,7 @@ export function GmiArtwork({ gmi = 0 }: { gmi?: number }) {
   return (
     <Box
       sx={{
-        transform: 'scale(1.5)',
+        transform: 'scale(1.15)',
         width: '100%',
         height: '100%',
         pointerEvents: 'none',
