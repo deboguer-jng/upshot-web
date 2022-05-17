@@ -3515,10 +3515,10 @@
     "@typescript-eslint/types" "5.12.0"
     eslint-visitor-keys "^3.0.0"
 
-"@upshot-tech/upshot-ui@^0.5.54":
-  version "0.5.54"
-  resolved "https://registry.yarnpkg.com/@upshot-tech/upshot-ui/-/upshot-ui-0.5.54.tgz#548385c07d04581acdc00e6aa7e5228c0ef2f747"
-  integrity sha512-8yjCqiPya0/Fob4pJjKbibKmjPon9Tp1mw5vvoelmzC/O0pOsiEo3uM/CBAqdfU0RTs/eXv/diPvSe9hqd+i6w==
+"@upshot-tech/upshot-ui@^0.5.55":
+  version "0.5.55"
+  resolved "https://registry.yarnpkg.com/@upshot-tech/upshot-ui/-/upshot-ui-0.5.55.tgz#f92671b85e5ec0db38c9905e80aedd9dcd71ac25"
+  integrity sha512-M5Y87Yn/gVKirZy9xjuXT7h0OVKoYEh77955o48wJnnUHXQKhbzFt6UxDVLa+RDAG/DvWHECX7AN7xjXI1PQsQ==
   dependencies:
     "@emotion/react" "^11.7.1"
     "@emotion/styled" "^11.6.0"
@@ -10446,9 +10446,9 @@ react-markdown@^8.0.0:
     unist-util-visit "^4.0.0"
     vfile "^5.0.0"
 
-"react-paginate@https://github.com/DaWe35/react-paginate.git#fix/pagesBreaking":
+"react-paginate@git+https://github.com/DaWe35/react-paginate.git#fix/pagesBreaking":
   version "9.0.0"
-  resolved "https://github.com/DaWe35/react-paginate.git#ab3e3871d4444e9f924d075bf4afcd1f4037fe08"
+  resolved "git+https://github.com/DaWe35/react-paginate.git#ab3e3871d4444e9f924d075bf4afcd1f4037fe08"
   dependencies:
     prop-types "^15.6.1"
 
@@ -11737,7 +11737,7 @@ tapable@^2.0.0, tapable@^2.1.1, tapable@^2.2.0:
   resolved "https://registry.yarnpkg.com/tapable/-/tapable-2.2.1.tgz#1967a73ef4060a82f12ab96af86d52fdb76eeca0"
   integrity sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==
 
-tar-fs@*, tar-fs@2.1.1:
+tar-fs@2.1.1, tar-fs@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/tar-fs/-/tar-fs-2.1.1.tgz#489a15ab85f1f0befabb370b7de4f9eb5cbe8784"
   integrity sha512-V0r2Y9scmbDRLCNex/+hYzvp/zyYjvFbHPNgVTKfQvVrb6guiE/fxP+XblDNR011utopbkex2nM4dHNV6GDsng==
