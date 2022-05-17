@@ -68,6 +68,7 @@ export function GmiRenderError({ wallet }: { wallet?: string }) {
         justifyContent: 'space-between',
         padding: 40,
         gap: 8,
+        overflow: 'hidden',
       }}
     >
       <Grid
@@ -135,6 +136,7 @@ export function GmiSocialCard({
         justifyContent: 'space-between',
         padding: 40,
         gap: 8,
+        overflow: 'hidden',
       }}
     >
       <Flex sx={{ flexDirection: 'column' }}>

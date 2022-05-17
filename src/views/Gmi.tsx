@@ -560,75 +560,33 @@ export function GmiScore({
   )
 }
 
+function GmiArtworkLayer({ layer, gmiIdx }: { layer: string; gmiIdx: number }) {
+  return (
+    <Box
+      sx={{
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        backgroundImage: `url(/img/gmi/${layer}/${gmiIdx}.svg)`,
+        backgroundSize: 'contain',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+      }}
+    />
+  )
+}
+
 export function GmiArtwork({ gmi = 0 }: { gmi?: number }) {
   const gmiIdx = gmiIndex(gmi)
 
   return (
-    <>
-      <Box
-        sx={{
-          position: 'absolute',
-          width: '100%',
-          height: '100%',
-          backgroundImage: `url(/img/gmi/planet/${gmiIdx}.svg)`,
-          backgroundSize: 'contain',
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'center',
-        }}
-      />
-      {gmiIdx > 1 && (
-        <Box
-          sx={{
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            backgroundImage: `url(/img/gmi/stars/${gmiIdx}.svg)`,
-            backgroundSize: 'contain',
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center',
-          }}
-        />
-      )}
-      {gmiIdx > 2 && (
-        <Box
-          sx={{
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            backgroundImage: `url(/img/gmi/moon_1/${gmiIdx}.svg)`,
-            backgroundSize: 'contain',
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center',
-          }}
-        />
-      )}
-      {gmiIdx > 3 && (
-        <Box
-          sx={{
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            backgroundImage: `url(/img/gmi/moon_2/${gmiIdx}.svg)`,
-            backgroundSize: 'contain',
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center',
-          }}
-        />
-      )}
-      {gmiIdx > 4 && (
-        <Box
-          sx={{
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            backgroundImage: `url(/img/gmi/spaceShip/${gmiIdx}.svg)`,
-            backgroundSize: 'contain',
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center',
-          }}
-        />
-      )}
-    </>
+    <Box sx={{ transform: 'scale(1.5)', width: '100%', height: '100%' }}>
+      <GmiArtworkLayer layer="planet" {...{ gmiIdx }} />
+      {gmiIdx > 1 && <GmiArtworkLayer layer="stars" {...{ gmiIdx }} />}
+      {gmiIdx > 2 && <GmiArtworkLayer layer="moon_1" {...{ gmiIdx }} />}
+      {gmiIdx > 3 && <GmiArtworkLayer layer="moon_2" {...{ gmiIdx }} />}
+      {gmiIdx > 4 && <GmiArtworkLayer layer="spaceShip" {...{ gmiIdx }} />}
+    </Box>
   )
 }
 
