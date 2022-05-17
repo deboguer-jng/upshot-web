@@ -107,7 +107,7 @@ function GmiPanel({
   const rank = gmiLabel(gmi)
 
   return (
-    <Panel outlined backgroundColor="grey-900">
+    <Panel outlined backgroundColor="grey-900" sx={{ width: '100%' }}>
       <Flex sx={{ flexGrow: 1, width: '100%' }}>
         {!isMobile && (
           <Flex sx={{ flexGrow: 1, width: '100%' }}>
@@ -441,7 +441,8 @@ function GmiPreview({
         </IconButton>
       </Flex>
       <Text color="grey-300" sx={{ lineHeight: 1 }}>
-        Share {userOwnedWallet ? 'your' : `${displayName}'s`} Upshot gmi on Twitter! {userOwnedWallet && 'Flex your degen level.'}
+        Share {userOwnedWallet ? 'your' : `${displayName}'s`} Upshot gmi on
+        Twitter! {userOwnedWallet && 'Flex your degen level.'}
       </Text>
 
       <Panel backgroundColor="black" sx={{ padding: '0 !important' }}>
@@ -464,7 +465,9 @@ function GmiPreview({
         target="_blank"
         rel="noopener noreferrer nofollow"
         href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
-          `Check out ${userOwnedWallet ? 'my' : `${displayName}'s`} Upshot gmi:\nhttps://upshot.xyz/gmi/${wallet}`
+          `Check out ${
+            userOwnedWallet ? 'my' : `${displayName}'s`
+          } Upshot gmi:\nhttps://upshot.xyz/gmi/${wallet}`
         )}`}
         sx={{ width: '100%', textDecoration: 'none !important' }}
       >
