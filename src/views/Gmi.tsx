@@ -418,6 +418,8 @@ function GmiPreview({
   const totalGainPercent = data?.getUser?.addresses?.[0]?.totalGainPercent ?? 0
   const gmiPercentile = data?.getUser?.addresses?.[0]?.gmiPercentile ?? 100
 
+  const rank = gmiLabel(gmi)
+
   const handleGmiCopy = async () => {
     const el = document.getElementById('gmiResults')
     if (!el) return
@@ -494,9 +496,7 @@ function GmiPreview({
         target="_blank"
         rel="noopener noreferrer nofollow"
         href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
-          `Check out ${
-            userOwnedWallet ? 'my' : `${displayName}'s`
-          } Upshot gmi:\nhttps://upshot.xyz/gmi/${wallet}`
+          `${userOwnedWallet ? `My gmi is ${Math.floor(gmi)} (${rank})` : `${displayName} has a gmi of ${Math.round(gmi)} (${rank})`}. What's yours? \nhttps://upshot.xyz/gmi/${wallet} @UpshotHQ`
         )}`}
         sx={{ width: '100%', textDecoration: 'none !important' }}
       >
