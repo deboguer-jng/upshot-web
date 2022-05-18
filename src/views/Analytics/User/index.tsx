@@ -50,6 +50,7 @@ import { setAlertState } from 'redux/reducers/layout'
 import { selectAddress, selectEns } from 'redux/reducers/web3'
 import { Label as LabelUI } from 'theme-ui'
 import { extractEns, shortenAddress } from 'utils/address'
+import { gmiLabel } from 'utils/gmi'
 import { formatDistance } from 'utils/time'
 
 import Breadcrumbs from '../components/Breadcrumbs'
@@ -1061,6 +1062,20 @@ export default function UserView() {
     return extractEns(data?.getUser?.addresses, address) ?? shortAddress
   }
 
+  const getGmiNum = () => {
+    const gmi = data?.getUser?.addresses[0]?.gmi
+
+    if (gmi) return `${Math.floor(gmi)} /1000 gmi`
+    else return '-'
+  }
+
+  const getGmiLabel = () => {
+    const gmi = data?.getUser?.addresses[0]?.gmi
+
+    if (gmi) return gmiLabel(gmi)
+    else ''
+  }
+
   return (
     <>
       <Layout title={getDisplayName()}>
@@ -1160,15 +1175,9 @@ export default function UserView() {
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
                             textAlign: 'center',
-                            textTransform: 'capitalize',
                           }}
                         >
-                          {data?.getUser?.firstAssetPurchaseTime &&
-                          !noCollection
-                            ? formatDistance(
-                                data.getUser.firstAssetPurchaseTime * 1000
-                              )
-                            : '-'}
+                          {getGmiNum()}
                         </Text>
                         <Text
                           color="blue"
@@ -1182,7 +1191,7 @@ export default function UserView() {
                             textAlign: 'center',
                           }}
                         >
-                          Age of Collection
+                          {getGmiLabel()}
                         </Text>
                       </Panel>
                       <Panel
@@ -1309,8 +1318,11 @@ export default function UserView() {
                             textTransform: 'capitalize',
                           }}
                         >
-                          {data?.getUser?.avgHoldTime
-                            ? formatDistance(0, data.getUser.avgHoldTime * 1000)
+                          {data?.getUser?.firstAssetPurchaseTime &&
+                          !noCollection
+                            ? formatDistance(
+                                data.getUser.firstAssetPurchaseTime * 1000
+                              )
                             : '-'}
                         </Text>
                         <Text
@@ -1321,7 +1333,7 @@ export default function UserView() {
                             textAlign: 'center',
                           }}
                         >
-                          Average Hold Time
+                          Age of Collection
                         </Text>
                       </Panel>
                     </>
