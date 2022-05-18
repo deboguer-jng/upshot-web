@@ -7,14 +7,12 @@ import {
   Icon,
   IconButton,
   Investors,
-  LandingPanel,
   Link,
   Panel,
   Text,
   theme,
 } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
-import Head from 'next/head'
 import NextLink from 'next/link'
 import { useState } from 'react'
 import { Image } from 'theme-ui'
@@ -58,22 +56,6 @@ export default function LandingView() {
 
   return (
     <>
-      <Head>
-        <title>Upshot: Where NFTs meet DeFi</title>
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:site" content="@UpshotHQ" />
-        <meta name="twitter:creator" content="@UpshotHQ" />
-        <meta property="og:url" content="https://upshot.io" />
-        <meta property="og:title" content="Upshot: Where NFTs meet DeFi" />
-        <meta
-          property="og:description"
-          content="NFTs offer us a vehicle for tokenizing anything, while the explosive growth of DeFi has demonstrated the power of permissionless financial primitives. Upshot is building scalable NFT pricing infrastructure at the intersection of DeFi x NFTs. Through a combination of crowdsourced appraisals and proprietary machine learning algorithms, Upshot provides deep insight into NFT markets and unlocks a wave of exotic new DeFi possibilities."
-        />
-        <meta
-          property="og:image"
-          content="https://upshot.io/img/opengraph/opengraph_analytics.jpg"
-        />
-      </Head>
       <Container
         maxBreakpoint="lg"
         sx={{

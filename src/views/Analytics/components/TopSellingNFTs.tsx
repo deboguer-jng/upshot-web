@@ -210,7 +210,6 @@ export default function TopSellingNFTs({
                   image={mediaUrl}
                   date={formatDistance(txAt * 1000)}
                   pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
-                  link={`/analytics/collection/${collection?.id}`}
                 />
               </Link>
             )
