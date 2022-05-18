@@ -64,10 +64,8 @@ function Meta({
 
 export default function Metadata() {
   const router = useRouter()
-
   const [subtitle, setSubtitle] = useState<string>()
   const [image, setImage] = useState<string>()
-
   const parts = useMemo(
     () => (router.asPath || '/').slice(1).split('/'),
     [router.asPath]
@@ -79,7 +77,10 @@ export default function Metadata() {
       notifyOnNetworkStatusChange: true,
       onCompleted: (data) => {
         setSubtitle(data?.assetById?.name)
-        setImage(data?.assetById?.previewImageUrl)
+        setImage(
+          data?.assetById?.previewImageUrl ??
+            'https://upshot.io/img/opengraph/opengraph_nft.jpg'
+        )
       },
     }
   )
@@ -91,7 +92,10 @@ export default function Metadata() {
     notifyOnNetworkStatusChange: true,
     onCompleted: (data) => {
       setSubtitle(data?.collectionById?.name)
-      setImage(data?.collectionById?.imageUrl)
+      setImage(
+        data?.collectionById?.imageUrl ??
+          'https://upshot.io/img/opengraph/opengraph_collection.jpg'
+      )
     },
   })
 
@@ -133,13 +137,18 @@ export default function Metadata() {
         subtitle="gmi"
         image={`https://stage.analytics.upshot.io/.netlify/functions/gmi?wallet=${encodeURIComponent(
           wallet
-        )}&lastUpdated=${Date.now()}&filetype=.png`}
+        )}&lastUpdated=${Date.now()}&fileType=.png`}
       />
     )
   } else if (parts[0] === 'waitlist') {
     return <Meta subtitle="Waitlist" />
   } else if (parts[1] === 'search') {
-    return <Meta subtitle="Search" />
+    return (
+      <Meta
+        subtitle="Search"
+        image="https://upshot.io/img/opengraph/opengraph_search.jpg"
+      />
+    )
   } else if (parts[0] === 'faq') {
     return <Meta subtitle="FAQ" />
   }

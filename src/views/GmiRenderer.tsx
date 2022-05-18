@@ -66,46 +66,54 @@ export function GmiRenderError({ wallet }: { wallet?: string }) {
       id="gmiResults"
       sx={{
         minHeight: '100%',
+        width: '100%',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        padding: 40,
+        padding: 60,
         gap: 8,
         overflow: 'hidden',
+        background: 'black',
       }}
     >
-      <Grid
-        sx={{ gridTemplateColumns: ['1fr', '1fr', '1fr 1fr'], flexGrow: 1 }}
-      >
-        <Flex sx={{ flexDirection: 'column', gap: 3 }}>
-          <Text variant="h1Primary" sx={{ lineHeight: 1 }}>
-            Failure to launch!
+      <Flex sx={{ flexDirection: 'column' }}>
+        <Flex sx={{ justifyContent: 'space-between' }}>
+          <Text variant="h1Primary" sx={{ fontSize: 7 }}>
+            Failure to launch
           </Text>
-          <Flex sx={{ marginBottom: 4 }}>
-            <GmiScore />
+        </Flex>
+
+        <Flex sx={{ marginBottom: 2 }}>
+          <GmiScore gmi={0} />
+        </Flex>
+
+        <Grid
+          sx={{ gridTemplateColumns: ['1fr', '1fr', '1.5fr 1fr'], flexGrow: 1 }}
+        >
+          <Flex sx={{ flexDirection: 'column', gap: 4 }}>
+            <Flex sx={{ flexDirection: 'column', gap: 4, marginBottom: 4 }}>
+              <ProgressBar percent={0} bgColor="grey-900" />
+            </Flex>
+            <GmiRow label="Blue Chips Owned" color="blue" value="-" />
+            <GmiRow label="First Purchase" color="blue" value="-" />
+            <GmiRow isEth label="Wallet Rank" color="blue" value="-" />
+            <GmiRow isEth label="Trade Volume" color="blue" value="-" />
+            <GmiRow isEth label="Total Gains" color="white" value="-" />
+            <GmiRow isEth label="ROI (%)" color="white" value="-" />
           </Flex>
-          <GmiRow label="Blue Chips Owned" color="blue" />
-          <GmiRow label="First Purchase" color="blue" />
-          <GmiRow label="Wallet Rank" color="blue" />
-          <GmiRow label="Trade Volume" color="blue" />
-          <GmiRow label="Total Gains (Ξ)" />
-          <GmiRow label="ROI (%)" />
-        </Flex>
-        <Flex sx={{ flexDirection: 'column' }}>
-          <Text color="grey-500" sx={{ fontSize: 3, textAlign: 'right' }}>
-            {wallet}
-          </Text>
-          <Box
-            sx={{
-              position: 'relative',
-              width: ['auto', 'auto', '100%'],
-              height: ['300px', '300px', 'auto'],
-              flexGrow: 1,
-            }}
-          >
-            <GmiArtwork />
-          </Box>
-        </Flex>
-      </Grid>
+          <Flex sx={{ flexDirection: 'column' }}>
+            <Box
+              sx={{
+                position: 'relative',
+                width: '100%',
+                height: 'auto',
+                flexGrow: 1,
+              }}
+            >
+              <GmiArtwork gmi={0} />
+            </Box>
+          </Flex>
+        </Grid>
+      </Flex>
       <Flex sx={{ justifyContent: 'space-between', alignItems: 'baseline' }}>
         <img src="/img/upshot_logo_white.svg" width={140} alt="Upshot Logo" />
         <Text color="grey-500" sx={{ fontSize: 3 }}>
@@ -141,6 +149,7 @@ export function GmiSocialCard({
         padding: 60,
         gap: 8,
         overflow: 'hidden',
+        background: 'black',
       }}
     >
       <Flex sx={{ flexDirection: 'column' }}>
@@ -209,7 +218,6 @@ export function GmiSocialCard({
               sx={{
                 position: 'relative',
                 width: '100%',
-
                 height: 'auto',
                 flexGrow: 1,
               }}
@@ -220,7 +228,7 @@ export function GmiSocialCard({
         </Grid>
       </Flex>
       <Flex sx={{ justifyContent: 'space-between', alignItems: 'baseline' }}>
-        <img src="/img/upshot_logo_white.svg" width={140} alt="Upshot Logo" />
+        <img src="/img/upshot_logo_white.png" width={140} alt="Upshot Logo" />
         <Text color="grey-500" sx={{ fontSize: 3 }}>
           upshot.xyz/gmi
         </Text>
@@ -250,7 +258,11 @@ export default function GmiRenderer() {
   }, [router.query])
 
   if (error || (data && !data?.getUser?.addresses?.length))
-    return <GmiRenderError {...{ wallet }} />
+    return (
+      <Flex sx={{ minHeight: '100vh', minWidth: '100vw' }}>
+        <GmiRenderError {...{ wallet }} />
+      </Flex>
+    )
   if (loading || !data) return null
 
   const userAddr = data?.getUser?.addresses?.[0]?.address
@@ -265,6 +277,8 @@ export default function GmiRenderer() {
   const gainsTotal =
     parseUint256(data?.getUser?.addresses?.[0]?.realizedGain ?? '0') +
     parseUint256(data?.getUser?.addresses?.[0]?.unrealizedGain ?? '0')
+  const totalGainPercent = data?.getUser?.addresses?.[0]?.totalGainPercent ?? 0
+  const gmiPercentile = data?.getUser?.addresses?.[0]?.gmiPercentile ?? 100
 
   return (
     <Flex sx={{ minHeight: '100vh', minWidth: '100vw' }}>
@@ -278,6 +292,8 @@ export default function GmiRenderer() {
           gainsRealized,
           gainsUnrealized,
           gainsTotal,
+          totalGainPercent,
+          gmiPercentile,
         }}
       />
     </Flex>

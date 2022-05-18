@@ -20,14 +20,17 @@ import { useWeb3React } from '@web3-react/core'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { ConnectorName, connectorsByName } from 'constants/connectors'
 import { format } from 'date-fns'
+import html2canvas from 'html2canvas'
 import Head from 'next/head'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
+import { setAlertState } from 'redux/reducers/layout'
 import { setIsBeta } from 'redux/reducers/user'
 import {
   selectAddress,
+  selectEns,
   setActivatingConnector,
   setAddress,
   setEns,
@@ -367,6 +370,20 @@ function GmiPreview({
   wallet: string
   onTogglePreview: () => void
 }) {
+  const dispatch = useAppDispatch()
+  const address = useAppSelector(selectAddress)
+  const connectedEns = useAppSelector(selectEns)
+  const [userOwnedWallet, setUserOwnedWallet] = useState(false)
+
+  useEffect(() => {
+    if (wallet.startsWith('0x')) {
+      setUserOwnedWallet(address == wallet)
+    }
+    if (wallet.endsWith('.eth')) {
+      setUserOwnedWallet(connectedEns == wallet)
+    }
+  }, [address, connectedEns])
+
   const { loading, error, data } = useQuery<GetGmiData, GetGmiVars>(GET_GMI, {
     errorPolicy: 'all',
     fetchPolicy: 'no-cache',
@@ -399,6 +416,32 @@ function GmiPreview({
     parseUint256(data?.getUser?.addresses?.[0]?.unrealizedGain ?? '0')
   const totalGainPercent = data?.getUser?.addresses?.[0]?.totalGainPercent ?? 0
   const gmiPercentile = data?.getUser?.addresses?.[0]?.gmiPercentile ?? 100
+
+  const handleGmiCopy = async () => {
+    const el = document.getElementById('gmiResults')
+    if (!el) return
+
+    try {
+      const c = await html2canvas(el, { backgroundColor: '#000' })
+
+      c.toBlob(async (blob) => {
+        if (!blob) return
+
+        await navigator.clipboard.write([
+          new ClipboardItem({ 'image/png': blob }),
+        ])
+
+        dispatch(
+          setAlertState({
+            showAlert: true,
+            alertText: 'Image copied to clipboard!',
+          })
+        )
+      })
+    } catch (err) {
+      console.error(err)
+    }
+  }
 
   return (
     <Panel
@@ -465,6 +508,10 @@ function GmiPreview({
           </Text>
           <Icon color="white" icon="twitter" size={32} />
         </ShareButton>
+      </Link>
+
+      <Link sx={{ textAlign: 'center' }} onClick={handleGmiCopy}>
+        Copy to clipboard
       </Link>
     </Panel>
   )
@@ -565,7 +612,7 @@ function GmiArtworkLayer({ layer, gmiIdx }: { layer: string; gmiIdx: number }) {
         position: 'absolute',
         width: '100%',
         height: '100%',
-        backgroundImage: `url(/img/gmi/${layer}/${gmiIdx}.svg)`,
+        backgroundImage: `url(/img/gmi/${layer}/${gmiIdx}.png)`,
         backgroundSize: 'contain',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
@@ -580,7 +627,6 @@ export function GmiArtwork({ gmi = 0 }: { gmi?: number }) {
   return (
     <Box
       sx={{
-        transform: 'scale(1.15)',
         width: '100%',
         height: '100%',
         pointerEvents: 'none',
@@ -710,11 +756,11 @@ function GmiCard({
 export default function GmiView() {
   const modalRef = useRef<HTMLDivElement>(null)
   const { activate, connector, deactivate } = useWeb3React()
-  const dispatch = useAppDispatch()
   const address = useAppSelector(selectAddress)
   const [wallet, setWallet] = useState('')
   const [showFaq, setShowFaq] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
+  const dispatch = useAppDispatch()
   const router = useRouter()
 
   useEffect(() => {
