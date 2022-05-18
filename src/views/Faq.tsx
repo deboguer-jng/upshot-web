@@ -70,7 +70,7 @@ export function FaqPanel({ onBack }: { onBack: () => void }) {
       <Flex sx={{ flexDirection: 'column' }}>
         <Text sx={{ fontSize: 5, lineHeight: '3rem' }}>Q: What is gmi?</Text>
         <Text color="grey-500" sx={{ fontSize: 3, lineHeight: '1.4rem' }}>
-          A: Upshot gmi is a single powerful number that helps identify high performing wallets and provides novel insight into the future of metaverse identity & reputation. Complex questions like, “should we lend to this wallet?” or simple ones like “are they gonna make it?” can be quickly and confidently answered through Upshot gmi.
+          A: Upshot gmi is the grading index for NFT wallets -- a single powerful number that helps identify high performing wallets and provides novel insight into the future of metaverse identity & reputation. Complex questions like, “should we lend to this wallet?” or simple ones like “are they gonna make it?” can be quickly and confidently answered through Upshot gmi.
         </Text>
       </Flex>
       <Flex sx={{ flexDirection: 'column' }}>

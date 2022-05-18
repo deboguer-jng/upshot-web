@@ -316,7 +316,7 @@ export default function LandingView() {
                       variant="large"
                       sx={{ display: 'block', whiteSpace: 'normal' }}
                     >
-                      A new grading index for NFT wallets.
+                      The grading index for NFT wallets.
                     </Text>
                   </div>
                 </Panel>
