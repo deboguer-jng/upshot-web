@@ -117,59 +117,68 @@ export default function LandingView() {
                   wave of exotic new DeFi possibilities.
                 </Text>
               </Box>
-              <Flex sx={{ gridGap: '14px', marginTop: '20px' }}>
-                <Box>
-                  <Link
-                    href="https://discord.gg/upshot"
-                    target="_blank"
-                    component={NextLink}
-                  >
-                    <IconButton>
-                      <Icon color="purple" icon="discord" size={32} />
-                    </IconButton>
-                  </Link>
-                </Box>
-                <Box>
-                  <Link
-                    href="https://twitter.com/upshothq"
-                    target="_blank"
-                    component={NextLink}
-                  >
-                    <IconButton>
-                      <Icon color="blue" icon="twitterCircle" size={32} />
-                    </IconButton>
-                  </Link>
-                </Box>
-                <Box>
-                  <Link
-                    href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
-                    target="_blank"
-                    component={NextLink}
-                    noHover
-                  >
-                    <BlogButton capitalize>Read our blog</BlogButton>
-                  </Link>
-                </Box>
-
-                <Box>
-                  <Link
-                    href="https://jobs.lever.co/upshot.io"
-                    target="_blank"
-                    component={NextLink}
-                    noHover
-                  >
-                    <Button
-                      capitalize={true}
-                      style={{
-                        borderRadius: '8px',
-                        height: '32px',
-                        padding: '8px 12px',
-                      }}
+              <Flex
+                sx={{
+                  marginTop: '20px',
+                  flexDirection: ['column-reverse', 'column-reverse', 'row'],
+                  gridGap: '14px',
+                }}
+              >
+                <Flex sx={{ gridGap: '14px' }}>
+                  <Box>
+                    <Link
+                      href="https://discord.gg/upshot"
+                      target="_blank"
+                      component={NextLink}
                     >
-                      Join our team
-                    </Button>
-                  </Link>
-                </Box>
+                      <IconButton>
+                        <Icon color="purple" icon="discord" size={32} />
+                      </IconButton>
+                    </Link>
+                  </Box>
+                  <Box>
+                    <Link
+                      href="https://twitter.com/upshothq"
+                      target="_blank"
+                      component={NextLink}
+                    >
+                      <IconButton>
+                        <Icon color="blue" icon="twitterCircle" size={32} />
+                      </IconButton>
+                    </Link>
+                  </Box>
+                </Flex>
+                <Flex sx={{ gridGap: '14px' }}>
+                  <Box>
+                    <Link
+                      href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
+                      target="_blank"
+                      component={NextLink}
+                      noHover
+                    >
+                      <BlogButton capitalize>Read our blog</BlogButton>
+                    </Link>
+                  </Box>
+                  <Box>
+                    <Link
+                      href="https://jobs.lever.co/upshot.io"
+                      target="_blank"
+                      component={NextLink}
+                      noHover
+                    >
+                      <Button
+                        capitalize={true}
+                        style={{
+                          borderRadius: '8px',
+                          height: '32px',
+                          padding: '8px 12px',
+                        }}
+                      >
+                        Join our team
+                      </Button>
+                    </Link>
+                  </Box>
+                </Flex>
               </Flex>
             </Box>
 
@@ -307,7 +316,7 @@ export default function LandingView() {
                       variant="large"
                       sx={{ display: 'block', whiteSpace: 'normal' }}
                     >
-                       A new grading index for NFT wallets.
+                      A new grading index for NFT wallets.
                     </Text>
                   </div>
                 </Panel>
