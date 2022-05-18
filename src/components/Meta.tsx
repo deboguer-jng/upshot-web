@@ -29,7 +29,7 @@ interface MetaProps {
 function Meta({
   title = 'Upshot Analytics',
   description = 'NFTs offer us a vehicle for tokenizing anything, while the explosive growth of DeFi has demonstrated the power of permissionless financial primitives. Upshot is building scalable NFT pricing infrastructure at the intersection of DeFi x NFTs. Through a combination of crowdsourced appraisals and proprietary machine learning algorithms, Upshot provides deep insight into NFT markets and unlocks a wave of exotic new DeFi possibilities.',
-  image = 'https://upshot.io/img/opengraph/opengraph_analytics.jpg',
+  image = 'https://upshot.xyz/img/opengraph/opengraph_analytics.jpg',
   twitterCard = 'summary_large_image',
   subtitle,
 }: MetaProps) {
@@ -79,7 +79,7 @@ export default function Metadata() {
         setSubtitle(data?.assetById?.name)
         setImage(
           data?.assetById?.previewImageUrl ??
-            'https://upshot.io/img/opengraph/opengraph_nft.jpg'
+            'https://upshot.xyz/img/opengraph/opengraph_nft.jpg'
         )
       },
     }
@@ -94,7 +94,7 @@ export default function Metadata() {
       setSubtitle(data?.collectionById?.name)
       setImage(
         data?.collectionById?.imageUrl ??
-          'https://upshot.io/img/opengraph/opengraph_collection.jpg'
+          'https://upshot.xyz/img/opengraph/opengraph_collection.jpg'
       )
     },
   })
@@ -135,9 +135,7 @@ export default function Metadata() {
     return (
       <Meta
         subtitle="gmi"
-        image={`https://stage.analytics.upshot.io/.netlify/functions/gmi?wallet=${encodeURIComponent(
-          wallet
-        )}&lastUpdated=${Date.now()}&fileType=.png`}
+        image="https://upshot.xyz/img/opengraph/opengraph_gmi.png"
       />
     )
   } else if (parts[0] === 'waitlist') {
@@ -146,7 +144,7 @@ export default function Metadata() {
     return (
       <Meta
         subtitle="Search"
-        image="https://upshot.io/img/opengraph/opengraph_search.jpg"
+        image="https://upshot.xyz/img/opengraph/opengraph_search.jpg"
       />
     )
   } else if (parts[0] === 'faq') {
