@@ -20,22 +20,20 @@ import { useWeb3React } from '@web3-react/core'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { ConnectorName, connectorsByName } from 'constants/connectors'
 import { format } from 'date-fns'
+import Head from 'next/head'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useRef, useState } from 'react'
-import { useDispatch } from 'react-redux'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
-import { setAlertState } from 'redux/reducers/layout'
 import { setIsBeta } from 'redux/reducers/user'
 import {
   selectAddress,
-  selectEns,
   setActivatingConnector,
   setAddress,
   setEns,
 } from 'redux/reducers/web3'
 import { shortenAddress } from 'utils/address'
-import { gmiIndex, gmiLabel } from 'utils/gmi'
+import { gmiIndex, gmiLabel, gmiPercentRank } from 'utils/gmi'
 
 import FooterModal from '../components/FooterModal'
 import { GET_GMI, GetGmiData, GetGmiVars } from '../graphql/queries'
@@ -99,6 +97,8 @@ function GmiPanel({
   gainsRealized,
   gainsUnrealized,
   gainsTotal,
+  totalGainPercent,
+  gmiPercentile,
   onReset,
   onToggleFaq,
   onTogglePreview,
@@ -109,11 +109,7 @@ function GmiPanel({
   const rank = gmiLabel(gmi)
 
   return (
-    <Panel
-      outlined
-      backgroundColor="grey-900"
-      sx={{ width: ['100%', '100%', 'auto'] }}
-    >
+    <Panel outlined backgroundColor="grey-900">
       <Flex sx={{ flexGrow: 1, width: '100%' }}>
         {!isMobile && (
           <Flex sx={{ flexGrow: 1, width: '100%' }}>
@@ -321,17 +317,13 @@ function GmiPanel({
               }}
             >
               <Text sx={{ fontSize: '16px', fontWeight: 'heading' }}>
-                Realized Gains
+                Wallet Rank
               </Text>
               <Text
-                color={Number(gainsRealized) > 0 ? 'green' : 'red'}
+                color={'blue'}
                 sx={{ fontSize: '26px', fontWeight: 'bold' }}
               >
-                <Text sx={{ fontWeight: '400 !important' }}>Ξ</Text>
-                {formatNumber(gainsRealized, {
-                  fromWei: true,
-                  decimals: 2,
-                })}
+                Top {gmiPercentRank(gmiPercentile)}%
               </Text>
             </Flex>
           </Grid>
@@ -379,20 +371,6 @@ function GmiPreview({
   wallet: string
   onTogglePreview: () => void
 }) {
-  const address = useAppSelector(selectAddress)
-  const connectedEns = useAppSelector(selectEns)
-  const [userOwnedWallet, setUserOwnedWallet] = useState(false)
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    if (wallet.startsWith('0x')) {
-      setUserOwnedWallet(address == wallet)
-    }
-    if (wallet.endsWith('.eth')) {
-      setUserOwnedWallet(connectedEns == wallet)
-    }
-  }, [address, connectedEns])
-
   const { loading, error, data } = useQuery<GetGmiData, GetGmiVars>(GET_GMI, {
     errorPolicy: 'all',
     fetchPolicy: 'no-cache',
@@ -423,20 +401,8 @@ function GmiPreview({
   const gainsTotal =
     parseUint256(data?.getUser?.addresses?.[0]?.realizedGain ?? '0') +
     parseUint256(data?.getUser?.addresses?.[0]?.unrealizedGain ?? '0')
-
-  const handleCopyGmiLink = () => {
-    const gmiLink = `https://stage.analytics.upshot.io/.netlify/functions/gmi?wallet=${encodeURIComponent(
-      wallet
-    )}&lastUpdated=${Date.now()}&filetype=.png`
-
-    navigator.clipboard.writeText(gmiLink)
-    dispatch(
-      setAlertState({
-        showAlert: true,
-        alertText: 'Link copied to clipboard!',
-      })
-    )
-  }
+  const totalGainPercent = data?.getUser?.addresses?.[0]?.totalGainPercent ?? 0
+  const gmiPercentile = data?.getUser?.addresses?.[0]?.gmiPercentile ?? 100
 
   return (
     <Panel
@@ -462,8 +428,7 @@ function GmiPreview({
         </IconButton>
       </Flex>
       <Text color="grey-300" sx={{ lineHeight: 1 }}>
-        Share {userOwnedWallet ? 'your' : `${displayName}'s`} Upshot gmi on
-        Twitter! {userOwnedWallet && 'Flex your degen level.'}
+        Share your Upshot gmi card on Twitter! Flex your degen level.
       </Text>
 
       <Panel backgroundColor="black" sx={{ padding: '0 !important' }}>
@@ -477,6 +442,8 @@ function GmiPreview({
             gainsRealized,
             gainsUnrealized,
             gainsTotal,
+            totalGainPercent,
+            gmiPercentile,
           }}
         />
       </Panel>
@@ -486,9 +453,7 @@ function GmiPreview({
         target="_blank"
         rel="noopener noreferrer nofollow"
         href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
-          `Check out ${
-            userOwnedWallet ? 'my' : `${displayName}'s`
-          } Upshot gmi:\nhttps://upshot.xyz/gmi/${wallet}`
+          `View my Upshot gmi:\nhttps://upshot.xyz/gmi/${wallet}`
         )}`}
         sx={{ width: '100%', textDecoration: 'none !important' }}
       >
@@ -504,10 +469,6 @@ function GmiPreview({
           </Text>
           <Icon color="white" icon="twitter" size={32} />
         </ShareButton>
-      </Link>
-
-      <Link sx={{ textAlign: 'center' }} onClick={handleCopyGmiLink}>
-        Copy to clipboard
       </Link>
     </Panel>
   )
@@ -564,7 +525,7 @@ export function GmiScore({
           lineHeight: '54px',
         }}
       >
-        {gmi ? Math.floor(gmi) : '-'}
+        {gmi ? Math.round(gmi) : '-'}
       </Text>
       <Text
         color="grey-500"
@@ -726,6 +687,8 @@ function GmiCard({
   const gainsTotal =
     parseUint256(data?.getUser?.addresses?.[0]?.realizedGain ?? '0') +
     parseUint256(data?.getUser?.addresses?.[0]?.unrealizedGain ?? '0')
+  const totalGainPercent = data?.getUser?.addresses?.[0]?.totalGainPercent ?? 0
+  const gmiPercentile = data?.getUser?.addresses?.[0]?.gmiPercentile ?? 100
 
   return (
     <GmiPanel
@@ -738,6 +701,8 @@ function GmiCard({
         gainsRealized,
         gainsUnrealized,
         gainsTotal,
+        totalGainPercent,
+        gmiPercentile,
         onReset,
         onToggleFaq,
         onTogglePreview,
@@ -803,6 +768,30 @@ export default function GmiView() {
 
   return (
     <>
+      <Head>
+        <title>gmi | Upshot Analytics</title>
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@UpshotHQ" />
+        <meta
+          name="twitter:title"
+          content={
+            router.query['wallet']
+              ? `${router.query['wallet']} | Upshot gmi`
+              : 'Upshot gmi'
+          }
+        />
+        <meta
+          name="twitter:description"
+          content="Search any wallet to see the Upshot gmi."
+        />
+        {!!router.query['wallet'] && (
+          <meta
+            name="twitter:image"
+            content={`https://stage.analytics.upshot.io/.netlify/functions/gmi?wallet=${router.query['wallet']}&filetype=.png`}
+          />
+        )}
+        <meta property="og:type" content="website" />
+      </Head>
       <Box
         sx={{
           position: 'fixed',

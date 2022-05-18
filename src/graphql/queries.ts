@@ -71,6 +71,8 @@ export type GetGmiData = {
       numAssetsOwned: number
       numBlueChipsOwned: number
       numCollectionsOwned: number
+      totalGainPercent: number
+      gmiPercentile: number
     }[]
   }
 }
@@ -90,6 +92,8 @@ export const GET_GMI = gql`
         numAssetsOwned
         numBlueChipsOwned
         numCollectionsOwned
+        totalGainPercent
+        gmiPercentile
       }
     }
   }

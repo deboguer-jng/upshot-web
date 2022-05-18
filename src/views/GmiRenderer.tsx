@@ -5,7 +5,7 @@ import { format } from 'date-fns'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { shortenAddress } from 'utils/address'
-import { gmiLabel } from 'utils/gmi'
+import { gmiLabel, gmiPercentRank } from 'utils/gmi'
 
 import { GET_GMI, GetGmiData, GetGmiVars } from '../graphql/queries'
 import { GmiArtwork, GmiScore } from './Gmi'
@@ -26,6 +26,8 @@ export interface GmiSocialCardProps {
   gainsRealized: string
   gainsUnrealized: string
   gainsTotal: number
+  totalGainPercent: number
+  gmiPercentile: number
 }
 
 function GmiRow({ label, isEth, value = '', color = 'grey-500' }: GmiRowProps) {
@@ -123,6 +125,8 @@ export function GmiSocialCard({
   gainsRealized,
   gainsUnrealized,
   gainsTotal,
+  totalGainPercent,
+  gmiPercentile,
 }: GmiSocialCardProps) {
   const rank = gmiLabel(gmi)
 
@@ -199,13 +203,9 @@ export function GmiSocialCard({
               })}
             />
             <GmiRow
-              isEth
-              label="Realized Gains"
-              color={Number(gainsRealized) > 0 ? 'green' : 'red'}
-              value={formatNumber(gainsRealized, {
-                fromWei: true,
-                decimals: 2,
-              })}
+              label="Wallet Rank"
+              color={'blue'}
+              value={`Top ${gmiPercentRank(gmiPercentile)}%`}
             />
           </Flex>
           <Flex sx={{ flexDirection: 'column' }}>
