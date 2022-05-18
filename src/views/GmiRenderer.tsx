@@ -5,7 +5,7 @@ import { format } from 'date-fns'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { shortenAddress } from 'utils/address'
-import { gmiLabel } from 'utils/gmi'
+import { gmiLabel, gmiPercentRank } from 'utils/gmi'
 
 import { GET_GMI, GetGmiData, GetGmiVars } from '../graphql/queries'
 import { GmiArtwork, GmiScore } from './Gmi'
@@ -26,6 +26,8 @@ export interface GmiSocialCardProps {
   gainsRealized: string
   gainsUnrealized: string
   gainsTotal: number
+  totalGainPercent: number
+  gmiPercentile: number
 }
 
 function GmiRow({ label, isEth, value = '', color = 'grey-500' }: GmiRowProps) {
@@ -93,10 +95,10 @@ export function GmiRenderError({ wallet }: { wallet?: string }) {
             </Flex>
             <GmiRow label="Blue Chips Owned" color="blue" value="-" />
             <GmiRow label="First Purchase" color="blue" value="-" />
+            <GmiRow isEth label="Wallet Rank" color="blue" value="-" />
             <GmiRow isEth label="Trade Volume" color="blue" value="-" />
             <GmiRow isEth label="Total Gains" color="white" value="-" />
-            <GmiRow isEth label="Unrealized Gains" color="white" value="-" />
-            <GmiRow isEth label="Realized Gains" color="white" value="-" />
+            <GmiRow isEth label="ROI (%)" color="white" value="-" />
           </Flex>
           <Flex sx={{ flexDirection: 'column' }}>
             <Box
@@ -131,6 +133,8 @@ export function GmiSocialCard({
   gainsRealized,
   gainsUnrealized,
   gainsTotal,
+  totalGainPercent,
+  gmiPercentile,
 }: GmiSocialCardProps) {
   const rank = gmiLabel(gmi)
 
@@ -182,6 +186,11 @@ export function GmiSocialCard({
               }
             />
             <GmiRow
+              label="Wallet Rank"
+              color={'blue'}
+              value={`Top ${gmiPercentRank(gmiPercentile)}%`}
+            />
+            <GmiRow
               isEth
               label="Trade Volume"
               color="blue"
@@ -192,29 +201,16 @@ export function GmiSocialCard({
             />
             <GmiRow
               isEth
-              label="Total Gains"
+              label="Total Gains (Ξ)"
               color={gainsTotal > 0 ? 'green' : 'red'}
               value={formatNumber(gainsTotal, {
                 decimals: 2,
               })}
             />
             <GmiRow
-              isEth
-              label="Unrealized Gains"
-              color={Number(gainsUnrealized) > 0 ? 'green' : 'red'}
-              value={formatNumber(gainsUnrealized, {
-                fromWei: true,
-                decimals: 2,
-              })}
-            />
-            <GmiRow
-              isEth
-              label="Realized Gains"
-              color={Number(gainsRealized) > 0 ? 'green' : 'red'}
-              value={formatNumber(gainsRealized, {
-                fromWei: true,
-                decimals: 2,
-              })}
+              label="ROI (%)"
+              color={Number(totalGainPercent) > 0 ? 'green' : 'red'}
+              value={`${totalGainPercent && totalGainPercent > 0 ? '+' : ''}${totalGainPercent?.toFixed(2)}%`}
             />
           </Flex>
           <Flex sx={{ flexDirection: 'column' }}>
@@ -281,6 +277,8 @@ export default function GmiRenderer() {
   const gainsTotal =
     parseUint256(data?.getUser?.addresses?.[0]?.realizedGain ?? '0') +
     parseUint256(data?.getUser?.addresses?.[0]?.unrealizedGain ?? '0')
+  const totalGainPercent = data?.getUser?.addresses?.[0]?.totalGainPercent ?? 0
+  const gmiPercentile = data?.getUser?.addresses?.[0]?.gmiPercentile ?? 100
 
   return (
     <Flex sx={{ minHeight: '100vh', minWidth: '100vw' }}>
@@ -294,6 +292,8 @@ export default function GmiRenderer() {
           gainsRealized,
           gainsUnrealized,
           gainsTotal,
+          totalGainPercent,
+          gmiPercentile,
         }}
       />
     </Flex>
