@@ -130,112 +130,142 @@ export function GmiSocialCard({
   totalBlueChips,
   firstPurchase,
   tradeVolume,
-  gainsRealized,
-  gainsUnrealized,
   gainsTotal,
   totalGainPercent,
   gmiPercentile,
 }: GmiSocialCardProps) {
   const rank = gmiLabel(gmi)
+  const [width, setWidth] = useState<number>()
+
+  useEffect(() => {
+    const updateSize = () => {
+      const el =
+        document.getElementById('gmiResults')?.parentElement?.parentElement
+      const width = el?.offsetWidth
+      if (!width) return
+
+      setWidth(width)
+    }
+
+    updateSize()
+
+    window.addEventListener('resize', updateSize)
+    return () => window.removeEventListener('resize', updateSize)
+  }, [])
 
   return (
-    <Flex
-      id="gmiResults"
+    <Box
       sx={{
-        minHeight: '100%',
-        width: '100%',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        padding: 40,
-        gap: 8,
+        width: width ?? 'auto',
+        height: width ? Number(width) * 0.5 : 'auto',
         overflow: 'hidden',
-        background: 'black',
+        maxWidth: 'calc(100vw - 102px)',
       }}
     >
-      <Flex sx={{ flexDirection: 'column' }}>
-        <Flex sx={{ justifyContent: 'space-between' }}>
-          <Text variant="h1Primary" sx={{ fontSize: 7 }}>
-            {rank}
-          </Text>
-          <Text color="grey-500" sx={{ fontSize: 3, textAlign: 'right' }}>
-            {displayName}
-          </Text>
-        </Flex>
+      <Flex
+        id="gmiResults"
+        sx={{
+          width: '100%',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          padding: 40,
+          gap: 8,
+          overflow: 'hidden',
+          background: 'black',
+          transform: `scale(${Number(width) / 1200})`,
+          'transform-origin': 'top left',
+          minWidth: width ? 1200 : 'auto',
+          minHeight: width ? 600 : 'auto',
+        }}
+      >
+        <Flex sx={{ flexDirection: 'column' }}>
+          <Flex sx={{ justifyContent: 'space-between' }}>
+            <Text variant="h1Primary" sx={{ fontSize: 7 }}>
+              {rank}
+            </Text>
+            <Text color="grey-500" sx={{ fontSize: 3, textAlign: 'right' }}>
+              {displayName}
+            </Text>
+          </Flex>
 
-        <Flex sx={{ marginBottom: 2 }}>
-          <GmiScore {...{ gmi }} />
-        </Flex>
+          <Flex sx={{ marginBottom: 2 }}>
+            <GmiScore {...{ gmi }} />
+          </Flex>
 
-        <Grid
-          sx={{ gridTemplateColumns: ['1fr', '1fr', '1.5fr 1fr'], flexGrow: 1 }}
-        >
-          <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-            <Flex sx={{ flexDirection: 'column', gap: 4, marginBottom: 4 }}>
-              <ProgressBar percent={(gmi / 1000) * 100} bgColor="grey-900" />
+          <Grid
+            sx={{
+              gridTemplateColumns: '1.5fr 1fr',
+              flexGrow: 1,
+            }}
+          >
+            <Flex sx={{ flexDirection: 'column', gap: 4 }}>
+              <Flex sx={{ flexDirection: 'column', gap: 4, marginBottom: 4 }}>
+                <ProgressBar percent={(gmi / 1000) * 100} bgColor="grey-900" />
+              </Flex>
+              <GmiRow
+                label="Blue Chips Owned"
+                color="blue"
+                value={totalBlueChips}
+              />
+              <GmiRow
+                label="First Purchase"
+                color="blue"
+                value={
+                  firstPurchase ? format(firstPurchase * 1000, 'M/d/yyyy') : '-'
+                }
+              />
+              <GmiRow
+                label="Wallet Rank"
+                color={'blue'}
+                value={`Top ${gmiPercentRank(gmiPercentile)}%`}
+              />
+              <GmiRow
+                isEth
+                label="Trade Volume"
+                color="blue"
+                value={formatNumber(tradeVolume, {
+                  fromWei: true,
+                  decimals: 2,
+                })}
+              />
+              <GmiRow
+                isEth
+                label="Total Gains (Ξ)"
+                color={!gainsTotal ? 'white' : gainsTotal > 0 ? 'green' : 'red'}
+                value={formatNumber(gainsTotal, {
+                  decimals: 2,
+                })}
+              />
+              <GmiRow
+                label="ROI (%)"
+                color={Number(totalGainPercent) > 0 ? 'green' : 'red'}
+                value={`${
+                  totalGainPercent && totalGainPercent > 0 ? '+' : ''
+                }${totalGainPercent?.toFixed(2)}%`}
+              />
             </Flex>
-            <GmiRow
-              label="Blue Chips Owned"
-              color="blue"
-              value={totalBlueChips}
-            />
-            <GmiRow
-              label="First Purchase"
-              color="blue"
-              value={
-                firstPurchase ? format(firstPurchase * 1000, 'M/d/yyyy') : '-'
-              }
-            />
-            <GmiRow
-              label="Wallet Rank"
-              color={'blue'}
-              value={`Top ${gmiPercentRank(gmiPercentile)}%`}
-            />
-            <GmiRow
-              isEth
-              label="Trade Volume"
-              color="blue"
-              value={formatNumber(tradeVolume, {
-                fromWei: true,
-                decimals: 2,
-              })}
-            />
-            <GmiRow
-              isEth
-              label="Total Gains (Ξ)"
-              color={!gainsTotal ? 'white' : gainsTotal > 0 ? 'green' : 'red'}
-              value={formatNumber(gainsTotal, {
-                decimals: 2,
-              })}
-            />
-            <GmiRow
-              label="ROI (%)"
-              color={Number(totalGainPercent) > 0 ? 'green' : 'red'}
-              value={`${
-                totalGainPercent && totalGainPercent > 0 ? '+' : ''
-              }${totalGainPercent?.toFixed(2)}%`}
-            />
-          </Flex>
-          <Flex sx={{ flexDirection: 'column' }}>
-            <Box
-              sx={{
-                position: 'relative',
-                width: '100%',
-                height: 'auto',
-                flexGrow: 1,
-              }}
-            >
-              <GmiArtwork {...{ gmi }} />
-            </Box>
-          </Flex>
-        </Grid>
+            <Flex sx={{ flexDirection: 'column' }}>
+              <Box
+                sx={{
+                  position: 'relative',
+                  width: '100%',
+                  height: 'auto',
+                  flexGrow: 1,
+                }}
+              >
+                <GmiArtwork {...{ gmi }} />
+              </Box>
+            </Flex>
+          </Grid>
+        </Flex>
+        <Flex sx={{ justifyContent: 'space-between', alignItems: 'baseline' }}>
+          <img src="/img/upshot_logo_white.png" width={140} alt="Upshot Logo" />
+          <Text color="grey-500" sx={{ fontSize: 3 }}>
+            upshot.xyz/gmi
+          </Text>
+        </Flex>
       </Flex>
-      <Flex sx={{ justifyContent: 'space-between', alignItems: 'baseline' }}>
-        <img src="/img/upshot_logo_white.png" width={140} alt="Upshot Logo" />
-        <Text color="grey-500" sx={{ fontSize: 3 }}>
-          upshot.xyz/gmi
-        </Text>
-      </Flex>
-    </Flex>
+    </Box>
   )
 }
 
