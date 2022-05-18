@@ -1,11 +1,19 @@
-import { Container, useTheme } from '@upshot-tech/upshot-ui'
-import Breadcrumbs from '../components/Breadcrumbs'
+import { 
+  Button,
+  Container, 
+  Icon, 
+  InputRounded,
+  SettingsMenuItem,
+  SettingsPanel,
+  TextareaRounded,
+  useTheme
+} from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import Head from 'next/head'
-import NextLink from 'next/link'
-import { useRouter } from 'next/router'
-import { useEffect, useRef, useState } from 'react'
+import { Box, Flex, Text } from 'theme-ui'
+
+import Breadcrumbs from '../components/Breadcrumbs'
 
 export default function SettingsView() {
   const { theme } = useTheme()
@@ -53,6 +61,9 @@ export default function SettingsView() {
           },
         ]
 
+  const onSave = () => {}
+  const onTwitterConnect = () => {}
+
   return (
     <>
       <Head>
@@ -71,6 +82,48 @@ export default function SettingsView() {
         }}
       >
         <Breadcrumbs crumbs={breadcrumbs} />
+
+        <SettingsPanel>
+          <SettingsMenuItem label="Profile">
+            <Flex sx={{flexDirection: 'column', gap: '10px'}}>
+              <Text color={theme.colors['grey-500']}>Information</Text>
+              <InputRounded dark={true} sx={{padding: '16px'}} />
+              <TextareaRounded 
+                dark={true}
+                optional={true}
+                showCount={true}
+                maxLength={100}
+                placeholder='Write a short bio for your profile'
+              />
+              <Flex sx={{alignItems: 'center', marginBottom: '20px'}}>
+                <Icon color="grey-500" icon="twitter" size={32} />
+                <Flex sx={{
+                  width: '100%',
+                  borderRadius: theme.radii.lg,
+                  position: 'relative',
+                  backgroundColor: theme.colors.black,
+                  height: '60px',
+                  alignItems: 'center',
+                  padding: '16px',
+                  marginLeft: '10px'
+                }}>
+                  <Text color="grey-500">Twitter</Text>
+                  <Button 
+                    variant="secondary" 
+                    capitalize={true}
+                    color="grey-500"
+                    sx={{position: 'absolute', right: '10px'}}
+                    onClick={onTwitterConnect}
+                  >Connect</Button>
+                </Flex>
+              </Flex>
+              <Button onClick={onSave} sx={{width: 150}} capitalize={true}>Save Changes</Button>
+            </Flex>
+          </SettingsMenuItem>
+          <SettingsMenuItem label="Notifications">
+            
+          </SettingsMenuItem>
+        </SettingsPanel>
       </Container>
     </>
   )
