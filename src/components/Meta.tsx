@@ -65,13 +65,10 @@ function Meta({
 export default function Metadata() {
   const [subtitle, setSubtitle] = useState<string>()
   const [image, setImage] = useState<string>()
-  const parts = useMemo(
-    () =>
-      typeof window === 'undefined'
-        ? []
-        : (window.location.pathname || '/').slice(1).split('/'),
-    []
-  )
+  const parts =
+    typeof window === 'undefined'
+      ? []
+      : (window.location.pathname || '/').slice(1).split('/')
 
   const [getMetaAsset] = useLazyQuery<GetMetaAssetData, GetMetaAssetVars>(
     GET_META_ASSET,
@@ -124,9 +121,13 @@ export default function Metadata() {
     }
   }, [getMetaAsset, getMetaCollection, getMetaCollector, parts])
 
+  console.log(parts)
+
   // Synchronous metadata
   if (parts[0] === 'gmi' && parts[1]) {
     const wallet = parts[1].split('?')[0]
+
+    console.log('GMI', wallet)
 
     return (
       <Meta
