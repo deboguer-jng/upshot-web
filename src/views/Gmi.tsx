@@ -322,7 +322,7 @@ function GmiPanel({
                 color={Number(totalGainPercent) > 0 ? 'green' : 'red'}
                 sx={{ fontSize: '26px', fontWeight: 'bold' }}
               >
-                {totalGainPercent?.toFixed(2)}%
+                {totalGainPercent && totalGainPercent > 0 ? '+' : ''}{totalGainPercent?.toFixed(2)}%
               </Text>
             </Flex>
           </Grid>
@@ -467,7 +467,7 @@ function GmiPreview({
         </IconButton>
       </Flex>
       <Text color="grey-300" sx={{ lineHeight: 1 }}>
-        Share your Upshot gmi card on Twitter! Flex your degen level.
+        Share {userOwnedWallet ? 'your' : `${displayName}'s`} Upshot gmi on Twitter! {userOwnedWallet && 'Flex your degen level.'}
       </Text>
 
       <Panel backgroundColor="black" sx={{ padding: '0 !important' }}>
@@ -492,7 +492,7 @@ function GmiPreview({
         target="_blank"
         rel="noopener noreferrer nofollow"
         href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
-          `View my Upshot gmi:\nhttps://upshot.xyz/gmi/${wallet}`
+          `Check out ${userOwnedWallet ? 'my' : `${displayName}'s`} Upshot gmi:\nhttps://upshot.xyz/gmi/${wallet}`
         )}`}
         sx={{ width: '100%', textDecoration: 'none !important' }}
       >

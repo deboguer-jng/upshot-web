@@ -210,7 +210,7 @@ export function GmiSocialCard({
             <GmiRow
               label="ROI (%)"
               color={Number(totalGainPercent) > 0 ? 'green' : 'red'}
-              value={`${totalGainPercent?.toFixed(2)}%`}
+              value={`${totalGainPercent && totalGainPercent > 0 ? '+' : ''}${totalGainPercent?.toFixed(2)}%`}
             />
           </Flex>
           <Flex sx={{ flexDirection: 'column' }}>
