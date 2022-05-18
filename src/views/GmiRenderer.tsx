@@ -85,10 +85,10 @@ export function GmiRenderError({ wallet }: { wallet?: string }) {
           </Flex>
           <GmiRow label="Blue Chips Owned" color="blue" />
           <GmiRow label="First Purchase" color="blue" />
+          <GmiRow label="Wallet Rank" color="blue" />
           <GmiRow label="Trade Volume" color="blue" />
-          <GmiRow label="Total Gains" />
-          <GmiRow label="Unrealized Gains" />
-          <GmiRow label="Realized Gains" />
+          <GmiRow label="Total Gains (Ξ)" />
+          <GmiRow label="ROI (%)" />
         </Flex>
         <Flex sx={{ flexDirection: 'column' }}>
           <Text color="grey-500" sx={{ fontSize: 3, textAlign: 'right' }}>
@@ -177,6 +177,11 @@ export function GmiSocialCard({
               }
             />
             <GmiRow
+              label="Wallet Rank"
+              color={'blue'}
+              value={`Top ${gmiPercentRank(gmiPercentile)}%`}
+            />
+            <GmiRow
               isEth
               label="Trade Volume"
               color="blue"
@@ -187,25 +192,16 @@ export function GmiSocialCard({
             />
             <GmiRow
               isEth
-              label="Total Gains"
+              label="Total Gains (Ξ)"
               color={gainsTotal > 0 ? 'green' : 'red'}
               value={formatNumber(gainsTotal, {
                 decimals: 2,
               })}
             />
             <GmiRow
-              isEth
-              label="Unrealized Gains"
-              color={Number(gainsUnrealized) > 0 ? 'green' : 'red'}
-              value={formatNumber(gainsUnrealized, {
-                fromWei: true,
-                decimals: 2,
-              })}
-            />
-            <GmiRow
-              label="Wallet Rank"
-              color={'blue'}
-              value={`Top ${gmiPercentRank(gmiPercentile)}%`}
+              label="ROI (%)"
+              color={Number(totalGainPercent) > 0 ? 'green' : 'red'}
+              value={`${totalGainPercent?.toFixed(2)}%`}
             />
           </Flex>
           <Flex sx={{ flexDirection: 'column' }}>

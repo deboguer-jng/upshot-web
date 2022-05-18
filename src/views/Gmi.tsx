@@ -246,6 +246,27 @@ function GmiPanel({
               }}
             >
               <Text sx={{ fontSize: '16px', fontWeight: 'heading' }}>
+                Wallet Rank
+              </Text>
+              <Text
+                color={'blue'}
+                sx={{ fontSize: '26px', fontWeight: 'bold' }}
+              >
+                Top {gmiPercentRank(gmiPercentile)}%
+              </Text>
+            </Flex>
+
+            <Flex
+              sx={{
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                border: `1px solid #545454`,
+                borderRadius: '10px',
+                minHeight: '92px',
+                padding: '20px',
+              }}
+            >
+              <Text sx={{ fontSize: '16px', fontWeight: 'heading' }}>
                 Trade Volume
               </Text>
               <Text color="blue" sx={{ fontSize: '26px', fontWeight: 'bold' }}>
@@ -268,7 +289,7 @@ function GmiPanel({
               }}
             >
               <Text sx={{ fontSize: '16px', fontWeight: 'heading' }}>
-                Total Gains
+                Total Gains (Ξ)
               </Text>
               <Text
                 color={gainsTotal > 0 ? 'green' : 'red'}
@@ -292,38 +313,13 @@ function GmiPanel({
               }}
             >
               <Text sx={{ fontSize: '16px', fontWeight: 'heading' }}>
-                Unrealized Gains
+                ROI (%)
               </Text>
               <Text
-                color={Number(gainsUnrealized) > 0 ? 'green' : 'red'}
+                color={Number(totalGainPercent) > 0 ? 'green' : 'red'}
                 sx={{ fontSize: '26px', fontWeight: 'bold' }}
               >
-                <Text sx={{ fontWeight: '400 !important' }}>Ξ</Text>
-                {formatNumber(gainsUnrealized, {
-                  fromWei: true,
-                  decimals: 2,
-                })}
-              </Text>
-            </Flex>
-
-            <Flex
-              sx={{
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                border: `1px solid #545454`,
-                borderRadius: '10px',
-                minHeight: '92px',
-                padding: '20px',
-              }}
-            >
-              <Text sx={{ fontSize: '16px', fontWeight: 'heading' }}>
-                Wallet Rank
-              </Text>
-              <Text
-                color={'blue'}
-                sx={{ fontSize: '26px', fontWeight: 'bold' }}
-              >
-                Top {gmiPercentRank(gmiPercentile)}%
+                {totalGainPercent?.toFixed(2)}%
               </Text>
             </Flex>
           </Grid>
