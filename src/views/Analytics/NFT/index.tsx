@@ -56,11 +56,11 @@ import Collectors from '../components/ExplorePanel/Collectors'
 import { MiniNFTContainer } from '../components/Styled'
 import {
   GET_ASSET,
+  GET_SIMILAR_ASSETS,
   GetAssetData,
   GetAssetVars,
   GetSimilarAssetsData,
   GetSimilarAssetsVars,
-  GET_SIMILAR_ASSETS,
 } from './queries'
 
 function Layout({ children }: { children: React.ReactNode }) {
@@ -993,7 +993,7 @@ export default function NFTView() {
                               )
                             : undefined
                         }
-                        name={name}
+                        name={asset.similarAsset.name}
                         type="recommend"
                         image={asset.similarAsset.mediaUrl}
                         listing={
@@ -1003,7 +1003,7 @@ export default function NFTView() {
                                 decimals: 2,
                                 prefix: 'ETHER',
                               })
-                            : null
+                            : undefined
                         }
                         appraisal={
                           asset.similarAsset.lastAppraisalWeiPrice
@@ -1015,7 +1015,7 @@ export default function NFTView() {
                                   prefix: 'ETHER',
                                 }
                               )
-                            : null
+                            : undefined
                         }
                         linkComponent={NextLink}
                         link={`https://opensea.io/assets/${asset.similarAsset.id}`}
