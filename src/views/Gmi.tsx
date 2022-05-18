@@ -505,8 +505,8 @@ function GmiPreview({
         href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
           `${
             userOwnedWallet
-              ? `My gmi is ${Math.floor(gmi)} (${rank})`
-              : `${displayName} has a gmi of ${Math.round(gmi)} (${rank})`
+              ? `My gmi is ${Math.floor(gmi)}/1000 (${rank})`
+              : `${displayName} has a gmi of ${Math.floor(gmi)}/1000 (${rank})`
           }. What's yours? \nhttps://upshot.xyz/gmi/${wallet} @UpshotHQ`
         )}`}
         sx={{ width: '100%', textDecoration: 'none !important' }}
