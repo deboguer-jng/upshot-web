@@ -56,12 +56,15 @@ import { formatDistance } from 'utils/time'
 
 import Breadcrumbs from '../components/Breadcrumbs'
 import {
+  GET_ALL_OWNED_COLLECTIONS_WRAPPER,
   GET_COLLECTION_ASSETS,
   GET_COLLECTOR,
   GET_COLLECTOR_TX_HISTORY,
   GET_UNSUPPORTED_AGGREGATE_COLLECTION_STATS,
   GET_UNSUPPORTED_ASSETS,
   GET_UNSUPPORTED_FLOORS,
+  GetAllOwnedCollectionsWrapperData,
+  GetAllOwnedCollectionsWrapperVars,
   GetCollectionAssetsData,
   GetCollectionAssetsVars,
   GetCollectorData,
@@ -74,9 +77,6 @@ import {
   GetUnsupportedAssetsVars,
   GetUnsupportedFloorsData,
   GetUnsupportedFloorsVars,
-  GetAllOwnedCollectionsWrapperData,
-  GetAllOwnedCollectionsWrapperVars,
-  GET_ALL_OWNED_COLLECTIONS_WRAPPER,
 } from './queries'
 
 type Collection = {
@@ -416,6 +416,7 @@ export default function UserView() {
   const [showCollection, setShowCollection] = useState<Collection>()
   const [collectionOffset, setCollectionOffset] = useState(0)
   const [assetOffset, setAssetOffset] = useState(0)
+  const [transactionOffset, setTransactionOffset] = useState(0)
   const [unsupportedAssetOffset, setUnsupportedAssetOffset] = useState(0)
 
   /* Address formatting */
@@ -722,26 +723,6 @@ export default function UserView() {
     })
   }, [collectionOffset, fetchMoreAllOwnedCollections])
 
-  const fetchTxHistories = (offset: number) => {
-    fetchMoreTxHistories({
-      variables: { txOffset: offset },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) return prev
-        return {
-          getTxHistory: {
-            txHistory: {
-              count: fetchMoreResult?.getTxHistory?.txHistory?.count ?? 0,
-              events: [
-                ...(prev?.getTxHistory?.txHistory?.events ?? []),
-                ...(fetchMoreResult?.getTxHistory?.txHistory?.events ?? []),
-              ],
-            },
-          },
-        }
-      },
-    })
-  }
-
   /* Infinite scroll: Assets */
   useEffect(() => {
     if (!assetOffset) return
@@ -790,6 +771,28 @@ export default function UserView() {
       },
     })
   }, [unsupportedAssetOffset, fetchMoreUnsupportedAssets])
+
+  useEffect(() => {
+    if (!transactionOffset) return
+
+    fetchMoreTxHistories({
+      variables: { txOffset: transactionOffset },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) return prev
+        return {
+          getTxHistory: {
+            txHistory: {
+              count: fetchMoreResult?.getTxHistory?.txHistory?.count ?? 0,
+              events: [
+                ...(prev?.getTxHistory?.txHistory?.events ?? []),
+                ...(fetchMoreResult?.getTxHistory?.txHistory?.events ?? []),
+              ],
+            },
+          },
+        }
+      },
+    })
+  }, [transactionOffset, fetchMoreTxHistories])
 
   const maybeLoadMoreCollections = useInfiniteLoader(
     handleFetchMoreCollections,
@@ -957,13 +960,10 @@ export default function UserView() {
     </Panel>
   )
 
-  const loadMore = () => {
-    // simulate a request
-    fetchTxHistories(
-      (txHistoryData?.getTxHistory?.txHistory?.events?.length ?? 0) + 1
-    )
-    return new Promise((resolve, reject) => {})
+  const loadMore =() => {
+    setTransactionOffset((txHistoryData?.getTxHistory?.txHistory?.events?.length ?? 0) + transactionOffset)
   }
+  // }, [loadingTxHistory, transactionOffset])
 
   const headerRenderer = (label) => {
     return (
@@ -1356,6 +1356,9 @@ export default function UserView() {
                           ))}
                         </Flex>
                       ) : !!txHistoryData?.getTxHistory?.txHistory?.count ? (
+                        <Box sx={{
+                          position: 'relative'
+                        }}>
                         <Box
                           sx={{
                             position: 'relative',
@@ -1364,7 +1367,7 @@ export default function UserView() {
                           }}
                           css={theme.scroll.thin.styles}
                         >
-                          <InfiniteLoader
+                          {/* <InfiniteLoader
                             isRowLoaded={({ index }) =>
                               !!txHistoryData?.getTxHistory?.txHistory?.events[
                                 index
@@ -1375,14 +1378,15 @@ export default function UserView() {
                               txHistoryData?.getTxHistory?.txHistory?.count
                             }
                           >
-                            {({ onRowsRendered, registerChild }) => (
+                            {({ onRowsRendered, registerChild }) => ( */}
                               <AutoSizer defaultWidth={700}>
                                 {({ width }) => (
                                   <>
                                     {isMobile ? (
+                                      <>
                                       <Table
-                                        ref={registerChild}
-                                        onRowsRendered={onRowsRendered}
+                                        // ref={registerChild}
+                                        // onRowsRendered={onRowsRendered}
                                         rowClassName="table-row"
                                         headerHeight={30}
                                         width={width}
@@ -1673,287 +1677,295 @@ export default function UserView() {
                                           }}
                                         />
                                       </Table>
+                                      {txHistoryData?.getTxHistory?.txHistory
+                                              ?.events.length !== txHistoryData?.getTxHistory?.txHistory
+                                              ?.count - 1 ? <Text onClick={loadMore} sx={{position: 'absolute', bottom: '1rem', left: '50%', transform: 'translateX(-50%)', whiteSpace: 'nowrap', cursor: 'pointer'}}> Show More ... </Text> : null }
+                                      </>
                                     ) : (
-                                      <Table
-                                        ref={registerChild}
-                                        onRowsRendered={onRowsRendered}
-                                        rowStyle={{ width: width }}
-                                        headerHeight={30}
-                                        width={width}
-                                        height={270}
-                                        rowHeight={40}
-                                        rowCount={
-                                          txHistoryData?.getTxHistory?.txHistory
-                                            ?.count
-                                        }
-                                        rowGetter={({ index }) =>
-                                          txHistoryData?.getTxHistory?.txHistory
-                                            ?.events[index]
-                                        }
-                                      >
-                                        <Column
-                                          label="Date"
-                                          dataKey="txAt"
-                                          headerRenderer={({ label }) =>
-                                            headerRenderer(label)
+                                      <>
+                                        <Table
+                                          rowStyle={{ width: width }}
+                                          headerHeight={30}
+                                          width={width}
+                                          height={260}
+                                          rowHeight={40}
+                                          rowCount={
+                                            txHistoryData?.getTxHistory?.txHistory
+                                              ?.events.length
                                           }
-                                          cellRenderer={({ rowData }) => {
-                                            return (
-                                              <Text
-                                                sx={{
-                                                  fontWeight: 'normal',
-                                                  fontSize: '16px',
-                                                  color: 'grey-500',
-                                                  textAlign: 'center',
-                                                }}
-                                              >
-                                                {rowData?.txAt
-                                                  ? format(
-                                                      rowData.txAt * 1000,
-                                                      'M/d/yyyy'
-                                                    )
-                                                  : '-'}
-                                              </Text>
-                                            )
-                                          }}
-                                          cellDataGetter={() => {}}
-                                          width={width * 0.2}
-                                        />
-                                        <Column
-                                          label="NFT"
-                                          dataKey="name"
-                                          headerRenderer={({ label }) =>
-                                            headerRenderer(label)
+                                          rowGetter={({ index }) =>
+                                            txHistoryData?.getTxHistory?.txHistory
+                                              ?.events[index]
                                           }
-                                          cellRenderer={({ rowData }) => {
-                                            return (
-                                              <Link
-                                                href={`/analytics/nft/${rowData?.asset?.id}`}
-                                                component={NextLink}
-                                              >
-                                                <Link
-                                                  component={NextLink}
+                                        >
+                                          <Column
+                                            label="Date"
+                                            dataKey="txAt"
+                                            headerRenderer={({ label }) =>
+                                              headerRenderer(label)
+                                            }
+                                            cellRenderer={({ rowData }) => {
+                                              return (
+                                                <Text
                                                   sx={{
-                                                    display: 'block',
-                                                    textOverflow: 'ellipsis',
-                                                    overflow: 'hidden',
+                                                    fontWeight: 'normal',
+                                                    fontSize: '16px',
+                                                    color: 'grey-500',
+                                                    textAlign: 'center',
                                                   }}
                                                 >
-                                                  {rowData?.asset?.name}
+                                                  {rowData?.txAt
+                                                    ? format(
+                                                        rowData.txAt * 1000,
+                                                        'M/d/yyyy'
+                                                      )
+                                                    : '-'}
+                                                </Text>
+                                              )
+                                            }}
+                                            cellDataGetter={() => {}}
+                                            width={width * 0.2}
+                                          />
+                                          <Column
+                                            label="NFT"
+                                            dataKey="name"
+                                            headerRenderer={({ label }) =>
+                                              headerRenderer(label)
+                                            }
+                                            cellRenderer={({ rowData }) => {
+                                              return (
+                                                <Link
+                                                  href={`/analytics/nft/${rowData?.asset?.id}`}
+                                                  component={NextLink}
+                                                >
+                                                  <Link
+                                                    component={NextLink}
+                                                    sx={{
+                                                      display: 'block',
+                                                      textOverflow: 'ellipsis',
+                                                      overflow: 'hidden',
+                                                    }}
+                                                  >
+                                                    {rowData?.asset?.name}
+                                                  </Link>
                                                 </Link>
-                                              </Link>
-                                            )
-                                          }}
-                                          cellDataGetter={() => {}}
-                                          width={width * 0.2}
-                                        />
-                                        <Column
-                                          label="Sender"
-                                          dataKey="txFromAddress"
-                                          headerRenderer={({ label }) =>
-                                            headerRenderer(label)
-                                          }
-                                          cellDataGetter={() => {}}
-                                          width={width * 0.2}
-                                          cellRenderer={({ rowData }) => {
-                                            return (
-                                              <Grid
-                                                sx={{
-                                                  alignItems: 'center',
-                                                  gap: 1,
-                                                  gridTemplateColumns:
-                                                    '12px auto',
-                                                  overflow: 'hidden',
-                                                }}
-                                              >
-                                                <Box
+                                              )
+                                            }}
+                                            cellDataGetter={() => {}}
+                                            width={width * 0.2}
+                                          />
+                                          <Column
+                                            label="Sender"
+                                            dataKey="txFromAddress"
+                                            headerRenderer={({ label }) =>
+                                              headerRenderer(label)
+                                            }
+                                            cellDataGetter={() => {}}
+                                            width={width * 0.2}
+                                            cellRenderer={({ rowData }) => {
+                                              return (
+                                                <Grid
                                                   sx={{
-                                                    borderRadius: 'circle',
-                                                    bg: 'yellow',
-                                                    width: 3,
-                                                    height: 3,
-                                                  }}
-                                                />
-                                                <Link
-                                                  href={`/analytics/user/${rowData?.txFromAddress}`}
-                                                  component={NextLink}
-                                                  sx={{
-                                                    display: 'block',
+                                                    alignItems: 'center',
+                                                    gap: 1,
+                                                    gridTemplateColumns:
+                                                      '12px auto',
                                                     overflow: 'hidden',
-                                                    fontSize: 2.5,
                                                   }}
                                                 >
-                                                  <Text
+                                                  <Box
+                                                    sx={{
+                                                      borderRadius: 'circle',
+                                                      bg: 'yellow',
+                                                      width: 3,
+                                                      height: 3,
+                                                    }}
+                                                  />
+                                                  <Link
+                                                    href={`/analytics/user/${rowData?.txFromAddress}`}
+                                                    component={NextLink}
                                                     sx={{
                                                       display: 'block',
                                                       overflow: 'hidden',
-                                                      textOverflow: 'ellipsis',
+                                                      fontSize: 2.5,
                                                     }}
                                                   >
-                                                    {extractEns(
-                                                      rowData?.txFromUser
-                                                        ?.addresses,
-                                                      rowData?.txFromAddress
-                                                    ) ?? rowData?.txFromAddress}
-                                                  </Text>
-                                                </Link>
-                                              </Grid>
-                                            )
-                                          }}
-                                        />
-                                        <Column
-                                          width={width * 0.2}
-                                          label="Recipient"
-                                          dataKey="txToAddress"
-                                          headerRenderer={({ label }) =>
-                                            headerRenderer(label)
-                                          }
-                                          cellDataGetter={() => {}}
-                                          cellRenderer={({ rowData }) => {
-                                            return (
-                                              <TableCell
-                                                sx={{
-                                                  display: 'grid',
-                                                  alignItems: 'center',
-                                                  gridTemplateColumns:
-                                                    '12px auto',
-                                                  gap: 1,
-                                                }}
-                                              >
-                                                <Box
-                                                  sx={{
-                                                    borderRadius: 'circle',
-                                                    bg: 'purple',
-                                                    width: 3,
-                                                    height: 3,
-                                                  }}
-                                                />
-                                                <Link
-                                                  href={`/analytics/user/${rowData?.txToAddress}`}
-                                                  component={NextLink}
-                                                  sx={{
-                                                    display: 'block',
-                                                    overflow: 'hidden',
-                                                    fontSize: 2.5,
-                                                  }}
-                                                >
-                                                  <Text
-                                                    sx={{
-                                                      display: 'block',
-                                                      overflow: 'hidden',
-                                                      textOverflow: 'ellipsis',
-                                                    }}
-                                                  >
-                                                    {extractEns(
-                                                      rowData?.txToUser
-                                                        ?.addresses,
-                                                      rowData?.txToAddress
-                                                    ) ?? rowData?.txToAddress}
-                                                  </Text>
-                                                </Link>
-                                              </TableCell>
-                                            )
-                                          }}
-                                        />
-                                        <Column
-                                          width={width * 0.2}
-                                          label="Sale Price"
-                                          dataKey="price"
-                                          headerRenderer={({ label }) =>
-                                            headerRenderer(label)
-                                          }
-                                          cellDataGetter={() => {}}
-                                          cellRenderer={({ rowData }) => {
-                                            return (
-                                              <TableCell
-                                                sx={{
-                                                  display: 'flex',
-                                                  alignItems: 'center',
-                                                }}
-                                              >
-                                                {'SALE' === rowData?.type &&
-                                                  rowData?.price && (
                                                     <Text
-                                                      color="pink"
                                                       sx={{
+                                                        display: 'block',
                                                         overflow: 'hidden',
-                                                        textOverflow:
-                                                          'ellipsis',
+                                                        textOverflow: 'ellipsis',
                                                       }}
                                                     >
-                                                      {`${parseUint256(
-                                                        rowData.price,
-                                                        rowData.currency
-                                                          .decimals,
-                                                        2
-                                                      )} ${
-                                                        rowData?.currency
-                                                          ?.symbol ?? 'ETH'
-                                                      }
-                                                      `}
+                                                      {extractEns(
+                                                        rowData?.txFromUser
+                                                          ?.addresses,
+                                                        rowData?.txFromAddress
+                                                      ) ?? rowData?.txFromAddress}
+                                                    </Text>
+                                                  </Link>
+                                                </Grid>
+                                              )
+                                            }}
+                                          />
+                                          <Column
+                                            width={width * 0.2}
+                                            label="Recipient"
+                                            dataKey="txToAddress"
+                                            headerRenderer={({ label }) =>
+                                              headerRenderer(label)
+                                            }
+                                            cellDataGetter={() => {}}
+                                            cellRenderer={({ rowData }) => {
+                                              return (
+                                                <TableCell
+                                                  sx={{
+                                                    display: 'grid',
+                                                    alignItems: 'center',
+                                                    gridTemplateColumns:
+                                                      '12px auto',
+                                                    gap: 1,
+                                                  }}
+                                                >
+                                                  <Box
+                                                    sx={{
+                                                      borderRadius: 'circle',
+                                                      bg: 'purple',
+                                                      width: 3,
+                                                      height: 3,
+                                                    }}
+                                                  />
+                                                  <Link
+                                                    href={`/analytics/user/${rowData?.txToAddress}`}
+                                                    component={NextLink}
+                                                    sx={{
+                                                      display: 'block',
+                                                      overflow: 'hidden',
+                                                      fontSize: 2.5,
+                                                    }}
+                                                  >
+                                                    <Text
+                                                      sx={{
+                                                        display: 'block',
+                                                        overflow: 'hidden',
+                                                        textOverflow: 'ellipsis',
+                                                      }}
+                                                    >
+                                                      {extractEns(
+                                                        rowData?.txToUser
+                                                          ?.addresses,
+                                                        rowData?.txToAddress
+                                                      ) ?? rowData?.txToAddress}
+                                                    </Text>
+                                                  </Link>
+                                                </TableCell>
+                                              )
+                                            }}
+                                          />
+                                          <Column
+                                            width={width * 0.2}
+                                            label="Sale Price"
+                                            dataKey="price"
+                                            headerRenderer={({ label }) =>
+                                              headerRenderer(label)
+                                            }
+                                            cellDataGetter={() => {}}
+                                            cellRenderer={({ rowData }) => {
+                                              return (
+                                                <TableCell
+                                                  sx={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                  }}
+                                                >
+                                                  {'SALE' === rowData?.type &&
+                                                    rowData?.price && (
+                                                      <Text
+                                                        color="pink"
+                                                        sx={{
+                                                          overflow: 'hidden',
+                                                          textOverflow:
+                                                            'ellipsis',
+                                                        }}
+                                                      >
+                                                        {`${parseUint256(
+                                                          rowData.price,
+                                                          rowData.currency
+                                                            .decimals,
+                                                          2
+                                                        )} ${
+                                                          rowData?.currency
+                                                            ?.symbol ?? 'ETH'
+                                                        }
+                                                        `}
+                                                      </Text>
+                                                    )}
+                                                  {'TRANSFER' ===
+                                                    rowData?.type && (
+                                                    <Text
+                                                      color="blue"
+                                                      sx={{
+                                                        overflow: 'hidden',
+                                                        textOverflow: 'ellipsis',
+                                                      }}
+                                                    >
+                                                      Transfer
                                                     </Text>
                                                   )}
-                                                {'TRANSFER' ===
-                                                  rowData?.type && (
-                                                  <Text
-                                                    color="blue"
-                                                    sx={{
-                                                      overflow: 'hidden',
-                                                      textOverflow: 'ellipsis',
-                                                    }}
+                                                  {'MINT' === rowData?.type && (
+                                                    <Text
+                                                      color="green"
+                                                      sx={{
+                                                        overflow: 'hidden',
+                                                        textOverflow: 'ellipsis',
+                                                      }}
+                                                    >
+                                                      Mint
+                                                    </Text>
+                                                  )}
+                                                  <Link
+                                                    href={`https://etherscan.io/tx/${rowData?.txHash}`}
+                                                    target="_blank"
+                                                    title="Open transaction on Etherscan"
+                                                    rel="noopener noreferrer nofollow"
+                                                    component={NextLink}
                                                   >
-                                                    Transfer
-                                                  </Text>
-                                                )}
-                                                {'MINT' === rowData?.type && (
-                                                  <Text
-                                                    color="green"
-                                                    sx={{
-                                                      overflow: 'hidden',
-                                                      textOverflow: 'ellipsis',
-                                                    }}
-                                                  >
-                                                    Mint
-                                                  </Text>
-                                                )}
-                                                <Link
-                                                  href={`https://etherscan.io/tx/${rowData?.txHash}`}
-                                                  target="_blank"
-                                                  title="Open transaction on Etherscan"
-                                                  rel="noopener noreferrer nofollow"
-                                                  component={NextLink}
-                                                >
-                                                  <IconButton
-                                                    sx={{
-                                                      marginLeft: '6px;',
-                                                      verticalAlign: 'middle',
-                                                    }}
-                                                  >
-                                                    <Icon
-                                                      icon="disconnect"
-                                                      color={
-                                                        'SALE' === rowData?.type
-                                                          ? 'pink'
-                                                          : 'TRANSFER' ===
-                                                            rowData?.type
-                                                          ? 'blue'
-                                                          : 'green'
-                                                      }
-                                                    />
-                                                  </IconButton>
-                                                </Link>
-                                              </TableCell>
-                                            )
-                                          }}
-                                        />
-                                      </Table>
+                                                    <IconButton
+                                                      sx={{
+                                                        marginLeft: '6px;',
+                                                        verticalAlign: 'middle',
+                                                      }}
+                                                    >
+                                                      <Icon
+                                                        icon="disconnect"
+                                                        color={
+                                                          'SALE' === rowData?.type
+                                                            ? 'pink'
+                                                            : 'TRANSFER' ===
+                                                              rowData?.type
+                                                            ? 'blue'
+                                                            : 'green'
+                                                        }
+                                                      />
+                                                    </IconButton>
+                                                  </Link>
+                                                </TableCell>
+                                              )
+                                            }}
+                                          />
+                                        </Table>
+                                        {txHistoryData?.getTxHistory?.txHistory
+                                              ?.events.length !== txHistoryData?.getTxHistory?.txHistory
+                                              ?.count ? <Text onClick={loadMore} sx={{position: 'absolute', bottom: '1rem', left: '50%', transform: 'translateX(-50%)', whiteSpace: 'nowrap', cursor: 'pointer'}}> Show More ... </Text> : null }
+                                      </>
                                     )}
                                   </>
                                 )}
                               </AutoSizer>
-                            )}
-                          </InfiniteLoader>
+                            {/* )}
+                          </InfiniteLoader> */}
                         </Box>
+                          </Box>
                       ) : (
                         <Flex sx={{ flexDirection: 'column', gap: 4 }}>
                           <Text color="grey-600">
