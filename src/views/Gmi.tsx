@@ -383,6 +383,11 @@ function GmiPreview({
   const connectedEns = useAppSelector(selectEns)
   const [userOwnedWallet, setUserOwnedWallet] = useState(false)
   const dispatch = useDispatch()
+  const [gmiRawImage, setGmiRawImage] = useState<any>()
+
+  const gmiLink = `https://stage.analytics.upshot.io/.netlify/functions/gmi?wallet=${encodeURIComponent(
+    wallet
+  )}&lastUpdated=${Date.now()}&fileType=.png`
 
   useEffect(() => {
     if (wallet.startsWith('0x')) {
@@ -392,6 +397,36 @@ function GmiPreview({
       setUserOwnedWallet(connectedEns == wallet)
     }
   }, [address, connectedEns])
+
+  useEffect(() => {
+    // Raw image blob manipulation is behind a security fence on local envs.
+    if (
+      !process.env.NEXT_PUBLIC_ENV ||
+      !['staging', 'production'].includes(process.env.NEXT_PUBLIC_ENV)
+    )
+      return
+
+    const img = new Image()
+    const c = document.createElement('canvas')
+    const ctx = c.getContext('2d')
+
+    function setCanvasImage(path, func) {
+      img.onload = function () {
+        if (!ctx) return
+
+        c.width = (this as HTMLImageElement).naturalWidth
+        c.height = (this as HTMLImageElement).naturalHeight
+        ctx.drawImage(this as any, 0, 0)
+        c.toBlob((blob) => {
+          func(blob)
+        }, 'image/png')
+      }
+      img.src = path
+    }
+    setCanvasImage(gmiLink, (imgBlob) => {
+      setGmiRawImage(imgBlob)
+    })
+  }, [gmiLink])
 
   const { loading, error, data } = useQuery<GetGmiData, GetGmiVars>(GET_GMI, {
     errorPolicy: 'all',
@@ -425,17 +460,19 @@ function GmiPreview({
     parseUint256(data?.getUser?.addresses?.[0]?.unrealizedGain ?? '0')
 
   const handleCopyGmiLink = () => {
-    const gmiLink = `https://stage.analytics.upshot.io/.netlify/functions/gmi?wallet=${encodeURIComponent(
-      wallet
-    )}&lastUpdated=${Date.now()}&filetype=.png`
-
-    navigator.clipboard.writeText(gmiLink)
-    dispatch(
-      setAlertState({
-        showAlert: true,
-        alertText: 'Link copied to clipboard!',
+    navigator.clipboard
+      .write([new ClipboardItem({ 'image/png': gmiRawImage })])
+      .then(() => {
+        dispatch(
+          setAlertState({
+            showAlert: true,
+            alertText: 'Link copied to clipboard!',
+          })
+        )
       })
-    )
+      .catch((e) => {
+        console.log(e)
+      })
   }
 
   return (
@@ -506,9 +543,11 @@ function GmiPreview({
         </ShareButton>
       </Link>
 
-      <Link sx={{ textAlign: 'center' }} onClick={handleCopyGmiLink}>
-        Copy to clipboard
-      </Link>
+      {!!gmiRawImage && (
+        <Link sx={{ textAlign: 'center' }} onClick={handleCopyGmiLink}>
+          Copy to clipboard
+        </Link>
+      )}
     </Panel>
   )
 }

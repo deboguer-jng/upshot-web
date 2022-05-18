@@ -63,14 +63,14 @@ function Meta({
 }
 
 export default function Metadata() {
-  const router = useRouter()
-
   const [subtitle, setSubtitle] = useState<string>()
   const [image, setImage] = useState<string>()
-
   const parts = useMemo(
-    () => (router.asPath || '/').slice(1).split('/'),
-    [router.asPath]
+    () =>
+      typeof window === 'undefined'
+        ? []
+        : (window.location.pathname || '/').slice(1).split('/'),
+    []
   )
 
   const [getMetaAsset] = useLazyQuery<GetMetaAssetData, GetMetaAssetVars>(
@@ -133,7 +133,7 @@ export default function Metadata() {
         subtitle="gmi"
         image={`https://stage.analytics.upshot.io/.netlify/functions/gmi?wallet=${encodeURIComponent(
           wallet
-        )}&lastUpdated=${Date.now()}&filetype=.png`}
+        )}&lastUpdated=${Date.now()}&fileType=.png`}
       />
     )
   } else if (parts[0] === 'waitlist') {

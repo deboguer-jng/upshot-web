@@ -30,7 +30,6 @@ exports.handler = async ({ queryStringParameters: qs }) => {
 
   try {
     const url = config.baseUrl + qs.wallet
-    console.info(`Fetching gmi at ${url}`)
     const result = await page.goto(url)
 
     await page.evaluateHandle('document.fonts.ready')
