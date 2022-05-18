@@ -1,3 +1,4 @@
+import styled from '@emotion/styled'
 import {
   Box,
   Button,
@@ -21,17 +22,26 @@ import AnalyticsSVG from './panelBackgrounds/Analytics.svg'
 import AnalyticsHoverSVG from './panelBackgrounds/AnalyticsHover.svg'
 import ApiSVG from './panelBackgrounds/Api.svg'
 import ApiHoverSVG from './panelBackgrounds/ApiHover.svg'
-import BlogSVG from './panelBackgrounds/Blog.svg'
-import BlogHoverSVG from './panelBackgrounds/BlogHover.svg'
+import GmiSvg from './panelBackgrounds/Gmi.svg'
+import GmiHoverSvg from './panelBackgrounds/GmiHover.svg'
 import UpshotArtworkSVG from './panelBackgrounds/UpshotArtwork.svg'
 
-type PanelData = {
-  projectType: string
-  title: string
-  description: string
-  image?: any
-  url: string
-}
+const BlogButton = styled(Button)`
+  border-radius: 8px;
+  height: 32px;
+  padding: 8px 12px;
+  background: ${({ theme }) => theme.colors.pink};
+  box-shadow: ${({ theme }) => `${theme.rawColors['pink']} 0px 0px 0px 1.8px`};
+
+  &:not(:disabled):not(:focus):hover {
+    box-shadow: ${({ theme }) =>
+      `${theme.rawColors['pink']} 0px 0px 0px 1.8px`};
+
+    & span {
+      color: ${({ theme }) => theme.colors.pink};
+    }
+  }
+`
 
 export default function LandingView() {
   const images = {
@@ -43,16 +53,16 @@ export default function LandingView() {
       original: ApiSVG,
       hover: ApiHoverSVG,
     },
-    blog: {
-      original: BlogSVG,
-      hover: BlogHoverSVG,
+    gmi: {
+      original: GmiSvg,
+      hover: GmiHoverSvg,
     },
   }
   const [analyticsImage, setAnalyticsImage] = useState(
     images.analytics.original.src
   )
   const [apiImage, setApiImage] = useState(images.api.original.src)
-  const [blogImage, setBlogImage] = useState(images.blog.original.src)
+  const [gmiImage, setGmiImage] = useState(images.gmi.original.src)
 
   return (
     <>
@@ -107,48 +117,68 @@ export default function LandingView() {
                   wave of exotic new DeFi possibilities.
                 </Text>
               </Box>
-              <Flex sx={{ gridGap: '14px', marginTop: '20px' }}>
-                <Box>
-                  <Link
-                    href="https://discord.gg/upshot"
-                    target="_blank"
-                    component={NextLink}
-                  >
-                    <IconButton>
-                      <Icon color="purple" icon="discord" size={32} />
-                    </IconButton>
-                  </Link>
-                </Box>
-                <Box>
-                  <Link
-                    href="https://twitter.com/upshothq"
-                    target="_blank"
-                    component={NextLink}
-                  >
-                    <IconButton>
-                      <Icon color="blue" icon="twitterCircle" size={32} />
-                    </IconButton>
-                  </Link>
-                </Box>
-                <Box>
-                  <Link
-                    href="https://jobs.lever.co/upshot.io"
-                    target="_blank"
-                    component={NextLink}
-                    noHover
-                  >
-                    <Button
-                      capitalize={true}
-                      style={{
-                        borderRadius: '8px',
-                        height: '32px',
-                        padding: '8px 12px',
-                      }}
+              <Flex
+                sx={{
+                  marginTop: '20px',
+                  flexDirection: ['column-reverse', 'column-reverse', 'row'],
+                  gridGap: '14px',
+                }}
+              >
+                <Flex sx={{ gridGap: '14px' }}>
+                  <Box>
+                    <Link
+                      href="https://discord.gg/upshot"
+                      target="_blank"
+                      component={NextLink}
                     >
-                      Join our team
-                    </Button>
-                  </Link>
-                </Box>
+                      <IconButton>
+                        <Icon color="purple" icon="discord" size={32} />
+                      </IconButton>
+                    </Link>
+                  </Box>
+                  <Box>
+                    <Link
+                      href="https://twitter.com/upshothq"
+                      target="_blank"
+                      component={NextLink}
+                    >
+                      <IconButton>
+                        <Icon color="blue" icon="twitterCircle" size={32} />
+                      </IconButton>
+                    </Link>
+                  </Box>
+                </Flex>
+                <Flex sx={{ gridGap: '14px' }}>
+                  <Box>
+                    <Link
+                      href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
+                      target="_blank"
+                      component={NextLink}
+                      noHover
+                    >
+                      <BlogButton capitalize>Read our blog</BlogButton>
+                    </Link>
+                  </Box>
+                  <Box>
+                    <Link
+                      href="https://jobs.lever.co/upshot.io"
+                      target="_blank"
+                      component={NextLink}
+                      noHover
+                    >
+                      <Button
+                        capitalize={true}
+                        style={{
+                          borderRadius: '8px',
+                          height: '32px',
+                          padding: '8px 12px',
+                        }}
+                      >
+                        Join our team
+                      </Button>
+                    </Link>
+                  </Box>
+                </Flex>
               </Flex>
             </Box>
 
@@ -233,6 +263,65 @@ export default function LandingView() {
           <Box>
             <Grid gap={5} columns={[1, 1, 2, 2]}>
               <Link
+                href="/gmi"
+                rel="noopener noreferrer"
+                sx={{
+                  color: theme.colors.text + ' !important',
+                  display: 'grid',
+                }}
+                component={NextLink}
+                noHover
+              >
+                <Panel
+                  hoverUnderglow="red"
+                  hoverBorder="red"
+                  sx={{
+                    height: ['225px', null, null, '250px'],
+                    position: 'relative',
+                    padding: '22px !important',
+                    paddingRight: '88px !important',
+                    paddingTop: '10px !important',
+                    backgroundColor: theme.colors['grey-900'] + ' !important',
+                    '&:hover img': {
+                      opacity: '1',
+                    },
+                    '&:hover span:first-of-type': {
+                      color: theme.colors.red,
+                    },
+                    '&:hover': {
+                      backgroundColor: theme.colors.black + ' !important',
+                    },
+                  }}
+                  onMouseEnter={() => setGmiImage(images.gmi.hover.src)}
+                  onMouseLeave={() => setGmiImage(images.gmi.original.src)}
+                >
+                  <Image
+                    src={gmiImage}
+                    sx={{
+                      opacity: '0.7',
+                      position: 'absolute',
+                      bottom: '2%',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      margin: 'auto',
+                      width: 'auto',
+                      height: '60%',
+                      objectFit: 'cover',
+                    }}
+                    alt="gmi"
+                  ></Image>
+                  <div style={{ position: 'relative' }}>
+                    <Text variant="h1Secondary">gmi</Text>
+                    <Text
+                      variant="large"
+                      sx={{ display: 'block', whiteSpace: 'normal' }}
+                    >
+                      A new grading index for NFT wallets.
+                    </Text>
+                  </div>
+                </Panel>
+              </Link>
+              <Link
                 href="https://docs.upshot.xyz/"
                 rel="noopener noreferrer"
                 sx={{
@@ -288,65 +377,6 @@ export default function LandingView() {
                       sx={{ display: 'block', whiteSpace: 'normal' }}
                     >
                       Integrate Upshot data into your project.
-                    </Text>
-                  </div>
-                </Panel>
-              </Link>
-              <Link
-                href="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
-                rel="noopener noreferrer"
-                sx={{
-                  color: theme.colors.text + ' !important',
-                  display: 'grid',
-                }}
-                component={NextLink}
-                noHover
-              >
-                <Panel
-                  hoverUnderglow="red"
-                  hoverBorder="red"
-                  sx={{
-                    height: ['225px', null, null, '250px'],
-                    position: 'relative',
-                    padding: '22px !important',
-                    paddingRight: '88px !important',
-                    paddingTop: '10px !important',
-                    backgroundColor: theme.colors['grey-900'] + ' !important',
-                    '&:hover img': {
-                      opacity: '1',
-                    },
-                    '&:hover span:first-of-type': {
-                      color: theme.colors.red,
-                    },
-                    '&:hover': {
-                      backgroundColor: theme.colors.black + ' !important',
-                    },
-                  }}
-                  onMouseEnter={() => setBlogImage(images.blog.hover.src)}
-                  onMouseLeave={() => setBlogImage(images.blog.original.src)}
-                >
-                  <Image
-                    src={blogImage}
-                    sx={{
-                      opacity: '0.7',
-                      position: 'absolute',
-                      bottom: '5%',
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      margin: 'auto',
-                      width: 'auto',
-                      height: '50%',
-                      objectFit: 'cover',
-                    }}
-                    alt="Upshot One"
-                  ></Image>
-                  <div style={{ position: 'relative' }}>
-                    <Text variant="h1Secondary">Blog</Text>
-                    <Text
-                      variant="large"
-                      sx={{ display: 'block', whiteSpace: 'normal' }}
-                    >
-                      Learn more about NFTxDeFI
                     </Text>
                   </div>
                 </Panel>
