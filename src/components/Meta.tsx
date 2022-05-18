@@ -63,12 +63,13 @@ function Meta({
 }
 
 export default function Metadata() {
+  const router = useRouter()
   const [subtitle, setSubtitle] = useState<string>()
   const [image, setImage] = useState<string>()
-  const parts =
-    typeof window === 'undefined'
-      ? []
-      : (window.location.pathname || '/').slice(1).split('/')
+  const parts = useMemo(
+    () => (router.asPath || '/').slice(1).split('/'),
+    [router.asPath]
+  )
 
   const [getMetaAsset] = useLazyQuery<GetMetaAssetData, GetMetaAssetVars>(
     GET_META_ASSET,
@@ -76,7 +77,10 @@ export default function Metadata() {
       notifyOnNetworkStatusChange: true,
       onCompleted: (data) => {
         setSubtitle(data?.assetById?.name)
-        setImage(data?.assetById?.previewImageUrl)
+        setImage(
+          data?.assetById?.previewImageUrl ??
+            'https://upshot.io/img/opengraph/opengraph_nft.jpg'
+        )
       },
     }
   )
@@ -88,7 +92,10 @@ export default function Metadata() {
     notifyOnNetworkStatusChange: true,
     onCompleted: (data) => {
       setSubtitle(data?.collectionById?.name)
-      setImage(data?.collectionById?.imageUrl)
+      setImage(
+        data?.collectionById?.imageUrl ??
+          'https://upshot.io/img/opengraph/opengraph_collection.jpg'
+      )
     },
   })
 
@@ -121,13 +128,9 @@ export default function Metadata() {
     }
   }, [getMetaAsset, getMetaCollection, getMetaCollector, parts])
 
-  console.log(parts)
-
   // Synchronous metadata
   if (parts[0] === 'gmi' && parts[1]) {
     const wallet = parts[1].split('?')[0]
-
-    console.log('GMI', wallet)
 
     return (
       <Meta
@@ -140,7 +143,12 @@ export default function Metadata() {
   } else if (parts[0] === 'waitlist') {
     return <Meta subtitle="Waitlist" />
   } else if (parts[1] === 'search') {
-    return <Meta subtitle="Search" />
+    return (
+      <Meta
+        subtitle="Search"
+        image="https://upshot.io/img/opengraph/opengraph_search.jpg"
+      />
+    )
   } else if (parts[0] === 'faq') {
     return <Meta subtitle="FAQ" />
   }

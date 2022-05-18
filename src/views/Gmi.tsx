@@ -20,10 +20,10 @@ import { useWeb3React } from '@web3-react/core'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { ConnectorName, connectorsByName } from 'constants/connectors'
 import { format } from 'date-fns'
+import html2canvas from 'html2canvas'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useRef, useState } from 'react'
-import { useDispatch } from 'react-redux'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { setAlertState } from 'redux/reducers/layout'
 import { setIsBeta } from 'redux/reducers/user'
@@ -379,15 +379,10 @@ function GmiPreview({
   wallet: string
   onTogglePreview: () => void
 }) {
+  const dispatch = useAppDispatch()
   const address = useAppSelector(selectAddress)
   const connectedEns = useAppSelector(selectEns)
   const [userOwnedWallet, setUserOwnedWallet] = useState(false)
-  const dispatch = useDispatch()
-  const [gmiRawImage, setGmiRawImage] = useState<any>()
-
-  const gmiLink = `https://stage.analytics.upshot.io/.netlify/functions/gmi?wallet=${encodeURIComponent(
-    wallet
-  )}&lastUpdated=${Date.now()}&fileType=.png`
 
   useEffect(() => {
     if (wallet.startsWith('0x')) {
@@ -397,36 +392,6 @@ function GmiPreview({
       setUserOwnedWallet(connectedEns == wallet)
     }
   }, [address, connectedEns])
-
-  useEffect(() => {
-    // Raw image blob manipulation is behind a security fence on local envs.
-    if (
-      !process.env.NEXT_PUBLIC_ENV ||
-      !['staging', 'production'].includes(process.env.NEXT_PUBLIC_ENV)
-    )
-      return
-
-    const img = new Image()
-    const c = document.createElement('canvas')
-    const ctx = c.getContext('2d')
-
-    function setCanvasImage(path, func) {
-      img.onload = function () {
-        if (!ctx) return
-
-        c.width = (this as HTMLImageElement).naturalWidth
-        c.height = (this as HTMLImageElement).naturalHeight
-        ctx.drawImage(this as any, 0, 0)
-        c.toBlob((blob) => {
-          func(blob)
-        }, 'image/png')
-      }
-      img.src = path
-    }
-    setCanvasImage(gmiLink, (imgBlob) => {
-      setGmiRawImage(imgBlob)
-    })
-  }, [gmiLink])
 
   const { loading, error, data } = useQuery<GetGmiData, GetGmiVars>(GET_GMI, {
     errorPolicy: 'all',
@@ -459,20 +424,30 @@ function GmiPreview({
     parseUint256(data?.getUser?.addresses?.[0]?.realizedGain ?? '0') +
     parseUint256(data?.getUser?.addresses?.[0]?.unrealizedGain ?? '0')
 
-  const handleCopyGmiLink = () => {
-    navigator.clipboard
-      .write([new ClipboardItem({ 'image/png': gmiRawImage })])
-      .then(() => {
+  const handleGmiCopy = async () => {
+    const el = document.getElementById('gmiResults')
+    if (!el) return
+
+    try {
+      const c = await html2canvas(el, { backgroundColor: '#000' })
+
+      c.toBlob(async (blob) => {
+        if (!blob) return
+
+        await navigator.clipboard.write([
+          new ClipboardItem({ 'image/png': blob }),
+        ])
+
         dispatch(
           setAlertState({
             showAlert: true,
-            alertText: 'Link copied to clipboard!',
+            alertText: 'Image copied to clipboard!',
           })
         )
       })
-      .catch((e) => {
-        console.log(e)
-      })
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   return (
@@ -543,11 +518,9 @@ function GmiPreview({
         </ShareButton>
       </Link>
 
-      {!!gmiRawImage && (
-        <Link sx={{ textAlign: 'center' }} onClick={handleCopyGmiLink}>
-          Copy to clipboard
-        </Link>
-      )}
+      <Link sx={{ textAlign: 'center' }} onClick={handleGmiCopy}>
+        Copy to clipboard
+      </Link>
     </Panel>
   )
 }
@@ -647,7 +620,7 @@ function GmiArtworkLayer({ layer, gmiIdx }: { layer: string; gmiIdx: number }) {
         position: 'absolute',
         width: '100%',
         height: '100%',
-        backgroundImage: `url(/img/gmi/${layer}/${gmiIdx}.svg)`,
+        backgroundImage: `url(/img/gmi/${layer}/${gmiIdx}.png)`,
         backgroundSize: 'contain',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
@@ -662,7 +635,6 @@ export function GmiArtwork({ gmi = 0 }: { gmi?: number }) {
   return (
     <Box
       sx={{
-        transform: 'scale(1.15)',
         width: '100%',
         height: '100%',
         pointerEvents: 'none',
@@ -788,11 +760,11 @@ function GmiCard({
 export default function GmiView() {
   const modalRef = useRef<HTMLDivElement>(null)
   const { activate, connector, deactivate } = useWeb3React()
-  const dispatch = useAppDispatch()
   const address = useAppSelector(selectAddress)
   const [wallet, setWallet] = useState('')
   const [showFaq, setShowFaq] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
+  const dispatch = useAppDispatch()
   const router = useRouter()
 
   useEffect(() => {

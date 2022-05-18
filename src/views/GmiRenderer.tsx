@@ -70,6 +70,7 @@ export function GmiRenderError({ wallet }: { wallet?: string }) {
         padding: 60,
         gap: 8,
         overflow: 'hidden',
+        background: 'black',
       }}
     >
       <Flex sx={{ flexDirection: 'column' }}>
@@ -102,7 +103,6 @@ export function GmiRenderError({ wallet }: { wallet?: string }) {
               sx={{
                 position: 'relative',
                 width: '100%',
-
                 height: 'auto',
                 flexGrow: 1,
               }}
@@ -145,6 +145,7 @@ export function GmiSocialCard({
         padding: 60,
         gap: 8,
         overflow: 'hidden',
+        background: 'black',
       }}
     >
       <Flex sx={{ flexDirection: 'column' }}>
@@ -231,7 +232,7 @@ export function GmiSocialCard({
         </Grid>
       </Flex>
       <Flex sx={{ justifyContent: 'space-between', alignItems: 'baseline' }}>
-        <img src="/img/upshot_logo_white.svg" width={140} alt="Upshot Logo" />
+        <img src="/img/upshot_logo_white.png" width={140} alt="Upshot Logo" />
         <Text color="grey-500" sx={{ fontSize: 3 }}>
           upshot.xyz/gmi
         </Text>
