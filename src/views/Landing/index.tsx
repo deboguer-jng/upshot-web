@@ -120,11 +120,15 @@ export default function LandingView() {
               <Flex
                 sx={{
                   marginTop: '20px',
-                  flexDirection: ['column-reverse', 'column-reverse', 'row'],
                   gridGap: '14px',
                 }}
               >
-                <Flex sx={{ gridGap: '14px' }}>
+                <Flex
+                  sx={{
+                    gridGap: '14px',
+                    display: ['none !important', 'flex !important'],
+                  }}
+                >
                   <Box>
                     <Link
                       href="https://discord.gg/upshot"

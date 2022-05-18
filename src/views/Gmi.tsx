@@ -21,7 +21,6 @@ import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { ConnectorName, connectorsByName } from 'constants/connectors'
 import { format } from 'date-fns'
 import html2canvas from 'html2canvas'
-import Head from 'next/head'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useRef, useState } from 'react'
@@ -97,8 +96,6 @@ function GmiPanel({
   totalBlueChips,
   firstPurchase,
   tradeVolume,
-  gainsRealized,
-  gainsUnrealized,
   gainsTotal,
   totalGainPercent,
   gmiPercentile,
@@ -112,7 +109,11 @@ function GmiPanel({
   const rank = gmiLabel(gmi)
 
   return (
-    <Panel outlined backgroundColor="grey-900">
+    <Panel
+      outlined
+      backgroundColor="grey-900"
+      sx={{ width: ['100%', '100%', 'auto'] }}
+    >
       <Flex sx={{ flexGrow: 1, width: '100%' }}>
         {!isMobile && (
           <Flex sx={{ flexGrow: 1, width: '100%' }}>
@@ -425,7 +426,15 @@ function GmiPreview({
     if (!el) return
 
     try {
-      const c = await html2canvas(el, { backgroundColor: '#000' })
+      const c = await html2canvas(el, {
+        backgroundColor: '#000',
+        onclone: (clonedDoc: any) => {
+          const el = clonedDoc.getElementById('gmiResults')
+          el.style.transform = 'scale(1.0)'
+          el.style.width = '1200px'
+          el.style.height = '600px'
+        },
+      })
 
       c.toBlob(async (blob) => {
         if (!blob) return
