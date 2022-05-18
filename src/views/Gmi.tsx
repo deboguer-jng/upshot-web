@@ -322,7 +322,8 @@ function GmiPanel({
                 color={Number(totalGainPercent) > 0 ? 'green' : 'red'}
                 sx={{ fontSize: '26px', fontWeight: 'bold' }}
               >
-                {totalGainPercent && totalGainPercent > 0 ? '+' : ''}{totalGainPercent?.toFixed(2)}%
+                {totalGainPercent && totalGainPercent > 0 ? '+' : ''}
+                {totalGainPercent?.toFixed(2)}%
               </Text>
             </Flex>
           </Grid>
@@ -467,7 +468,8 @@ function GmiPreview({
         </IconButton>
       </Flex>
       <Text color="grey-300" sx={{ lineHeight: 1 }}>
-        Share {userOwnedWallet ? 'your' : `${displayName}'s`} Upshot gmi on Twitter! {userOwnedWallet && 'Flex your degen level.'}
+        Share {userOwnedWallet ? 'your' : `${displayName}'s`} Upshot gmi on
+        Twitter! {userOwnedWallet && 'Flex your degen level.'}
       </Text>
 
       <Panel backgroundColor="black" sx={{ padding: '0 !important' }}>
@@ -492,7 +494,9 @@ function GmiPreview({
         target="_blank"
         rel="noopener noreferrer nofollow"
         href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
-          `Check out ${userOwnedWallet ? 'my' : `${displayName}'s`} Upshot gmi:\nhttps://upshot.xyz/gmi/${wallet}`
+          `Check out ${
+            userOwnedWallet ? 'my' : `${displayName}'s`
+          } Upshot gmi:\nhttps://upshot.xyz/gmi/${wallet}`
         )}`}
         sx={{ width: '100%', textDecoration: 'none !important' }}
       >
@@ -605,22 +609,6 @@ export function GmiScore({
   )
 }
 
-function GmiArtworkLayer({ layer, gmiIdx }: { layer: string; gmiIdx: number }) {
-  return (
-    <Box
-      sx={{
-        position: 'absolute',
-        width: '100%',
-        height: '100%',
-        backgroundImage: `url(/img/gmi/${layer}/${gmiIdx}.png)`,
-        backgroundSize: 'contain',
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'center',
-      }}
-    />
-  )
-}
-
 export function GmiArtwork({ gmi = 0 }: { gmi?: number }) {
   const gmiIdx = gmiIndex(gmi)
 
@@ -632,11 +620,17 @@ export function GmiArtwork({ gmi = 0 }: { gmi?: number }) {
         pointerEvents: 'none',
       }}
     >
-      <GmiArtworkLayer layer="planet" {...{ gmiIdx }} />
-      {gmiIdx > 1 && <GmiArtworkLayer layer="stars" {...{ gmiIdx }} />}
-      {gmiIdx > 2 && <GmiArtworkLayer layer="moon_1" {...{ gmiIdx }} />}
-      {gmiIdx > 3 && <GmiArtworkLayer layer="moon_2" {...{ gmiIdx }} />}
-      {gmiIdx > 4 && <GmiArtworkLayer layer="spaceShip" {...{ gmiIdx }} />}
+      <Box
+        sx={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          backgroundImage: `url(/img/gmi/${gmiIdx}.png)`,
+          backgroundSize: 'contain',
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center',
+        }}
+      />
     </Box>
   )
 }
