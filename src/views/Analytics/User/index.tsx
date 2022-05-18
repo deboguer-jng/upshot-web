@@ -5,7 +5,6 @@ import { Container } from '@upshot-tech/upshot-ui'
 import { Avatar, Flex, Grid, Panel, Text } from '@upshot-tech/upshot-ui'
 import {
   Box,
-  Checkbox,
   CollectionCard,
   CollectionCardExpanded,
   CollectionRow,
@@ -34,7 +33,6 @@ import { format } from 'date-fns'
 import makeBlockie from 'ethereum-blockies-base64'
 import { ethers } from 'ethers'
 import { Masonry, useInfiniteLoader } from 'masonic'
-import Head from 'next/head'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { transparentize } from 'polished'
@@ -56,12 +54,15 @@ import { formatDistance } from 'utils/time'
 
 import Breadcrumbs from '../components/Breadcrumbs'
 import {
+  GET_ALL_OWNED_COLLECTIONS_WRAPPER,
   GET_COLLECTION_ASSETS,
   GET_COLLECTOR,
   GET_COLLECTOR_TX_HISTORY,
   GET_UNSUPPORTED_AGGREGATE_COLLECTION_STATS,
   GET_UNSUPPORTED_ASSETS,
   GET_UNSUPPORTED_FLOORS,
+  GetAllOwnedCollectionsWrapperData,
+  GetAllOwnedCollectionsWrapperVars,
   GetCollectionAssetsData,
   GetCollectionAssetsVars,
   GetCollectorData,
@@ -74,9 +75,6 @@ import {
   GetUnsupportedAssetsVars,
   GetUnsupportedFloorsData,
   GetUnsupportedFloorsVars,
-  GetAllOwnedCollectionsWrapperData,
-  GetAllOwnedCollectionsWrapperVars,
-  GET_ALL_OWNED_COLLECTIONS_WRAPPER,
 } from './queries'
 
 type Collection = {
@@ -172,9 +170,6 @@ function Layout({
 
   return (
     <>
-      <Head>
-        <title>{title ? title + ' | ' : ''}Upshot Analytics</title>
-      </Head>
       <Nav />
       <Container
         maxBreakpoint="lg"
@@ -654,11 +649,6 @@ export default function UserView() {
   /* Infinite scroll: Collections */
   useEffect(() => {
     if (!collectionOffset) return
-
-    console.log({
-      offset:
-        dataAllOwnedCollections?.getAllOwnedCollectionsWrapper?.nextOffset,
-    })
 
     fetchMoreAllOwnedCollections({
       variables: {
@@ -2088,6 +2078,7 @@ export default function UserView() {
         </Flex>
       </Layout>
       <Modal
+        hideScroll
         ref={modalRef}
         onClose={() => setShowCollection(undefined)}
         open={showCollection?.id !== undefined}

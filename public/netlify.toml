@@ -22,3 +22,13 @@
   from = "/analytics/search"
   to = "/dashboard/search.html"
   status = 200
+
+[[redirects]]
+  from = "/gmi/:wallet"
+  to = "/gmi/[wallet].html?wallet=:wallet"
+  status = 200
+
+[[redirects]]
+  from = "/share/gmi/:wallet"
+  to = "/share/gmi/[wallet].html?wallet=:wallet"
+  status = 200

@@ -17,7 +17,6 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
-import Head from 'next/head'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useMemo, useState } from 'react'
@@ -113,22 +112,6 @@ function Layout({
 
   return (
     <>
-      <Head>
-        <title>{title ? title + ' | ' : ''}Upshot Analytics</title>
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:site" content="@UpshotHQ" />
-        <meta name="twitter:creator" content="@UpshotHQ" />
-        <meta property="og:url" content="https://upshot.io" />
-        <meta property="og:title" content="Upshot Analytics" />
-        <meta
-          property="og:description"
-          content="NFTs offer us a vehicle for tokenizing anything, while the explosive growth of DeFi has demonstrated the power of permissionless financial primitives. Upshot is building scalable NFT pricing infrastructure at the intersection of DeFi x NFTs. Through a combination of crowdsourced appraisals and proprietary machine learning algorithms, Upshot provides deep insight into NFT markets and unlocks a wave of exotic new DeFi possibilities."
-        />
-        <meta
-          property="og:image"
-          content="https://upshot.io/img/opengraph/opengraph_collection.jpg"
-        />
-      </Head>
       <Nav />
       <Container
         maxBreakpoint="lg"
@@ -206,11 +189,7 @@ export default function CollectionView() {
             width: '100%',
           }}
         >
-          <img
-            src="/img/Logo_bounce_spin.gif"
-            width={256}
-            alt="Loading"
-          />
+          <img src="/img/Logo_bounce_spin.gif" width={256} alt="Loading" />
         </Container>
       </Layout>
     )
