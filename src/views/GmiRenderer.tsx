@@ -69,7 +69,7 @@ export function GmiRenderError({ wallet }: { wallet?: string }) {
         width: '100%',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        padding: 60,
+        padding: 40,
         gap: 8,
         overflow: 'hidden',
         background: 'black',
@@ -146,7 +146,7 @@ export function GmiSocialCard({
         width: '100%',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        padding: 60,
+        padding: 40,
         gap: 8,
         overflow: 'hidden',
         background: 'black',
@@ -202,7 +202,7 @@ export function GmiSocialCard({
             <GmiRow
               isEth
               label="Total Gains (Ξ)"
-              color={gainsTotal > 0 ? 'green' : 'red'}
+              color={!gainsTotal ? 'white' : gainsTotal > 0 ? 'green' : 'red'}
               value={formatNumber(gainsTotal, {
                 decimals: 2,
               })}
@@ -210,7 +210,9 @@ export function GmiSocialCard({
             <GmiRow
               label="ROI (%)"
               color={Number(totalGainPercent) > 0 ? 'green' : 'red'}
-              value={`${totalGainPercent && totalGainPercent > 0 ? '+' : ''}${totalGainPercent?.toFixed(2)}%`}
+              value={`${
+                totalGainPercent && totalGainPercent > 0 ? '+' : ''
+              }${totalGainPercent?.toFixed(2)}%`}
             />
           </Flex>
           <Flex sx={{ flexDirection: 'column' }}>
