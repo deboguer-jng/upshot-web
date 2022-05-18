@@ -496,7 +496,7 @@ function GmiPreview({
         target="_blank"
         rel="noopener noreferrer nofollow"
         href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
-          `${userOwnedWallet ? `My gmi is ${Math.floor(gmi)} (${rank})` : `${displayName} has a gmi of ${Math.round(gmi)} (${rank})`}. What's yours? \nhttps://upshot.xyz/gmi/${wallet} @UpshotHQ`
+          `${userOwnedWallet ? `My gmi is ${Math.floor(gmi)}/1000 (${rank})` : `${displayName} has a gmi of ${Math.round(gmi)}/1000 (${rank})`}. What's yours? \nhttps://upshot.xyz/gmi/${wallet} @UpshotHQ`
         )}`}
         sx={{ width: '100%', textDecoration: 'none !important' }}
       >
