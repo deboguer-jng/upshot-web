@@ -429,7 +429,7 @@ function GmiPreview({
     if (!el) return
 
     try {
-      const c = await html2canvas(el)
+      const c = await html2canvas(el, { backgroundColor: '#000' })
 
       c.toBlob(async (blob) => {
         if (!blob) return
@@ -620,7 +620,7 @@ function GmiArtworkLayer({ layer, gmiIdx }: { layer: string; gmiIdx: number }) {
         position: 'absolute',
         width: '100%',
         height: '100%',
-        backgroundImage: `url(/img/gmi/${layer}/${gmiIdx}.svg)`,
+        backgroundImage: `url(/img/gmi/${layer}/${gmiIdx}.png)`,
         backgroundSize: 'contain',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
@@ -635,10 +635,9 @@ export function GmiArtwork({ gmi = 0 }: { gmi?: number }) {
   return (
     <Box
       sx={{
-        width: '400px',
+        width: '100%',
         height: '100%',
         pointerEvents: 'none',
-        position: 'relative',
       }}
     >
       <GmiArtworkLayer layer="planet" {...{ gmiIdx }} />

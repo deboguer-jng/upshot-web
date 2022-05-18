@@ -232,7 +232,7 @@ export function GmiSocialCard({
         </Grid>
       </Flex>
       <Flex sx={{ justifyContent: 'space-between', alignItems: 'baseline' }}>
-        <img src="/img/upshot_logo_white.svg" width={140} alt="Upshot Logo" />
+        <img src="/img/upshot_logo_white.png" width={140} alt="Upshot Logo" />
         <Text color="grey-500" sx={{ fontSize: 3 }}>
           upshot.xyz/gmi
         </Text>
