@@ -173,7 +173,7 @@ export function GmiSocialCard({
           overflow: 'hidden',
           background: 'black',
           transform: `scale(${Number(width) / 1200})`,
-          'transform-origin': 'top left',
+          transformOrigin: 'top left',
           minWidth: width ? 1200 : 'auto',
           minHeight: width ? 600 : 'auto',
         }}

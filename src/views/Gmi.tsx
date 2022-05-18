@@ -376,6 +376,7 @@ function GmiPreview({
   const address = useAppSelector(selectAddress)
   const connectedEns = useAppSelector(selectEns)
   const [userOwnedWallet, setUserOwnedWallet] = useState(false)
+  const [gmiBlob, setGmiBlob] = useState<any>()
 
   useEffect(() => {
     if (wallet.startsWith('0x')) {
@@ -386,6 +387,31 @@ function GmiPreview({
     }
   }, [address, connectedEns])
 
+  const captureGmi = async () => {
+    try {
+      const el = document.getElementById('gmiResults')
+      if (!el) return
+
+      const c = await html2canvas(el, {
+        backgroundColor: '#000',
+        onclone: (clonedDoc: any) => {
+          const el = clonedDoc.getElementById('gmiResults')
+          el.style.transform = 'scale(1.0)'
+          el.style.width = '1200px'
+          el.style.height = '600px'
+        },
+      })
+
+      c.toBlob(async (blob) => {
+        if (!blob) return
+
+        setGmiBlob(blob)
+      })
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
   const { loading, error, data } = useQuery<GetGmiData, GetGmiVars>(GET_GMI, {
     errorPolicy: 'all',
     fetchPolicy: 'no-cache',
@@ -395,6 +421,10 @@ function GmiPreview({
     },
     skip: !wallet,
   })
+
+  useEffect(() => {
+    captureGmi()
+  }, [data])
 
   if (error || (data && !data?.getUser?.addresses?.length)) {
     return <GmiRenderError {...{ wallet }} />
@@ -422,37 +452,14 @@ function GmiPreview({
   const rank = gmiLabel(gmi)
 
   const handleGmiCopy = async () => {
-    const el = document.getElementById('gmiResults')
-    if (!el) return
+    navigator.clipboard.write([new ClipboardItem({ 'image/png': gmiBlob })])
 
-    try {
-      const c = await html2canvas(el, {
-        backgroundColor: '#000',
-        onclone: (clonedDoc: any) => {
-          const el = clonedDoc.getElementById('gmiResults')
-          el.style.transform = 'scale(1.0)'
-          el.style.width = '1200px'
-          el.style.height = '600px'
-        },
+    dispatch(
+      setAlertState({
+        showAlert: true,
+        alertText: 'Image copied to clipboard!',
       })
-
-      c.toBlob(async (blob) => {
-        if (!blob) return
-
-        await navigator.clipboard.write([
-          new ClipboardItem({ 'image/png': blob }),
-        ])
-
-        dispatch(
-          setAlertState({
-            showAlert: true,
-            alertText: 'Image copied to clipboard!',
-          })
-        )
-      })
-    } catch (err) {
-      console.error(err)
-    }
+    )
   }
 
   return (
@@ -534,9 +541,11 @@ function GmiPreview({
         </ShareButton>
       </Link>
 
-      <Link sx={{ textAlign: 'center' }} onClick={handleGmiCopy}>
-        Copy to clipboard
-      </Link>
+      {!!gmiBlob && (
+        <Link sx={{ textAlign: 'center' }} onClick={handleGmiCopy}>
+          Copy to clipboard
+        </Link>
+      )}
     </Panel>
   )
 }
