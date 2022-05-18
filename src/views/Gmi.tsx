@@ -423,7 +423,9 @@ function GmiPreview({
   })
 
   useEffect(() => {
-    captureGmi()
+    window.setTimeout(() => {
+      captureGmi()
+    }, 0)
   }, [data])
 
   if (error || (data && !data?.getUser?.addresses?.length)) {
