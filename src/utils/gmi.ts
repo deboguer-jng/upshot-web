@@ -21,6 +21,8 @@ export const gmiIndex = (gmi: number) => {
 export const gmiLabel = (gmi: number) => GMI_LABELS[gmiIndex(gmi)]
 
 export const gmiPercentRank = (percentile: number) => {
+  if (!percentile) return 100
+
   if (percentile < 0.1) return 0.1
   if (percentile < 0.5) return 0.5
   if (percentile < 1) return 1
