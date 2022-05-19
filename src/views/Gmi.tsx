@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/client'
 import styled from '@emotion/styled'
 import {
+  Backdrop,
   Box,
   Flex,
   formatNumber,
@@ -9,12 +10,12 @@ import {
   Icon,
   IconButton,
   Link,
-  Modal,
   Panel,
   parseUint256,
   ProgressBar,
   Text,
   useBreakpointIndex,
+  useTheme,
 } from '@upshot-tech/upshot-ui'
 import { useWeb3React } from '@web3-react/core'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
@@ -779,7 +780,6 @@ function GmiCard({
 }
 
 export default function GmiView() {
-  const modalRef = useRef<HTMLDivElement>(null)
   const { activate, connector, deactivate } = useWeb3React()
   const address = useAppSelector(selectAddress)
   const [wallet, setWallet] = useState('')
@@ -787,6 +787,7 @@ export default function GmiView() {
   const [showPreview, setShowPreview] = useState(false)
   const dispatch = useAppDispatch()
   const router = useRouter()
+  const { theme } = useTheme()
 
   useEffect(() => {
     const urlWallet = router.query['wallet'] as string
@@ -849,13 +850,27 @@ export default function GmiView() {
         }}
       />
 
-      <Modal backdropBlur ref={modalRef} fullWidth open>
+      <Backdrop open />
+      <Box
+        sx={{
+          position: 'absolute',
+          zIndex: theme.zIndex['modal'],
+          maxHeight: '100%',
+          width: '100%',
+          height: '100%',
+          minHeight: '100%',
+        }}
+      >
         <Flex
           sx={{
-            flexDirection: 'column',
             alignItems: 'center',
+            flexDirection: 'column',
+            flexGrow: 1,
+            justifyContent: 'center',
+            padding: 4,
+            width: '100%',
+            minHeight: '100%',
             gap: 8,
-            minHeight: '100vh',
           }}
         >
           <Link href="/" component={NextLink}>
@@ -869,11 +884,10 @@ export default function GmiView() {
 
           <Flex
             sx={{
-              alignItems: 'center',
-              flexDirection: 'column',
               flexGrow: 1,
+              flexDirection: 'column',
               justifyContent: 'center',
-              padding: 4,
+              alignItems: 'center',
               width: '100%',
             }}
           >
@@ -896,7 +910,7 @@ export default function GmiView() {
 
           <FooterModal />
         </Flex>
-      </Modal>
+      </Box>
     </>
   )
 }
