@@ -10,7 +10,7 @@ const client = new ApolloClient({
       User: {
         fields: {
           txHistory: {
-            keyArgs: ['limit'],
+            keyArgs: false,
             merge: (existing = {}, incoming) => {
               if (incoming.count === existing?.events?.length) return existing
               return { 

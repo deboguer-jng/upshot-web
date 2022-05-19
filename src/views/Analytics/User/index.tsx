@@ -474,7 +474,7 @@ export default function UserView() {
       errorPolicy: 'all',
       variables: {
         address: addressFormatted,
-        txLimit: 25,
+        txLimit: 100,
         txOffset: 0,
       },
       skip: !addressFormatted,
@@ -649,10 +649,11 @@ export default function UserView() {
     dataUnsupportedAssets?.getUnsupportedAssetPage?.nextOffset,
   ])
 
-  const loadMore = () => {
+  const loadMore = ({ startIndex, stopIndex }) => {
     fetchMoreTxHistories({
       variables: {
         txOffset: txHistoryData?.getTxHistory?.txHistory?.events?.length,
+        txLimit: stopIndex - (txHistoryData?.getTxHistory?.txHistory?.events?.length ?? 0)
       },
     })
 
