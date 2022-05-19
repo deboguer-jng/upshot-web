@@ -108,6 +108,8 @@ function GmiPanel({
   const isMobile = breakpointIndex <= 1
 
   const rank = gmiLabel(gmi)
+  const [isTop, percentRank] = gmiPercentRank(gmiPercentile)
+  const percentRankLabel = `${isTop ? 'Top' : 'Bottom'} ${percentRank}%`
 
   return (
     <Panel
@@ -257,7 +259,7 @@ function GmiPanel({
                 color={'blue'}
                 sx={{ fontSize: '26px', fontWeight: 'bold' }}
               >
-                Top {gmiPercentRank(gmiPercentile)}%
+                {percentRankLabel}
               </Text>
             </Flex>
 
@@ -317,9 +319,7 @@ function GmiPanel({
                 padding: '20px',
               }}
             >
-              <Text sx={{ fontSize: '16px', fontWeight: 'heading' }}>
-                ROI
-              </Text>
+              <Text sx={{ fontSize: '16px', fontWeight: 'heading' }}>ROI</Text>
               <Text
                 color={Number(totalGainPercent) > 0 ? 'green' : 'red'}
                 sx={{ fontSize: '26px', fontWeight: 'bold' }}
@@ -400,6 +400,7 @@ function GmiPreview({
           el.style.transform = 'scale(1.0)'
           el.style.width = '1200px'
           el.style.height = '600px'
+          el.style.padding = '80px'
         },
       })
 
@@ -499,6 +500,7 @@ function GmiPreview({
           padding: '0 !important',
           borderRadius: '40px',
           overflow: 'hidden',
+          marginBottom: 4,
         }}
       >
         <GmiSocialCard
@@ -517,6 +519,36 @@ function GmiPreview({
         />
       </Panel>
 
+      {!!gmiBlob && (
+        <Flex
+          sx={{
+            display: 'inline-flex',
+            alignSelf: 'center',
+            marginBottom: 1,
+          }}
+        >
+          <Link
+            onClick={handleGmiCopy}
+            sx={{
+              display: 'inline-flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: 2,
+              '& svg path': {
+                fill: 'grey-500',
+                transition: 'fill 0.1s ease',
+              },
+              '&:hover svg path': {
+                fill: 'white',
+              },
+            }}
+          >
+            <Text>Copy image to clipboard</Text>
+            <Icon icon="copy" size={16} />
+          </Link>
+        </Flex>
+      )}
+
       <Link
         component={NextLink}
         target="_blank"
@@ -528,7 +560,11 @@ function GmiPreview({
               : `${displayName} has a gmi of ${Math.floor(gmi)}/1000 (${rank})`
           }. What's yours? \nhttps://upshot.xyz/gmi/${wallet} @UpshotHQ`
         )}`}
-        sx={{ width: '100%', textDecoration: 'none !important' }}
+        sx={{
+          width: '100%',
+          textDecoration: 'none !important',
+          marginBottom: 4,
+        }}
       >
         <ShareButton sx={{ maxWidth: '200px', margin: '0 auto' }}>
           <Text
@@ -543,12 +579,6 @@ function GmiPreview({
           <Icon color="white" icon="twitter" size={32} />
         </ShareButton>
       </Link>
-
-      {!!gmiBlob && (
-        <Link sx={{ textAlign: 'center' }} onClick={handleGmiCopy}>
-          Copy to clipboard
-        </Link>
-      )}
     </Panel>
   )
 }
