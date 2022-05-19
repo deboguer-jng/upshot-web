@@ -136,7 +136,7 @@ export function GmiSocialCard({
 }: GmiSocialCardProps) {
   const rank = gmiLabel(gmi)
   const [width, setWidth] = useState<number>()
-  const aspectRatio = 0.5
+  const aspectRatio = 0.55
 
   useEffect(() => {
     const updateSize = () => {
