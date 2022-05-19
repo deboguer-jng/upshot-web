@@ -37,7 +37,7 @@ function GmiRow({ label, isEth, value = '', color = 'grey-500' }: GmiRowProps) {
     <Flex sx={{ alignItems: 'baseline' }}>
       <Text
         color="grey-300"
-        sx={{ fontSize: 5, fontWeight: 'heading', lineHeight: 1 }}
+        sx={{ fontSize: '1.67rem', fontWeight: 'heading', lineHeight: 1 }}
       >
         {label}
       </Text>
@@ -51,7 +51,7 @@ function GmiRow({ label, isEth, value = '', color = 'grey-500' }: GmiRowProps) {
       <Text
         color={color as keyof typeof theme.colors}
         variant="h3Primary"
-        sx={{ fontWeight: 'bold', lineHeight: 1 }}
+        sx={{ fontSize: '1.67rem', fontWeight: 'bold', lineHeight: 1 }}
       >
         {!!isEth && <Text sx={{ fontWeight: '400 !important' }}>Ξ</Text>}
         {value}
@@ -82,15 +82,15 @@ export function GmiRenderError({ wallet }: { wallet?: string }) {
           </Text>
         </Flex>
 
-        <Flex sx={{ marginBottom: 2 }}>
+        <Flex sx={{ marginBottom: 5 }}>
           <GmiScore gmi={0} />
         </Flex>
 
         <Grid
           sx={{ gridTemplateColumns: ['1fr', '1fr', '1.5fr 1fr'], flexGrow: 1 }}
         >
-          <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-            <Flex sx={{ flexDirection: 'column', gap: 4, marginBottom: 4 }}>
+          <Flex sx={{ flexDirection: 'column', gap: 5 }}>
+            <Flex sx={{ flexDirection: 'column', gap: 5, marginBottom: 5 }}>
               <ProgressBar percent={0} bgColor="grey-900" />
             </Flex>
             <GmiRow label="Blue Chips Owned" color="blue" value="-" />
@@ -136,6 +136,7 @@ export function GmiSocialCard({
 }: GmiSocialCardProps) {
   const rank = gmiLabel(gmi)
   const [width, setWidth] = useState<number>()
+  const aspectRatio = 0.5
 
   useEffect(() => {
     const updateSize = () => {
@@ -157,7 +158,7 @@ export function GmiSocialCard({
     <Box
       sx={{
         width: width ?? 'auto',
-        height: width ? Number(width) * 0.5 : 'auto',
+        height: width ? Number(width) * aspectRatio : 'auto',
         overflow: 'hidden',
         maxWidth: 'calc(100vw - 102px)',
       }}
@@ -175,12 +176,12 @@ export function GmiSocialCard({
           transform: `scale(${Number(width) / 1200})`,
           transformOrigin: 'top left',
           minWidth: width ? 1200 : 'auto',
-          minHeight: width ? 600 : 'auto',
+          minHeight: width ? 1200 * aspectRatio : 'auto',
         }}
       >
         <Flex sx={{ flexDirection: 'column' }}>
-          <Flex sx={{ justifyContent: 'space-between' }}>
-            <Text variant="h1Primary" sx={{ fontSize: 7 }}>
+          <Flex sx={{ justifyContent: 'space-between', marginBottom: 2 }}>
+            <Text variant="h1Primary" sx={{ fontSize: 8 }}>
               {rank}
             </Text>
             <Text color="grey-500" sx={{ fontSize: 3, textAlign: 'right' }}>
@@ -188,7 +189,7 @@ export function GmiSocialCard({
             </Text>
           </Flex>
 
-          <Flex sx={{ marginBottom: 2 }}>
+          <Flex sx={{ marginBottom: 5 }}>
             <GmiScore {...{ gmi }} />
           </Flex>
 
@@ -198,8 +199,8 @@ export function GmiSocialCard({
               flexGrow: 1,
             }}
           >
-            <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-              <Flex sx={{ flexDirection: 'column', gap: 4, marginBottom: 4 }}>
+            <Flex sx={{ flexDirection: 'column', gap: 5 }}>
+              <Flex sx={{ flexDirection: 'column', gap: 5, marginBottom: 5 }}>
                 <ProgressBar percent={(gmi / 1000) * 100} bgColor="grey-900" />
               </Flex>
               <GmiRow
