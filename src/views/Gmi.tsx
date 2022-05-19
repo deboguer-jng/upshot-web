@@ -108,6 +108,8 @@ function GmiPanel({
   const isMobile = breakpointIndex <= 1
 
   const rank = gmiLabel(gmi)
+  const [isTop, percentRank] = gmiPercentRank(gmiPercentile)
+  const percentRankLabel = `${isTop ? 'Top' : 'Bottom'} ${percentRank}%`
 
   return (
     <Panel
@@ -257,7 +259,7 @@ function GmiPanel({
                 color={'blue'}
                 sx={{ fontSize: '26px', fontWeight: 'bold' }}
               >
-                Top {gmiPercentRank(gmiPercentile)}%
+                {percentRankLabel}
               </Text>
             </Flex>
 
