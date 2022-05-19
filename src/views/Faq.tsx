@@ -90,6 +90,31 @@ export function FaqPanel({ onBack }: { onBack: () => void }) {
             </li>
           ))}
         </ul>
+        <Text color="grey-500" sx={{ fontSize: 3, lineHeight: '1.4rem' }}>
+          For this first version of gmi, we have made some explicit design choices to help minimize the influence manipulation and/or less-informative factors have on one’s gmi:
+        </Text>
+        <ol>
+            <li>
+              <Flex sx={{ flexDirection: 'column', gap: 2, marginBottom: '8px' }}>
+                <Text color="grey-500" sx={{ fontSize: 3, lineHeight: '1.4rem' }}>
+                  Currently gmi only contemplates a curated set of collections as opposed to the full universe of NFT collections. These curated collections are largely chosen based on whose pricing is harder to manipulate, which ones have more liquid markets, and which ones maintain certain cultural/memetic levels of influence. This set will continue to evolve as we further refine gmi and add more breadth and depth to the data behind the number. 
+                </Text>
+              </Flex>
+            </li>
+            <li>
+              <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+                <Text color="grey-500" sx={{ fontSize: 3, lineHeight: '1.4rem' }}>
+                  It’s common practice for NFT collectors to hold NFTs across multiple wallets. Minimally, many collectors will often have one hot wallet (or multiple) that they’re actively using to buy/sell NFTs and a cold wallet where they store their longer-term NFT positions. Because it’s difficult to know when someone is transferring NFTs between their own wallets vs someone else’s wallet, we’ve had to make a decision about how to best attribute gains to different wallets when there are transfers in between sales. For this first version of gmi, the wallet that last <i>purchased</i> the NFT will be the one attributed with the gain/loss when that NFT is sold; regardless of whether or not there were transfers between the last <i>purchase</i> and the sale.
+                </Text>
+                <Text color="grey-500" sx={{ fontSize: 3, lineHeight: '1.4rem' }}>
+                  For example, let’s say <code>bigpictureguy.eth</code> buys a Bored Ape from one of their hot wallets (<code>hot1.bigpictureguy.eth</code>), then transfers it to their cold wallet for storage (<code>vault.bigpictureguy.eth</code>), then later transfers it to another one of their hot wallets (<code>hot2.bigpictureguy.eth</code>) to sell the ape from. The gain or loss from this sale, even though coming from <code>hot2.bigpictureguy.eth</code>, will be attributed to <code>hot1.bigpictureguy.eth</code> because that was the last wallet to purchase the ape.
+                </Text>
+              </Flex>
+            </li>
+        </ol>
+        <Text color="grey-500" sx={{ fontSize: 3, lineHeight: '1.4rem' }}>
+          These design decisions come with their own set of trade-offs and may result in some unexpected numbers being displayed on someone’s gmi card. While we feel as though these decisions bring more benefits than detriments in light of the aforementioned complexities and potential for manipulation, subsequent versions of gmi will aim to solve these problems without as many compromises.
+        </Text>
       </Flex>
       <Flex sx={{ flexDirection: 'column' }}>
         <Text sx={{ fontSize: 5, lineHeight: '3rem' }}>
