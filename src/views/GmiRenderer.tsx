@@ -98,7 +98,7 @@ export function GmiRenderError({ wallet }: { wallet?: string }) {
             <GmiRow isEth label="Wallet Rank" color="blue" value="-" />
             <GmiRow isEth label="Trade Volume" color="blue" value="-" />
             <GmiRow isEth label="Total Gains" color="white" value="-" />
-            <GmiRow isEth label="ROI (%)" color="white" value="-" />
+            <GmiRow isEth label="ROI" color="white" value="-" />
           </Flex>
           <Flex sx={{ flexDirection: 'column' }}>
             <Box
@@ -230,14 +230,14 @@ export function GmiSocialCard({
               />
               <GmiRow
                 isEth
-                label="Total Gains (Ξ)"
+                label="Total Gains"
                 color={!gainsTotal ? 'white' : gainsTotal > 0 ? 'green' : 'red'}
                 value={formatNumber(gainsTotal, {
                   decimals: 2,
                 })}
               />
               <GmiRow
-                label="ROI (%)"
+                label="ROI"
                 color={Number(totalGainPercent) > 0 ? 'green' : 'red'}
                 value={`${
                   totalGainPercent && totalGainPercent > 0 ? '+' : ''

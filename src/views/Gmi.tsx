@@ -293,7 +293,7 @@ function GmiPanel({
               }}
             >
               <Text sx={{ fontSize: '16px', fontWeight: 'heading' }}>
-                Total Gains (Ξ)
+                Total Gains
               </Text>
               <Text
                 color={gainsTotal > 0 ? 'green' : 'red'}
@@ -317,7 +317,7 @@ function GmiPanel({
               }}
             >
               <Text sx={{ fontSize: '16px', fontWeight: 'heading' }}>
-                ROI (%)
+                ROI
               </Text>
               <Text
                 color={Number(totalGainPercent) > 0 ? 'green' : 'red'}
