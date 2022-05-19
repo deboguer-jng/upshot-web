@@ -154,6 +154,9 @@ export function GmiSocialCard({
     return () => window.removeEventListener('resize', updateSize)
   }, [])
 
+  const [isTop, percentRank] = gmiPercentRank(gmiPercentile)
+  const percentRankLabel = `${isTop ? 'Top' : 'Bottom'} ${percentRank}%`
+
   return (
     <Box
       sx={{
@@ -218,7 +221,7 @@ export function GmiSocialCard({
               <GmiRow
                 label="Wallet Rank"
                 color={'blue'}
-                value={`Top ${gmiPercentRank(gmiPercentile)}%`}
+                value={percentRankLabel}
               />
               <GmiRow
                 isEth

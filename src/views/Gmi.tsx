@@ -400,7 +400,7 @@ function GmiPreview({
           el.style.transform = 'scale(1.0)'
           el.style.width = '1200px'
           el.style.height = '600px'
-          el.style.padding = '80px'
+          el.style.padding = '64px'
         },
       })
 
