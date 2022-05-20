@@ -15,7 +15,6 @@ import {
   GetMetaCollectorVars,
 } from 'graphql/queries'
 import Head from 'next/head'
-import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
 
 interface MetaProps {
@@ -63,12 +62,14 @@ function Meta({
 }
 
 export default function Metadata() {
-  const router = useRouter()
   const [subtitle, setSubtitle] = useState<string>()
   const [image, setImage] = useState<string>()
   const parts = useMemo(
-    () => (router.asPath || '/').slice(1).split('/'),
-    [router.asPath]
+    () =>
+      typeof window === 'undefined'
+        ? []
+        : window.location.pathname.slice(1).split('/'),
+    []
   )
 
   const [getMetaAsset] = useLazyQuery<GetMetaAssetData, GetMetaAssetVars>(
@@ -130,7 +131,6 @@ export default function Metadata() {
 
   // Synchronous metadata
   if (parts[0] === 'gmi') {
-
     return (
       <Meta
         subtitle="gmi"
