@@ -11,7 +11,7 @@ import {
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import Head from 'next/head'
-import { Box, Flex, Text } from 'theme-ui'
+import { Avatar, Box, Flex, Link, Text } from 'theme-ui'
 
 import Breadcrumbs from '../components/Breadcrumbs'
 
@@ -63,6 +63,7 @@ export default function SettingsView() {
 
   const onSave = () => {}
   const onTwitterConnect = () => {}
+  const onAvatarClick = () => {}
 
   return (
     <>
@@ -85,40 +86,50 @@ export default function SettingsView() {
 
         <SettingsPanel>
           <SettingsMenuItem label="Profile">
-            <Flex sx={{flexDirection: 'column', gap: '10px'}}>
-              <Text color={theme.colors['grey-500']}>Information</Text>
-              <InputRounded dark={true} sx={{padding: '16px'}} />
-              <TextareaRounded 
-                dark={true}
-                optional={true}
-                showCount={true}
-                maxLength={100}
-                placeholder='Write a short bio for your profile'
-              />
-              <Flex sx={{alignItems: 'center', marginBottom: '20px'}}>
-                <Icon color="grey-500" icon="twitter" size={32} />
-                <Flex sx={{
-                  width: '100%',
-                  borderRadius: theme.radii.lg,
-                  position: 'relative',
-                  backgroundColor: theme.colors.black,
-                  height: '60px',
-                  alignItems: 'center',
-                  padding: '16px',
-                  marginLeft: '10px'
-                }}>
-                  <Text color="grey-500">Twitter</Text>
-                  <Button 
-                    variant="secondary" 
-                    capitalize={true}
-                    color="grey-500"
-                    sx={{position: 'absolute', right: '10px'}}
-                    onClick={onTwitterConnect}
-                  >Connect</Button>
+            <Flex sx={{flexWrap: 'wrap', gap: '20px 50px'}}>
+              <Flex sx={{flexDirection: 'column', gap: '10px'}}>
+                <Text color={theme.colors['grey-500']}>Information</Text>
+                <InputRounded dark={true} sx={{padding: '16px'}} />
+                <TextareaRounded 
+                  dark={true}
+                  optional={true}
+                  showCount={true}
+                  maxLength={100}
+                  placeholder='Write a short bio for your profile'
+                />
+                <Flex sx={{alignItems: 'center', marginBottom: '20px'}}>
+                  <Icon color="grey-500" icon="twitter" size={32} />
+                  <Flex sx={{
+                    width: '100%',
+                    borderRadius: theme.radii.lg,
+                    position: 'relative',
+                    backgroundColor: theme.colors.black,
+                    height: '60px',
+                    alignItems: 'center',
+                    padding: '16px',
+                    marginLeft: '10px'
+                  }}>
+                    <Text color="grey-500">Twitter</Text>
+                    <Button 
+                      variant="secondary" 
+                      capitalize={true}
+                      color="grey-500"
+                      sx={{position: 'absolute', right: '10px'}}
+                      onClick={onTwitterConnect}
+                    >Connect</Button>
+                  </Flex>
                 </Flex>
               </Flex>
-              <Button onClick={onSave} sx={{width: 150}} capitalize={true}>Save Changes</Button>
+              <Flex sx={{flexDirection: 'column', gap: '30px', paddingBottom: '40px'}}>
+                <Text color={theme.colors['grey-500']}>Profile Picture</Text>
+                <Link onClick={onAvatarClick}>
+                  <Avatar size="200" src="/img/defaultAvatar.png"></Avatar>
+                </Link>
+              </Flex>
             </Flex>
+              <Flex sx={{width: '100%'}}>
+                <Button onClick={onSave} sx={{width: 150}} capitalize={true}>Save Changes</Button>
+              </Flex>
           </SettingsMenuItem>
           <SettingsMenuItem label="Notifications">
             
