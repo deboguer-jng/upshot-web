@@ -167,3 +167,93 @@ export const GET_ASSET = gql`
     }
   }
 `
+
+export type GetSimilarAssetsVars = {
+  id: string
+}
+
+export type GetSimilarAssetsData = {
+  similarAssets: {
+    similarity: number
+    similarAsset: {
+      id: number
+      name: string
+      tokenId: string
+      mediaUrl: string
+      rarity: number
+      rarityRank: number
+      priceChangeFromFirstSale: number
+      contractAddress: string
+      creatorAddress: string
+      creatorUsername: string
+      creatorAvatar: string
+      warningBanner: boolean
+      listPrice?: string
+      listPriceUsd?: string
+      listMarketplace?: string
+      listUrl?: string
+      listTimestamp?: number
+      listExpiration?: number
+      listAppraisalRatio?: number
+      collection?: {
+        id: number
+        name: string
+        imageUrl: string
+        size: number
+      }
+      lastSale?: {
+        ethSalePrice: string
+        usdSalePrice: string
+        confidence: number
+        timestamp: number
+      }
+      lastAppraisalWeiPrice: string
+      lastAppraisalUsdPrice: string
+      lastAppraisalAt: number
+    }
+  }[]
+}
+
+export const GET_SIMILAR_ASSETS = gql`
+  query similarAssets($id: String!) {
+    similarAssets(assetId: $id) {
+      similarity
+      similarAsset {
+        id
+        name
+        tokenId
+        mediaUrl
+        rarity
+        rarityRank
+        priceChangeFromFirstSale
+        contractAddress
+        creatorAddress
+        creatorUsername
+        creatorAvatar
+        warningBanner
+        listPrice
+        listPriceUsd
+        listMarketplace
+        listUrl
+        listTimestamp
+        listExpiration
+        listAppraisalRatio
+        collection {
+          id
+          name
+          imageUrl
+          size
+        }
+        lastSale {
+          ethSalePrice
+          usdSalePrice
+          confidence
+          timestamp
+        }
+        lastAppraisalWeiPrice
+        lastAppraisalUsdPrice
+        lastAppraisalAt
+      }
+    }
+  }
+`

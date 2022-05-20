@@ -3,6 +3,7 @@ import { useQuery } from '@apollo/client'
 import {
   BuyNowPanel,
   imageOptimizer,
+  MiniNftCard,
   Pagination,
   Tooltip,
   useBreakpointIndex,
@@ -51,7 +52,15 @@ import { getPriceChangeColor } from 'utils/color'
 
 import Breadcrumbs from '../components/Breadcrumbs'
 import Collectors from '../components/ExplorePanel/Collectors'
-import { GET_ASSET, GetAssetData, GetAssetVars } from './queries'
+import { MiniNFTContainer } from '../components/Styled'
+import {
+  GET_ASSET,
+  GET_SIMILAR_ASSETS,
+  GetAssetData,
+  GetAssetVars,
+  GetSimilarAssetsData,
+  GetSimilarAssetsVars,
+} from './queries'
 
 function Layout({ children }: { children: React.ReactNode }) {
   const storage = globalThis?.sessionStorage
@@ -147,6 +156,16 @@ export default function NFTView() {
       skip: !id,
     }
   )
+
+  const {
+    loading: similarLoading,
+    error: similarError,
+    data: similarData,
+  } = useQuery<GetSimilarAssetsData, GetSimilarAssetsVars>(GET_SIMILAR_ASSETS, {
+    errorPolicy: 'all',
+    variables: { id },
+    skip: !id,
+  })
 
   useEffect(() => {
     if (!data?.assetById) return
@@ -914,6 +933,62 @@ export default function NFTView() {
                 />
               </Flex>
             </Panel>
+            <Box>
+              <Text variant="h3Secondary">More like this</Text>
+              <MiniNFTContainer mt={3}>
+                {similarData?.similarAssets?.map((asset, key) => {
+                  return (
+                    <Link
+                      key={key}
+                      href={'/analytics/nft/' + asset.similarAsset.id}
+                      component={NextLink}
+                      noHover
+                    >
+                      <MiniNftCard
+                        price={
+                          asset.similarAsset.lastSale?.ethSalePrice
+                            ? formatNumber(
+                                asset.similarAsset.lastSale?.ethSalePrice,
+                                {
+                                  fromWei: true,
+                                  decimals: 2,
+                                  prefix: 'ETHER',
+                                }
+                              )
+                            : undefined
+                        }
+                        name={asset.similarAsset.name}
+                        type="recommend"
+                        image={asset.similarAsset.mediaUrl}
+                        listing={
+                          asset.similarAsset.listPrice
+                            ? formatNumber(asset.similarAsset.listPrice, {
+                                fromWei: true,
+                                decimals: 2,
+                                prefix: 'ETHER',
+                              })
+                            : undefined
+                        }
+                        appraisal={
+                          asset.similarAsset.lastAppraisalWeiPrice
+                            ? formatNumber(
+                                asset.similarAsset.lastAppraisalWeiPrice,
+                                {
+                                  fromWei: true,
+                                  decimals: 2,
+                                  prefix: 'ETHER',
+                                }
+                              )
+                            : undefined
+                        }
+                        linkComponent={NextLink}
+                        link={`https://opensea.io/assets/${asset.similarAsset.id}`}
+                      />
+                    </Link>
+                  )
+                })}
+              </MiniNFTContainer>
+            </Box>
           </Flex>
         </Grid>
       </Layout>

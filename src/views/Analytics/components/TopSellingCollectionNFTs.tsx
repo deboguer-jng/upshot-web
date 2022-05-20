@@ -169,7 +169,7 @@ export default function TopSellingCollectionNFTs({
           topSellingType={topSellingType}
           setTopSellingType={(val) => setTopSellingType(val)}
         />
-        <MiniNFTContainer sx={{ paddingTop: '80px' }}>
+        <MiniNFTContainer sx={{ paddingTop: '80px', height: '255px' }}>
           {[...new Array(10)].map((_, idx) => (
             <BlurrySquareTemplate key={idx} />
           ))}
@@ -267,7 +267,7 @@ export default function TopSellingCollectionNFTs({
             pointerEvents: 'none',
           }}
         ></Box>
-        <MiniNFTContainer sx={{ paddingTop: '80px' }}>
+        <MiniNFTContainer sx={{ paddingTop: '80px', height: '255px' }}>
           {topSellingType === 'NFTs' ? (
             <>
               {data.topSales.map(
@@ -350,11 +350,13 @@ export default function TopSellingCollectionNFTs({
                           : undefined
                       }
                       sales={
-                        getSalesNumber(latestStats) + ' / ' + (
-                          period === '1 month'
-                            ? '1 mth' : period === '1 week'
-                              ? '1 wk' : '1 d'
-                        )
+                        getSalesNumber(latestStats) +
+                        ' / ' +
+                        (period === '1 month'
+                          ? '1 mth'
+                          : period === '1 week'
+                          ? '1 wk'
+                          : '1 d')
                       }
                       link={`/analytics/collection/${id}`}
                     />
