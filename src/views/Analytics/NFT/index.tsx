@@ -36,7 +36,6 @@ import { ART_BLOCKS_CONTRACTS, PIXELATED_CONTRACTS } from 'constants/'
 import { format } from 'date-fns'
 import makeBlockie from 'ethereum-blockies-base64'
 import { ethers } from 'ethers'
-import Head from 'next/head'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -238,7 +237,6 @@ export default function NFTView() {
     txHistory,
     appraisalHistory,
     contractAddress,
-    warningBanner,
     listPrice,
     listPriceUsd,
     listMarketplace,
@@ -292,22 +290,6 @@ export default function NFTView() {
 
   return (
     <>
-      <Head>
-        <title>{name} | Upshot Analytics</title>
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:site" content="@UpshotHQ" />
-        <meta name="twitter:creator" content="@UpshotHQ" />
-        <meta property="og:url" content="https://upshot.io" />
-        <meta property="og:title" content="Upshot Analytics" />
-        <meta
-          property="og:description"
-          content="NFTs offer us a vehicle for tokenizing anything, while the explosive growth of DeFi has demonstrated the power of permissionless financial primitives. Upshot is building scalable NFT pricing infrastructure at the intersection of DeFi x NFTs. Through a combination of crowdsourced appraisals and proprietary machine learning algorithms, Upshot provides deep insight into NFT markets and unlocks a wave of exotic new DeFi possibilities."
-        />
-        <meta
-          property="og:image"
-          content="https://upshot.io/img/opengraph/opengraph_nft.jpg"
-        />
-      </Head>
       <Layout>
         <Grid
           columns={[1, 1, 1, 2]}
@@ -675,24 +657,6 @@ export default function NFTView() {
                     <Flex sx={{ padding: '20px', paddingBottom: 0 }}>
                       <Text variant="h3Secondary">Pricing History</Text>
                     </Flex>
-                    {warningBanner &&
-                      !isFloor &&
-                      collection?.name !== 'CryptoPunks' && (
-                        <Text
-                          backgroundColor={'primary'}
-                          color="black"
-                          sx={{
-                            marginX: '20px',
-                            marginTop: '20px',
-                            padding: '10px',
-                            borderRadius: '10px',
-                            fontWeight: 600,
-                          }}
-                        >
-                          This is a valuable item. Our top-tier appraisals are
-                          under active development.
-                        </Text>
-                      )}
                     <Flex sx={{ gap: '40px', flexGrow: 1, padding: '20px' }}>
                       {appraisalHistory?.length > 0 && (
                         <Flex sx={{ flexDirection: 'column' }}>

@@ -5,7 +5,6 @@ import { Container } from '@upshot-tech/upshot-ui'
 import { Avatar, Flex, Grid, Panel, Text } from '@upshot-tech/upshot-ui'
 import {
   Box,
-  Checkbox,
   CollectionCard,
   CollectionCardExpanded,
   CollectionRow,
@@ -34,7 +33,6 @@ import { format } from 'date-fns'
 import makeBlockie from 'ethereum-blockies-base64'
 import { ethers } from 'ethers'
 import { Masonry, useInfiniteLoader } from 'masonic'
-import Head from 'next/head'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { transparentize } from 'polished'
@@ -52,16 +50,20 @@ import { setAlertState } from 'redux/reducers/layout'
 import { selectAddress, selectEns } from 'redux/reducers/web3'
 import { Label as LabelUI } from 'theme-ui'
 import { extractEns, shortenAddress } from 'utils/address'
+import { gmiLabel } from 'utils/gmi'
 import { formatDistance } from 'utils/time'
 
 import Breadcrumbs from '../components/Breadcrumbs'
 import {
+  GET_ALL_OWNED_COLLECTIONS_WRAPPER,
   GET_COLLECTION_ASSETS,
   GET_COLLECTOR,
   GET_COLLECTOR_TX_HISTORY,
   GET_UNSUPPORTED_AGGREGATE_COLLECTION_STATS,
   GET_UNSUPPORTED_ASSETS,
   GET_UNSUPPORTED_FLOORS,
+  GetAllOwnedCollectionsWrapperData,
+  GetAllOwnedCollectionsWrapperVars,
   GetCollectionAssetsData,
   GetCollectionAssetsVars,
   GetCollectorData,
@@ -74,9 +76,6 @@ import {
   GetUnsupportedAssetsVars,
   GetUnsupportedFloorsData,
   GetUnsupportedFloorsVars,
-  GetAllOwnedCollectionsWrapperData,
-  GetAllOwnedCollectionsWrapperVars,
-  GET_ALL_OWNED_COLLECTIONS_WRAPPER,
 } from './queries'
 
 type Collection = {
@@ -172,9 +171,6 @@ function Layout({
 
   return (
     <>
-      <Head>
-        <title>{title ? title + ' | ' : ''}Upshot Analytics</title>
-      </Head>
       <Nav />
       <Container
         maxBreakpoint="lg"
@@ -655,11 +651,6 @@ export default function UserView() {
   useEffect(() => {
     if (!collectionOffset) return
 
-    console.log({
-      offset:
-        dataAllOwnedCollections?.getAllOwnedCollectionsWrapper?.nextOffset,
-    })
-
     fetchMoreAllOwnedCollections({
       variables: {
         offset:
@@ -1071,19 +1062,23 @@ export default function UserView() {
     return extractEns(data?.getUser?.addresses, address) ?? shortAddress
   }
 
+  const getGmiNum = () => {
+    const gmi = data?.getUser?.addresses[0]?.gmi
+
+    if (gmi) return `${Math.floor(gmi)} /1000 gmi`
+    else return '-'
+  }
+
+  const getGmiLabel = () => {
+    const gmi = data?.getUser?.addresses[0]?.gmi
+
+    if (gmi) return gmiLabel(gmi)
+    else ''
+  }
+
   return (
     <>
       <Layout title={getDisplayName()}>
-        {data?.getUser?.warningBanner && (
-          <Text
-            backgroundColor={'primary'}
-            color="black"
-            sx={{ padding: '10px 30px', borderRadius: '10px', fontWeight: 600 }}
-          >
-            This portfolio contains a valuable item. Our top-tier appraisals are
-            under active development.
-          </Text>
-        )}
         <Flex sx={{ flexDirection: 'column', gap: 4 }}>
           {!!address && (
             <Header
@@ -1180,15 +1175,9 @@ export default function UserView() {
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
                             textAlign: 'center',
-                            textTransform: 'capitalize',
                           }}
                         >
-                          {data?.getUser?.firstAssetPurchaseTime &&
-                          !noCollection
-                            ? formatDistance(
-                                data.getUser.firstAssetPurchaseTime * 1000
-                              )
-                            : '-'}
+                          {getGmiNum()}
                         </Text>
                         <Text
                           color="blue"
@@ -1202,7 +1191,7 @@ export default function UserView() {
                             textAlign: 'center',
                           }}
                         >
-                          Age of Collection
+                          {getGmiLabel()}
                         </Text>
                       </Panel>
                       <Panel
@@ -1329,8 +1318,11 @@ export default function UserView() {
                             textTransform: 'capitalize',
                           }}
                         >
-                          {data?.getUser?.avgHoldTime
-                            ? formatDistance(0, data.getUser.avgHoldTime * 1000)
+                          {data?.getUser?.firstAssetPurchaseTime &&
+                          !noCollection
+                            ? formatDistance(
+                                data.getUser.firstAssetPurchaseTime * 1000
+                              )
                             : '-'}
                         </Text>
                         <Text
@@ -1341,7 +1333,7 @@ export default function UserView() {
                             textAlign: 'center',
                           }}
                         >
-                          Average Hold Time
+                          Age of Collection
                         </Text>
                       </Panel>
                     </>
@@ -2098,6 +2090,7 @@ export default function UserView() {
         </Flex>
       </Layout>
       <Modal
+        hideScroll
         ref={modalRef}
         onClose={() => setShowCollection(undefined)}
         open={showCollection?.id !== undefined}
