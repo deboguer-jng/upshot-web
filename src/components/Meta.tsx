@@ -68,7 +68,7 @@ export default function Metadata() {
     () =>
       typeof window === 'undefined'
         ? []
-        : (window.location.pathname || '/').slice(1).split('/'),
+        : window.location.pathname.slice(1).split('/'),
     []
   )
 
