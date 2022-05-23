@@ -30,8 +30,11 @@ import NFTSearchResults, {
 } from './NFTSearchResultsListView'
 import {
   GET_ASSETS_SEARCH,
+  GET_COLLECTION,
   GetAssetsSearchData,
   GetAssetsSearchVars,
+  GetCollectionData,
+  GetCollectionVars,
 } from './queries'
 import TraitStats from './TraitStats'
 
@@ -74,10 +77,6 @@ export default function SearchView() {
 
   const collectionId = router.query.collectionId
     ? Number(router.query.collectionId)
-    : undefined
-
-  const collectionName = router.query.collectionName
-    ? router.query.collectionName
     : undefined
 
   const tokenId = router.query.tokenId as string
@@ -184,6 +183,15 @@ export default function SearchView() {
     },
     skip: !collectionId,
   })
+
+  const { loading: collectionLoading, data: collectionData } = useQuery<GetCollectionData, GetCollectionVars>(
+    GET_COLLECTION,
+    {
+      errorPolicy: 'all',
+      variables: { id: collectionId },
+      skip: !collectionId,
+    }
+  )
 
   const handlePageChange = ({ selected }: { selected: number }) => {
     setPage(selected)
@@ -296,7 +304,7 @@ export default function SearchView() {
                   </Text>
                 )}
               </Box>
-              {(collectionName || assetArr?.[0]?.collection?.name) &&
+              {(collectionData?.collectionById?.name) &&
                 collectionId && (
                   <Flex
                     sx={{
@@ -306,7 +314,7 @@ export default function SearchView() {
                     }}
                   >
                     <Text variant="h2Primary">
-                      {collectionName ?? assetArr?.[0]?.collection?.name}
+                      {collectionData?.collectionById?.name}
                     </Text>
                     <Link
                       href={`/analytics/collection/${collectionId}`}

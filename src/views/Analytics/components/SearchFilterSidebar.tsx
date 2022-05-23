@@ -364,18 +364,15 @@ function TraitCategoryList({
 
 export default function SearchFilterSidebar({
   collectionId: defaultCollectionId,
-  collectionName: defaultCollectionName,
   onApply,
   onHideFilters,
 }: {
   collectionId?: number
-  collectionName?: string
   onApply?: ({ query }) => void
   onHideFilters?: () => void
 }) {
   const router = useRouter()
   const [collectionId, setCollectionId] = useState(defaultCollectionId)
-  const [collectionName, setCollectionName] = useState(defaultCollectionName)
   const [tokenId, setTokenId] = useState('')
   const [minPrice, setMinPrice] = useState('')
   const [maxPrice, setMaxPrice] = useState('')
@@ -393,9 +390,6 @@ export default function SearchFilterSidebar({
       : undefined
     if (!defaultCollectionId) setCollectionId(collectionId)
 
-    const collectionName = router.query.collectionName as string
-    if (!defaultCollectionName) setCollectionName(collectionName)
-
     const tokenId = router.query.tokenId as string
     setTokenId(tokenId)
 
@@ -411,7 +405,7 @@ export default function SearchFilterSidebar({
     }
 
     if (router.query.listedOnly) {
-      const listedOnly = router.query.listedOnly === 'true'
+      const listedOnly = router.query.listedOnly != 'false'
       setListedOnly(listedOnly)
     }
 
@@ -419,7 +413,7 @@ export default function SearchFilterSidebar({
       .flat()
       .map((val) => Number(val))
     setTraitIds(traitIds)
-  }, [router.query, defaultCollectionId, defaultCollectionName])
+  }, [router.query, defaultCollectionId])
 
   const { data } = useQuery<GetCollectionTraitsData, GetCollectionTraitsVars>(
     GET_COLLECTION_TRAITS,
@@ -456,7 +450,6 @@ export default function SearchFilterSidebar({
       query: {
         traits: traitIds,
         collectionId,
-        collectionName,
         minPrice,
         maxPrice,
         tokenId,

@@ -157,18 +157,6 @@ export default function CollectionView() {
     }
   )
 
-  useEffect(() => {
-    if (data?.collectionById && data?.collectionById.name) {
-      const storage = globalThis?.sessionStorage
-      const curPath = storage.getItem('currentPath')
-      if (curPath?.indexOf('collectionName=') === -1)
-        storage.setItem(
-          'currentPath',
-          `${curPath}?collectionName=${data?.collectionById.name}`
-        )
-    }
-  }, [data?.collectionById])
-
   /* Memoize scatter chart to avoid unnecessary updates. */
   const scatterChart = useMemo(
     () => (
@@ -376,9 +364,7 @@ export default function CollectionView() {
               }}
             >
               <Link
-                href={`/analytics/search/?collectionId=${id}&collectionName=${encodeURIComponent(
-                  data.collectionById.name
-                )}`}
+                href={`/analytics/search/?collectionId=${id}`}
                 sx={{
                   width: isMobile ? '100%' : 'auto',
                 }}
