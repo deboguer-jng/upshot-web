@@ -500,11 +500,12 @@ export default function SearchFilterSidebar({
           <TokenIdInput
             defaultValue={tokenId}
             key={tokenId}
-            onBlur={(e: React.KeyboardEvent<HTMLInputElement>) =>
+            onBlur={(e: React.KeyboardEvent<HTMLInputElement>) => 
               setTokenId(e.currentTarget.value)
             }
             onSubmit={(tokenId) => {
-              handleApplyFilters({ tokenId })
+              setListedOnly(false)
+              handleApplyFilters({ tokenId, listedOnly: false })
             }}
           />
 
