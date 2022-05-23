@@ -33,12 +33,13 @@ const BlogButton = styled(Button)`
   background: ${({ theme }) => theme.colors.pink};
   box-shadow: ${({ theme }) => `${theme.rawColors['pink']} 0px 0px 0px 1.8px`};
 
-  &:not(:disabled):not(:focus):hover {
+  &:not(:disabled):hover,
+  &:not(:disabled):focus {
     box-shadow: ${({ theme }) =>
-      `${theme.rawColors['pink']} 0px 0px 0px 1.8px`};
+      `${theme.rawColors['pink']} 0px 0px 0px 1.8px`} !important;
 
     & span {
-      color: ${({ theme }) => theme.colors.pink};
+      color: ${({ theme }) => theme.colors.pink} !important;
     }
   }
 `

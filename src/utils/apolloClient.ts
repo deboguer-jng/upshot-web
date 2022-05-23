@@ -1,4 +1,5 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client'
+import { relayStylePagination } from '@apollo/client/utilities'
 
 /**
  * Creates a new Apollo client instance.
@@ -6,13 +7,19 @@ import { ApolloClient, InMemoryCache } from '@apollo/client'
 const client = new ApolloClient({
   cache: new InMemoryCache({
     typePolicies: {
-      Query: {
+      User: {
         fields: {
-          getUser: {
-            keyArgs: ['id', 'userAddress'],
-            merge(existing = {}, incoming) {
-              return { ...existing, ...incoming }
-            },
+          txHistory: {
+            keyArgs: false,
+            merge: (existing = {}, incoming) => {
+              if (incoming.count === existing?.events?.length) return existing
+              return { 
+                count: incoming.count,
+                events: [
+                  ...(existing.events || []),
+                  ...incoming.events,
+                ]}
+            }
           },
         },
       },
