@@ -960,6 +960,7 @@ export default function NFTView() {
                         name={asset.similarAsset.name}
                         type="recommend"
                         image={asset.similarAsset.mediaUrl}
+                        pixelated
                         listing={
                           asset.similarAsset.listPrice
                             ? formatNumber(asset.similarAsset.listPrice, {
