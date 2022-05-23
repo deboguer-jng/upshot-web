@@ -379,7 +379,7 @@ export default function SearchFilterSidebar({
   const [tokenId, setTokenId] = useState('')
   const [minPrice, setMinPrice] = useState('')
   const [maxPrice, setMaxPrice] = useState('')
-  const [traitANDMatch, setTraitANDMatch] = useState(true)
+  const [traitANDMatch, setTraitANDMatch] = useState(false)
   const [traitIds, setTraitIds] = useState<number[]>([])
   const [listedOnly, setListedOnly] = useState(true)
   const breakpointIndex = useBreakpointIndex()
