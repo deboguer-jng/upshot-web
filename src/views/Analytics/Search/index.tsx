@@ -84,7 +84,7 @@ export default function SearchView() {
   const minPrice = router.query.minPrice as string
   const maxPrice = router.query.maxPrice as string
   const traitANDMatch = router.query.traitANDMatch as string
-  const listedOnly = router.query.listedOnly as string
+  const listedOnly = router.query.listedOnly as string ?? 'true'
   const traitIds = [router.query?.traits ?? []].flat().map((val) => Number(val))
   const collectionSearch = router.query.collectionSearch as string
   const [selectedColumn, setSelectedColumn] = useState<number>(0)

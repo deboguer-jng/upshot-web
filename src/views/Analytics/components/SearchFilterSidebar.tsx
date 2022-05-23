@@ -381,7 +381,7 @@ export default function SearchFilterSidebar({
   const [maxPrice, setMaxPrice] = useState('')
   const [traitANDMatch, setTraitANDMatch] = useState(true)
   const [traitIds, setTraitIds] = useState<number[]>([])
-  const [listedOnly, setListedOnly] = useState(false)
+  const [listedOnly, setListedOnly] = useState(true)
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
 
