@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { Icon, IconButton, useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import { Avatar, Button, Icon, IconButton, imageOptimizer, theme, Tooltip, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Container } from '@upshot-tech/upshot-ui'
 import {
   Accordion,
@@ -19,6 +19,9 @@ import { PIXELATED_CONTRACTS } from 'constants/'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { useAppDispatch } from 'redux/hooks'
+import { selectShowHelpModal, setShowHelpModal } from 'redux/reducers/layout'
 import { shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
 
@@ -71,6 +74,9 @@ enum BREAKPOINT_INDEXES {
 export default function SearchView() {
   const router = useRouter()
   const [page, setPage] = useState(0)
+  const dispatch = useAppDispatch()
+  const helpOpen = useSelector(selectShowHelpModal)
+  const toggleHelpModal = () => dispatch(setShowHelpModal(!helpOpen))
 
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
@@ -295,41 +301,111 @@ export default function SearchView() {
             }}
           >
             <Flex sx={{ flexDirection: 'column' }}>
-              <Box sx={{ height: '18px' }}>
-                {!!data?.assetGlobalSearch?.count && (
-                  <Text>
-                    {formatNumber(data.assetGlobalSearch.count)}{' '}
-                    {data.assetGlobalSearch.count === 1 ? 'result' : 'results'}{' '}
-                    found
-                  </Text>
-                )}
-              </Box>
               {(collectionData?.collectionById?.name) &&
+                collectionData?.collectionById?.imageUrl &&
                 collectionId && (
-                  <Flex
-                    sx={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      marginBottom: '5',
-                    }}
-                  >
-                    <Text variant="h2Primary">
-                      {collectionData?.collectionById?.name}
-                    </Text>
-                    <Link
-                      href={`/analytics/collection/${collectionId}`}
-                      component={NextLink}
-                      noHover
-                    >
-                      <IconButton
+                  <Flex sx={{ flexDirection: 'column', gap: '16px' }}>
+                    <Grid columns={['1fr', '1fr', '1fr 1fr']} sx={{ gap: '40px' }}>
+                      <Flex sx={{ flexDirection: 'column', gap: '16px' }}>
+                        <Flex sx={{ gap: 6, height: 100, alignItems: 'center' }}>
+                          <Box
+                            sx={{
+                              backgroundColor: '#231F20',
+                              minWidth: '63px',
+                              padding: isMobile ? '4px' : '8px',
+                              borderRadius: '50%',
+
+                              flexShrink: 0,
+                            }}
+                          >
+                            <Avatar
+                              size="xl"
+                              sx={{
+                                width: isMobile ? '55px' : '100px',
+                                height: isMobile ? '55px' : '100px',
+                                minWidth: 'unset',
+                              }}
+                              src={
+                                imageOptimizer(collectionData?.collectionById?.imageUrl, {
+                                  width: parseInt(theme.images.avatar.xl.size),
+                                  height: parseInt(theme.images.avatar.xl.size),
+                                }) ?? collectionData?.collectionById?.imageUrl
+                              }
+                            />
+                          </Box>
+                          <Flex sx={{ flexDirection: 'column' }}>
+                            <Flex sx={{ alignItems: 'center', gap: 2 }}>
+                              <Text variant="h1Secondary" sx={{ lineHeight: '2rem' }}>
+                                {collectionData?.collectionById?.name}
+                              </Text>
+                              {collectionData?.collectionById?.isAppraised && (
+                                <Tooltip
+                                  tooltip={'How do we price NFTs?'}
+                                  sx={{ marginLeft: '0', marginTop: '5px', height: 25 }}
+                                >
+                                  <Icon
+                                    icon="upshot"
+                                    onClick={toggleHelpModal}
+                                    size={25}
+                                    color="primary"
+                                  />
+                                </Tooltip>
+                              )}
+                            </Flex>
+
+                            <Text
+                              color="grey"
+                              variant="h4Primary"
+                              sx={{
+                                fontWeight: 700,
+                                marginTop: '2px',
+                              }}
+                            >
+                              Collection
+                            </Text>
+                          </Flex>
+                        </Flex>
+                      </Flex>
+                      <Flex
                         sx={{
-                          marginLeft: '6px;',
-                          verticalAlign: 'middle',
+                          flexDirection: 'column',
+                          gap: '16px',
                         }}
                       >
-                        <Icon icon="arrowStylizedRight" color="grey-500" />
-                      </IconButton>
-                    </Link>
+                        <Flex
+                          sx={{
+                            justifyContent: 'flex-end',
+                            minHeight: isMobile ? 0 : 100,
+                            marginBottom: isMobile ? 5 : 0,
+                            width: isMobile ? '100%' : 'auto',
+                          }}
+                        >
+                          <Link
+                            href={`/analytics/collection/${collectionId}`}
+                            sx={{
+                              width: isMobile ? '100%' : 'auto',
+                            }}
+                            component={NextLink}
+                            noHover
+                          >
+                            <Button
+                              icon={<Icon icon="analytics" />}
+                              sx={{
+                                width: isMobile ? '100%' : 'auto',
+                                '& span': {
+                                  textTransform: 'none',
+                                },
+                                '&:not(:hover) svg': {
+                                  path: { fill: '#000 !important' },
+                                },
+                              }}
+                            >
+                              Collection Analytics
+                            </Button>
+                          </Link>
+                        </Flex>
+                      </Flex>
+                    </Grid>
                   </Flex>
                 )}
 
@@ -417,6 +493,17 @@ export default function SearchView() {
                           marginTop: isMobile ? '10px' : '',
                         }}
                       />
+                    )}
+                  </Box>
+                )}
+                {!error && !loading && (
+                  <Box sx={{ height: '18px' }}>
+                    {!!data?.assetGlobalSearch?.count && (
+                      <Text>
+                        {formatNumber(data.assetGlobalSearch.count)}{' '}
+                        {data.assetGlobalSearch.count === 1 ? 'result' : 'results'}{' '}
+                        found
+                      </Text>
                     )}
                   </Box>
                 )}
