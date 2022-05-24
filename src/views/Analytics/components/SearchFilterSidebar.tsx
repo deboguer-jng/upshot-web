@@ -383,6 +383,7 @@ export default function SearchFilterSidebar({
   const [traitANDMatch, setTraitANDMatch] = useState(false)
   const [traitIds, setTraitIds] = useState<number[]>([])
   const [listedOnly, setListedOnly] = useState(true)
+  const [expanded, setExpanded] = useState(false)
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
 

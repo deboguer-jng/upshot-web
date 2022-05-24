@@ -546,8 +546,8 @@ export default function SearchView() {
                     />
                   ) : (
                     <Grid
-                    columns={['1fr', '1fr 1fr', '1fr 1fr 1fr', '1fr 1fr 1fr 1fr']}
                     sx={{
+                      gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
                       columnGap: '16px',
                       rowGap: '16px', 
                     }}
