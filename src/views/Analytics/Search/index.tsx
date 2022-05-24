@@ -42,6 +42,7 @@ import {
 import TraitStats from './TraitStats'
 
 const ROW_SIZE = 4
+const RESULTS_PER_PAGE = 25
 
 export enum ENFTSearchResultsOrder {
   LAST_SALE_PRICE,
@@ -175,8 +176,8 @@ export default function SearchView() {
   >(GET_ASSETS_SEARCH, {
     errorPolicy: 'all',
     variables: {
-      limit: ROW_SIZE * chunkSize,
-      offset: page * ROW_SIZE * chunkSize,
+      limit: RESULTS_PER_PAGE,
+      offset: page * RESULTS_PER_PAGE,
       collectionId,
       tokenId,
       minPrice,
