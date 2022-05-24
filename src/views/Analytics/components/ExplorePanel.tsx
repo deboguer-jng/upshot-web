@@ -176,7 +176,6 @@ export default function ExplorePanel({
   const handleSearch = (searchTerm: string) => setSearchTerm(searchTerm)
 
   const onChangeSelection = (columnIdx: number, order?: 'asc' | 'desc') => {
-    console.log(columnIdx, order)
     setSelectedColumn(columnIdx)
 
     const ascendingColumns = {

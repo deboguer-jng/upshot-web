@@ -88,7 +88,16 @@ function NFTTableHead({
   }
   
   const getDropdownValue = () => {
-    return 'Last Sale Date: low to high'
+    /* it maps 0, 1 -> 0
+    0 -> 0
+    1 -> 2
+    2 -> 4
+    3 -> 6 */
+    const selectedColAsc = selectedColumn * 2
+    const orderModifier = sortAscending === true ? 0 : 1
+
+    const selectedValue = genSortOptions()[selectedColAsc + orderModifier]
+    return selectedValue
   }
 
   return (
@@ -159,9 +168,9 @@ function NFTTableHead({
           value={getDropdownValue()}
           closeOnSelect={true}
           style={{
-            display: 'inline-block',
-            marginLeft: '-12px',
-            marginTop: isMobile ? '10px' : '',
+            marginTop: '10px',
+            marginBottom: '10px',
+            zIndex: 1,
           }}
         />
       )}
