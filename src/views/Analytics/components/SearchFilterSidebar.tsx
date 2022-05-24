@@ -566,7 +566,7 @@ export default function SearchFilterSidebar({
                 <Flex
                   sx={{
                     display: 'inline-flex',
-                    gap: 2,
+                    gap: 1,
                     flexDirection: 'column',
                   }}
                 >

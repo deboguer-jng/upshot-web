@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { Avatar, Button, Icon, IconButton, imageOptimizer, NFTCard, theme, Tooltip, useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import { Avatar, Button, Icon, IconButton, imageOptimizer, NFTCard, SpinnerBoxTemplate, theme, Tooltip, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Container } from '@upshot-tech/upshot-ui'
 import {
   Accordion,
@@ -434,6 +434,7 @@ export default function SearchView() {
                       flexDirection: 'row',
                       gap: 6,
                       alignItems: 'center',
+                      justifyContent: 'space-between',
                     }}
                   >
                     <Text
@@ -521,20 +522,18 @@ export default function SearchView() {
                         sortAscending={sortNFTsAscending}
                       />
                     ) : (
-                      loadArr
-                        .map((_, i) =>
-                          i % chunkSize === 0
-                            ? loadArr.slice(i, i + chunkSize)
-                            : null
-                        )
-                        .filter(Boolean)
-                        .map((items, idx) => (
-                          <Flex key={idx} sx={{ gap: 5 }}>
-                            {items?.map((_, idx) => (
-                              <BlurrySquareTemplate key={idx} />
+                    <Grid
+                      sx={{
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(225px, 1fr))',
+                        columnGap: '16px',
+                        rowGap: '16px', 
+                      }}
+                      >
+                        {loadArr?.map((_, idx) => (
+                              <SpinnerBoxTemplate key={idx} sx={{ height: '300px' }}/>
                             ))}
-                          </Flex>
-                        ))
+                    </Grid>
+                        
                     )
                   ) : assetArr && listView ? (
                     <NFTSearchResults
@@ -547,7 +546,7 @@ export default function SearchView() {
                   ) : (
                     <Grid
                     sx={{
-                      gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+                      gridTemplateColumns: 'repeat(auto-fill, minmax(225px, 1fr))',
                       columnGap: '16px',
                       rowGap: '16px', 
                     }}
