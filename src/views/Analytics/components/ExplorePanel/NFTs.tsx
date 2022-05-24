@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { CollectorAccordion, useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import { ButtonDropdown, CollectorAccordion, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { CollectionGridRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { Pagination, useTheme } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Grid, Icon, Skeleton, Text } from '@upshot-tech/upshot-ui'
@@ -39,7 +39,7 @@ interface NFTTableHeadProps extends React.HTMLAttributes<HTMLElement> {
   /**
    * Handler for selection change
    */
-  onChangeSelection?: (colIdx: number) => void
+  handleChangeSelection: (colIdx: number, order?: 'asc' | 'desc') => void
 }
 
 export const nftColumns = {
@@ -55,11 +55,41 @@ const colSpacing =
 function NFTTableHead({
   selectedColumn,
   sortAscending,
-  onChangeSelection,
+  handleChangeSelection,
 }: NFTTableHeadProps) {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
   const { theme } = useTheme()
+
+  function genSortOptions() {
+    const sortOptions = [
+      nftColumns.LAST_SALE_DATE + ': low to high',
+      nftColumns.LAST_SALE_DATE + ': high to low',
+      nftColumns.LAST_SALE_PRICE + ': low to high',
+      nftColumns.LAST_SALE_PRICE + ': high to low',
+      nftColumns.LAST_APPRAISAL_PRICE + ': low to high',
+      nftColumns.LAST_APPRAISAL_PRICE + ': high to low',
+      nftColumns.LAST_APPRAISAL_SALE_RATIO + ': low to high',
+      nftColumns.LAST_APPRAISAL_SALE_RATIO + ': high to low',
+    ]
+    return sortOptions
+  }
+  
+  const handleChangeNFTColumnSortRadio = (
+    value: string,
+  ) => {
+    const index = genSortOptions().indexOf(value)
+    /* it maps 0, 1 -> 0
+    2, 3 -> 1
+    4, 5 -> 2 */
+    const columnIndex = Math.floor(index / 2)
+    const order = index % 2 === 0 ? 'asc' : 'desc'
+    handleChangeSelection(columnIndex, order)
+  }
+  
+  const getDropdownValue = () => {
+    return 'Last Sale Date: low to high'
+  }
 
   return (
     <>
@@ -74,7 +104,7 @@ function NFTTableHead({
             <Box
               key={idx}
               color="grey-500"
-              onClick={() => onChangeSelection?.(idx)}
+              onClick={() => handleChangeSelection(idx)}
               sx={{
                 cursor: 'pointer',
                 color: selectedColumn === idx ? 'white' : null,
@@ -118,6 +148,22 @@ function NFTTableHead({
             </Box>
           ))}
         </Grid>
+      )}
+      {isMobile && handleChangeNFTColumnSortRadio && (
+        <ButtonDropdown
+          hideRadio
+          label="Sort by"
+          name="sortBy"
+          onChange={(val) => handleChangeNFTColumnSortRadio(val)}
+          options={genSortOptions()}
+          value={getDropdownValue()}
+          closeOnSelect={true}
+          style={{
+            display: 'inline-block',
+            marginLeft: '-12px',
+            marginTop: isMobile ? '10px' : '',
+          }}
+        />
       )}
     </>
   )
@@ -183,7 +229,7 @@ export default function ExploreNFTs({
   collectionId?: number
   selectedColumn: number
   sortAscending: boolean
-  onChangeSelection: (colIdx: number) => void
+  onChangeSelection: (colIdx: number, order?: 'asc' | 'desc') => void
 }) {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
@@ -195,8 +241,8 @@ export default function ExploreNFTs({
     setPage(selected)
   }
 
-  const handleChangeSelection = (colIdx: number) => {
-    onChangeSelection(colIdx)
+  const handleChangeSelection = (colIdx: number, order?: 'asc' | 'desc') => {
+    onChangeSelection(colIdx, order)
     setPage(0)
   }
 
@@ -237,7 +283,7 @@ export default function ExploreNFTs({
   if (loading)
     return (
       <ExplorePanelSkeleton>
-        <NFTTableHead {...{ selectedColumn, sortAscending }} />
+        <NFTTableHead {...{ selectedColumn, sortAscending, handleChangeSelection }} />
       </ExplorePanelSkeleton>
     )
 
@@ -249,10 +295,7 @@ export default function ExploreNFTs({
 
   return (
     <>
-      <NFTItemsWrapper
-        onChangeSelection={handleChangeSelection}
-        {...{ selectedColumn, sortAscending }}
-      >
+      <NFTItemsWrapper {...{ selectedColumn, sortAscending, handleChangeSelection }}>
         {data.assetGlobalSearch.assets.map(
           (
             {
