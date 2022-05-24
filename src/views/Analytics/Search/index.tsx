@@ -97,6 +97,7 @@ export default function SearchView() {
   const [sortAscending, setSortAscending] = useState(false)
   const [listView, setListView] = useState(false)
   const [openMobileFilters, setOpenMobileFilters] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   // Trait stats
   const [selectedTraitsColumn, setSelectedTraitsColumn] = useState<number>(3)
@@ -257,13 +258,14 @@ export default function SearchView() {
           minHeight: '100vh',
           gap: 4,
           padding: 4,
+          width: '100%',
         }}
       >
         <Breadcrumbs crumbs={breadcrumbs} />
 
         <Grid
           sx={{
-            gridTemplateColumns: ['1fr', '1fr', '1fr', '300px 1fr'],
+            gridTemplateColumns: ['1fr', '1fr', '1fr', `${sidebarOpen ? '300px 1fr' : '50px 1fr'}`],
             gap: [5, 5, 5, 8],
           }}
         >
@@ -287,7 +289,7 @@ export default function SearchView() {
               </Box>
             </>
           ) : (
-            <SearchFilterSidebar onApply={handleApplySearch} />
+            <SearchFilterSidebar onApply={handleApplySearch} open={sidebarOpen} onOpenSidebar={() => setSidebarOpen(!sidebarOpen)} />
           )}
 
           <Flex
