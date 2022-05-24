@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { Avatar, Button, Icon, IconButton, imageOptimizer, theme, Tooltip, useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import { Avatar, Button, Icon, IconButton, imageOptimizer, NFTCard, theme, Tooltip, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Container } from '@upshot-tech/upshot-ui'
 import {
   Accordion,
@@ -293,10 +293,7 @@ export default function SearchView() {
             sx={{
               flex: '1 auto auto',
               flexDirection: 'column',
-              width:
-                listView || breakpointIndex <= 2
-                  ? '100%'
-                  : chunkSize * 168 - 20,
+              width: '100%',
               gap: 6,
             }}
           >
@@ -548,86 +545,44 @@ export default function SearchView() {
                       onChangeSelection={handleChangeNFTColumnSelection}
                     />
                   ) : (
-                    assetArr
-                      ?.map((_, i) =>
-                        i % chunkSize === 0
-                          ? assetArr.slice(i, i + chunkSize)
-                          : null
-                      )
-                      .filter(Boolean)
-                      .map((items, idx) => (
-                        <Flex key={idx} sx={{ gap: 5 }}>
-                          {items?.map(
-                            (
-                              {
-                                id,
-                                contractAddress,
-                                mediaUrl,
-                                name,
-                                collection,
-                                tokenId,
-                                lastSale,
-                                latestAppraisal,
-                                listPrice,
-                                rarity,
-                                creatorUsername,
-                                creatorAddress,
-                              },
-                              idx
-                            ) => (
-                              <Link
-                                key={idx}
-                                href={'/analytics/nft/' + id}
-                                component={NextLink}
-                                noHover
-                              >
-                                <MiniNftCard
-                                  linkComponent={NextLink}
-                                  price={formatNumber(
-                                    latestAppraisal?.estimatedPrice ??
-                                      listPrice ??
-                                      lastSale?.ethSalePrice ??
-                                      '',
-                                    {
-                                      fromWei: true,
-                                      decimals: 2,
-                                      prefix: 'ETHER',
-                                    }
-                                  )}
-                                  priceType={
-                                    latestAppraisal?.estimatedPrice
-                                      ? 'appraisal'
-                                      : listPrice
-                                      ? 'listed'
-                                      : lastSale?.ethSalePrice
-                                      ? 'last-sold'
-                                      : undefined
-                                  }
-                                  rarity={
-                                    rarity
-                                      ? (rarity * 100).toFixed(2) + '%'
-                                      : '-'
-                                  }
-                                  image={mediaUrl}
-                                  creator={
-                                    creatorUsername ||
-                                    shortenAddress(creatorAddress, 2, 4)
-                                  }
-                                  pixelated={PIXELATED_CONTRACTS.includes(
-                                    contractAddress
-                                  )}
-                                  type="search"
-                                  name={getAssetName(
-                                    name,
-                                    collection?.name,
-                                    tokenId
-                                  )}
-                                />
-                              </Link>
-                            )
-                          )}
-                        </Flex>
-                      ))
+                    <Grid
+                    columns={['1fr', '1fr 1fr', '1fr 1fr 1fr', '1fr 1fr 1fr 1fr']}
+                    sx={{
+                      columnGap: '16px',
+                      rowGap: '16px', 
+                    }}
+                    >
+                            {assetArr?.map(
+                              (
+                                {
+                                  id,
+                                  contractAddress,
+                                  mediaUrl,
+                                  name,
+                                  collection,
+                                  latestAppraisal,
+                                  listPrice,
+                                  listAppraisalRatio,
+                                },
+                                idx
+                              ) => (
+                                <Flex key={idx} sx={{ gap: 5 }}>
+                                <NFTCard
+                                  avatarImage={collectionData?.collectionById?.imageUrl}
+                                  imageSrc={mediaUrl}
+                                  isPixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
+                                  collection={collection?.name ?? ''}
+                                  name={name}
+                                  listPriceEth={listPrice}
+                                  appraisalPriceETH={latestAppraisal?.estimatedPrice}
+                                  listAppraisalPercentage={listAppraisalRatio} 
+                                  nftUrl={`/analytics/nft/${id}`}
+                                  collectionUrl={`/analytics/collection/${collection?.id}`}
+                                  />
+                                  </Flex>
+                              )
+                            )}
+                    </Grid>
                   )
                 }
               </Flex>
