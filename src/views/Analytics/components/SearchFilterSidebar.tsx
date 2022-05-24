@@ -323,6 +323,10 @@ function TraitCategoryList({
           cursor: 'pointer',
           width: '100%',
           minWidth: '300px',
+          backgroundColor: 'grey-800',
+          padding: '10px 12px;',
+          borderRadius: '10px',
+          minHeight: '54px',
         }}
         onClick={() => setOpen(!open)}
       >
@@ -561,7 +565,7 @@ export default function SearchFilterSidebar({
                 <Flex
                   sx={{
                     display: 'inline-flex',
-                    gap: 4,
+                    gap: 2,
                     flexDirection: 'column',
                   }}
                 >

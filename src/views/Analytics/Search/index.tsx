@@ -489,7 +489,6 @@ export default function SearchView() {
                         closeOnSelect={true}
                         style={{
                           display: 'inline-block',
-                          marginLeft: '-12px',
                           marginTop: isMobile ? '10px' : '',
                         }}
                       />
