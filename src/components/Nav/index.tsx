@@ -431,7 +431,7 @@ export const Nav = () => {
             if (showSidebar) handleToggleMenu()
             toggleModal()
           }}
-          onSettings={handleShowSettings}
+          // onSettings={handleShowSettings}
           onDisconnectClick={handleDisconnect}
           onMenuClick={handleToggleMenu}
           onHelpClick={toggleHelpModal}
