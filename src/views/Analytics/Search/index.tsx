@@ -344,7 +344,7 @@ export default function SearchView() {
                               </Text>
                               {collectionData?.collectionById?.isAppraised && (
                                 <Tooltip
-                                  tooltip={'How do we price NFTs?'}
+                                  tooltip={'Appraised by Upshot'}
                                   sx={{ marginLeft: '0', marginTop: '5px', height: 25 }}
                                 >
                                   <Icon
@@ -390,9 +390,6 @@ export default function SearchView() {
                                     variant="large"
                                     sx={{
                                       fontWeight: 600,
-                                      background: '-webkit-linear-gradient(0deg, #0091FF, #1BB441)',
-                                      WebkitBackgroundClip: 'text',
-                                      WebkitTextFillColor: 'transparent',
                                     }}
                                   >
                                     Ξ{formatNumber(collectionData.collectionById.latestStats.floor, { fromWei: true, decimals: 2 })}
