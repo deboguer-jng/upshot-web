@@ -348,7 +348,20 @@ export default function SearchView() {
               </Box>
             </>
           ) : (
-            <SearchFilterSidebar onApply={handleApplySearch} open={sidebarOpen} onOpenSidebar={handleToggleSidebar} />
+            <Flex
+              sx={{
+                flexDirection: 'column',
+                gap: 4,
+                position: ['static', 'static', 'sticky', 'sticky'],
+                height: '70vh',
+                paddingRight: '10px',
+                paddingBottom: '25px',
+                top: '160px',
+                overflowY: 'auto',
+                overflowX: 'hidden',
+              }}>
+              <SearchFilterSidebar onApply={handleApplySearch} open={sidebarOpen} onOpenSidebar={handleToggleSidebar} />
+            </Flex>
           )}
 
           <Flex

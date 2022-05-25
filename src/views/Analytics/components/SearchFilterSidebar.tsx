@@ -521,7 +521,18 @@ export default function SearchFilterSidebar({
             gap: 8,
           }}>
           {!isMobile && (
-            <Flex sx={{ alignItems: 'center', gap: 4 }}>
+            <Flex 
+              sx={{ 
+                alignItems: 'center', 
+                gap: 4,
+                position: ['static', 'static', 'sticky', 'sticky'],
+                height: 'min-content',
+                width: '100%',
+                top: '0px',
+                backgroundColor: 'black',
+                zIndex: '20',
+                padding: '10px'
+              }}>
               <IconButton onClick={onOpenSidebar} sx={{ 
                 padding: '25px',
                 borderRadius: '10px',
@@ -568,15 +579,22 @@ export default function SearchFilterSidebar({
                 </Text>
     
                 <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-                  <LabeledSwitch
-                    on={traitANDMatch}
-                    onToggle={() => {
-                      handleApplyFilters({ traitANDMatch: !traitANDMatch })
-                      setTraitANDMatch(!traitANDMatch)
+                  <Box
+                    sx={{
+                      margin: '0 auto',
+                      width: '95%'
                     }}
-                    labelOff="Contains any"
-                    labelOn="Contains all"
+                  >
+                    <LabeledSwitch
+                      on={traitANDMatch}
+                      onToggle={() => {
+                        handleApplyFilters({ traitANDMatch: !traitANDMatch })
+                        setTraitANDMatch(!traitANDMatch)
+                      }}
+                      labelOff="Contains any"
+                      labelOn="Contains all"
                   />
+                  </Box>
     
                   <AttributeSearch
                     suggestions={traits}
