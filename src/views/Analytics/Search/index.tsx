@@ -550,9 +550,10 @@ export default function SearchView() {
                 }}
               >
                 {!!collectionId && (
-                  <Box
+                  <Flex
                     sx={{
                       width: '100%',
+                      flexWrap: 'wrap',
                       flexDirection: 'row',
                       gap: 6,
                       alignItems: 'center',
@@ -566,7 +567,7 @@ export default function SearchView() {
                     >
                       NFTs
                     </Text>
-                    {isMobile && (
+                    {(!listView || isMobile) && (
                       <ButtonDropdown
                         hideRadio
                         label="Sort by"
@@ -576,12 +577,11 @@ export default function SearchView() {
                         value={getDropdownValue()}
                         closeOnSelect={true}
                         style={{
-                          display: 'inline-block',
                           marginTop: isMobile ? '10px' : '',
                         }}
                       />
                     )}
-                  </Box>
+                  </Flex>
                 )}
                 {!error && !loading && (
                   <Box sx={{ height: '18px' }}>
