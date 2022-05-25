@@ -5,11 +5,8 @@ import { Pagination, useTheme } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Grid, Icon, Skeleton, Text } from '@upshot-tech/upshot-ui'
 import {
   formatNumber,
-  Link,
   TableBody,
   TableCell,
-  TableHead,
-  TableRow,
 } from '@upshot-tech/upshot-ui'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { PAGE_SIZE } from 'constants/'
@@ -20,7 +17,11 @@ import { getPriceChangeColor } from 'utils/color'
 import { getUnderOverPricedLabel } from 'utils/number'
 import { formatDistance } from 'utils/time'
 
-import { genSortOptions, getDropdownValue,handleChangeNFTColumnSortRadio } from '../../../../utils/tableSortDropdown'
+import {
+  genSortOptions,
+  getDropdownValue,
+  handleChangeNFTColumnSortRadio
+} from '../../../../utils/tableSortDropdown'
 import {
   GET_EXPLORE_NFTS,
   GetExploreNFTsData,

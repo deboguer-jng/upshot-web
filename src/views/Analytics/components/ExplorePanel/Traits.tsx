@@ -10,7 +10,6 @@ import {
   Icon,
   Link,
   Pagination,
-  Skeleton,
   TableBody,
   TableCell,
   TableHead,

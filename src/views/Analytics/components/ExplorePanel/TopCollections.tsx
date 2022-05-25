@@ -5,7 +5,7 @@ import {
   Icon,
   useBreakpointIndex,
 } from '@upshot-tech/upshot-ui'
-import { CollectionGridRow, CollectionTable } from '@upshot-tech/upshot-ui'
+import { CollectionGridRow } from '@upshot-tech/upshot-ui'
 import { Pagination, useTheme } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Grid, Text } from '@upshot-tech/upshot-ui'
 import { formatNumber } from '@upshot-tech/upshot-ui'
