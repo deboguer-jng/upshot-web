@@ -217,6 +217,10 @@ export default function SearchView() {
     setListView(switchToListView)
   }
 
+  const handleToggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen)
+  }
+
   const handleApplySearch = ({ query }) => {
     setPage(0)
     router.push({
@@ -289,7 +293,7 @@ export default function SearchView() {
               </Box>
             </>
           ) : (
-            <SearchFilterSidebar onApply={handleApplySearch} open={sidebarOpen} onOpenSidebar={() => setSidebarOpen(!sidebarOpen)} />
+            <SearchFilterSidebar onApply={handleApplySearch} open={sidebarOpen} onOpenSidebar={handleToggleSidebar} />
           )}
 
           <Flex
@@ -333,7 +337,7 @@ export default function SearchView() {
                               }
                             />
                           </Box>
-                          <Flex sx={{ flexDirection: 'column' }}>
+                          <Flex sx={{ flexDirection: 'column', gap: 2 }}>
                             <Flex sx={{ alignItems: 'center', gap: 2 }}>
                               <Text variant="h1Secondary" sx={{ lineHeight: '2rem' }}>
                                 {collectionData?.collectionById?.name}
@@ -353,16 +357,79 @@ export default function SearchView() {
                               )}
                             </Flex>
 
-                            <Text
-                              color="grey"
-                              variant="h4Primary"
-                              sx={{
-                                fontWeight: 700,
-                                marginTop: '2px',
-                              }}
-                            >
-                              Collection
-                            </Text>
+                            <Flex sx={{ flexDirection: 'row', gap: 2, flexWrap: 'wrap', height: 'min-content' }}>
+                              {collectionData?.collectionById?.size && (
+                                <Flex sx={{ flexDirection: 'row', gap: 1, width: 'min-content' }}>
+                                  <Text
+                                    color="grey"
+                                    variant="large"
+                                  >
+                                    NFTs:
+                                  </Text>
+                                  <Text
+                                    color="white"
+                                    variant="large"
+                                    sx={{
+                                      fontWeight: 600,
+                                    }}
+                                  >
+                                    {formatNumber(collectionData.collectionById.size)}
+                                  </Text>
+                                </Flex>
+                              )}
+                              {collectionData?.collectionById?.latestStats?.floor && (
+                                <Flex sx={{ flexDirection: 'row', gap: 1, width: 'min-content' }}>
+                                  <Text
+                                    color="grey"
+                                    variant="large"
+                                  >
+                                    Floor:
+                                  </Text>
+                                  <Text
+                                    color="white"
+                                    variant="large"
+                                    sx={{
+                                      fontWeight: 600,
+                                      background: '-webkit-linear-gradient(0deg, #0091FF, #1BB441)',
+                                      WebkitBackgroundClip: 'text',
+                                      WebkitTextFillColor: 'transparent',
+                                    }}
+                                  >
+                                    Ξ{formatNumber(collectionData.collectionById.latestStats.floor, { fromWei: true, decimals: 2 })}
+                                  </Text>
+                                  {collectionData?.collectionById?.latestStats?.weekFloorChange && collectionData?.collectionById?.latestStats?.weekFloorChange != 0 && (
+                                    <Text
+                                      color={collectionData.collectionById.latestStats.weekFloorChange > 0 ? 'green' : 'red'}
+                                      variant="large"
+                                      >
+                                      ({collectionData.collectionById.latestStats.weekFloorChange}%)
+                                    </Text>
+                                  )}
+                                </Flex>
+                              )}
+                              {collectionData?.collectionById?.latestStats?.pastWeekWeiVolume && (
+                                <Flex sx={{ flexDirection: 'row', gap: 1, width: 'min-content' }}>
+                                  <Text
+                                    color="grey"
+                                    variant="large"
+                                    sx={{
+                                      whiteSpace: 'nowrap'
+                                    }}
+                                  >
+                                    Volume (1W):
+                                  </Text>
+                                  <Text
+                                    color="white"
+                                    variant="large"
+                                    sx={{
+                                      fontWeight: 600,
+                                    }}
+                                  >
+                                    Ξ{formatNumber(collectionData.collectionById.latestStats.pastWeekWeiVolume, { fromWei: true, decimals: 2, kmbUnits: true })}
+                                  </Text>
+                                </Flex>
+                              )}
+                            </Flex>
                           </Flex>
                         </Flex>
                       </Flex>
