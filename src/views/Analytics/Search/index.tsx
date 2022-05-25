@@ -661,18 +661,18 @@ export default function SearchView() {
                           idx
                         ) => (
                           <Flex key={idx} sx={{ gap: 5 }}>
-                          <NFTCard
-                            avatarImage={collectionData?.collectionById?.imageUrl}
-                            imageSrc={mediaUrl}
-                            isPixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
-                            collection={collection?.name ?? ''}
-                            name={name}
-                            listPriceEth={listPrice}
-                            appraisalPriceETH={latestAppraisal?.estimatedPrice}
-                            listAppraisalPercentage={listAppraisalRatio} 
-                            nftUrl={`/analytics/nft/${id}`}
-                            collectionUrl={`/analytics/collection/${collection?.id}`}
-                            />
+                            <NFTCard
+                              avatarImage={collectionData?.collectionById?.imageUrl}
+                              imageSrc={mediaUrl}
+                              isPixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
+                              collection={collection?.name ?? ''}
+                              name={name}
+                              listPriceEth={listPrice}
+                              appraisalPriceETH={latestAppraisal?.estimatedPrice}
+                              listAppraisalPercentage={listAppraisalRatio} 
+                              nftUrl={`/analytics/nft/${id}`}
+                              collectionUrl={`/analytics/collection/${collection?.id}`}
+                              />
                             </Flex>
                         )
                       )}
