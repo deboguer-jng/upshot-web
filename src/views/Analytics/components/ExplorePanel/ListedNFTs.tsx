@@ -121,7 +121,7 @@ function ListedNFTTableHead({
           ))}
         </Grid>
       )}
-       {isMobile && handleChangeNFTColumnSortRadio && (
+       {isMobile && (
         <ButtonDropdown
           hideRadio
           label="Sort by"
@@ -134,6 +134,7 @@ function ListedNFTTableHead({
             marginTop: '10px',
             marginBottom: '10px',
             zIndex: 1,
+            position: 'relative',
           }}
         />
       )}

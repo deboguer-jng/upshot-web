@@ -1,6 +1,7 @@
 /** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
 import {
+  ButtonDropdown,
   CollectorAccordion,
   Icon,
   useBreakpointIndex,
@@ -16,6 +17,11 @@ import React, { useEffect, useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
 import { getPriceChangeLabel } from 'utils/number'
 
+import {
+  genSortOptions,
+  getDropdownValue,
+  handleChangeNFTColumnSortRadio
+} from '../../../../utils/tableSortDropdown'
 import {
   GET_EXPLORE_COLLECTIONS,
   GetExploreCollectionsData,
@@ -53,7 +59,7 @@ interface CollectionTableHeadProps extends React.HTMLAttributes<HTMLElement> {
   /**
    * Handler for selection change
    */
-  onChangeSelection?: (colIdx: number) => void
+  handleChangeSelection: (colIdx: number, order?: 'asc' | 'desc') => void
 }
 
 export const collectionColumns: Partial<OrderedAssetColumns> = {
@@ -69,7 +75,7 @@ const colSpacing =
 function CollectionTableHead({
   selectedColumn,
   sortAscending,
-  onChangeSelection,
+  handleChangeSelection,
 }: CollectionTableHeadProps) {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
@@ -96,7 +102,7 @@ function CollectionTableHead({
             <Box
               key={idx}
               color="grey-500"
-              onClick={() => onChangeSelection?.(idx)}
+              onClick={() => handleChangeSelection?.(idx)}
               sx={{
                 cursor: 'pointer',
                 color: selectedColumn === idx ? 'white' : null,
@@ -133,6 +139,23 @@ function CollectionTableHead({
           ))}
           <Box />
         </Grid>
+      )}
+      {isMobile && (
+        <ButtonDropdown
+          hideRadio
+          label="Sort by"
+          name="sortBy"
+          onChange={(val) => handleChangeNFTColumnSortRadio(val, collectionColumns, handleChangeSelection)}
+          options={genSortOptions(collectionColumns)}
+          value={getDropdownValue(selectedColumn, sortAscending, collectionColumns)}
+          closeOnSelect={true}
+          style={{
+            marginTop: '10px',
+            marginBottom: '10px',
+            zIndex: 1,
+            position: 'relative',
+          }}
+        />
       )}
     </>
   )
@@ -180,14 +203,14 @@ export default function ExploreCollections({
   searchTerm?: string
   selectedColumn: number
   sortAscending: boolean
-  onChangeSelection: (colIdx: number) => void
+  onChangeSelection: (colIdx: number, order?: 'asc' | 'desc') => void
 }) {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
   const [page, setPage] = useState(0)
 
-  const handleChangeSelection = (colIdx: number) => {
-    onChangeSelection(colIdx)
+  const handleChangeSelection = (colIdx: number, order?: 'asc' | 'desc') => {
+    onChangeSelection(colIdx, order)
     setPage(0)
   }
 
@@ -213,7 +236,7 @@ export default function ExploreCollections({
   if (loading)
     return (
       <ExplorePanelSkeleton>
-        <CollectionTableHead {...{ selectedColumn, sortAscending }} />
+        <CollectionTableHead {...{ selectedColumn, sortAscending, handleChangeSelection }} />
       </ExplorePanelSkeleton>
     )
 
@@ -230,8 +253,7 @@ export default function ExploreCollections({
   return (
     <>
       <CollectionItemsWrapper
-        onChangeSelection={handleChangeSelection}
-        {...{ selectedColumn, sortAscending }}
+        {...{ selectedColumn, sortAscending, handleChangeSelection }}
       >
         {data.searchCollectionByMetric.assetSets.map(
           ({ id, name, imageUrl, latestStats }, idx) => (
