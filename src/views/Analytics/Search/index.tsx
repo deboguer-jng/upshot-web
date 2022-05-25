@@ -9,16 +9,14 @@ import {
   formatNumber,
   Grid,
   Link,
-  MiniNftCard,
   Text,
 } from '@upshot-tech/upshot-ui'
-import { BlurrySquareTemplate, Pagination } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useAppDispatch } from 'redux/hooks'
 import { selectShowHelpModal, setShowHelpModal } from 'redux/reducers/layout'
@@ -78,6 +76,7 @@ export default function SearchView() {
   const dispatch = useAppDispatch()
   const helpOpen = useSelector(selectShowHelpModal)
   const toggleHelpModal = () => dispatch(setShowHelpModal(!helpOpen))
+  const scrollRef = useRef<any>(null)
 
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
@@ -98,6 +97,7 @@ export default function SearchView() {
   const [listView, setListView] = useState(false)
   const [openMobileFilters, setOpenMobileFilters] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [assetOffset, setAssetOffset] = useState(0)
 
   // Trait stats
   const [selectedTraitsColumn, setSelectedTraitsColumn] = useState<number>(3)
@@ -171,14 +171,15 @@ export default function SearchView() {
   const loadArr = [...new Array(ROW_SIZE * chunkSize)]
   const searchQueryParam = (router.query.query as string) ?? ''
 
-  const { loading, error, data } = useQuery<
+  const { loading, error, data, 
+    fetchMore: fetchMoreAssets, } = useQuery<
     GetAssetsSearchData,
     GetAssetsSearchVars
   >(GET_ASSETS_SEARCH, {
     errorPolicy: 'all',
     variables: {
       limit: RESULTS_PER_PAGE,
-      offset: page * RESULTS_PER_PAGE,
+      offset: 0,
       collectionId,
       tokenId,
       minPrice,
@@ -201,9 +202,67 @@ export default function SearchView() {
     }
   )
 
-  const handlePageChange = ({ selected }: { selected: number }) => {
-    setPage(selected)
+    /* Infinite scroll: Assets */
+    useEffect(() => {
+      if (!assetOffset) return
+  
+      fetchMoreAssets({
+        variables: {
+          limit: RESULTS_PER_PAGE,
+          offset: assetOffset,
+          collectionId,
+          tokenId,
+          minPrice,
+          maxPrice,
+          traitFilterJoin: traitANDMatch === 'true' ? 'AND' : 'OR',
+          traitIds: traitIds.length ? traitIds : undefined,
+          listed: listedOnly === 'true' ? true : undefined,
+          orderColumn: Object.keys(nftSearchResultsColumns)[selectedNFTColumn],
+          orderDirection: sortNFTsAscending ? 'ASC' : 'DESC',
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult?.assetGlobalSearch) return prev
+  
+          return {
+            assetGlobalSearch: {
+                count:
+                  fetchMoreResult.assetGlobalSearch?.count ?? 0,
+                assets: [
+                  ...(prev.assetGlobalSearch?.assets ?? []),
+                  ...(fetchMoreResult.assetGlobalSearch?.assets ?? []),
+                ],
+              },
+          }
+        },
+      })
+    }, [assetOffset, fetchMoreAssets])
+
+  /* Fetch more items if available and scrolled to bottom. */
+  useEffect(() => {
+    const infiniteScroll = async () => {
+      if (!isScrollBottom()) return
+      if (!data?.assetGlobalSearch?.count || !data.assetGlobalSearch?.assets?.length) return
+      if (data?.assetGlobalSearch?.count > data?.assetGlobalSearch?.assets?.length) handleFetchMoreAssets(data?.assetGlobalSearch?.assets?.length)
+    }
+
+    window.addEventListener('scroll', infiniteScroll)
+
+    return () => window.removeEventListener('scroll', infiniteScroll)
+  }, [scrollRef, data?.assetGlobalSearch?.assets?.length])
+
+  const isScrollBottom = () => {
+    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 2) return true
+
+    return false
   }
+
+  const handleFetchMoreAssets = useCallback(
+    (startIndex: number) => {
+      if (loading || assetOffset === startIndex) return
+      setAssetOffset(startIndex)
+    },
+    [loading, assetOffset]
+  )
 
   const handleChangeSelection = (columnIdx: number) => {
     if (columnIdx === selectedColumn) {
@@ -612,6 +671,7 @@ export default function SearchView() {
                     />
                   ) : (
                     <Grid
+                    ref={scrollRef}
                     sx={{
                       gridTemplateColumns: 'repeat(auto-fill, minmax(225px, 1fr))',
                       columnGap: '16px',
@@ -653,20 +713,6 @@ export default function SearchView() {
                 }
               </Flex>
             )}
-
-            <Flex sx={{ justifyContent: 'center', width: '100%' }}>
-              {!!data?.assetGlobalSearch?.count && (
-                <Pagination
-                  forcePage={page}
-                  pageRangeDisplayed={0}
-                  marginPagesDisplayed={isMobile ? 1 : 3}
-                  pageCount={Math.ceil(
-                    data.assetGlobalSearch.count / (chunkSize * ROW_SIZE)
-                  )}
-                  onPageChange={handlePageChange}
-                />
-              )}
-            </Flex>
           </Flex>
         </Grid>
       </Container>

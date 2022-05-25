@@ -233,7 +233,7 @@ export default function CollectionView() {
                   </Text>
                   {isAppraised && (
                     <Tooltip
-                      tooltip={'How do we price NFTs?'}
+                      tooltip={'Appraised by Upshot'}
                       sx={{ marginLeft: '0', marginTop: '5px', height: 25 }}
                     >
                       <Icon
