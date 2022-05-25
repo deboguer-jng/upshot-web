@@ -186,10 +186,6 @@ export default function ExploreCollections({
   const isMobile = breakpointIndex <= 1
   const [page, setPage] = useState(0)
 
-  const handlePageChange = ({ selected }: { selected: number }) => {
-    setPage(selected)
-  }
-
   const handleChangeSelection = (colIdx: number) => {
     onChangeSelection(colIdx)
     setPage(0)
@@ -376,7 +372,7 @@ export default function ExploreCollections({
           pageCount={Math.ceil(data.searchCollectionByMetric.count / PAGE_SIZE)}
           pageRangeDisplayed={0}
           marginPagesDisplayed={0}
-          onPageChange={handlePageChange}
+          onPageChange={setPage}
         />
       </Flex>
     </>

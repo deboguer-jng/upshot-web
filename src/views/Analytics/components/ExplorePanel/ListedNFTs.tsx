@@ -191,10 +191,6 @@ export default function ExploreListedNFTs({
 
   const [page, setPage] = useState(0)
 
-  const handlePageChange = ({ selected }: { selected: number }) => {
-    setPage(selected)
-  }
-
   const handleChangeSelection = (colIdx: number) => {
     onChangeSelection(colIdx)
     setPage(0)
@@ -406,7 +402,7 @@ export default function ExploreListedNFTs({
           pageCount={Math.ceil(correctedCount / PAGE_SIZE)}
           pageRangeDisplayed={0}
           marginPagesDisplayed={0}
-          onPageChange={handlePageChange}
+          onPageChange={setPage}
         />
       </Flex>
     </>
