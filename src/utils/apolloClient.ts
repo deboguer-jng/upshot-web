@@ -8,12 +8,12 @@ const httpLink = createHttpLink({
 
 const authLink = setContext((_, { headers }) => {
   const state = store.getState()
-  const signature = state?.web3?.auth?.signature
+  const authToken = state?.web3?.authToken
 
   return {
     headers: {
       ...headers,
-      authorization: signature ? `Bearer ${signature}` : '',
+      authorization: authToken ? `Bearer ${authToken}` : '',
     },
   }
 })
