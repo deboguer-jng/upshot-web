@@ -1,10 +1,28 @@
-import { ApolloClient, InMemoryCache } from '@apollo/client'
-import { relayStylePagination } from '@apollo/client/utilities'
+import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client'
+import { setContext } from '@apollo/client/link/context'
+import { store } from 'redux/store'
+
+const httpLink = createHttpLink({
+  uri: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT,
+})
+
+const authLink = setContext((_, { headers }) => {
+  const state = store.getState()
+  const authToken = state?.web3?.authToken
+
+  return {
+    headers: {
+      ...headers,
+      authorization: authToken ? `Bearer ${authToken}` : '',
+    },
+  }
+})
 
 /**
  * Creates a new Apollo client instance.
  */
 const client = new ApolloClient({
+  link: authLink.concat(httpLink),
   cache: new InMemoryCache({
     typePolicies: {
       User: {
@@ -13,19 +31,16 @@ const client = new ApolloClient({
             keyArgs: false,
             merge: (existing = {}, incoming) => {
               if (incoming.count === existing?.events?.length) return existing
-              return { 
+              return {
                 count: incoming.count,
-                events: [
-                  ...(existing.events || []),
-                  ...incoming.events,
-                ]}
-            }
+                events: [...(existing.events || []), ...incoming.events],
+              }
+            },
           },
         },
       },
     },
   }),
-  uri: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT,
 })
 
 export default client

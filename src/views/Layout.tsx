@@ -11,6 +11,7 @@ import { fetchFeatures } from 'redux/reducers/features'
 import { selectIsBeta } from 'redux/reducers/user'
 import { setIsBeta } from 'redux/reducers/user'
 import {
+  resetWeb3,
   selectActivatingConnector,
   selectAddress,
   setActivatingConnector,
@@ -79,8 +80,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
     const handleAccountsChanged = async (accounts) => {
       if (!accounts.length) {
-        dispatch(setAddress(undefined))
-        dispatch(setEns({ name: undefined }))
+        dispatch(resetWeb3())
         dispatch(setIsBeta(undefined))
       }
     }

@@ -23,6 +23,11 @@ import { selectShowHelpModal, setShowHelpModal } from 'redux/reducers/layout'
 import { shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
 
+import {
+  genSortOptions,
+  getDropdownValue,
+  handleChangeNFTColumnSortRadio
+} from '../../../utils/tableSortDropdown'
 import TopCollections from '../../Analytics/components/ExplorePanel/TopCollections'
 import Breadcrumbs from '../components/Breadcrumbs'
 import SearchFilterSidebar from '../components/SearchFilterSidebar'
@@ -113,44 +118,21 @@ export default function SearchView() {
   // NFT Search Results
   const [selectedNFTColumn, setSelectedNFTColumn] = useState<number>(3)
   const [sortNFTsAscending, setSortNFTsAscending] = useState(false)
-  const handleChangeNFTColumnSelection = (columnIdx: number) => {
+
+  const handleChangeNFTColumnSelection = (columnIdx: number, order?: 'asc' | 'desc') => {
+    setSelectedNFTColumn(columnIdx)
     const ascendingColumns = [0, 1, 2]
 
-    if (columnIdx === selectedNFTColumn) {
-      setSortNFTsAscending(!sortNFTsAscending)
-    } else {
-      setSortAscending(ascendingColumns.includes(columnIdx))
-    }
+    if (order === 'asc')
+      return setSortNFTsAscending(true)
+    if (order === 'desc')
+      return setSortNFTsAscending(false)
 
-    setSelectedNFTColumn(columnIdx)
-  }
-
-  const sortOptions = [
-    'Sale price: low to high',
-    'Sale price: high to low',
-    'Appraisal: low to high',
-    'Appraisal: high to low',
-    'List price: low to high',
-    'List price: high to low',
-    'Difference: low to high',
-    'Difference: high to low',
-  ]
-
-  const handleChangeNFTColumnSortRadio = (value: string) => {
-    const index = sortOptions.indexOf(value)
-    /* it maps 0, 1 -> 0
-    2, 3 -> 1
-    4, 5 -> 2 */
-    const columnIndex = Math.floor(index / 2)
-    setSelectedNFTColumn(columnIndex)
-
-    setSortNFTsAscending(index % 2 === 0) // index is even make it ascending
-  }
-
-  const getDropdownValue = () => {
-    const strIndex = selectedNFTColumn * 2
-    const strIndexSorted = strIndex + (sortNFTsAscending ? 0 : 1)
-    return sortOptions[strIndexSorted]
+    // if order is not specified, toggle between ascending and descending
+    if (columnIdx === selectedNFTColumn) // Toggle sort order for current selection.
+      return setSortNFTsAscending(!sortNFTsAscending)
+    // else, set to ascending for new selection.
+    return setSortNFTsAscending(ascendingColumns.includes(columnIdx))
   }
 
   // Used to wait for the router to mount before showing collectors.
@@ -585,9 +567,9 @@ export default function SearchView() {
                         hideRadio
                         label="Sort by"
                         name="sortBy"
-                        onChange={(val) => handleChangeNFTColumnSortRadio(val)}
-                        options={sortOptions}
-                        value={getDropdownValue()}
+                        onChange={(val) => handleChangeNFTColumnSortRadio(val, nftSearchResultsColumns, handleChangeNFTColumnSelection)}
+                        options={genSortOptions(nftSearchResultsColumns)}
+                        value={getDropdownValue(selectedNFTColumn, sortNFTsAscending, nftSearchResultsColumns)}
                         closeOnSelect={true}
                         style={{
                           marginTop: isMobile ? '10px' : '',

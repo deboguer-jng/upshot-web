@@ -175,3 +175,32 @@ export const GET_META_COLLECTOR = gql`
     }
   }
 `
+
+/**
+ * Get nonce
+ * @see Auth
+ */
+
+export type GetNonceVars = {
+  userAddress: string
+}
+
+export type GetNonceData = {
+  getNonce: {
+    nonce: string
+  }
+  getUser: {
+    isBeta: boolean
+  }
+}
+
+export const GET_NONCE = gql`
+  query getNonce($userAddress: String!) {
+    getNonce(userAddress: $userAddress) {
+      nonce
+    }
+    getUser(address: $userAddress) {
+      isBeta
+    }
+  }
+`

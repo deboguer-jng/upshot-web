@@ -1,15 +1,12 @@
 import { useQuery } from '@apollo/client'
-import { CollectorAccordion, useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import { ButtonDropdown, CollectorAccordion, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { CollectionGridRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { Pagination, useTheme } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Grid, Icon, Skeleton, Text } from '@upshot-tech/upshot-ui'
 import {
   formatNumber,
-  Link,
   TableBody,
   TableCell,
-  TableHead,
-  TableRow,
 } from '@upshot-tech/upshot-ui'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { PAGE_SIZE } from 'constants/'
@@ -20,6 +17,11 @@ import { getPriceChangeColor } from 'utils/color'
 import { getUnderOverPricedLabel } from 'utils/number'
 import { formatDistance } from 'utils/time'
 
+import {
+  genSortOptions,
+  getDropdownValue,
+  handleChangeNFTColumnSortRadio
+} from '../../../../utils/tableSortDropdown'
 import {
   GET_EXPLORE_NFTS,
   GetExploreNFTsData,
@@ -39,7 +41,7 @@ interface NFTTableHeadProps extends React.HTMLAttributes<HTMLElement> {
   /**
    * Handler for selection change
    */
-  onChangeSelection?: (colIdx: number) => void
+  handleChangeSelection: (colIdx: number, order?: 'asc' | 'desc') => void
 }
 
 export const listedNftColumns = {
@@ -55,7 +57,7 @@ const colSpacing =
 function ListedNFTTableHead({
   selectedColumn,
   sortAscending,
-  onChangeSelection,
+  handleChangeSelection,
 }: NFTTableHeadProps) {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
@@ -74,7 +76,7 @@ function ListedNFTTableHead({
             <Box
               key={idx}
               color="grey-500"
-              onClick={() => onChangeSelection?.(idx)}
+              onClick={() => handleChangeSelection?.(idx)}
               sx={{
                 cursor: 'pointer',
                 color: selectedColumn === idx ? 'white' : null,
@@ -118,6 +120,23 @@ function ListedNFTTableHead({
             </Box>
           ))}
         </Grid>
+      )}
+       {isMobile && (
+        <ButtonDropdown
+          hideRadio
+          label="Sort by"
+          name="sortBy"
+          onChange={(val) => handleChangeNFTColumnSortRadio(val, listedNftColumns, handleChangeSelection)}
+          options={genSortOptions(listedNftColumns)}
+          value={getDropdownValue(selectedColumn, sortAscending, listedNftColumns)}
+          closeOnSelect={true}
+          style={{
+            marginTop: '10px',
+            marginBottom: '10px',
+            zIndex: 1,
+            position: 'relative',
+          }}
+        />
       )}
     </>
   )
@@ -183,7 +202,7 @@ export default function ExploreListedNFTs({
   collectionId?: number
   selectedColumn: number
   sortAscending: boolean
-  onChangeSelection: (colIdx: number) => void
+  onChangeSelection: (colIdx: number, order?: 'asc' | 'desc') => void
 }) {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
@@ -191,12 +210,8 @@ export default function ExploreListedNFTs({
 
   const [page, setPage] = useState(0)
 
-  const handlePageChange = ({ selected }: { selected: number }) => {
-    setPage(selected)
-  }
-
-  const handleChangeSelection = (colIdx: number) => {
-    onChangeSelection(colIdx)
+  const handleChangeSelection = (colIdx: number, order?: 'asc' | 'desc') => {
+    onChangeSelection(colIdx, order)
     setPage(0)
   }
 
@@ -239,7 +254,7 @@ export default function ExploreListedNFTs({
   if (loading)
     return (
       <ExplorePanelSkeleton>
-        <ListedNFTTableHead {...{ selectedColumn, sortAscending }} />
+        <ListedNFTTableHead {...{ selectedColumn, sortAscending, handleChangeSelection }} />
       </ExplorePanelSkeleton>
     )
 
@@ -252,7 +267,7 @@ export default function ExploreListedNFTs({
   return (
     <>
       <NFTItemsWrapper
-        onChangeSelection={handleChangeSelection}
+        handleChangeSelection={handleChangeSelection}
         {...{ selectedColumn, sortAscending }}
       >
         {data.assetGlobalSearch.assets.map(
@@ -406,7 +421,7 @@ export default function ExploreListedNFTs({
           pageCount={Math.ceil(correctedCount / PAGE_SIZE)}
           pageRangeDisplayed={0}
           marginPagesDisplayed={0}
-          onPageChange={handlePageChange}
+          onPageChange={setPage}
         />
       </Flex>
     </>
