@@ -29,11 +29,10 @@ import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { setAlertState } from 'redux/reducers/layout'
 import { setIsBeta } from 'redux/reducers/user'
 import {
+  resetWeb3,
   selectAddress,
   selectEns,
   setActivatingConnector,
-  setAddress,
-  setEns,
 } from 'redux/reducers/web3'
 import { shortenAddress } from 'utils/address'
 import { gmiIndex, gmiLabel, gmiPercentRank } from 'utils/gmi'
@@ -854,8 +853,7 @@ export default function GmiView() {
   const handleReset = () => {
     setWallet('')
     deactivate()
-    dispatch(setAddress(undefined))
-    dispatch(setEns({ name: undefined }))
+    dispatch(resetWeb3())
     dispatch(setIsBeta(undefined))
     router.push('/gmi', undefined, { shallow: true })
   }
