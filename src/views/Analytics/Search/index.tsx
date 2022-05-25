@@ -324,7 +324,7 @@ export default function SearchView() {
 
         <Grid
           sx={{
-            gridTemplateColumns: ['1fr', '1fr', '1fr', `${sidebarOpen ? '300px 1fr' : '50px 1fr'}`],
+            gridTemplateColumns: ['1fr', '1fr', '1fr', `${sidebarOpen ? '300px 1fr' : '70px 1fr'}`],
             gap: [5, 5, 5, 8],
           }}
         >

@@ -500,8 +500,9 @@ export default function SearchFilterSidebar({
     return (
       <Flex 
         sx={{ 
-          minWidth: 50, 
+          minWidth: 70, 
           flexDirection: 'column',
+          padding: '10px'
         }}>
         <IconButton onClick={onOpenSidebar} sx={{ 
           padding: '25px',
