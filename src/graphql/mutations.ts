@@ -40,3 +40,30 @@ export const LOG_EVENT = gql`
     }
   }
 `
+
+/**
+ * Sign-in
+ * @see Auth
+ */
+export type SignInVars = {
+  userAddress?: string
+  signature?: string
+}
+
+export type SignInData = {
+  signIn?: {
+    id: number
+    nonce: string
+    authToken: string
+  }
+}
+
+export const SIGN_IN = gql`
+  mutation SignIn($userAddress: String!, $signature: String!) {
+    signIn(userAddress: $userAddress, signature: $signature) {
+      id
+      nonce
+      authToken
+    }
+  }
+`
