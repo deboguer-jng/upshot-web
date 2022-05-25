@@ -20,6 +20,7 @@ import { getPriceChangeColor } from 'utils/color'
 import { getUnderOverPricedLabel } from 'utils/number'
 import { formatDistance } from 'utils/time'
 
+import { genSortOptions, getDropdownValue,handleChangeNFTColumnSortRadio } from '../../../../utils/tableSortDropdown'
 import {
   GET_EXPLORE_NFTS,
   GetExploreNFTsData,
@@ -60,45 +61,6 @@ function NFTTableHead({
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
   const { theme } = useTheme()
-
-  function genSortOptions() {
-    const sortOptions = [
-      nftColumns.LAST_SALE_DATE + ': low to high',
-      nftColumns.LAST_SALE_DATE + ': high to low',
-      nftColumns.LAST_SALE_PRICE + ': low to high',
-      nftColumns.LAST_SALE_PRICE + ': high to low',
-      nftColumns.LAST_APPRAISAL_PRICE + ': low to high',
-      nftColumns.LAST_APPRAISAL_PRICE + ': high to low',
-      nftColumns.LAST_APPRAISAL_SALE_RATIO + ': low to high',
-      nftColumns.LAST_APPRAISAL_SALE_RATIO + ': high to low',
-    ]
-    return sortOptions
-  }
-  
-  const handleChangeNFTColumnSortRadio = (
-    value: string,
-  ) => {
-    const index = genSortOptions().indexOf(value)
-    /* it maps 0, 1 -> 0
-    2, 3 -> 1
-    4, 5 -> 2 */
-    const columnIndex = Math.floor(index / 2)
-    const order = index % 2 === 0 ? 'asc' : 'desc'
-    handleChangeSelection(columnIndex, order)
-  }
-  
-  const getDropdownValue = () => {
-    /* it maps 0, 1 -> 0
-    0 -> 0
-    1 -> 2
-    2 -> 4
-    3 -> 6 */
-    const selectedColAsc = selectedColumn * 2
-    const orderModifier = sortAscending === true ? 0 : 1
-
-    const selectedValue = genSortOptions()[selectedColAsc + orderModifier]
-    return selectedValue
-  }
 
   return (
     <>
@@ -163,9 +125,9 @@ function NFTTableHead({
           hideRadio
           label="Sort by"
           name="sortBy"
-          onChange={(val) => handleChangeNFTColumnSortRadio(val)}
-          options={genSortOptions()}
-          value={getDropdownValue()}
+          onChange={(val) => handleChangeNFTColumnSortRadio(val, nftColumns, handleChangeSelection)}
+          options={genSortOptions(nftColumns)}
+          value={getDropdownValue(selectedColumn, sortAscending, nftColumns)}
           closeOnSelect={true}
           style={{
             marginTop: '10px',
