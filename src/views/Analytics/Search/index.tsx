@@ -272,10 +272,6 @@ export default function SearchView() {
     setSelectedColumn(columnIdx)
   }
 
-  const toggleListView = (switchToListView: boolean) => {
-    setListView(switchToListView)
-  }
-
   const handleToggleSidebar = () => {
     setSidebarOpen(!sidebarOpen)
   }
@@ -570,39 +566,7 @@ export default function SearchView() {
                     >
                       NFTs
                     </Text>
-                    <Box
-                      sx={{
-                        display: 'inline-flex',
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: 1,
-                        mr: 10,
-                      }}
-                    >
-                      <Text
-                        variant="large"
-                        color="grey-600"
-                        sx={{ marginRight: 2 }}
-                      >
-                        View as
-                      </Text>
-                      <IconButton onClick={() => toggleListView(false)}>
-                        <Icon
-                          color={listView ? 'grey-700' : 'grey-300'}
-                          icon={'gridViewV2'}
-                          size={32}
-                        />
-                      </IconButton>
-                      <IconButton onClick={() => toggleListView(true)}>
-                        <Icon
-                          color={listView ? 'grey-300' : 'grey-700'}
-                          icon={'listViewV2'}
-                          size={32}
-                        />
-                      </IconButton>
-                    </Box>
-                    {(!listView || isMobile) && (
+                    {isMobile && (
                       <ButtonDropdown
                         hideRadio
                         label="Sort by"
@@ -639,7 +603,6 @@ export default function SearchView() {
                   />
                 )}
                 {
-                  /* Chunk results into non-wrapping rows. */
                   loading && collectionId ? (
                     listView ? (
                       <NFTSearchResultsSkeleton
@@ -661,15 +624,7 @@ export default function SearchView() {
                     </Grid>
                         
                     )
-                  ) : assetArr && listView ? (
-                    <NFTSearchResults
-                      assetArr={assetArr}
-                      columns={nftSearchResultsColumns}
-                      selectedColumn={selectedNFTColumn}
-                      sortAscending={sortNFTsAscending}
-                      onChangeSelection={handleChangeNFTColumnSelection}
-                    />
-                  ) : (
+                  ) : assetArr && (
                     <Grid
                     ref={scrollRef}
                     sx={{
@@ -678,36 +633,36 @@ export default function SearchView() {
                       rowGap: '16px', 
                     }}
                     >
-                            {assetArr?.map(
-                              (
-                                {
-                                  id,
-                                  contractAddress,
-                                  mediaUrl,
-                                  name,
-                                  collection,
-                                  latestAppraisal,
-                                  listPrice,
-                                  listAppraisalRatio,
-                                },
-                                idx
-                              ) => (
-                                <Flex key={idx} sx={{ gap: 5 }}>
-                                <NFTCard
-                                  avatarImage={collectionData?.collectionById?.imageUrl}
-                                  imageSrc={mediaUrl}
-                                  isPixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
-                                  collection={collection?.name ?? ''}
-                                  name={name}
-                                  listPriceEth={listPrice}
-                                  appraisalPriceETH={latestAppraisal?.estimatedPrice}
-                                  listAppraisalPercentage={listAppraisalRatio} 
-                                  nftUrl={`/analytics/nft/${id}`}
-                                  collectionUrl={`/analytics/collection/${collection?.id}`}
-                                  />
-                                  </Flex>
-                              )
-                            )}
+                      {assetArr?.map(
+                        (
+                          {
+                            id,
+                            contractAddress,
+                            mediaUrl,
+                            name,
+                            collection,
+                            latestAppraisal,
+                            listPrice,
+                            listAppraisalRatio,
+                          },
+                          idx
+                        ) => (
+                          <Flex key={idx} sx={{ gap: 5 }}>
+                          <NFTCard
+                            avatarImage={collectionData?.collectionById?.imageUrl}
+                            imageSrc={mediaUrl}
+                            isPixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
+                            collection={collection?.name ?? ''}
+                            name={name}
+                            listPriceEth={listPrice}
+                            appraisalPriceETH={latestAppraisal?.estimatedPrice}
+                            listAppraisalPercentage={listAppraisalRatio} 
+                            nftUrl={`/analytics/nft/${id}`}
+                            collectionUrl={`/analytics/collection/${collection?.id}`}
+                            />
+                            </Flex>
+                        )
+                      )}
                     </Grid>
                   )
                 }
