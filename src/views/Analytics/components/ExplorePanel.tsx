@@ -175,21 +175,26 @@ export default function ExplorePanel({
   const [sortAscending, setSortAscending] = useState(false)
   const handleSearch = (searchTerm: string) => setSearchTerm(searchTerm)
 
-  const handleChangeSelection = (columnIdx: number) => {
+  const onChangeSelection = (columnIdx: number, order?: 'asc' | 'desc') => {
+    setSelectedColumn(columnIdx)
+
     const ascendingColumns = {
       'Listed NFTs': [0, 1, 2],
       NFTs: [0, 1, 2],
       Collections: [],
       Traits: [0],
     }
-    if (columnIdx === selectedColumn) {
-      // Toggle sort order for current selection.
-      setSortAscending(!sortAscending)
-    } else {
-      setSortAscending(ascendingColumns[tab].includes(columnIdx))
-    }
+    
+    if (order === 'asc')
+      return setSortAscending(true)
+    if (order === 'desc')
+      return setSortAscending(false)
 
-    setSelectedColumn(columnIdx)
+    // if order is not specified, toggle between ascending and descending
+    if (columnIdx === selectedColumn) // Toggle sort order for current selection.
+      return setSortAscending(!sortAscending)
+    // else, set to ascending for new selection.
+    return setSortAscending(ascendingColumns[tab].includes(columnIdx))
   }
 
   useEffect(() => {
@@ -234,19 +239,19 @@ export default function ExplorePanel({
         <Box sx={{ paddingTop: isMobile ? '110px' : '70px' }}>
           {tab === 'Listed NFTs' && (
             <ExploreListedNFTs
-              onChangeSelection={handleChangeSelection}
+              onChangeSelection={onChangeSelection}
               {...{ searchTerm, selectedColumn, sortAscending, collectionId }}
             />
           )}
           {tab === 'NFTs' && (
             <ExploreNFTs
-              onChangeSelection={handleChangeSelection}
+              onChangeSelection={onChangeSelection}
               {...{ searchTerm, selectedColumn, sortAscending, collectionId }}
             />
           )}
           {tab === 'Traits' && !!collectionId && (
             <Traits
-              onChangeSelection={handleChangeSelection}
+              onChangeSelection={onChangeSelection}
               {...{ searchTerm, selectedColumn, sortAscending, collectionId }}
             />
           )}
@@ -262,7 +267,7 @@ export default function ExplorePanel({
           )}
           {tab === 'Collections' && (
             <TopCollections
-              onChangeSelection={handleChangeSelection}
+              onChangeSelection={onChangeSelection}
               {...{ searchTerm, selectedColumn, sortAscending }}
             />
           )}
