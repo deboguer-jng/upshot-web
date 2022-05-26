@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { Avatar, Button, Icon, IconButton, imageOptimizer, NFTCard, SpinnerBoxTemplate, theme, Tooltip, useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import { Avatar, Button, Icon, IconButton, imageOptimizer, InputRoundedSearch, NFTCard, SpinnerBoxTemplate, theme, Tooltip, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Container } from '@upshot-tech/upshot-ui'
 import {
   Accordion,
@@ -68,6 +68,26 @@ enum BREAKPOINT_INDEXES {
   FOUR = 4,
   FIVE = 5,
   SIX = 6,
+}
+
+function TokenIdInput({ defaultValue, onSubmit }) {
+  return (
+    <Flex sx={{ flexDirection: 'column', gap: 2, grow: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <InputRoundedSearch
+        fullWidth
+        sx={{
+          borderRadius: '16px',
+          minHeight: '54px',
+          minWidth: '300px',
+        }}
+        placeholder="Search by token ID or name"
+        onKeyPress={(e) => {
+          if (e.key === 'Enter') onSubmit?.(e.currentTarget.value)
+        }}
+        {...{ defaultValue }}
+      />
+    </Flex>
+  )
 }
 
 export default function SearchView() {
@@ -578,8 +598,32 @@ export default function SearchView() {
                       color="grey-600"
                       sx={{ display: 'inline-block', mr: 10 }}
                     >
-                      NFTs
                     </Text>
+                    <Flex
+                      sx={{
+                        flexDirection: 'row',
+                        gap: 4,
+                        alignItems: 'center',
+                        justifyContent: 'flex-end',
+                        flexWrap: 'wrap',
+                      }}>
+                    <TokenIdInput
+                      defaultValue={tokenId}
+                      key={tokenId}
+                      onSubmit={(tokenId) => {
+                        handleApplySearch({
+                          query: {
+                            traits: traitIds,
+                            collectionId,
+                            minPrice,
+                            maxPrice,
+                            tokenId,
+                            traitANDMatch,
+                            listedOnly,
+                          },
+                        })
+                      }}
+                    />
                     {(!listView || isMobile) && (
                       <ButtonDropdown
                         hideRadio
@@ -594,6 +638,7 @@ export default function SearchView() {
                         }}
                       />
                     )}
+                    </Flex>
                   </Flex>
                 )}
                 {!error && !loading && (

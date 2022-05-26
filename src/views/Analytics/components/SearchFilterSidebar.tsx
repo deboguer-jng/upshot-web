@@ -98,6 +98,9 @@ function TokenIdInput({ defaultValue, onBlur, onSubmit }) {
       </Text>
       <InputRoundedSearch
         fullWidth
+        sx={{
+          borderRadius: '10px'
+        }}
         placeholder="Token ID"
         onKeyPress={(e) => {
           if (e.key === 'Enter') onSubmit?.(e.currentTarget.value)
@@ -549,18 +552,6 @@ export default function SearchFilterSidebar({
     
           {!!collectionId ? (
             <>
-              <TokenIdInput
-                defaultValue={tokenId}
-                key={tokenId}
-                onBlur={(e: React.KeyboardEvent<HTMLInputElement>) => 
-                  setTokenId(e.currentTarget.value)
-                }
-                onSubmit={(tokenId) => {
-                  setListedOnly(false)
-                  handleApplyFilters({ tokenId, listedOnly: false })
-                }}
-              />
-    
               <PriceInput
                 onToggleListed={() => {
                   handleApplyFilters({ listedOnly: !listedOnly })
