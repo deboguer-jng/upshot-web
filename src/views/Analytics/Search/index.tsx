@@ -1,5 +1,17 @@
 import { useQuery } from '@apollo/client'
-import { Avatar, Button, Icon, IconButton, imageOptimizer, InputRoundedSearch, NFTCard, SpinnerBoxTemplate, theme, Tooltip, useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import {
+  Avatar,
+  Button,
+  Icon,
+  IconButton,
+  imageOptimizer,
+  InputRoundedSearch,
+  NFTCard,
+  SpinnerBoxTemplate,
+  theme,
+  Tooltip,
+  useBreakpointIndex,
+} from '@upshot-tech/upshot-ui'
 import { Container } from '@upshot-tech/upshot-ui'
 import {
   Accordion,
@@ -26,7 +38,7 @@ import { getAssetName } from 'utils/asset'
 import {
   genSortOptions,
   getDropdownValue,
-  handleChangeNFTColumnSortRadio
+  handleChangeNFTColumnSortRadio,
 } from '../../../utils/tableSortDropdown'
 import TopCollections from '../../Analytics/components/ExplorePanel/TopCollections'
 import Breadcrumbs from '../components/Breadcrumbs'
@@ -77,7 +89,15 @@ enum BREAKPOINT_INDEXES {
 
 function TokenIdInput({ defaultValue, onSubmit }) {
   return (
-    <Flex sx={{ flexDirection: 'column', gap: 2, grow: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <Flex
+      sx={{
+        flexDirection: 'column',
+        gap: 2,
+        grow: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
       <InputRoundedSearch
         fullWidth
         sx={{
@@ -114,7 +134,7 @@ export default function SearchView() {
   const minPrice = router.query.minPrice as string
   const maxPrice = router.query.maxPrice as string
   const traitANDMatch = router.query.traitANDMatch as string
-  const listedOnly = router.query.listedOnly as string ?? 'true'
+  const listedOnly = (router.query.listedOnly as string) ?? 'true'
   const traitIds = [router.query?.traits ?? []].flat().map((val) => Number(val))
   const collectionSearch = router.query.collectionSearch as string
   const [selectedColumn, setSelectedColumn] = useState<number>(0)
@@ -139,17 +159,19 @@ export default function SearchView() {
   const [selectedNFTColumn, setSelectedNFTColumn] = useState<number>(3)
   const [sortNFTsAscending, setSortNFTsAscending] = useState(false)
 
-  const handleChangeNFTColumnSelection = (columnIdx: number, order?: 'asc' | 'desc') => {
+  const handleChangeNFTColumnSelection = (
+    columnIdx: number,
+    order?: 'asc' | 'desc'
+  ) => {
     setSelectedNFTColumn(columnIdx)
     const ascendingColumns = [0, 1, 2]
 
-    if (order === 'asc')
-      return setSortNFTsAscending(true)
-    if (order === 'desc')
-      return setSortNFTsAscending(false)
+    if (order === 'asc') return setSortNFTsAscending(true)
+    if (order === 'desc') return setSortNFTsAscending(false)
 
     // if order is not specified, toggle between ascending and descending
-    if (columnIdx === selectedNFTColumn) // Toggle sort order for current selection.
+    if (columnIdx === selectedNFTColumn)
+      // Toggle sort order for current selection.
       return setSortNFTsAscending(!sortNFTsAscending)
     // else, set to ascending for new selection.
     return setSortNFTsAscending(ascendingColumns.includes(columnIdx))
@@ -173,11 +195,12 @@ export default function SearchView() {
   const loadArr = [...new Array(ROW_SIZE * chunkSize)]
   const searchQueryParam = (router.query.query as string) ?? ''
 
-  const { loading, error, data, 
-    fetchMore: fetchMoreAssets, } = useQuery<
-    GetAssetsSearchData,
-    GetAssetsSearchVars
-  >(GET_ASSETS_SEARCH, {
+  const {
+    loading,
+    error,
+    data,
+    fetchMore: fetchMoreAssets,
+  } = useQuery<GetAssetsSearchData, GetAssetsSearchVars>(GET_ASSETS_SEARCH, {
     errorPolicy: 'all',
     variables: {
       limit: RESULTS_PER_PAGE,
@@ -195,56 +218,62 @@ export default function SearchView() {
     skip: !collectionId,
   })
 
-  const { loading: collectionLoading, data: collectionData } = useQuery<GetCollectionData, GetCollectionVars>(
-    GET_COLLECTION,
-    {
-      errorPolicy: 'all',
-      variables: { id: collectionId },
-      skip: !collectionId,
-    }
-  )
+  const { loading: collectionLoading, data: collectionData } = useQuery<
+    GetCollectionData,
+    GetCollectionVars
+  >(GET_COLLECTION, {
+    errorPolicy: 'all',
+    variables: { id: collectionId },
+    skip: !collectionId,
+  })
 
-    /* Infinite scroll: Assets */
-    useEffect(() => {
-      if (!assetOffset) return
-  
-      fetchMoreAssets({
-        variables: {
-          limit: RESULTS_PER_PAGE,
-          offset: assetOffset,
-          collectionId,
-          tokenId,
-          minPrice,
-          maxPrice,
-          traitFilterJoin: traitANDMatch === 'true' ? 'AND' : 'OR',
-          traitIds: traitIds.length ? traitIds : undefined,
-          listed: listedOnly === 'true' ? true : undefined,
-          orderColumn: Object.keys(nftSearchResultsColumns)[selectedNFTColumn],
-          orderDirection: sortNFTsAscending ? 'ASC' : 'DESC',
-        },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult?.assetGlobalSearch) return prev
-  
-          return {
-            assetGlobalSearch: {
-                count:
-                  fetchMoreResult.assetGlobalSearch?.count ?? 0,
-                assets: [
-                  ...(prev.assetGlobalSearch?.assets ?? []),
-                  ...(fetchMoreResult.assetGlobalSearch?.assets ?? []),
-                ],
-              },
-          }
-        },
-      })
-    }, [assetOffset, fetchMoreAssets])
+  /* Infinite scroll: Assets */
+  useEffect(() => {
+    if (!assetOffset) return
+
+    fetchMoreAssets({
+      variables: {
+        limit: RESULTS_PER_PAGE,
+        offset: assetOffset,
+        collectionId,
+        tokenId,
+        minPrice,
+        maxPrice,
+        traitFilterJoin: traitANDMatch === 'true' ? 'AND' : 'OR',
+        traitIds: traitIds.length ? traitIds : undefined,
+        listed: listedOnly === 'true' ? true : undefined,
+        orderColumn: Object.keys(nftSearchResultsColumns)[selectedNFTColumn],
+        orderDirection: sortNFTsAscending ? 'ASC' : 'DESC',
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult?.assetGlobalSearch) return prev
+
+        return {
+          assetGlobalSearch: {
+            count: fetchMoreResult.assetGlobalSearch?.count ?? 0,
+            assets: [
+              ...(prev.assetGlobalSearch?.assets ?? []),
+              ...(fetchMoreResult.assetGlobalSearch?.assets ?? []),
+            ],
+          },
+        }
+      },
+    })
+  }, [assetOffset, fetchMoreAssets])
 
   /* Fetch more items if available and scrolled to bottom. */
   useEffect(() => {
     const infiniteScroll = async () => {
       if (!isScrollBottom()) return
-      if (!data?.assetGlobalSearch?.count || !data.assetGlobalSearch?.assets?.length) return
-      if (data?.assetGlobalSearch?.count > data?.assetGlobalSearch?.assets?.length) handleFetchMoreAssets(data?.assetGlobalSearch?.assets?.length)
+      if (
+        !data?.assetGlobalSearch?.count ||
+        !data.assetGlobalSearch?.assets?.length
+      )
+        return
+      if (
+        data?.assetGlobalSearch?.count > data?.assetGlobalSearch?.assets?.length
+      )
+        handleFetchMoreAssets(data?.assetGlobalSearch?.assets?.length)
     }
 
     window.addEventListener('scroll', infiniteScroll)
@@ -253,7 +282,8 @@ export default function SearchView() {
   }, [scrollRef, data?.assetGlobalSearch?.assets?.length])
 
   const isScrollBottom = () => {
-    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 2) return true
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 2)
+      return true
 
     return false
   }
@@ -326,7 +356,7 @@ export default function SearchView() {
 
         <Grid
           sx={{
-            gridTemplateColumns: ['1fr', '1fr', '1fr', `${sidebarOpen ? '300px 1fr' : '70px 1fr'}`],
+            gridTemplateColumns: ['1fr', '1fr', '1fr', 'auto 1fr'],
             gap: [5, 5, 5, 8],
           }}
         >
@@ -361,8 +391,13 @@ export default function SearchView() {
                 top: '160px',
                 overflowY: 'auto',
                 overflowX: 'hidden',
-              }}>
-              <SearchFilterSidebar onApply={handleApplySearch} open={sidebarOpen} onOpenSidebar={handleToggleSidebar} />
+              }}
+            >
+              <SearchFilterSidebar
+                onApply={handleApplySearch}
+                open={sidebarOpen}
+                onOpenSidebar={handleToggleSidebar}
+              />
             </Flex>
           )}
 
@@ -375,13 +410,18 @@ export default function SearchView() {
             }}
           >
             <Flex sx={{ flexDirection: 'column' }}>
-              {(collectionData?.collectionById?.name) &&
+              {collectionData?.collectionById?.name &&
                 collectionData?.collectionById?.imageUrl &&
                 collectionId && (
                   <Flex sx={{ flexDirection: 'column', gap: '16px' }}>
-                    <Grid columns={['1fr', '1fr', '1fr 1fr']} sx={{ gap: '40px' }}>
+                    <Grid
+                      columns={['1fr', '1fr', '1fr 1fr']}
+                      sx={{ gap: '40px' }}
+                    >
                       <Flex sx={{ flexDirection: 'column', gap: '16px' }}>
-                        <Flex sx={{ gap: 6, height: 100, alignItems: 'center' }}>
+                        <Flex
+                          sx={{ gap: 6, height: 100, alignItems: 'center' }}
+                        >
                           <Box
                             sx={{
                               backgroundColor: '#231F20',
@@ -400,22 +440,36 @@ export default function SearchView() {
                                 minWidth: 'unset',
                               }}
                               src={
-                                imageOptimizer(collectionData?.collectionById?.imageUrl, {
-                                  width: parseInt(theme.images.avatar.xl.size),
-                                  height: parseInt(theme.images.avatar.xl.size),
-                                }) ?? collectionData?.collectionById?.imageUrl
+                                imageOptimizer(
+                                  collectionData?.collectionById?.imageUrl,
+                                  {
+                                    width: parseInt(
+                                      theme.images.avatar.xl.size
+                                    ),
+                                    height: parseInt(
+                                      theme.images.avatar.xl.size
+                                    ),
+                                  }
+                                ) ?? collectionData?.collectionById?.imageUrl
                               }
                             />
                           </Box>
                           <Flex sx={{ flexDirection: 'column', gap: 2 }}>
                             <Flex sx={{ alignItems: 'center', gap: 2 }}>
-                              <Text variant="h1Secondary" sx={{ lineHeight: '2rem' }}>
+                              <Text
+                                variant="h1Secondary"
+                                sx={{ lineHeight: '2rem' }}
+                              >
                                 {collectionData?.collectionById?.name}
                               </Text>
                               {collectionData?.collectionById?.isAppraised && (
                                 <Tooltip
                                   tooltip={'Appraised by Upshot'}
-                                  sx={{ marginLeft: '0', marginTop: '5px', height: 25 }}
+                                  sx={{
+                                    marginLeft: '0',
+                                    marginTop: '5px',
+                                    height: 25,
+                                  }}
                                 >
                                   <Icon
                                     icon="upshot"
@@ -427,13 +481,23 @@ export default function SearchView() {
                               )}
                             </Flex>
 
-                            <Flex sx={{ flexDirection: 'row', gap: 2, flexWrap: 'wrap', height: 'min-content' }}>
+                            <Flex
+                              sx={{
+                                flexDirection: 'row',
+                                gap: 2,
+                                flexWrap: 'wrap',
+                                height: 'min-content',
+                              }}
+                            >
                               {collectionData?.collectionById?.size && (
-                                <Flex sx={{ flexDirection: 'row', gap: 1, width: 'min-content' }}>
-                                  <Text
-                                    color="grey"
-                                    variant="large"
-                                  >
+                                <Flex
+                                  sx={{
+                                    flexDirection: 'row',
+                                    gap: 1,
+                                    width: 'min-content',
+                                  }}
+                                >
+                                  <Text color="grey" variant="large">
                                     NFTs:
                                   </Text>
                                   <Text
@@ -443,16 +507,22 @@ export default function SearchView() {
                                       fontWeight: 600,
                                     }}
                                   >
-                                    {formatNumber(collectionData.collectionById.size)}
+                                    {formatNumber(
+                                      collectionData.collectionById.size
+                                    )}
                                   </Text>
                                 </Flex>
                               )}
-                              {collectionData?.collectionById?.latestStats?.floor && (
-                                <Flex sx={{ flexDirection: 'row', gap: 1, width: 'min-content' }}>
-                                  <Text
-                                    color="grey"
-                                    variant="large"
-                                  >
+                              {collectionData?.collectionById?.latestStats
+                                ?.floor && (
+                                <Flex
+                                  sx={{
+                                    flexDirection: 'row',
+                                    gap: 1,
+                                    width: 'min-content',
+                                  }}
+                                >
+                                  <Text color="grey" variant="large">
                                     Floor:
                                   </Text>
                                   <Text
@@ -462,25 +532,50 @@ export default function SearchView() {
                                       fontWeight: 600,
                                     }}
                                   >
-                                    Ξ{formatNumber(collectionData.collectionById.latestStats.floor, { fromWei: true, decimals: 2 })}
+                                    Ξ
+                                    {formatNumber(
+                                      collectionData.collectionById.latestStats
+                                        .floor,
+                                      { fromWei: true, decimals: 2 }
+                                    )}
                                   </Text>
-                                  {collectionData?.collectionById?.latestStats?.weekFloorChange && collectionData?.collectionById?.latestStats?.weekFloorChange != 0 && (
-                                    <Text
-                                      color={collectionData.collectionById.latestStats.weekFloorChange > 0 ? 'green' : 'red'}
-                                      variant="large"
+                                  {collectionData?.collectionById?.latestStats
+                                    ?.weekFloorChange &&
+                                    collectionData?.collectionById?.latestStats
+                                      ?.weekFloorChange != 0 && (
+                                      <Text
+                                        color={
+                                          collectionData.collectionById
+                                            .latestStats.weekFloorChange > 0
+                                            ? 'green'
+                                            : 'red'
+                                        }
+                                        variant="large"
                                       >
-                                      ({collectionData.collectionById.latestStats.weekFloorChange}%)
-                                    </Text>
-                                  )}
+                                        (
+                                        {
+                                          collectionData.collectionById
+                                            .latestStats.weekFloorChange
+                                        }
+                                        %)
+                                      </Text>
+                                    )}
                                 </Flex>
                               )}
-                              {collectionData?.collectionById?.latestStats?.pastWeekWeiVolume && (
-                                <Flex sx={{ flexDirection: 'row', gap: 1, width: 'min-content' }}>
+                              {collectionData?.collectionById?.latestStats
+                                ?.pastWeekWeiVolume && (
+                                <Flex
+                                  sx={{
+                                    flexDirection: 'row',
+                                    gap: 1,
+                                    width: 'min-content',
+                                  }}
+                                >
                                   <Text
                                     color="grey"
                                     variant="large"
                                     sx={{
-                                      whiteSpace: 'nowrap'
+                                      whiteSpace: 'nowrap',
                                     }}
                                   >
                                     Volume (1W):
@@ -492,7 +587,16 @@ export default function SearchView() {
                                       fontWeight: 600,
                                     }}
                                   >
-                                    Ξ{formatNumber(collectionData.collectionById.latestStats.pastWeekWeiVolume, { fromWei: true, decimals: 2, kmbUnits: true })}
+                                    Ξ
+                                    {formatNumber(
+                                      collectionData.collectionById.latestStats
+                                        .pastWeekWeiVolume,
+                                      {
+                                        fromWei: true,
+                                        decimals: 2,
+                                        kmbUnits: true,
+                                      }
+                                    )}
                                   </Text>
                                 </Flex>
                               )}
@@ -580,36 +684,47 @@ export default function SearchView() {
                         alignItems: 'center',
                         justifyContent: 'flex-end',
                         flexWrap: 'wrap',
-                        width: '100%'
-                      }}>
-                    <TokenIdInput
-                      defaultValue={tokenId}
-                      key={tokenId}
-                      onSubmit={(tokenId) => {
-                        handleApplySearch({
-                          query: {
-                            ...router.query,
-                            traits: traitIds,
-                            collectionId,
-                            tokenId,
-                          },
-                        })
+                        width: '100%',
                       }}
-                    />
-                    {(!listView || isMobile) && (
-                      <ButtonDropdown
-                        hideRadio
-                        label="Sort by"
-                        name="sortBy"
-                        onChange={(val) => handleChangeNFTColumnSortRadio(val, nftSearchResultsColumns, handleChangeNFTColumnSelection)}
-                        options={genSortOptions(nftSearchResultsColumns)}
-                        value={getDropdownValue(selectedNFTColumn, sortNFTsAscending, nftSearchResultsColumns)}
-                        closeOnSelect={true}
-                        style={{
-                          marginTop: isMobile ? '10px' : '',
+                    >
+                      <TokenIdInput
+                        defaultValue={tokenId}
+                        key={tokenId}
+                        onSubmit={(tokenId) => {
+                          handleApplySearch({
+                            query: {
+                              ...router.query,
+                              traits: traitIds,
+                              collectionId,
+                              tokenId,
+                            },
+                          })
                         }}
                       />
-                    )}
+                      {(!listView || isMobile) && (
+                        <ButtonDropdown
+                          hideRadio
+                          label="Sort by"
+                          name="sortBy"
+                          onChange={(val) =>
+                            handleChangeNFTColumnSortRadio(
+                              val,
+                              nftSearchResultsColumns,
+                              handleChangeNFTColumnSelection
+                            )
+                          }
+                          options={genSortOptions(nftSearchResultsColumns)}
+                          value={getDropdownValue(
+                            selectedNFTColumn,
+                            sortNFTsAscending,
+                            nftSearchResultsColumns
+                          )}
+                          closeOnSelect={true}
+                          style={{
+                            marginTop: isMobile ? '10px' : '',
+                          }}
+                        />
+                      )}
                     </Flex>
                   </Flex>
                 )}
@@ -618,11 +733,13 @@ export default function SearchView() {
                     {!!data?.assetGlobalSearch?.count ? (
                       <Text>
                         {formatNumber(data.assetGlobalSearch.count)}{' '}
-                        {data.assetGlobalSearch.count === 1 ? 'result' : 'results'}{' '}
+                        {data.assetGlobalSearch.count === 1
+                          ? 'result'
+                          : 'results'}{' '}
                         found
                       </Text>
                     ) : (
-                      <Flex 
+                      <Flex
                         sx={{
                           flexDirection: 'column',
                           gap: 5,
@@ -632,27 +749,32 @@ export default function SearchView() {
                           justifyContent: 'center',
                         }}
                       >
-                        <Text variant='h3Primary'>
-                          No results found
-                        </Text>
+                        <Text variant="h3Primary">No results found</Text>
                         {listedOnly == 'true' && (
                           <>
                             <Flex sx={{ maxWidth: '300px' }}>
-                              <Text variant='large' sx={{ textAlign: 'center' }}>
-                                There are no results that are currently listed for sale. Try toggling off the &quot;Listed only&quot; filter.
+                              <Text
+                                variant="large"
+                                sx={{ textAlign: 'center' }}
+                              >
+                                There are no results that are currently listed
+                                for sale. Try toggling off the &quot;Listed
+                                only&quot; filter.
                               </Text>
                             </Flex>
-                            <Button variant='secondary' 
-                              onClick={() =>                        
+                            <Button
+                              variant="secondary"
+                              onClick={() =>
                                 handleApplySearch({
                                   query: {
                                     ...router.query,
                                     collectionId,
                                     listedOnly: false,
                                   },
-                                })}
-                              >
-                              Turn off 
+                                })
+                              }
+                            >
+                              Turn off
                             </Button>
                           </>
                         )}
@@ -668,36 +790,40 @@ export default function SearchView() {
                     {...{ selectedColumn, sortAscending }}
                   />
                 )}
-                {
-                  loading && collectionId ? (
-                    listView ? (
-                      <NFTSearchResultsSkeleton
-                        columns={nftSearchResultsColumns}
-                        selectedColumn={selectedNFTColumn}
-                        sortAscending={sortNFTsAscending}
-                      />
-                    ) : (
+                {loading && collectionId ? (
+                  listView ? (
+                    <NFTSearchResultsSkeleton
+                      columns={nftSearchResultsColumns}
+                      selectedColumn={selectedNFTColumn}
+                      sortAscending={sortNFTsAscending}
+                    />
+                  ) : (
                     <Grid
                       sx={{
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(225px, 1fr))',
+                        gridTemplateColumns:
+                          'repeat(auto-fill, minmax(225px, 1fr))',
                         columnGap: '16px',
-                        rowGap: '16px', 
+                        rowGap: '16px',
                       }}
-                      >
-                        {loadArr?.map((_, idx) => (
-                              <SpinnerBoxTemplate key={idx} sx={{ height: '300px' }}/>
-                            ))}
+                    >
+                      {loadArr?.map((_, idx) => (
+                        <SpinnerBoxTemplate
+                          key={idx}
+                          sx={{ height: '300px' }}
+                        />
+                      ))}
                     </Grid>
-                        
-                    )
-                  ) : assetArr && (
+                  )
+                ) : (
+                  assetArr && (
                     <Grid
-                    ref={scrollRef}
-                    sx={{
-                      gridTemplateColumns: 'repeat(auto-fill, minmax(225px, 1fr))',
-                      columnGap: '16px',
-                      rowGap: '16px', 
-                    }}
+                      ref={scrollRef}
+                      sx={{
+                        gridTemplateColumns:
+                          'repeat(auto-fill, minmax(225px, 1fr))',
+                        columnGap: '16px',
+                        rowGap: '16px',
+                      }}
                     >
                       {assetArr?.map(
                         (
@@ -715,23 +841,29 @@ export default function SearchView() {
                         ) => (
                           <Flex key={idx} sx={{ gap: 5 }}>
                             <NFTCard
-                              avatarImage={collectionData?.collectionById?.imageUrl}
+                              avatarImage={
+                                collectionData?.collectionById?.imageUrl
+                              }
                               imageSrc={mediaUrl}
-                              isPixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
+                              isPixelated={PIXELATED_CONTRACTS.includes(
+                                contractAddress
+                              )}
                               collection={collection?.name ?? ''}
                               name={name}
                               listPriceEth={listPrice}
-                              appraisalPriceETH={latestAppraisal?.estimatedPrice}
-                              listAppraisalPercentage={listAppraisalRatio} 
+                              appraisalPriceETH={
+                                latestAppraisal?.estimatedPrice
+                              }
+                              listAppraisalPercentage={listAppraisalRatio}
                               nftUrl={`/analytics/nft/${id}`}
                               collectionUrl={`/analytics/collection/${collection?.id}`}
-                              />
-                            </Flex>
+                            />
+                          </Flex>
                         )
                       )}
                     </Grid>
                   )
-                }
+                )}
               </Flex>
             )}
           </Flex>
