@@ -6,13 +6,12 @@ import Bugsnag from '@bugsnag/js'
 import BugsnagPluginReact from '@bugsnag/plugin-react'
 import { UpshotThemeProvider } from '@upshot-tech/upshot-ui'
 import { Web3ReactProvider } from '@web3-react/core'
+import Metadata from 'components/Meta'
 import { providers } from 'ethers'
 import type { AppProps } from 'next/app'
-import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { ReactNode, useEffect } from 'react'
 import { Provider, useDispatch, useSelector } from 'react-redux'
-import { useAppDispatch } from 'redux/hooks'
 import { selectAlertState, setAlertState } from 'redux/reducers/layout'
 import { persistor, store } from 'redux/store'
 import { PersistGate } from 'redux-persist/integration/react'
@@ -111,16 +110,14 @@ export default function App({ Component, pageProps }: AppProps) {
       })
     }
   }, [])
+  const router = useRouter()
 
   return (
     <>
-      <Head>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
       <UpshotThemeProvider>
         <ApolloProvider {...{ client }}>
+          <Metadata key={router.asPath} />
+
           <Web3ReactProvider {...{ getLibrary }}>
             <Provider store={store}>
               <PersistGate {...{ persistor }}>

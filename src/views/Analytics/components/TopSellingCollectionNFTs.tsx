@@ -169,7 +169,7 @@ export default function TopSellingCollectionNFTs({
           topSellingType={topSellingType}
           setTopSellingType={(val) => setTopSellingType(val)}
         />
-        <MiniNFTContainer sx={{ paddingTop: '80px' }}>
+        <MiniNFTContainer sx={{ paddingTop: '80px', height: '255px' }}>
           {[...new Array(10)].map((_, idx) => (
             <BlurrySquareTemplate key={idx} />
           ))}
@@ -267,7 +267,7 @@ export default function TopSellingCollectionNFTs({
             pointerEvents: 'none',
           }}
         ></Box>
-        <MiniNFTContainer sx={{ paddingTop: '80px' }}>
+        <MiniNFTContainer sx={{ paddingTop: '80px', height: '255px' }}>
           {topSellingType === 'NFTs' ? (
             <>
               {data.topSales.map(
@@ -276,7 +276,7 @@ export default function TopSellingCollectionNFTs({
                     txAt,
                     txFromAddress,
                     txToAddress,
-                    price,
+                    ethSalePrice,
                     asset: {
                       id,
                       contractAddress,
@@ -295,8 +295,8 @@ export default function TopSellingCollectionNFTs({
                   >
                     <MiniNftCard
                       price={
-                        price
-                          ? formatNumber(price, {
+                        ethSalePrice
+                          ? formatNumber(ethSalePrice, {
                               fromWei: true,
                               decimals: 2,
                               prefix: 'ETHER',
@@ -349,7 +349,15 @@ export default function TopSellingCollectionNFTs({
                           ? formatNumber(latestStats.floor, { fromWei: true })
                           : undefined
                       }
-                      sales={getSalesNumber(latestStats)}
+                      sales={
+                        getSalesNumber(latestStats) +
+                        ' / ' +
+                        (period === '1 month'
+                          ? '1 mth'
+                          : period === '1 week'
+                          ? '1 wk'
+                          : '1 d')
+                      }
                       link={`/analytics/collection/${id}`}
                     />
                   </Link>

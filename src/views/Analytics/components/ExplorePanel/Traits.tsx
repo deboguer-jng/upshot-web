@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/client'
 import {
   Box,
+  ButtonDropdown,
   CollectionRow,
   CollectionTable,
   CollectorAccordion,
@@ -10,7 +11,6 @@ import {
   Icon,
   Link,
   Pagination,
-  Skeleton,
   TableBody,
   TableCell,
   TableHead,
@@ -24,6 +24,11 @@ import NextLink from 'next/link'
 import router from 'next/router'
 import { useEffect, useState } from 'react'
 
+import {
+  genSortOptions,
+  getDropdownValue,
+  handleChangeNFTColumnSortRadio
+} from '../../../../utils/tableSortDropdown'
 import { TRAIT_SEARCH, TraitSearchData, TraitSearchVars } from '../../queries'
 import { ExplorePanelSkeleton } from './NFTs'
 import { getOrderDirection } from './util'
@@ -40,7 +45,7 @@ interface TraitsTableHeadProps extends React.HTMLAttributes<HTMLElement> {
   /**
    * Handler for selection change
    */
-  onChangeSelection?: (colIdx: number) => void
+  handleChangeSelection: (colIdx: number, order?: 'asc' | 'desc') => void
 }
 
 export const traitColumns = {
@@ -53,7 +58,7 @@ export const traitColumns = {
 function TraitsTableHead({
   selectedColumn,
   sortAscending,
-  onChangeSelection,
+  handleChangeSelection,
 }: TraitsTableHeadProps) {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
@@ -97,7 +102,7 @@ function TraitsTableHead({
                 key={idx}
                 color="grey-500"
                 colSpan={idx === Object.keys(traitColumns).length - 1 ? 2 : 1}
-                onClick={() => onChangeSelection?.(idx)}
+                onClick={() => handleChangeSelection?.(idx)}
                 sx={{
                   cursor: 'pointer',
                   color: selectedColumn === idx ? 'white' : null,
@@ -136,6 +141,23 @@ function TraitsTableHead({
             ))}
           </TableRow>
         </TableHead>
+      )}
+      {isMobile && (
+        <ButtonDropdown
+          hideRadio
+          label="Sort by"
+          name="sortBy"
+          onChange={(val) => handleChangeNFTColumnSortRadio(val, traitColumns, handleChangeSelection)}
+          options={genSortOptions(traitColumns)}
+          value={getDropdownValue(selectedColumn, sortAscending, traitColumns)}
+          closeOnSelect={true}
+          style={{
+            marginTop: '10px',
+            marginBottom: '10px',
+            zIndex: 1,
+            position: 'relative',
+          }}
+        />
       )}
     </>
   )
@@ -184,14 +206,15 @@ export default function ExploreTraits({
   searchTerm?: string
   selectedColumn: number
   sortAscending: boolean
-  onChangeSelection: (colIdx: number) => void
+  onChangeSelection: (colIdx: number, order?: 'asc' | 'desc') => void
 }) {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
   const [page, setPage] = useState(0)
 
-  const handlePageChange = ({ selected }: { selected: number }) => {
-    setPage(selected)
+  const handleChangeSelection = (colIdx: number, order?: 'asc' | 'desc') => {
+    onChangeSelection(colIdx, order)
+    setPage(0)
   }
 
   const orderColumn = Object.keys(traitColumns)[selectedColumn]
@@ -222,7 +245,7 @@ export default function ExploreTraits({
   if (loading)
     return (
       <ExplorePanelSkeleton>
-        <TraitsTableHead {...{ selectedColumn, sortAscending }} />
+        <TraitsTableHead {...{ selectedColumn, sortAscending, handleChangeSelection }} />
       </ExplorePanelSkeleton>
     )
 
@@ -238,7 +261,7 @@ export default function ExploreTraits({
 
   return (
     <>
-      <TraitsWrapper {...{ selectedColumn, sortAscending, onChangeSelection }}>
+      <TraitsWrapper {...{ selectedColumn, sortAscending, handleChangeSelection }}>
         {data.traitSearch?.traits?.map(
           (
             {
@@ -406,7 +429,7 @@ export default function ExploreTraits({
           }
           pageRangeDisplayed={0}
           marginPagesDisplayed={0}
-          onPageChange={handlePageChange}
+          onPageChange={setPage}
         />
       </Flex>
     </>

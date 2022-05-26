@@ -3,6 +3,7 @@ import { useQuery } from '@apollo/client'
 import {
   BuyNowPanel,
   imageOptimizer,
+  MiniNftCard,
   Pagination,
   Tooltip,
   useBreakpointIndex,
@@ -35,7 +36,6 @@ import { ART_BLOCKS_CONTRACTS, PIXELATED_CONTRACTS } from 'constants/'
 import { format } from 'date-fns'
 import makeBlockie from 'ethereum-blockies-base64'
 import { ethers } from 'ethers'
-import Head from 'next/head'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -52,7 +52,15 @@ import { getPriceChangeColor } from 'utils/color'
 
 import Breadcrumbs from '../components/Breadcrumbs'
 import Collectors from '../components/ExplorePanel/Collectors'
-import { GET_ASSET, GetAssetData, GetAssetVars } from './queries'
+import { MiniNFTContainer } from '../components/Styled'
+import {
+  GET_ASSET,
+  GET_SIMILAR_ASSETS,
+  GetAssetData,
+  GetAssetVars,
+  GetSimilarAssetsData,
+  GetSimilarAssetsVars,
+} from './queries'
 
 function Layout({ children }: { children: React.ReactNode }) {
   const storage = globalThis?.sessionStorage
@@ -149,6 +157,16 @@ export default function NFTView() {
     }
   )
 
+  const {
+    loading: similarLoading,
+    error: similarError,
+    data: similarData,
+  } = useQuery<GetSimilarAssetsData, GetSimilarAssetsVars>(GET_SIMILAR_ASSETS, {
+    errorPolicy: 'all',
+    variables: { id },
+    skip: !id,
+  })
+
   useEffect(() => {
     if (!data?.assetById) return
 
@@ -181,11 +199,7 @@ export default function NFTView() {
             width: '100%',
           }}
         >
-          <img
-            src="/img/Logo_bounce_spin.gif"
-            width={256}
-            alt="Loading"
-          />
+          <img src="/img/Logo_bounce_spin.gif" width={256} alt="Loading" />
         </Container>
       </Layout>
     )
@@ -223,7 +237,6 @@ export default function NFTView() {
     txHistory,
     appraisalHistory,
     contractAddress,
-    warningBanner,
     listPrice,
     listPriceUsd,
     listMarketplace,
@@ -277,22 +290,6 @@ export default function NFTView() {
 
   return (
     <>
-      <Head>
-        <title>{name} | Upshot Analytics</title>
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:site" content="@UpshotHQ" />
-        <meta name="twitter:creator" content="@UpshotHQ" />
-        <meta property="og:url" content="https://upshot.io" />
-        <meta property="og:title" content="Upshot Analytics" />
-        <meta
-          property="og:description"
-          content="NFTs offer us a vehicle for tokenizing anything, while the explosive growth of DeFi has demonstrated the power of permissionless financial primitives. Upshot is building scalable NFT pricing infrastructure at the intersection of DeFi x NFTs. Through a combination of crowdsourced appraisals and proprietary machine learning algorithms, Upshot provides deep insight into NFT markets and unlocks a wave of exotic new DeFi possibilities."
-        />
-        <meta
-          property="og:image"
-          content="https://upshot.io/img/opengraph/opengraph_nft.jpg"
-        />
-      </Head>
       <Layout>
         <Grid
           columns={[1, 1, 1, 2]}
@@ -660,24 +657,6 @@ export default function NFTView() {
                     <Flex sx={{ padding: '20px', paddingBottom: 0 }}>
                       <Text variant="h3Secondary">Pricing History</Text>
                     </Flex>
-                    {warningBanner &&
-                      !isFloor &&
-                      collection?.name !== 'CryptoPunks' && (
-                        <Text
-                          backgroundColor={'primary'}
-                          color="black"
-                          sx={{
-                            marginX: '20px',
-                            marginTop: '20px',
-                            padding: '10px',
-                            borderRadius: '10px',
-                            fontWeight: 600,
-                          }}
-                        >
-                          This is a valuable item. Our top-tier appraisals are
-                          under active development.
-                        </Text>
-                      )}
                     <Flex sx={{ gap: '40px', flexGrow: 1, padding: '20px' }}>
                       {appraisalHistory?.length > 0 && (
                         <Flex sx={{ flexDirection: 'column' }}>
@@ -954,6 +933,63 @@ export default function NFTView() {
                 />
               </Flex>
             </Panel>
+            <Box>
+              <Text variant="h3Secondary">More like this</Text>
+              <MiniNFTContainer mt={3}>
+                {similarData?.similarAssets?.map((asset, key) => {
+                  return (
+                    <Link
+                      key={key}
+                      href={'/analytics/nft/' + asset.similarAsset.id}
+                      component={NextLink}
+                      noHover
+                    >
+                      <MiniNftCard
+                        price={
+                          asset.similarAsset.lastSale?.ethSalePrice
+                            ? formatNumber(
+                                asset.similarAsset.lastSale?.ethSalePrice,
+                                {
+                                  fromWei: true,
+                                  decimals: 2,
+                                  prefix: 'ETHER',
+                                }
+                              )
+                            : undefined
+                        }
+                        name={asset.similarAsset.name}
+                        type="recommend"
+                        image={asset.similarAsset.mediaUrl}
+                        pixelated={PIXELATED_CONTRACTS.includes(asset.similarAsset.contractAddress)}
+                        listing={
+                          asset.similarAsset.listPrice
+                            ? formatNumber(asset.similarAsset.listPrice, {
+                                fromWei: true,
+                                decimals: 2,
+                                prefix: 'ETHER',
+                              })
+                            : undefined
+                        }
+                        appraisal={
+                          asset.similarAsset.lastAppraisalWeiPrice
+                            ? formatNumber(
+                                asset.similarAsset.lastAppraisalWeiPrice,
+                                {
+                                  fromWei: true,
+                                  decimals: 2,
+                                  prefix: 'ETHER',
+                                }
+                              )
+                            : undefined
+                        }
+                        linkComponent={NextLink}
+                        link={`https://opensea.io/assets/${asset.similarAsset.id}`}
+                      />
+                    </Link>
+                  )
+                })}
+              </MiniNFTContainer>
+            </Box>
           </Flex>
         </Grid>
       </Layout>

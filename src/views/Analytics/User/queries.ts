@@ -23,10 +23,10 @@ export type GetCollectorData = {
     firstAssetPurchaseTime: number
     bio: string
     numAssets: number
-    warningBanner: boolean
     addresses: {
       address: string
       ens: string
+      gmi: number
     }[]
     extraCollections: {
       count: number
@@ -79,10 +79,10 @@ export const GET_COLLECTOR = gql`
       firstAssetPurchaseTime
       bio
       numAssets
-      warningBanner
       addresses {
         address
         ens
+        gmi
       }
       extraCollections(limit: $collectionLimit, offset: $collectionOffset) {
         count
@@ -238,9 +238,11 @@ export type GetCollectorTxHistoryVars = {
 
 export type GetCollectorTxHistoryData = {
   getTxHistory: {
+    id: number
     txHistory: {
       count: number
       events: {
+        id: number
         type: string
         txAt: number
         txFromAddress: string
@@ -280,9 +282,11 @@ export const GET_COLLECTOR_TX_HISTORY = gql`
     $txOffset: Int!
   ) {
     getTxHistory: getUser(userId: $userId, address: $address) {
+      id
       txHistory(limit: $txLimit, offset: $txOffset) {
         count
         events {
+          id
           type
           txAt
           txFromAddress

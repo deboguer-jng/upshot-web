@@ -117,7 +117,7 @@ export default function TopSellingNFTs({
           period={period}
           setPeriod={(val) => setPeriod(val)}
         />
-        <MiniNFTContainer sx={{ paddingTop: '80px' }}>
+        <MiniNFTContainer sx={{ paddingTop: '80px', height: '255px' }}>
           {[...new Array(10)].map((_, idx) => (
             <BlurrySquareTemplate key={idx} />
           ))}
@@ -173,21 +173,15 @@ export default function TopSellingNFTs({
             pointerEvents: 'none',
           }}
         ></Box>
-        <MiniNFTContainer sx={{ paddingTop: '80px' }}>
+        <MiniNFTContainer sx={{ paddingTop: '80px', height: '255px' }}>
           {data.topSales.map(
             (
               {
                 txAt,
                 txFromAddress,
                 txToAddress,
-                price,
-                asset: {
-                  id,
-                  contractAddress,
-                  mediaUrl,
-                  rarity,
-                  collection,
-                },
+                ethSalePrice,
+                asset: { id, contractAddress, mediaUrl, rarity, collection },
               },
               key
             ) => (
@@ -199,8 +193,8 @@ export default function TopSellingNFTs({
               >
                 <MiniNftCard
                   price={
-                    price
-                      ? formatNumber(price, {
+                    ethSalePrice
+                      ? formatNumber(ethSalePrice, {
                           fromWei: true,
                           decimals: 2,
                           prefix: 'ETHER',
@@ -216,7 +210,6 @@ export default function TopSellingNFTs({
                   image={mediaUrl}
                   date={formatDistance(txAt * 1000)}
                   pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
-                  link={`/analytics/collection/${collection?.id}`}
                 />
               </Link>
             )

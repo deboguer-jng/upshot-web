@@ -16,13 +16,17 @@ import { BlurrySquareTemplate, Pagination } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import { PIXELATED_CONTRACTS } from 'constants/'
-import Head from 'next/head'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { shortenAddress } from 'utils/address'
 import { getAssetName } from 'utils/asset'
 
+import {
+  genSortOptions,
+  getDropdownValue,
+  handleChangeNFTColumnSortRadio
+} from '../../../utils/tableSortDropdown'
 import TopCollections from '../../Analytics/components/ExplorePanel/TopCollections'
 import Breadcrumbs from '../components/Breadcrumbs'
 import SearchFilterSidebar from '../components/SearchFilterSidebar'
@@ -107,44 +111,21 @@ export default function SearchView() {
   // NFT Search Results
   const [selectedNFTColumn, setSelectedNFTColumn] = useState<number>(3)
   const [sortNFTsAscending, setSortNFTsAscending] = useState(false)
-  const handleChangeNFTColumnSelection = (columnIdx: number) => {
+
+  const handleChangeNFTColumnSelection = (columnIdx: number, order?: 'asc' | 'desc') => {
+    setSelectedNFTColumn(columnIdx)
     const ascendingColumns = [0, 1, 2]
 
-    if (columnIdx === selectedNFTColumn) {
-      setSortNFTsAscending(!sortNFTsAscending)
-    } else {
-      setSortAscending(ascendingColumns.includes(columnIdx))
-    }
+    if (order === 'asc')
+      return setSortNFTsAscending(true)
+    if (order === 'desc')
+      return setSortNFTsAscending(false)
 
-    setSelectedNFTColumn(columnIdx)
-  }
-
-  const sortOptions = [
-    'Sale price: low to high',
-    'Sale price: high to low',
-    'Appraisal: low to high',
-    'Appraisal: high to low',
-    'List price: low to high',
-    'List price: high to low',
-    'Difference: low to high',
-    'Difference: high to low',
-  ]
-
-  const handleChangeNFTColumnSortRadio = (value: string) => {
-    const index = sortOptions.indexOf(value)
-    /* it maps 0, 1 -> 0
-    2, 3 -> 1
-    4, 5 -> 2 */
-    const columnIndex = Math.floor(index/2)
-    setSelectedNFTColumn(columnIndex)
-
-    setSortNFTsAscending(index % 2 === 0)  // index is even make it ascending
-  }
-
-  const getDropdownValue = () => {
-    const strIndex = selectedNFTColumn * 2
-    const strIndexSorted = strIndex + (sortNFTsAscending ? 0 : 1)
-    return sortOptions[strIndexSorted]
+    // if order is not specified, toggle between ascending and descending
+    if (columnIdx === selectedNFTColumn) // Toggle sort order for current selection.
+      return setSortNFTsAscending(!sortNFTsAscending)
+    // else, set to ascending for new selection.
+    return setSortNFTsAscending(ascendingColumns.includes(columnIdx))
   }
 
   // Used to wait for the router to mount before showing collectors.
@@ -235,24 +216,6 @@ export default function SearchView() {
 
   return (
     <>
-      <Head>
-        <title>
-          {searchQueryParam ? searchQueryParam + ' | ' : ''}Upshot Analytics
-        </title>
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:site" content="@UpshotHQ" />
-        <meta name="twitter:creator" content="@UpshotHQ" />
-        <meta property="og:url" content="https://upshot.io" />
-        <meta property="og:title" content="Upshot Analytics" />
-        <meta
-          property="og:description"
-          content="NFTs offer us a vehicle for tokenizing anything, while the explosive growth of DeFi has demonstrated the power of permissionless financial primitives. Upshot is building scalable NFT pricing infrastructure at the intersection of DeFi x NFTs. Through a combination of crowdsourced appraisals and proprietary machine learning algorithms, Upshot provides deep insight into NFT markets and unlocks a wave of exotic new DeFi possibilities."
-        />
-        <meta
-          property="og:image"
-          content="https://upshot.io/img/opengraph/opengraph_search.jpg"
-        />
-      </Head>
       <Nav />
       <Container
         maxBreakpoint="xxl"
@@ -377,7 +340,7 @@ export default function SearchView() {
                     <Text
                       variant="h3Primary"
                       color="grey-600"
-                      sx={{ display: 'inline-block', mr: 10}}
+                      sx={{ display: 'inline-block', mr: 10 }}
                     >
                       NFTs
                     </Text>
@@ -388,7 +351,7 @@ export default function SearchView() {
                         alignItems: 'center',
                         justifyContent: 'center',
                         gap: 1,
-                        mr: 10
+                        mr: 10,
                       }}
                     >
                       <Text
@@ -398,14 +361,14 @@ export default function SearchView() {
                       >
                         View as
                       </Text>
-                      <IconButton onClick={() => toggleListView(false)} >
+                      <IconButton onClick={() => toggleListView(false)}>
                         <Icon
                           color={listView ? 'grey-700' : 'grey-300'}
                           icon={'gridViewV2'}
                           size={32}
                         />
                       </IconButton>
-                      <IconButton onClick={() => toggleListView(true)} >
+                      <IconButton onClick={() => toggleListView(true)}>
                         <Icon
                           color={listView ? 'grey-300' : 'grey-700'}
                           icon={'listViewV2'}
@@ -413,21 +376,22 @@ export default function SearchView() {
                         />
                       </IconButton>
                     </Box>
-                      { (!listView || isMobile) && (
-                        <ButtonDropdown
-                          hideRadio
-                          label="Sort by"
-                          name="sortBy"
-                          onChange={(val) => handleChangeNFTColumnSortRadio(val)}
-                          options={sortOptions}
-                          value={getDropdownValue()}
-                          closeOnSelect={true}
-                          style={{
-                            display: 'inline-block', 
-                            marginLeft: '-12px',
-                            marginTop: isMobile ? '10px' : ''}}
-                        />
-                        )}
+                    {(!listView || isMobile) && (
+                      <ButtonDropdown
+                        hideRadio
+                        label="Sort by"
+                        name="sortBy"
+                        onChange={(val) => handleChangeNFTColumnSortRadio(val, nftSearchResultsColumns, handleChangeNFTColumnSelection)}
+                        options={genSortOptions(nftSearchResultsColumns)}
+                        value={getDropdownValue(selectedNFTColumn, sortNFTsAscending, nftSearchResultsColumns)}
+                        closeOnSelect={true}
+                        style={{
+                          display: 'inline-block',
+                          marginLeft: '-12px',
+                          marginTop: isMobile ? '10px' : '',
+                        }}
+                      />
+                    )}
                   </Box>
                 )}
                 {!collectionId && ready && (
@@ -491,6 +455,8 @@ export default function SearchView() {
                                 collection,
                                 tokenId,
                                 lastSale,
+                                latestAppraisal,
+                                listPrice,
                                 rarity,
                                 creatorUsername,
                                 creatorAddress,
@@ -505,13 +471,24 @@ export default function SearchView() {
                               >
                                 <MiniNftCard
                                   linkComponent={NextLink}
-                                  price={
-                                    lastSale?.ethSalePrice
-                                      ? formatNumber(lastSale.ethSalePrice, {
-                                          fromWei: true,
-                                          decimals: 2,
-                                          prefix: 'ETHER',
-                                        })
+                                  price={formatNumber(
+                                    latestAppraisal?.estimatedPrice ??
+                                      listPrice ??
+                                      lastSale?.ethSalePrice ??
+                                      '',
+                                    {
+                                      fromWei: true,
+                                      decimals: 2,
+                                      prefix: 'ETHER',
+                                    }
+                                  )}
+                                  priceType={
+                                    latestAppraisal?.estimatedPrice
+                                      ? 'appraisal'
+                                      : listPrice
+                                      ? 'listed'
+                                      : lastSale?.ethSalePrice
+                                      ? 'last-sold'
                                       : undefined
                                   }
                                   rarity={
@@ -533,7 +510,6 @@ export default function SearchView() {
                                     collection?.name,
                                     tokenId
                                   )}
-                                  link={`/analytics/collection/${collection?.id}`}
                                 />
                               </Link>
                             )

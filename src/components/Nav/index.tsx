@@ -1,4 +1,4 @@
-import { useLazyQuery } from '@apollo/client'
+import { useLazyQuery, useMutation } from '@apollo/client'
 import {
   ConnectModal,
   Flex,
@@ -17,9 +17,20 @@ import { ConnectorName, connectorsByName } from 'constants/connectors'
 import makeBlockie from 'ethereum-blockies-base64'
 import { ethers } from 'ethers'
 import {
+  LOG_EVENT,
+  LogEventData,
+  LogEventVars,
+  SIGN_IN,
+  SignInData,
+  SignInVars,
+} from 'graphql/mutations'
+import {
   GET_NAV_BAR_COLLECTIONS,
+  GET_NONCE,
   GetNavBarCollectionsData,
   GetNavBarCollectionsVars,
+  GetNonceData,
+  GetNonceVars,
 } from 'graphql/queries'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
@@ -35,13 +46,16 @@ import {
 } from 'redux/reducers/layout'
 import { setIsBeta } from 'redux/reducers/user'
 import {
+  resetWeb3,
   selectAddress,
+  selectAuthToken,
   selectEns,
   setActivatingConnector,
-  setAddress,
-  setEns,
+  setAuthToken,
 } from 'redux/reducers/web3'
 import { shortenAddress } from 'utils/address'
+import { getAuthPayload } from 'utils/auth'
+import { logEvent } from 'utils/googleAnalytics'
 
 import { BetaBanner } from '../BetaBanner'
 import { Sidebar, SidebarShade, SideLink } from './Styled'
@@ -80,7 +94,7 @@ function useOutsideAlerter(ref) {
 
 export const Nav = () => {
   const { theme } = useTheme()
-  const { activate, deactivate, connector } = useWeb3React()
+  const { activate, deactivate, connector, library, account } = useWeb3React()
   const router = useRouter()
   const dispatch = useAppDispatch()
   const features = useAppSelector(selectFeatures)
@@ -96,6 +110,7 @@ export const Nav = () => {
   >(GET_NAV_BAR_COLLECTIONS)
   const [open, setOpen] = useState(false)
   const helpOpen = useSelector(selectShowHelpModal)
+  const authToken = useSelector(selectAuthToken)
   const modalRef = useRef<HTMLDivElement>(null)
   const helpModalRef = useRef<HTMLDivElement>(null)
   const isMobile = useBreakpointIndex() <= 1
@@ -116,6 +131,62 @@ export const Nav = () => {
       handleToggleMenu()
     }
   }, [outsideClicked])
+
+  const [logUpshotEvent] = useMutation<LogEventData, LogEventVars>(LOG_EVENT, {
+    onError: (err) => {
+      console.error(err)
+    },
+  })
+
+  const [signIn] = useMutation<SignInData, SignInVars>(SIGN_IN, {
+    onError: (err) => {
+      console.error(err)
+    },
+    onCompleted: (data) => {
+      if (!data?.signIn?.authToken) return
+      dispatch(setAuthToken(data.signIn.authToken))
+
+      router.push('/settings')
+    },
+  })
+
+  const [getNonce] = useLazyQuery<GetNonceData, GetNonceVars>(GET_NONCE, {
+    onCompleted: async (data) => {
+      if (!account) return
+
+      const signer = library.getSigner(account)
+      let signature
+
+      try {
+        const payload = getAuthPayload({
+          address: account,
+          nonce: data?.getNonce?.nonce,
+        })
+        signature = await signer.signMessage(payload)
+      } catch (err) {
+        console.error(err)
+      }
+
+      if (!signature) return
+
+      logEvent('auth', 'signature', account)
+      logUpshotEvent({
+        variables: {
+          timestamp: Math.floor(Date.now() / 1000),
+          address: account,
+          type: 'signature',
+        },
+      })
+
+      await signIn({
+        variables: {
+          userAddress: account,
+        },
+      })
+
+      router.push('/settings')
+    },
+  })
 
   const isAddress =
     navSearchTerm?.substring(0, 2) === '0x' && navSearchTerm?.length === 42
@@ -195,8 +266,7 @@ export const Nav = () => {
   const handleDisconnect = () => {
     deactivate()
     if (showSidebar) handleToggleMenu()
-    dispatch(setAddress(undefined))
-    dispatch(setEns({ name: undefined }))
+    dispatch(resetWeb3())
     dispatch(setIsBeta(undefined))
   }
 
@@ -208,6 +278,32 @@ export const Nav = () => {
     if (features?.status?.maintenance) return 'maintenance'
 
     return 'beta'
+  }
+
+  const handleShowSettings = () => {
+    /**
+     * We require an active web3 connection to manage settings.
+     * The settings button is only visible if it exists, but for
+     * type checking, we will bail on this handler if there is no account.
+     */
+    if (!account) return
+
+    /**
+     * If there's no auth token, we'll run through the sequential flow.
+     *
+     * 1. We first request a nonce for the active user address.
+     *
+     * 2. Once we have the nonce, we ask the user to sign it.
+     *
+     * 3. Once we have the signature, we send that to the backend in exchange
+     * for an authToken, which is cached to redux and added to all graphQL headers.
+     */
+    if (!authToken) return getNonce({ variables: { userAddress: account } })
+
+    /**
+     * If we've got an authToken cached from previous use, we're ready to go.
+     */
+    router.push('/settings')
   }
 
   const sidebar = (
@@ -335,6 +431,7 @@ export const Nav = () => {
             if (showSidebar) handleToggleMenu()
             toggleModal()
           }}
+          // onSettings={handleShowSettings}
           onDisconnectClick={handleDisconnect}
           onMenuClick={handleToggleMenu}
           onHelpClick={toggleHelpModal}
@@ -343,12 +440,13 @@ export const Nav = () => {
         >
           {showSidebar && sidebar}
         </Navbar>
-        <Modal ref={modalRef} onClose={toggleModal} {...{ open }}>
+        <Modal ref={modalRef} onClose={toggleModal} {...{ open }} hideScroll>
           <ConnectModal {...{ hideMetaMask }} onConnect={handleConnect} />
         </Modal>
         <Modal
           ref={helpModalRef}
           onClose={toggleHelpModal}
+          hideScroll
           {...{ open: helpOpen }}
         >
           <HelpModal
