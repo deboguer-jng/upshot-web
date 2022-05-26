@@ -1,3 +1,4 @@
+import { useMutation, useQuery } from '@apollo/client'
 import { 
   Button,
   Container, 
@@ -8,18 +9,37 @@ import {
   TextareaRounded,
   useTheme
 } from '@upshot-tech/upshot-ui'
+import { useWeb3React } from '@web3-react/core'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
+import makeBlockie from 'ethereum-blockies-base64'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { useAppSelector } from 'redux/hooks'
+import { selectAddress, selectEns, selectAuthToken } from 'redux/reducers/web3'
 import { Avatar, Box, Flex, Link, Text } from 'theme-ui'
 
 import Breadcrumbs from '../components/Breadcrumbs'
+import { GetUserProfileData, GetUserProfileVars, GET_PROFILE } from '../User/queries'
+import { UpdateUserData, UpdateUserVars, UPDATE_USER } from './mutations'
 
 export default function SettingsView() {
   const { theme } = useTheme()
+  const router = useRouter()
+  const { account } = useWeb3React()
   const storage = globalThis?.sessionStorage
   const prevPath = storage.getItem('prevPath')
+  const address = useAppSelector(selectAddress)
+  const userEns = useAppSelector(selectEns)
   
+  const [displayName, setDisplayName] = useState<string>()
+  const [bio, setBio] = useState<string>()
+  const [updateUser] = useMutation<UpdateUserData, UpdateUserVars>(UPDATE_USER, {
+    onError: err => console.log(err)
+  })
+
   const breadcrumbs = prevPath?.includes('/nft/')
     ? [
       {
@@ -61,9 +81,30 @@ export default function SettingsView() {
           },
         ]
 
-  const onSave = () => {}
+  const onSave = () => {
+    updateUser({
+      variables: {
+        displayName: displayName,
+        bio: bio
+      }
+    })
+  }
   const onTwitterConnect = () => {}
   const onAvatarClick = () => {}
+
+  const {
+    loading,
+    error,
+    data,
+  } = useQuery<GetUserProfileData, GetUserProfileVars>(GET_PROFILE, {
+    errorPolicy: 'all',
+    variables: {
+      address: address,
+    },
+    skip: !address,
+  })
+
+  if(data?.getUser?.displayName) setDisplayName(data?.getUser?.displayName)
 
   return (
     <>
@@ -89,13 +130,21 @@ export default function SettingsView() {
             <Flex sx={{flexWrap: 'wrap', gap: '20px 50px'}}>
               <Flex sx={{flexDirection: 'column', gap: '10px'}}>
                 <Text color={theme.colors['grey-500']}>Information</Text>
-                <InputRounded dark={true} sx={{padding: '16px'}} />
+                <InputRounded 
+                  dark={true} 
+                  sx={{padding: '16px'}} 
+                  placeholder={userEns?.name ?? data?.getUser?.addresses?.[0]?.ens ??
+                    data?.getUser?.addresses?.[0]?.address}
+                  value={displayName}
+                  onChange={e => setDisplayName(e.currentTarget.value)} />
                 <TextareaRounded 
                   dark={true}
                   optional={true}
                   showCount={true}
                   maxLength={100}
                   placeholder='Write a short bio for your profile'
+                  value={bio}
+                  onChange={e => setBio(e.currentTarget.value)}
                 />
                 <Flex sx={{alignItems: 'center', marginBottom: '20px'}}>
                   <Icon color="grey-500" icon="twitter" size={32} />
@@ -122,9 +171,9 @@ export default function SettingsView() {
               </Flex>
               <Flex sx={{flexDirection: 'column', gap: '30px', paddingBottom: '40px'}}>
                 <Text color={theme.colors['grey-500']}>Profile Picture</Text>
-                <Link onClick={onAvatarClick}>
-                  <Avatar size="200" src="/img/defaultAvatar.png"></Avatar>
-                </Link>
+                {/* <Link onClick={onAvatarClick}> */}
+                  <Avatar size="200" src={address ? makeBlockie(address) : undefined}></Avatar>
+                {/* </Link> */}
               </Flex>
             </Flex>
               <Flex sx={{width: '100%'}}>
@@ -136,6 +185,7 @@ export default function SettingsView() {
           </SettingsMenuItem>
         </SettingsPanel>
       </Container>
+      <Footer />
     </>
   )
 }

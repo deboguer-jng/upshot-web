@@ -89,7 +89,7 @@ export function useAuth(): [boolean, Function] {
       await signIn({
         variables: {
           userAddress: account,
-          signature: signature
+          signature
         },
       })
 
