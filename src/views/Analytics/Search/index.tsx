@@ -573,8 +573,6 @@ export default function SearchView() {
 
             {error ? (
               <div>There was an error completing your request</div>
-            ) : data?.assetGlobalSearch?.assets.length === 0 ? (
-              <div>No results available.</div>
             ) : (
               <Flex
                 sx={{
@@ -590,15 +588,9 @@ export default function SearchView() {
                       flexDirection: 'row',
                       gap: 6,
                       alignItems: 'center',
-                      justifyContent: 'space-between',
+                      justifyContent: 'flex-end',
                     }}
                   >
-                    <Text
-                      variant="h3Primary"
-                      color="grey-600"
-                      sx={{ display: 'inline-block', mr: 10 }}
-                    >
-                    </Text>
                     <Flex
                       sx={{
                         flexDirection: 'row',
@@ -606,6 +598,7 @@ export default function SearchView() {
                         alignItems: 'center',
                         justifyContent: 'flex-end',
                         flexWrap: 'wrap',
+                        width: '100%'
                       }}>
                     <TokenIdInput
                       defaultValue={tokenId}
@@ -613,13 +606,10 @@ export default function SearchView() {
                       onSubmit={(tokenId) => {
                         handleApplySearch({
                           query: {
+                            ...router.query,
                             traits: traitIds,
                             collectionId,
-                            minPrice,
-                            maxPrice,
                             tokenId,
-                            traitANDMatch,
-                            listedOnly,
                           },
                         })
                       }}
@@ -643,12 +633,48 @@ export default function SearchView() {
                 )}
                 {!error && !loading && (
                   <Box sx={{ height: '18px' }}>
-                    {!!data?.assetGlobalSearch?.count && (
+                    {!!data?.assetGlobalSearch?.count ? (
                       <Text>
                         {formatNumber(data.assetGlobalSearch.count)}{' '}
                         {data.assetGlobalSearch.count === 1 ? 'result' : 'results'}{' '}
                         found
                       </Text>
+                    ) : (
+                      <Flex 
+                        sx={{
+                          flexDirection: 'column',
+                          gap: 5,
+                          width: '100%',
+                          paddingTop: '100px',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        <Text variant='h3Primary'>
+                          No results found
+                        </Text>
+                        {listedOnly == 'true' && (
+                          <>
+                            <Flex sx={{ maxWidth: '300px' }}>
+                              <Text variant='large' sx={{ textAlign: 'center' }}>
+                                There are no results that are currently listed for sale. Try toggling off the &quot;Listed only&quot; filter.
+                              </Text>
+                            </Flex>
+                            <Button variant='secondary' 
+                              onClick={() =>                        
+                                handleApplySearch({
+                                  query: {
+                                    ...router.query,
+                                    collectionId,
+                                    listedOnly: false,
+                                  },
+                                })}
+                              >
+                              Turn off 
+                            </Button>
+                          </>
+                        )}
+                      </Flex>
                     )}
                   </Box>
                 )}
