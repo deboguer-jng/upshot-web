@@ -32,6 +32,7 @@ import {
   GetNonceData,
   GetNonceVars,
 } from 'graphql/queries'
+import { useAuth } from 'hooks/auth'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -117,6 +118,7 @@ export const Nav = () => {
   const toggleModal = () => setOpen(!open)
   const toggleHelpModal = () => dispatch(setShowHelpModal(!helpOpen))
   const outsideClicked = useOutsideAlerter(sidebarRef)
+  const [isAuthed, triggerAuth] = useAuth();
 
   useEffect(() => {
     if (!router.query) return
@@ -131,62 +133,6 @@ export const Nav = () => {
       handleToggleMenu()
     }
   }, [outsideClicked])
-
-  const [logUpshotEvent] = useMutation<LogEventData, LogEventVars>(LOG_EVENT, {
-    onError: (err) => {
-      console.error(err)
-    },
-  })
-
-  const [signIn] = useMutation<SignInData, SignInVars>(SIGN_IN, {
-    onError: (err) => {
-      console.error(err)
-    },
-    onCompleted: (data) => {
-      if (!data?.signIn?.authToken) return
-      dispatch(setAuthToken(data.signIn.authToken))
-
-      router.push('/settings')
-    },
-  })
-
-  const [getNonce] = useLazyQuery<GetNonceData, GetNonceVars>(GET_NONCE, {
-    onCompleted: async (data) => {
-      if (!account) return
-
-      const signer = library.getSigner(account)
-      let signature
-
-      try {
-        const payload = getAuthPayload({
-          address: account,
-          nonce: data?.getNonce?.nonce,
-        })
-        signature = await signer.signMessage(payload)
-      } catch (err) {
-        console.error(err)
-      }
-
-      if (!signature) return
-
-      logEvent('auth', 'signature', account)
-      logUpshotEvent({
-        variables: {
-          timestamp: Math.floor(Date.now() / 1000),
-          address: account,
-          type: 'signature',
-        },
-      })
-
-      await signIn({
-        variables: {
-          userAddress: account,
-        },
-      })
-
-      router.push('/settings')
-    },
-  })
 
   const isAddress =
     navSearchTerm?.substring(0, 2) === '0x' && navSearchTerm?.length === 42
@@ -281,29 +227,9 @@ export const Nav = () => {
   }
 
   const handleShowSettings = () => {
-    /**
-     * We require an active web3 connection to manage settings.
-     * The settings button is only visible if it exists, but for
-     * type checking, we will bail on this handler if there is no account.
-     */
-    if (!account) return
-
-    /**
-     * If there's no auth token, we'll run through the sequential flow.
-     *
-     * 1. We first request a nonce for the active user address.
-     *
-     * 2. Once we have the nonce, we ask the user to sign it.
-     *
-     * 3. Once we have the signature, we send that to the backend in exchange
-     * for an authToken, which is cached to redux and added to all graphQL headers.
-     */
-    if (!authToken) return getNonce({ variables: { userAddress: account } })
-
-    /**
-     * If we've got an authToken cached from previous use, we're ready to go.
-     */
-    router.push('/settings')
+    triggerAuth(() => {
+      router.push('/analytics/settings')
+    })
   }
 
   const sidebar = (
@@ -431,7 +357,7 @@ export const Nav = () => {
             if (showSidebar) handleToggleMenu()
             toggleModal()
           }}
-          // onSettings={handleShowSettings}
+          onSettings={handleShowSettings}
           onDisconnectClick={handleDisconnect}
           onMenuClick={handleToggleMenu}
           onHelpClick={toggleHelpModal}
