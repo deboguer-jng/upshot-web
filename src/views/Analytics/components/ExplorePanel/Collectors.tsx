@@ -54,9 +54,7 @@ export default function Collectors({
   >()
   const router = useRouter()
   const [page, setPage] = useState(0)
-  const handlePageChange = ({ selected }: { selected: number }) => {
-    setPage(selected)
-  }
+
   let collectorVars = {
     limit: PAGE_SIZE,
     offset: page * PAGE_SIZE,
@@ -242,7 +240,7 @@ export default function Collectors({
           pageCount={Math.ceil(data.getOwnersByWhaleness['count'] / PAGE_SIZE)}
           pageRangeDisplayed={0}
           marginPagesDisplayed={0}
-          onPageChange={handlePageChange}
+          onPageChange={setPage}
         />
       </Flex>
     </>

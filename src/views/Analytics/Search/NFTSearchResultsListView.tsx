@@ -52,7 +52,7 @@ interface NFTSearchResultsHeadProps extends React.HTMLAttributes<HTMLElement> {
   /**
    * Handler for selection change
    */
-  onChangeSelection?: (colIdx: number) => void
+  onChangeSelection?: (columnIdx: number, order?: 'asc' | 'desc') => void
 }
 
 const colSpacing =
@@ -194,7 +194,7 @@ export default function NFTSearchResults({
   selectedColumn: number
   sortAscending: boolean
   assetArr: any
-  onChangeSelection: (colIdx: number) => void
+  onChangeSelection: (columnIdx: number, order?: 'asc' | 'desc') => void
 }) {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1

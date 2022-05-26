@@ -9,6 +9,7 @@ type ENSAccount = {
 export interface Web3State {
   activatingConnector?: ConnectorName
   address?: string
+  authToken?: string
   ens: ENSAccount
 }
 
@@ -21,6 +22,10 @@ const initialState: Web3State = {
    * Connected wallet address.
    */
   address: undefined,
+  /**
+   * Token received following auth signature flow.
+   */
+  authToken: undefined,
   /**
    * Wallet's ENS name if available.
    */
@@ -42,18 +47,36 @@ export const web3Slice = createSlice({
     setAddress: (state, action: PayloadAction<string | undefined>) => {
       state.address = action.payload
     },
+    setAuthToken: (state, action: PayloadAction<string | undefined>) => {
+      state.authToken = action.payload
+    },
     setEns: (state, action: PayloadAction<ENSAccount>) => {
       state.ens = action.payload
+    },
+    resetWeb3: (state) => {
+      state.address = undefined
+      state.authToken = undefined
+      state.ens = {
+        name: undefined,
+      }
     },
   },
 })
 
-export const { setActivatingConnector, setAddress, setEns } = web3Slice.actions
+export const {
+  setActivatingConnector,
+  setAddress,
+  setAuthToken,
+  setEns,
+  resetWeb3,
+} = web3Slice.actions
 
 export const selectActivatingConnector = (state: RootState) =>
   state.web3.activatingConnector
 
 export const selectAddress = (state: RootState) => state.web3.address
+
+export const selectAuthToken = (state: RootState) => state.web3.authToken
 
 export const selectEns = (state: RootState) => state.web3.ens
 
