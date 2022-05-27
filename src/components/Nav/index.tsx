@@ -227,8 +227,9 @@ export const Nav = () => {
   }
 
   const handleShowSettings = () => {
-    triggerAuth(() => {
-      router.push('/analytics/settings')
+    triggerAuth({
+      onComplete: () => router.push('/analytics/settings'),
+      onError: e => console.error('triggerAuth: ', e)
     })
   }
 

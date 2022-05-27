@@ -13,7 +13,7 @@ import {
   GetNonceData,
   GetNonceVars,
 } from 'graphql/queries'
-import { useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useAppDispatch } from 'redux/hooks'
 import {
@@ -27,7 +27,7 @@ export function useAuth(): [boolean, Function] {
   const { library, account } = useWeb3React()
   const dispatch = useAppDispatch()
   const authToken = useSelector(selectAuthToken)
-  const [ isAuthed, setIsAuthed ] = useState<boolean>(account && authToken);
+  const [ isAuthed, setIsAuthed ] = useState<boolean>(!!(account && authToken));
 
   const [logUpshotEvent] = useMutation<LogEventData, LogEventVars>(LOG_EVENT, {
     onError: (err) => {
@@ -39,13 +39,13 @@ export function useAuth(): [boolean, Function] {
 
   const [getNonce, {data: nonceData, error: nonceError}] = useLazyQuery<GetNonceData, GetNonceVars>(GET_NONCE)
  
-  const triggerAuth = async (successFn: Function) => {
+  const triggerAuth = useCallback(async (params: {onComplete?: Function, onError?: Function}) => {
     /**
      * We require an active web3 connection to manage settings.
      * The settings button is only visible if it exists, but for
      * type checking, we will bail on this handler if there is no account.
      */
-    if (!account) return console.error('no address')
+    if (!account) return params?.onError?.('no address')
 
     /**
       * If there's no auth token, we'll run through the sequential flow.
@@ -60,7 +60,7 @@ export function useAuth(): [boolean, Function] {
     if (!authToken) {
       await getNonce({ variables: { userAddress: account } })
 
-      if (nonceError) return console.log(nonceError)
+      if (nonceError) return params?.onError?.(nonceError)
 
       const signer = library.getSigner(account)
       let signature
@@ -75,7 +75,7 @@ export function useAuth(): [boolean, Function] {
         console.error(err)
       }
 
-      if (!signature) return console.error('no signature')
+      if (!signature) return params?.onError?.('no signature')
 
       logEvent('auth', 'signature', account)
       logUpshotEvent({
@@ -93,14 +93,17 @@ export function useAuth(): [boolean, Function] {
         },
       })
 
-      if (signInError) return console.error(signInError)
+      if (signInError) return params?.onError?.(signInError)
 
-      if (!signInData?.signIn?.authToken) return
+      if (!signInData?.signIn?.authToken) return params?.onError?.('no auth token')
       dispatch(setAuthToken(signInData.signIn.authToken))
+      setIsAuthed(!!(account && signInData.signIn.authToken))
     }
 
-    if (account && (authToken || signInData?.signIn?.authToken)) successFn()
-  }
+    if (account && (authToken || signInData?.signIn?.authToken)) params?.onComplete?.()
+    else params?.onError?.()
+
+  }, [account, authToken])
   
   return [isAuthed, triggerAuth]
 }
