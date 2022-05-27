@@ -1,5 +1,5 @@
 import { useTheme } from '@emotion/react'
-import { Avatar, Box, Button, formatNumber, Icon, imageOptimizer, InputRoundedSearch, Link, Tooltip, useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import { Avatar, Box, Button, formatNumber, Icon, imageOptimizer, InputRoundedSearch, Link, Skeleton, Tooltip, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Flex, Grid, Panel, Text } from '@upshot-tech/upshot-ui'
 import NextLink from 'next/link'
 import React, { forwardRef, useState } from 'react'
@@ -41,6 +41,53 @@ interface CollectionHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
    */
   pastWeekWeiVolume?: string
 }
+
+export function CollectionHeaderSkeleton() {
+  const breakpointIndex = useBreakpointIndex()
+  const isMobile = breakpointIndex <= 1
+
+    return (
+        <Flex sx={{ flexDirection: 'column' }}>
+        <Flex sx={{ flexDirection: 'column', gap: '16px' }}>
+          <Grid
+            columns={['1fr', '1fr', '1fr 1fr']}
+            sx={{ gap: '40px' }}
+          >
+            <Flex sx={{ flexDirection: 'column', gap: '16px' }}>
+              <Flex
+                sx={{ gap: 6, height: 100, alignItems: 'center' }}
+              >
+                <Box
+                  sx={{
+                    backgroundColor: '#231F20',
+                    minWidth: '63px',
+                    padding: isMobile ? '4px' : '8px',
+                    borderRadius: '50%',
+
+                    flexShrink: 0,
+                  }}
+                >
+                  <Skeleton
+                    circle={true}
+                    sx={{
+                      width: isMobile ? '55px' : '100px',
+                      height: isMobile ? '55px' : '100px',
+                      minWidth: 'unset',
+                    }} />
+                </Box>
+                <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+                  <Flex sx={{ alignItems: 'center', gap: 2 }}>
+                    <Skeleton sx={{ height: '30px', width: '250px' }} />
+                  </Flex>
+                    <Skeleton sx={{ height: '25px', width: '350px' }} />
+                </Flex>
+              </Flex>
+            </Flex>
+          </Grid>
+        </Flex>
+    </Flex>
+    )
+  }
 
 export default forwardRef(function CollectionPanel(
   {
