@@ -1,46 +1,15 @@
+import { useQuery } from '@apollo/client'
 import { useTheme } from '@emotion/react'
-import { Avatar, Box, Button, formatNumber, Icon, imageOptimizer, InputRoundedSearch, Link, Skeleton, Tooltip, useBreakpointIndex } from '@upshot-tech/upshot-ui'
-import { Flex, Grid, Panel, Text } from '@upshot-tech/upshot-ui'
+import { Avatar, Box, Button, formatNumber, Icon, imageOptimizer, Link, Skeleton, Tooltip, useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import { Flex, Grid, Text } from '@upshot-tech/upshot-ui'
 import NextLink from 'next/link'
-import React, { forwardRef, useState } from 'react'
+import router from 'next/router'
+import React, { forwardRef, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useAppDispatch } from 'redux/hooks'
 import { selectShowHelpModal, setShowHelpModal } from 'redux/reducers/layout'
 
-interface CollectionHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
-  /**
-   * Collection id
-   */
-  collectionId: number
-  /**
-   * Name of the collection
-   */
-  name: string
-  /**
-   * Collection image
-   */
-  imageUrl: string
-  /**
-   * Whether or not the collection is appraised by Upshot
-   */
-  isAppraised: boolean
-  /**
-   * Number of NFTs in the collection
-   */
-  size?: string
-  /**
-   * Floor price of the collection (in Wei)
-   */
-  floor?: string
-  /**
-   * The 1W change in floor price
-   */
-  weekFloorChange?: number
-  /**
-   * The volume for the collection over the past week (in Wei)
-   */
-  pastWeekWeiVolume?: string
-}
+import { GET_COLLECTION,GetCollectionData, GetCollectionVars } from '../Search/queries'
 
 export function CollectionHeaderSkeleton() {
   const breakpointIndex = useBreakpointIndex()
@@ -89,18 +58,8 @@ export function CollectionHeaderSkeleton() {
     )
   }
 
-export default forwardRef(function CollectionPanel(
-  {
-    collectionId,
-    name,
-    imageUrl,
-    isAppraised,
-    size,
-    floor,
-    weekFloorChange,
-    pastWeekWeiVolume,
-    ...props
-  }: CollectionHeaderProps,
+export default forwardRef(function CollectionHeader(
+  {},
   ref: React.ForwardedRef<HTMLDivElement>
 ) {
   const dispatch = useAppDispatch()
@@ -109,228 +68,279 @@ export default forwardRef(function CollectionPanel(
   const theme = useTheme()
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
+  const [collectionId, setCollectionId] = useState<number>()
+
+  useEffect(() => {
+    /* Parse assetId from router */
+    const collectionId = router.query.id
+    if (!collectionId) return
+
+    setCollectionId(Number(collectionId))
+  }, [router.query])
+
+  const { loading, data, error } = useQuery<
+    GetCollectionData,
+    GetCollectionVars
+    >(GET_COLLECTION, {
+    errorPolicy: 'all',
+    variables: { id: collectionId },
+    skip: !collectionId,
+  })
 
   return (
-    <Flex sx={{ flexDirection: 'column' }}>
-        <Flex sx={{ flexDirection: 'column', gap: '16px' }}>
-          <Grid
-            columns={['1fr', '1fr', '1fr 1fr']}
-            sx={{ gap: '40px' }}
-          >
+      <>
+    {!collectionId || loading || error || !data?.collectionById?.name || !data?.collectionById?.imageUrl ? (
+        <CollectionHeaderSkeleton />
+      ) : (
+        <Flex
+        sx={{
+          flex: '1 auto auto',
+          flexDirection: 'column',
+          width: '100%',
+          gap: 6,
+        }}
+      >
+        <Flex sx={{ flexDirection: 'column' }}>
             <Flex sx={{ flexDirection: 'column', gap: '16px' }}>
-              <Flex
-                sx={{ gap: 6, height: 100, alignItems: 'center' }}
-              >
-                <Box
-                  sx={{
-                    backgroundColor: '#231F20',
-                    minWidth: '63px',
-                    padding: isMobile ? '4px' : '8px',
-                    borderRadius: '50%',
-
-                    flexShrink: 0,
-                  }}
+                <Flex sx={{ flexDirection: 'column', gap: '16px' }}>
+                <Flex
+                    sx={{ gap: 6, height: 100, alignItems: 'center' }}
                 >
-                  <Avatar
-                    size="xl"
+                    <Box
                     sx={{
-                      width: isMobile ? '55px' : '100px',
-                      height: isMobile ? '55px' : '100px',
-                      minWidth: 'unset',
+                        backgroundColor: '#231F20',
+                        minWidth: '63px',
+                        padding: isMobile ? '4px' : '8px',
+                        borderRadius: '50%',
+
+                        flexShrink: 0,
                     }}
-                    src={
-                      imageOptimizer(
-                        imageUrl,
-                        {
-                          width: parseInt(
-                            theme.images.avatar.xl.size
-                          ),
-                          height: parseInt(
-                            theme.images.avatar.xl.size
-                          ),
-                        }
-                      ) ?? imageUrl
-                    }
-                  />
-                </Box>
-                <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-                  <Flex sx={{ alignItems: 'center', gap: 2 }}>
-                    <Text
-                      variant="h1Secondary"
-                      sx={{ lineHeight: '2rem' }}
                     >
-                      {name}
-                    </Text>
-                    {isAppraised && (
-                      <Tooltip
-                        tooltip={'Appraised by Upshot'}
+                    <Avatar
+                        size="xl"
                         sx={{
-                          marginLeft: '0',
-                          marginTop: '5px',
-                          height: 25,
+                        width: isMobile ? '55px' : '100px',
+                        height: isMobile ? '55px' : '100px',
+                        minWidth: 'unset',
                         }}
-                      >
-                        <Icon
-                          icon="upshot"
-                          onClick={toggleHelpModal}
-                          size={25}
-                          color="primary"
-                        />
-                      </Tooltip>
-                    )}
-                  </Flex>
-
-                  <Flex
-                    sx={{
-                      flexDirection: 'row',
-                      gap: 2,
-                      flexWrap: 'wrap',
-                      height: 'min-content',
-                    }}
-                  >
-                    {size && (
-                      <Flex
-                        sx={{
-                          flexDirection: 'row',
-                          gap: 1,
-                          width: 'min-content',
-                        }}
-                      >
-                        <Text color="grey" variant="large">
-                          NFTs:
-                        </Text>
-                        <Text
-                          color="white"
-                          variant="large"
-                          sx={{
-                            fontWeight: 600,
-                          }}
-                        >
-                          {formatNumber(
-                            size
-                          )}
-                        </Text>
-                      </Flex>
-                    )}
-                    {floor && (
-                      <Flex
-                        sx={{
-                          flexDirection: 'row',
-                          gap: 1,
-                          width: 'min-content',
-                        }}
-                      >
-                        <Text color="grey" variant="large">
-                          Floor:
-                        </Text>
-                        <Text
-                          color="white"
-                          variant="large"
-                          sx={{
-                            fontWeight: 600,
-                          }}
-                        >
-                          Ξ
-                          {formatNumber(
-                            floor,
-                            { fromWei: true, decimals: 2 }
-                          )}
-                        </Text>
-                        {weekFloorChange && weekFloorChange != 0 && (
-                            <Text
-                              color={
-                                weekFloorChange > 0
-                                  ? 'green'
-                                  : 'red'
-                              }
-                              variant="large"
-                            >
-                              ({weekFloorChange}%)
-                            </Text>
-                          )}
-                      </Flex>
-                    )}
-                    {pastWeekWeiVolume && (
-                      <Flex
-                        sx={{
-                          flexDirection: 'row',
-                          gap: 1,
-                          width: 'min-content',
-                        }}
-                      >
-                        <Text
-                          color="grey"
-                          variant="large"
-                          sx={{
-                            whiteSpace: 'nowrap',
-                          }}
-                        >
-                          Volume (1W):
-                        </Text>
-                        <Text
-                          color="white"
-                          variant="large"
-                          sx={{
-                            fontWeight: 600,
-                          }}
-                        >
-                          Ξ
-                          {formatNumber(
-                            pastWeekWeiVolume,
+                        src={
+                        imageOptimizer(
+                            data?.collectionById?.imageUrl,
                             {
-                              fromWei: true,
-                              decimals: 2,
-                              kmbUnits: true,
+                            width: parseInt(
+                                theme.images.avatar.xl.size
+                            ),
+                            height: parseInt(
+                                theme.images.avatar.xl.size
+                            ),
                             }
-                          )}
+                        ) ?? data?.collectionById?.imageUrl
+                        }
+                    />
+                    </Box>
+                    <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+                    <Flex sx={{ alignItems: 'center', gap: 2 }}>
+                        <Text
+                        variant="h1Secondary"
+                        sx={{ lineHeight: '2rem' }}
+                        >
+                        {data?.collectionById?.name}
                         </Text>
-                      </Flex>
-                    )}
-                  </Flex>
+                        {data?.collectionById?.isAppraised && (
+                        <Tooltip
+                            tooltip={'Appraised by Upshot'}
+                            sx={{
+                            marginLeft: '0',
+                            marginTop: '5px',
+                            height: 25,
+                            }}
+                        >
+                            <Icon
+                            icon="upshot"
+                            onClick={toggleHelpModal}
+                            size={25}
+                            color="primary"
+                            />
+                        </Tooltip>
+                        )}
+                    </Flex>
+
+                    <Flex
+                        sx={{
+                        flexDirection: 'row',
+                        gap: 2,
+                        flexWrap: 'wrap',
+                        height: 'min-content',
+                        }}
+                    >
+                        {data?.collectionById?.size && (
+                        <Flex
+                            sx={{
+                            flexDirection: 'row',
+                            gap: 1,
+                            width: 'min-content',
+                            }}
+                        >
+                            <Text color="grey" variant="large">
+                            NFTs:
+                            </Text>
+                            <Text
+                            color="white"
+                            variant="large"
+                            sx={{
+                                fontWeight: 600,
+                            }}
+                            >
+                            {formatNumber(
+                                data.collectionById.size
+                            )}
+                            </Text>
+                        </Flex>
+                        )}
+                        {data?.collectionById?.latestStats?.floor && (
+                        <Flex
+                            sx={{
+                            flexDirection: 'row',
+                            gap: 1,
+                            width: 'min-content',
+                            }}
+                        >
+                            <Text color="grey" variant="large">
+                            Floor:
+                            </Text>
+                            <Text
+                            color="white"
+                            variant="large"
+                            sx={{
+                                fontWeight: 600,
+                            }}
+                            >
+                            Ξ
+                            {formatNumber(
+                                data.collectionById.latestStats.floor,
+                                { fromWei: true, decimals: 2 }
+                            )}
+                            </Text>
+                            {data?.collectionById?.latestStats?.weekFloorChange && data?.collectionById?.latestStats?.weekFloorChange != 0 && (
+                                <Text
+                                color={
+                                    data.collectionById.latestStats.weekFloorChange > 0
+                                    ? 'green'
+                                    : 'red'
+                                }
+                                variant="large"
+                                >
+                                ({data.collectionById.latestStats.weekFloorChange}%)
+                                </Text>
+                            )}
+                        </Flex>
+                        )}
+                        {data?.collectionById?.latestStats?.pastWeekWeiVolume && (
+                        <Flex
+                            sx={{
+                            flexDirection: 'row',
+                            gap: 1,
+                            width: 'min-content',
+                            }}
+                        >
+                            <Text
+                            color="grey"
+                            variant="large"
+                            sx={{
+                                whiteSpace: 'nowrap',
+                            }}
+                            >
+                            Volume (1W):
+                            </Text>
+                            <Text
+                            color="white"
+                            variant="large"
+                            sx={{
+                                fontWeight: 600,
+                            }}
+                            >
+                            Ξ
+                            {formatNumber(
+                                data.collectionById.latestStats.pastWeekWeiVolume,
+                                {
+                                fromWei: true,
+                                decimals: 2,
+                                kmbUnits: true,
+                                }
+                            )}
+                            </Text>
+                        </Flex>
+                        )}
+                    </Flex>
+                    </Flex>
                 </Flex>
-              </Flex>
-            </Flex>
-            <Flex
-              sx={{
-                flexDirection: 'column',
-                gap: '16px',
-              }}
-            >
-              <Flex
+                </Flex>
+                <Flex
                 sx={{
-                  justifyContent: 'flex-end',
-                  minHeight: isMobile ? 0 : 100,
-                  marginBottom: isMobile ? 5 : 0,
-                  width: isMobile ? '100%' : 'auto',
+                    flexDirection: 'column',
+                    gap: '16px',
                 }}
-              >
-                <Link
-                  href={`/analytics/collection/${collectionId}`}
-                  sx={{
-                    width: isMobile ? '100%' : 'auto',
-                  }}
-                  component={NextLink}
-                  noHover
                 >
-                  <Button
-                    icon={<Icon icon="analytics" />}
+                <Flex
                     sx={{
-                      width: isMobile ? '100%' : 'auto',
-                      '& span': {
-                        textTransform: 'none',
-                      },
-                      '&:not(:hover) svg': {
-                        path: { fill: '#000 !important' },
-                      },
+                    marginTop: '25px',
+                    minHeight: isMobile ? 0 : 100,
+                    marginBottom: isMobile ? 5 : 0,
+                    width: isMobile ? '100%' : 'auto',
                     }}
-                  >
-                    Collection Analytics
-                  </Button>
-                </Link>
-              </Flex>
+                >
+                    <Link
+                    href={`/analytics/collection/${collectionId}`}
+                    sx={{
+                        width: isMobile ? '100%' : 'auto',
+                    }}
+                    component={NextLink}
+                    noHover
+                    >
+                        <Button
+                            icon={<Icon icon="analytics" />}
+                            sx={{
+                            width: isMobile ? '100%' : 'auto',
+                            '& span': {
+                                textTransform: 'none',
+                            },
+                            '&:not(:hover) svg': {
+                                path: { fill: '#000 !important' },
+                            },
+                            }}
+                        >
+                            Analytics
+                        </Button>
+                    </Link>
+                    <Link
+                    href={`/analytics/collection/${collectionId}/items`}
+                    sx={{
+                        width: isMobile ? '100%' : 'auto',
+                    }}
+                    component={NextLink}
+                    noHover
+                    >
+                    <Button
+                        icon={<Icon icon="analytics" />}
+                        sx={{
+                        width: isMobile ? '100%' : 'auto',
+                        '& span': {
+                            textTransform: 'none',
+                        },
+                        '&:not(:hover) svg': {
+                            path: { fill: '#000 !important' },
+                        },
+                        }}
+                    >
+                        items
+                    </Button>
+                    </Link>
+                </Flex>
+                </Flex>
             </Flex>
-          </Grid>
         </Flex>
-  </Flex>
+    </Flex>
+    )}
+    </>
   )
 })

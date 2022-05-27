@@ -30,6 +30,7 @@ import ExplorePanel from 'views/Analytics/components/ExplorePanel'
 import TopSellingNFTs from 'views/Analytics/components/TopSellingNFTs'
 
 import Breadcrumbs from '../components/Breadcrumbs'
+import CollectionHeader from '../components/CollectionHeader'
 import { DescriptionWrapper } from '../components/Styled'
 import { GET_COLLECTION, GetCollectionData, GetCollectionVars } from './queries'
 
@@ -169,16 +170,10 @@ export default function CollectionView() {
   if (loading)
     return (
       <Layout>
-        <Container
-          sx={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '75vh',
-            width: '100%',
-          }}
-        >
-          <img src="/img/Logo_bounce_spin.gif" width={256} alt="Loading" />
-        </Container>
+          <Flex sx={{ flexDirection: 'column', gap: 4 }}>
+            <CollectionHeader />
+            <img src="/img/Logo_bounce_spin.gif" width={256} alt="Loading" />
+          </Flex>
       </Layout>
     )
 
@@ -198,66 +193,9 @@ export default function CollectionView() {
   return (
     <Layout title={name}>
       <Flex sx={{ flexDirection: 'column', gap: 4 }}>
+        <CollectionHeader />
         <Grid columns={['1fr', '1fr', '1fr 1fr']} sx={{ gap: '40px' }}>
           <Flex sx={{ flexDirection: 'column', gap: '16px' }}>
-            <Flex sx={{ gap: 6, height: 100, alignItems: 'center' }}>
-              <Box
-                sx={{
-                  backgroundColor: '#231F20',
-                  minWidth: '63px',
-                  padding: isMobile ? '4px' : '8px',
-                  borderRadius: '50%',
-
-                  flexShrink: 0,
-                }}
-              >
-                <Avatar
-                  size="xl"
-                  sx={{
-                    width: isMobile ? '55px' : '100px',
-                    height: isMobile ? '55px' : '100px',
-                    minWidth: 'unset',
-                  }}
-                  src={
-                    imageOptimizer(imageUrl, {
-                      width: parseInt(theme.images.avatar.xl.size),
-                      height: parseInt(theme.images.avatar.xl.size),
-                    }) ?? imageUrl
-                  }
-                />
-              </Box>
-              <Flex sx={{ flexDirection: 'column' }}>
-                <Flex sx={{ alignItems: 'center', gap: 2 }}>
-                  <Text variant="h1Secondary" sx={{ lineHeight: '2rem' }}>
-                    {name}
-                  </Text>
-                  {isAppraised && (
-                    <Tooltip
-                      tooltip={'Appraised by Upshot'}
-                      sx={{ marginLeft: '0', marginTop: '5px', height: 25 }}
-                    >
-                      <Icon
-                        icon="upshot"
-                        onClick={toggleHelpModal}
-                        size={25}
-                        color="primary"
-                      />
-                    </Tooltip>
-                  )}
-                </Flex>
-
-                <Text
-                  color="grey"
-                  variant="h4Primary"
-                  sx={{
-                    fontWeight: 700,
-                    marginTop: '2px',
-                  }}
-                >
-                  Collection
-                </Text>
-              </Flex>
-            </Flex>
             <Text
               variant="large"
               sx={{ textTransform: 'uppercase', fontWeight: 400 }}
@@ -355,38 +293,6 @@ export default function CollectionView() {
               gap: '16px',
             }}
           >
-            <Flex
-              sx={{
-                justifyContent: 'flex-end',
-                minHeight: isMobile ? 0 : 100,
-                marginBottom: isMobile ? 5 : 0,
-                width: isMobile ? '100%' : 'auto',
-              }}
-            >
-              <Link
-                href={`/analytics/search/?collectionId=${id}`}
-                sx={{
-                  width: isMobile ? '100%' : 'auto',
-                }}
-                component={NextLink}
-                noHover
-              >
-                <Button
-                  icon={<Icon icon="search" />}
-                  sx={{
-                    width: isMobile ? '100%' : 'auto',
-                    '& span': {
-                      textTransform: 'none',
-                    },
-                    '&:not(:hover) svg': {
-                      path: { fill: '#000 !important' },
-                    },
-                  }}
-                >
-                  Search within collection
-                </Button>
-              </Link>
-            </Flex>
             {description && (
               <Text variant="large" sx={{ textTransform: 'uppercase' }}>
                 About
