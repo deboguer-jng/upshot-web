@@ -42,7 +42,6 @@ import {
 } from '../../../utils/tableSortDropdown'
 import TopCollections from '../../Analytics/components/ExplorePanel/TopCollections'
 import Breadcrumbs from '../components/Breadcrumbs'
-import CollectionHeader, { CollectionHeaderSkeleton } from '../components/CollectionHeader'
 import SearchFilterSidebar from '../components/SearchFilterSidebar'
 import NFTSearchResults, {
   NFTSearchResultsSkeleton,
@@ -89,6 +88,8 @@ enum BREAKPOINT_INDEXES {
 }
 
 function TokenIdInput({ defaultValue, onSubmit }) {
+  const [value, setValue] = useState(defaultValue)
+
   return (
     <Flex
       sx={{
@@ -101,16 +102,21 @@ function TokenIdInput({ defaultValue, onSubmit }) {
     >
       <InputRoundedSearch
         fullWidth
+        hasClearButton={Boolean(value)}
         sx={{
           borderRadius: '16px',
           minHeight: '54px',
           minWidth: '300px',
         }}
-        placeholder="Search by token ID or name"
-        onKeyPress={(e) => {
-          if (e.key === 'Enter') onSubmit?.(e.currentTarget.value)
+        buttonProps={{
+          onClick: () => setValue(''),
         }}
-        {...{ defaultValue }}
+        placeholder="Search by token ID or name"
+        onChange={(e) => setValue(e.currentTarget.value)}
+        onKeyPress={(e) => {
+          if (e.key === 'Enter') onSubmit?.(value)
+        }}
+        {...{ value }}
       />
     </Flex>
   )
@@ -355,40 +361,6 @@ export default function SearchView() {
       >
         <Breadcrumbs crumbs={breadcrumbs} />
 
-        {!collectionId || loading || error || !collectionData?.collectionById?.name || !collectionData?.collectionById?.imageUrl ? (
-          <CollectionHeaderSkeleton />
-        ) : (
-          <Flex
-            sx={{
-              flex: '1 auto auto',
-              flexDirection: 'column',
-              width: '100%',
-              gap: 6,
-            }}
-          >
-          <CollectionHeader 
-            collectionId={collectionId ?? 0} 
-            name={collectionData?.collectionById?.name ?? ''} 
-            imageUrl={collectionData?.collectionById?.imageUrl ?? ''}
-            isAppraised={collectionData?.collectionById?.isAppraised ?? false}
-            size={collectionData?.collectionById?.size}
-            floor={collectionData?.collectionById?.latestStats?.floor}
-            weekFloorChange={collectionData?.collectionById?.latestStats?.weekFloorChange}
-            pastWeekWeiVolume={collectionData?.collectionById?.latestStats?.pastWeekWeiVolume}
-            />
-            <Flex sx={{ flexDirection: 'column' }}>
-              {!!collectionId && traitIds.length > 0 && (
-                <TraitStats
-                  selectedColumn={selectedTraitsColumn}
-                  sortAscending={sortTraitsAscending}
-                  onChangeSelection={handleChangeTraitsSelection}
-                  {...{ collectionId, traitIds }}
-                />
-              )}
-            </Flex>
-          </Flex>
-          )}
-
         <Grid
           sx={{
             gridTemplateColumns: ['1fr', '1fr', '1fr', 'auto 1fr'],
@@ -444,17 +416,244 @@ export default function SearchView() {
               gap: 6,
             }}
           >
-          {/* <CollectionHeader 
-            collectionId={collectionId ?? 0} 
-            name={collectionData?.collectionById?.name ?? ''} 
-            imageUrl={collectionData?.collectionById?.imageUrl ?? ''}
-            isAppraised={collectionData?.collectionById?.isAppraised ?? false}
-            size={collectionData?.collectionById?.size}
-            floor={collectionData?.collectionById?.latestStats?.floor}
-            weekFloorChange={collectionData?.collectionById?.latestStats?.weekFloorChange}
-            pastWeekWeiVolume={collectionData?.collectionById?.latestStats?.pastWeekWeiVolume}
-            />
             <Flex sx={{ flexDirection: 'column' }}>
+              {collectionData?.collectionById?.name &&
+                collectionData?.collectionById?.imageUrl &&
+                collectionId && (
+                  <Flex sx={{ flexDirection: 'column', gap: '16px' }}>
+                    <Grid
+                      columns={['1fr', '1fr', '1fr 1fr']}
+                      sx={{ gap: '40px' }}
+                    >
+                      <Flex sx={{ flexDirection: 'column', gap: '16px' }}>
+                        <Flex
+                          sx={{ gap: 6, height: 100, alignItems: 'center' }}
+                        >
+                          <Box
+                            sx={{
+                              backgroundColor: '#231F20',
+                              minWidth: '63px',
+                              padding: isMobile ? '4px' : '8px',
+                              borderRadius: '50%',
+
+                              flexShrink: 0,
+                            }}
+                          >
+                            <Avatar
+                              size="xl"
+                              sx={{
+                                width: isMobile ? '55px' : '100px',
+                                height: isMobile ? '55px' : '100px',
+                                minWidth: 'unset',
+                              }}
+                              src={
+                                imageOptimizer(
+                                  collectionData?.collectionById?.imageUrl,
+                                  {
+                                    width: parseInt(
+                                      theme.images.avatar.xl.size
+                                    ),
+                                    height: parseInt(
+                                      theme.images.avatar.xl.size
+                                    ),
+                                  }
+                                ) ?? collectionData?.collectionById?.imageUrl
+                              }
+                            />
+                          </Box>
+                          <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+                            <Flex sx={{ alignItems: 'center', gap: 2 }}>
+                              <Text
+                                variant="h1Secondary"
+                                sx={{ lineHeight: '2rem' }}
+                              >
+                                {collectionData?.collectionById?.name}
+                              </Text>
+                              {collectionData?.collectionById?.isAppraised && (
+                                <Tooltip
+                                  tooltip={'Appraised by Upshot'}
+                                  sx={{
+                                    marginLeft: '0',
+                                    marginTop: '5px',
+                                    height: 25,
+                                  }}
+                                >
+                                  <Icon
+                                    icon="upshot"
+                                    onClick={toggleHelpModal}
+                                    size={25}
+                                    color="primary"
+                                  />
+                                </Tooltip>
+                              )}
+                            </Flex>
+
+                            <Flex
+                              sx={{
+                                flexDirection: 'row',
+                                gap: 2,
+                                flexWrap: 'wrap',
+                                height: 'min-content',
+                              }}
+                            >
+                              {collectionData?.collectionById?.size && (
+                                <Flex
+                                  sx={{
+                                    flexDirection: 'row',
+                                    gap: 1,
+                                    width: 'min-content',
+                                  }}
+                                >
+                                  <Text color="grey" variant="large">
+                                    NFTs:
+                                  </Text>
+                                  <Text
+                                    color="white"
+                                    variant="large"
+                                    sx={{
+                                      fontWeight: 600,
+                                    }}
+                                  >
+                                    {formatNumber(
+                                      collectionData.collectionById.size
+                                    )}
+                                  </Text>
+                                </Flex>
+                              )}
+                              {collectionData?.collectionById?.latestStats
+                                ?.floor && (
+                                <Flex
+                                  sx={{
+                                    flexDirection: 'row',
+                                    gap: 1,
+                                    width: 'min-content',
+                                  }}
+                                >
+                                  <Text color="grey" variant="large">
+                                    Floor:
+                                  </Text>
+                                  <Text
+                                    color="white"
+                                    variant="large"
+                                    sx={{
+                                      fontWeight: 600,
+                                    }}
+                                  >
+                                    Ξ
+                                    {formatNumber(
+                                      collectionData.collectionById.latestStats
+                                        .floor,
+                                      { fromWei: true, decimals: 2 }
+                                    )}
+                                  </Text>
+                                  {collectionData?.collectionById?.latestStats
+                                    ?.weekFloorChange &&
+                                    collectionData?.collectionById?.latestStats
+                                      ?.weekFloorChange != 0 && (
+                                      <Text
+                                        color={
+                                          collectionData.collectionById
+                                            .latestStats.weekFloorChange > 0
+                                            ? 'green'
+                                            : 'red'
+                                        }
+                                        variant="large"
+                                      >
+                                        (
+                                        {
+                                          collectionData.collectionById
+                                            .latestStats.weekFloorChange
+                                        }
+                                        %)
+                                      </Text>
+                                    )}
+                                </Flex>
+                              )}
+                              {collectionData?.collectionById?.latestStats
+                                ?.pastWeekWeiVolume && (
+                                <Flex
+                                  sx={{
+                                    flexDirection: 'row',
+                                    gap: 1,
+                                    width: 'min-content',
+                                  }}
+                                >
+                                  <Text
+                                    color="grey"
+                                    variant="large"
+                                    sx={{
+                                      whiteSpace: 'nowrap',
+                                    }}
+                                  >
+                                    Volume (1W):
+                                  </Text>
+                                  <Text
+                                    color="white"
+                                    variant="large"
+                                    sx={{
+                                      fontWeight: 600,
+                                    }}
+                                  >
+                                    Ξ
+                                    {formatNumber(
+                                      collectionData.collectionById.latestStats
+                                        .pastWeekWeiVolume,
+                                      {
+                                        fromWei: true,
+                                        decimals: 2,
+                                        kmbUnits: true,
+                                      }
+                                    )}
+                                  </Text>
+                                </Flex>
+                              )}
+                            </Flex>
+                          </Flex>
+                        </Flex>
+                      </Flex>
+                      <Flex
+                        sx={{
+                          flexDirection: 'column',
+                          gap: '16px',
+                        }}
+                      >
+                        <Flex
+                          sx={{
+                            justifyContent: 'flex-end',
+                            minHeight: isMobile ? 0 : 100,
+                            marginBottom: isMobile ? 5 : 0,
+                            width: isMobile ? '100%' : 'auto',
+                          }}
+                        >
+                          <Link
+                            href={`/analytics/collection/${collectionId}`}
+                            sx={{
+                              width: isMobile ? '100%' : 'auto',
+                            }}
+                            component={NextLink}
+                            noHover
+                          >
+                            <Button
+                              icon={<Icon icon="analytics" />}
+                              sx={{
+                                width: isMobile ? '100%' : 'auto',
+                                '& span': {
+                                  textTransform: 'none',
+                                },
+                                '&:not(:hover) svg': {
+                                  path: { fill: '#000 !important' },
+                                },
+                              }}
+                            >
+                              Collection Analytics
+                            </Button>
+                          </Link>
+                        </Flex>
+                      </Flex>
+                    </Grid>
+                  </Flex>
+                )}
+
               {!!collectionId && traitIds.length > 0 && (
                 <TraitStats
                   selectedColumn={selectedTraitsColumn}
@@ -463,7 +662,7 @@ export default function SearchView() {
                   {...{ collectionId, traitIds }}
                 />
               )}
-            </Flex> */}
+            </Flex>
 
             {error ? (
               <div>There was an error completing your request</div>
@@ -536,7 +735,7 @@ export default function SearchView() {
                     </Flex>
                   </Flex>
                 )}
-                {!!collectionId && !error && !loading && (
+                {!error && !loading && (
                   <Box sx={{ height: '18px' }}>
                     {!!data?.assetGlobalSearch?.count ? (
                       <Text>
