@@ -35,9 +35,9 @@ export function useAuth(): [boolean, Function] {
     },
   })
 
-  const [signIn, {data: signInData, error: signInError}] = useMutation<SignInData, SignInVars>(SIGN_IN)
+  const [signIn] = useMutation<SignInData, SignInVars>(SIGN_IN)
 
-  const [getNonce, {data: nonceData, error: nonceError}] = useLazyQuery<GetNonceData, GetNonceVars>(GET_NONCE)
+  const [getNonce] = useLazyQuery<GetNonceData, GetNonceVars>(GET_NONCE)
  
   const triggerAuth = useCallback(async (params: {onComplete?: Function, onError?: Function}) => {
     /**
@@ -58,9 +58,11 @@ export function useAuth(): [boolean, Function] {
       * for an authToken, which is cached to redux and added to all graphQL headers.
       */
     if (!authToken) {
-      await getNonce({ variables: { userAddress: account } })
+      const { data: nonceData, error: nonceError } = await getNonce({ variables: { userAddress: account } })
 
       if (nonceError) return params?.onError?.(nonceError)
+
+      console.log('nonceRes: ', nonceData)
 
       const signer = library.getSigner(account)
       let signature
@@ -70,7 +72,8 @@ export function useAuth(): [boolean, Function] {
           address: account,
           nonce: nonceData?.getNonce?.nonce,
         })
-        signature = await signer.signMessage(payload)
+        // signature = await signer.signMessage(payload)
+        signature = await signer.signMessage(`${nonceData?.getNonce?.nonce}`)
       } catch (err) {
         console.error(err)
       }
@@ -86,24 +89,27 @@ export function useAuth(): [boolean, Function] {
         },
       })
 
-      await signIn({
+      const { data: signInData } = await signIn({
         variables: {
           userAddress: account,
           signature
         },
       })
 
-      if (signInError) return params?.onError?.(signInError)
+      // if (signInError) return params?.onError?.(signInError)
 
       if (!signInData?.signIn?.authToken) return params?.onError?.('no auth token')
       dispatch(setAuthToken(signInData.signIn.authToken))
-      setIsAuthed(!!(account && signInData.signIn.authToken))
+      const authed = !!(account && signInData.signIn.authToken)
+      setIsAuthed(authed)
+
+      if(authed) return params?.onComplete?.()
     }
 
-    if (account && (authToken || signInData?.signIn?.authToken)) params?.onComplete?.()
-    else params?.onError?.()
+    if (account && authToken) params?.onComplete?.()
+    else params?.onError?.('auth failed')
 
-  }, [account, authToken])
+  }, [account, authToken, getNonce, signIn])
   
   return [isAuthed, triggerAuth]
 }

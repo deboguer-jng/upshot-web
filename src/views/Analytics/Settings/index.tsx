@@ -6,6 +6,7 @@ import {
   InputRounded,
   SettingsMenuItem,
   SettingsPanel,
+  Spinner,
   SpinnerBoxTemplate,
   TextareaRounded,
   useTheme
@@ -18,7 +19,6 @@ import { useAuth } from 'hooks/auth'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
 import { useAppSelector } from 'redux/hooks'
 import { selectAddress, selectEns, selectAuthToken } from 'redux/reducers/web3'
 import { Avatar, Box, Flex, Link, Text } from 'theme-ui'
@@ -30,7 +30,6 @@ import { UpdateUserData, UpdateUserVars, UPDATE_USER } from './mutations'
 export default function SettingsView() {
   const { theme } = useTheme()
   const router = useRouter()
-  const { account } = useWeb3React()
   const storage = globalThis?.sessionStorage
   const prevPath = storage.getItem('prevPath')
   const address = useAppSelector(selectAddress)
@@ -39,7 +38,8 @@ export default function SettingsView() {
   
   const [displayName, setDisplayName] = useState<string>()
   const [bio, setBio] = useState<string>()
-  const [updateUser] = useMutation<UpdateUserData, UpdateUserVars>(UPDATE_USER, {
+  const [isSaveDisabled, setIsSaveDisabled] = useState<boolean>(false);
+  const [updateUser, { loading: updateUserLoading }] = useMutation<UpdateUserData, UpdateUserVars>(UPDATE_USER, {
     onError: err => console.log(err)
   })
 
@@ -100,18 +100,20 @@ export default function SettingsView() {
   const onAvatarClick = () => {}
 
   const {
-    loading,
+    loading: getProfileLoading,
     error,
-    data,
+    data: initProfileData,
   } = useQuery<GetUserProfileData, GetUserProfileVars>(GET_PROFILE, {
     errorPolicy: 'all',
     variables: {
       address: address,
     },
     skip: !address,
+    onCompleted: (data) => {
+      if(data?.getUser?.displayName) setDisplayName(data.getUser.displayName)
+      if(data?.getUser?.bio) setBio(data.getUser.bio)
+    }
   })
-
-  if(data?.getUser?.displayName) setDisplayName(data?.getUser?.displayName)
 
   return (
     <>
@@ -135,58 +137,70 @@ export default function SettingsView() {
           (<SpinnerBoxTemplate sx={{height: '500px'}}/>) : 
           (<SettingsPanel>
             <SettingsMenuItem label="Profile">
-              <Flex sx={{flexWrap: 'wrap', gap: '20px 50px'}}>
-                <Flex sx={{flexDirection: 'column', gap: '10px'}}>
-                  <Text color={theme.colors['grey-500']}>Information</Text>
-                  <InputRounded 
-                    dark={true} 
-                    sx={{padding: '16px'}} 
-                    placeholder={userEns?.name ?? data?.getUser?.addresses?.[0]?.ens ??
-                      data?.getUser?.addresses?.[0]?.address}
-                    value={displayName}
-                    onChange={e => setDisplayName(e.currentTarget.value)} />
-                  <TextareaRounded 
-                    dark={true}
-                    optional={true}
-                    showCount={true}
-                    maxLength={100}
-                    placeholder='Write a short bio for your profile'
-                    value={bio}
-                    onChange={e => setBio(e.currentTarget.value)}
-                  />
-                  <Flex sx={{alignItems: 'center', marginBottom: '20px'}}>
-                    <Icon color="grey-500" icon="twitter" size={32} />
-                    <Flex sx={{
-                      width: '100%',
-                      borderRadius: theme.radii.lg,
-                      position: 'relative',
-                      backgroundColor: theme.colors.black,
-                      height: '60px',
-                      alignItems: 'center',
-                      padding: '16px',
-                      marginLeft: '10px'
-                    }}>
-                      <Text color="grey-500">Twitter</Text>
-                      <Button 
-                        variant="secondary" 
-                        capitalize={true}
-                        color="grey-500"
-                        sx={{position: 'absolute', right: '10px'}}
-                        onClick={onTwitterConnect}
-                      >Connect</Button>
+              {
+                getProfileLoading ?
+                  (<Spinner sx={{margin: 'auto'}}/>) :
+                  (<>
+                    <Flex sx={{flexWrap: 'wrap', gap: '20px 50px'}}>
+                      <Flex sx={{flexDirection: 'column', gap: '10px'}}>
+                        <Text color={theme.colors['grey-500']}>Information</Text>
+                        <InputRounded 
+                          dark={true} 
+                          sx={{padding: '16px'}} 
+                          placeholder={userEns?.name ?? initProfileData?.getUser?.addresses?.[0]?.ens ??
+                            initProfileData?.getUser?.addresses?.[0]?.address}
+                          value={displayName}
+                          onChange={e => setDisplayName(e.currentTarget.value)} />
+                        <TextareaRounded 
+                          dark={true}
+                          optional={true}
+                          showCount={true}
+                          maxLength={100}
+                          placeholder='Write a short bio for your profile'
+                          value={bio}
+                          onChange={e => setBio(e.currentTarget.value)}
+                        />
+                        <Flex sx={{alignItems: 'center', marginBottom: '20px'}}>
+                          <Icon color="grey-500" icon="twitter" size={32} />
+                          <Flex sx={{
+                            width: '100%',
+                            borderRadius: theme.radii.lg,
+                            position: 'relative',
+                            backgroundColor: theme.colors.black,
+                            height: '60px',
+                            alignItems: 'center',
+                            padding: '16px',
+                            marginLeft: '10px'
+                          }}>
+                            <Text color="grey-500">Twitter</Text>
+                            <Button 
+                              variant="secondary" 
+                              capitalize={true}
+                              color="grey-500"
+                              sx={{position: 'absolute', right: '10px'}}
+                              onClick={onTwitterConnect}
+                            >Connect</Button>
+                          </Flex>
+                        </Flex>
+                      </Flex>
+                      <Flex sx={{flexDirection: 'column', gap: '30px', paddingBottom: '40px'}}>
+                        <Text color={theme.colors['grey-500']}>Profile Picture</Text>
+                        {/* <Link onClick={onAvatarClick}> */}
+                          <Avatar size="200" src={address ? makeBlockie(address) : undefined}></Avatar>
+                        {/* </Link> */}
+                      </Flex>
                     </Flex>
-                  </Flex>
-                </Flex>
-                <Flex sx={{flexDirection: 'column', gap: '30px', paddingBottom: '40px'}}>
-                  <Text color={theme.colors['grey-500']}>Profile Picture</Text>
-                  {/* <Link onClick={onAvatarClick}> */}
-                    <Avatar size="200" src={address ? makeBlockie(address) : undefined}></Avatar>
-                  {/* </Link> */}
-                </Flex>
-              </Flex>
-                <Flex sx={{width: '100%'}}>
-                  <Button onClick={onSave} sx={{width: 150}} capitalize={true}>Save Changes</Button>
-                </Flex>
+                    <Flex sx={{width: '100%'}}>
+                      <Button 
+                        sx={{width: 150}}
+                        onClick={onSave} 
+                        capitalize={true} 
+                        disabled={isSaveDisabled}
+                      >
+                        { updateUserLoading ? (<Spinner />) : 'Save Changes' }
+                      </Button>
+                    </Flex>
+                  </>)}
             </SettingsMenuItem>
             <SettingsMenuItem label="Notifications">
               
