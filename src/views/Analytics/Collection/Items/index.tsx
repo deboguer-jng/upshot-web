@@ -171,7 +171,6 @@ export default function CollectionItemsView() {
 
   const chunkSize = chunks[breakpointIndex]
   const loadArr = [...new Array(ROW_SIZE * chunkSize)]
-  const searchQueryParam = (router.query.query as string) ?? ''
 
   const {
     loading,
@@ -196,10 +195,11 @@ export default function CollectionItemsView() {
     skip: !collectionId,
   })
 
-  const { loading: collectionLoading, data: collectionData } = useQuery<
+  const { data: collectionData } = useQuery<
     GetCollectionData,
     GetCollectionVars
   >(GET_COLLECTION, {
+    fetchPolicy: 'network-only',
     errorPolicy: 'all',
     variables: { id: collectionId },
     skip: !collectionId,
@@ -331,7 +331,7 @@ export default function CollectionItemsView() {
       >
         <Breadcrumbs crumbs={breadcrumbs} />
 
-        <CollectionHeader id={collectionId} key={collectionId} />
+        <CollectionHeader id={collectionId} />
 
         <Grid
           sx={{

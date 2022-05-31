@@ -116,6 +116,7 @@ export default function CollectionView() {
   const { loading, data } = useQuery<GetCollectionData, GetCollectionVars>(
     GET_COLLECTION,
     {
+      fetchPolicy: 'network-only',
       errorPolicy: 'all',
       variables: { id },
       skip: !id,
@@ -150,7 +151,7 @@ export default function CollectionView() {
 
   return (
     <Layout>
-      <CollectionHeader key={id} {...{ id }} />
+      <CollectionHeader {...{ id }} />
 
       {loading ? (
         loadContent

@@ -88,14 +88,72 @@ export default forwardRef(function CollectionHeader(
     skip: !id,
   })
 
+  const collectionButtons = (
+    <Flex
+      sx={{
+        marginTop: '25px',
+        minHeight: isMobile ? 0 : 100,
+        marginBottom: isMobile ? 5 : 0,
+        width: isMobile ? '100%' : 'auto',
+        gap: 4,
+      }}
+    >
+      <Link
+        href={`/analytics/collection/${id}`}
+        sx={{
+          width: isMobile ? '100%' : 'auto',
+        }}
+        component={NextLink}
+        noHover
+      >
+        <Button
+          icon={<Icon icon="analytics" />}
+          sx={{
+            width: isMobile ? '100%' : 'auto',
+            '& span': {
+              textTransform: 'none',
+            },
+            '&:not(:hover) svg': {
+              path: { fill: '#000 !important' },
+            },
+          }}
+        >
+          Analytics
+        </Button>
+      </Link>
+      <Link
+        href={`/analytics/collection/${id}/items`}
+        sx={{
+          width: isMobile ? '100%' : 'auto',
+        }}
+        component={NextLink}
+        noHover
+      >
+        <Button
+          icon={<Icon icon="analytics" />}
+          sx={{
+            width: isMobile ? '100%' : 'auto',
+            '& span': {
+              textTransform: 'none',
+            },
+            '&:not(:hover) svg': {
+              path: { fill: '#000 !important' },
+            },
+          }}
+        >
+          items
+        </Button>
+      </Link>
+    </Flex>
+  )
+
   return (
     <>
-      {!id ||
-      loading ||
-      error ||
-      !data?.collectionById?.name ||
-      !data?.collectionById?.imageUrl ? (
-        <CollectionHeaderSkeleton />
+      {loading ? (
+        <>
+          <CollectionHeaderSkeleton />
+          {collectionButtons}
+        </>
       ) : (
         <Flex
           sx={{
@@ -280,62 +338,7 @@ export default forwardRef(function CollectionHeader(
                   gap: '16px',
                 }}
               >
-                <Flex
-                  sx={{
-                    marginTop: '25px',
-                    minHeight: isMobile ? 0 : 100,
-                    marginBottom: isMobile ? 5 : 0,
-                    width: isMobile ? '100%' : 'auto',
-                    gap: 4,
-                  }}
-                >
-                  <Link
-                    href={`/analytics/collection/${id}`}
-                    sx={{
-                      width: isMobile ? '100%' : 'auto',
-                    }}
-                    component={NextLink}
-                    noHover
-                  >
-                    <Button
-                      icon={<Icon icon="analytics" />}
-                      sx={{
-                        width: isMobile ? '100%' : 'auto',
-                        '& span': {
-                          textTransform: 'none',
-                        },
-                        '&:not(:hover) svg': {
-                          path: { fill: '#000 !important' },
-                        },
-                      }}
-                    >
-                      Analytics
-                    </Button>
-                  </Link>
-                  <Link
-                    href={`/analytics/collection/${id}/items`}
-                    sx={{
-                      width: isMobile ? '100%' : 'auto',
-                    }}
-                    component={NextLink}
-                    noHover
-                  >
-                    <Button
-                      icon={<Icon icon="analytics" />}
-                      sx={{
-                        width: isMobile ? '100%' : 'auto',
-                        '& span': {
-                          textTransform: 'none',
-                        },
-                        '&:not(:hover) svg': {
-                          path: { fill: '#000 !important' },
-                        },
-                      }}
-                    >
-                      items
-                    </Button>
-                  </Link>
-                </Flex>
+                {collectionButtons}
               </Flex>
             </Flex>
           </Flex>
