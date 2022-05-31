@@ -115,7 +115,7 @@ function Layout({
     <>
       <Nav />
       <Container
-        maxBreakpoint="lg"
+        maxBreakpoint="xxl"
         sx={{
           flexDirection: 'column',
           minHeight: '100vh',
@@ -167,33 +167,49 @@ export default function CollectionView() {
   )
 
   /* Load state. */
-  if (loading)
-    return (
-      <Layout>
-          <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-            <CollectionHeader />
-            <img src="/img/Logo_bounce_spin.gif" width={256} alt="Loading" />
-          </Flex>
-      </Layout>
-    )
 
-  /* No results state. */
-  if (!data?.collectionById)
-    return (
+  const loadLayout = useMemo(
+    () => (
       <Layout>
+        <CollectionHeader />
+
+        <Flex sx={{ flexDirection: 'column', gap: 4 }}>
+          <img src="/img/Logo_bounce_spin.gif" width={256} alt="Loading" />
+        </Flex>
+      </Layout>
+    ),
+    []
+  )
+
+  const emptyLayout = useMemo(
+    () => (
+      <Layout>
+        <CollectionHeader />
+
         <Container sx={{ justifyContent: 'center' }}>
           Unable to load collection.
         </Container>
       </Layout>
-    )
+    ),
+    []
+  )
 
-  const { name, description, imageUrl, isAppraised, size, latestStats } =
-    data.collectionById
+  return loading ? (
+    loadLayout
+  ) : !data?.collectionById ? (
+    emptyLayout
+  ) : (
+    <Layout title={data.collectionById.name}>
+      <CollectionHeader />
 
-  return (
-    <Layout title={name}>
-      <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-        <CollectionHeader />
+      <Flex
+        sx={{
+          flexDirection: 'column',
+          gap: 4,
+          maxWidth: '1280px',
+          marginX: 'auto',
+        }}
+      >
         <Grid columns={['1fr', '1fr', '1fr 1fr']} sx={{ gap: '40px' }}>
           <Flex sx={{ flexDirection: 'column', gap: '16px' }}>
             <Text
@@ -209,8 +225,8 @@ export default function CollectionView() {
               <CollectionStat
                 color="blue"
                 value={
-                  latestStats?.average
-                    ? formatNumber(latestStats.average, {
+                  data.collectionById?.latestStats?.average
+                    ? formatNumber(data.collectionById?.latestStats?.average, {
                         fromWei: true,
                         decimals: 2,
                         prefix: 'ETHER',
@@ -222,8 +238,8 @@ export default function CollectionView() {
               <CollectionStat
                 color="pink"
                 value={
-                  latestStats?.floor
-                    ? formatNumber(latestStats.floor, {
+                  data.collectionById?.latestStats?.floor
+                    ? formatNumber(data.collectionById?.latestStats.floor, {
                         fromWei: true,
                         decimals: 2,
                         prefix: 'ETHER',
@@ -257,8 +273,8 @@ export default function CollectionView() {
               />
               <CollectionStat
                 value={
-                  latestStats?.floorCap
-                    ? formatNumber(latestStats.floorCap, {
+                  data.collectionById?.latestStats?.floorCap
+                    ? formatNumber(data.collectionById.latestStats.floorCap, {
                         fromWei: true,
                         decimals: 2,
                         kmbUnits: true,
@@ -270,19 +286,26 @@ export default function CollectionView() {
               />
               <CollectionStat
                 value={
-                  latestStats?.pastWeekWeiVolume
-                    ? formatNumber(latestStats.pastWeekWeiVolume, {
-                        fromWei: true,
-                        decimals: 2,
-                        kmbUnits: true,
-                        prefix: 'ETHER',
-                      })
+                  data.collectionById?.latestStats?.pastWeekWeiVolume
+                    ? formatNumber(
+                        data.collectionById.latestStats.pastWeekWeiVolume,
+                        {
+                          fromWei: true,
+                          decimals: 2,
+                          kmbUnits: true,
+                          prefix: 'ETHER',
+                        }
+                      )
                     : '-'
                 }
                 label="Weekly Volume"
               />
               <CollectionStat
-                value={size ? formatNumber(size) : '-'}
+                value={
+                  data.collectionById?.size
+                    ? formatNumber(data.collectionById.size)
+                    : '-'
+                }
                 label="NFTs in Collection"
               />
             </Grid>
@@ -293,7 +316,7 @@ export default function CollectionView() {
               gap: '16px',
             }}
           >
-            {description && (
+            {data.collectionById?.description && (
               <Text variant="large" sx={{ textTransform: 'uppercase' }}>
                 About
               </Text>
@@ -301,7 +324,7 @@ export default function CollectionView() {
             <DescriptionWrapper color="grey-300">
               {(
                 <ReactMarkdown allowedElements={['a', 'p']}>
-                  {description}
+                  {data.collectionById.description}
                 </ReactMarkdown>
               ) ?? 'No information.'}
             </DescriptionWrapper>
@@ -315,7 +338,7 @@ export default function CollectionView() {
             marginTop: '20px',
           }}
         >
-          {name}
+          {data.collectionById?.name}
         </Text>
         <Text
           variant="h2Primary"
@@ -342,8 +365,8 @@ export default function CollectionView() {
 
         <ExplorePanel
           collectionId={id}
-          collectionName={name}
-          {...{ isAppraised }}
+          collectionName={data.collectionById?.name}
+          isAppraised={data.collectionById?.isAppraised}
         />
       </Flex>
     </Layout>
