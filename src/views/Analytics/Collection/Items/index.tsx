@@ -334,7 +334,7 @@ export default function CollectionItemsView() {
       >
         <Breadcrumbs crumbs={breadcrumbs} />
 
-        <CollectionHeader id={collectionId} />
+        <CollectionHeader id={collectionId} key={collectionId} />
 
         <Grid
           sx={{

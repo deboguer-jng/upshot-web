@@ -1,16 +1,13 @@
 /** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
-import { theme, useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import { theme } from '@upshot-tech/upshot-ui'
 import { Container, Flex, Grid } from '@upshot-tech/upshot-ui'
 import { formatNumber, Text } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import { useRouter } from 'next/router'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 import ReactMarkdown from 'react-markdown'
-import { useSelector } from 'react-redux'
-import { useAppDispatch } from 'redux/hooks'
-import { selectShowHelpModal, setShowHelpModal } from 'redux/reducers/layout'
 import CollectionScatterChart from 'views/Analytics/components/CollectionScatterChart'
 import ExplorePanel from 'views/Analytics/components/ExplorePanel'
 import TopSellingNFTs from 'views/Analytics/components/TopSellingNFTs'
@@ -113,21 +110,8 @@ function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function CollectionView() {
-  const dispatch = useAppDispatch()
-  const [id, setId] = useState<number>()
-  const breakpointIndex = useBreakpointIndex()
-  const isMobile = breakpointIndex <= 1
-  const helpOpen = useSelector(selectShowHelpModal)
-  const toggleHelpModal = () => dispatch(setShowHelpModal(!helpOpen))
   const router = useRouter()
-
-  useEffect(() => {
-    /* Parse assetId from router */
-    const id = router.query.id
-    if (!id) return
-
-    setId(Number(id))
-  }, [router.query])
+  const id = Number(router.query.id ?? 0)
 
   const { loading, data } = useQuery<GetCollectionData, GetCollectionVars>(
     GET_COLLECTION,
@@ -166,7 +150,7 @@ export default function CollectionView() {
 
   return (
     <Layout>
-      <CollectionHeader {...{ id }} />
+      <CollectionHeader key={id} {...{ id }} />
 
       {loading ? (
         loadContent
