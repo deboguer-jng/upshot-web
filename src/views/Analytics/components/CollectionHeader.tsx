@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client'
 import { useTheme } from '@emotion/react'
-import { Avatar, Box, Button, formatNumber, Icon, imageOptimizer, Link, Skeleton, Tooltip, useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import { Avatar, Box, Button, ButtonNav, formatNumber, Icon, imageOptimizer, Link, Skeleton, Tooltip, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Flex, Grid, Text } from '@upshot-tech/upshot-ui'
 import NextLink from 'next/link'
 import router from 'next/router'
@@ -297,20 +297,9 @@ export default forwardRef(function CollectionHeader(
                     component={NextLink}
                     noHover
                     >
-                        <Button
-                            icon={<Icon icon="analytics" />}
-                            sx={{
-                            width: isMobile ? '100%' : 'auto',
-                            '& span': {
-                                textTransform: 'none',
-                            },
-                            '&:not(:hover) svg': {
-                                path: { fill: '#000 !important' },
-                            },
-                            }}
-                        >
+                        <ButtonNav toggled={!router.pathname.includes('items')}>
                             Analytics
-                        </Button>
+                        </ButtonNav>
                     </Link>
                     <Link
                     href={`/analytics/collection/${collectionId}/items`}
@@ -320,20 +309,9 @@ export default forwardRef(function CollectionHeader(
                     component={NextLink}
                     noHover
                     >
-                    <Button
-                        icon={<Icon icon="analytics" />}
-                        sx={{
-                        width: isMobile ? '100%' : 'auto',
-                        '& span': {
-                            textTransform: 'none',
-                        },
-                        '&:not(:hover) svg': {
-                            path: { fill: '#000 !important' },
-                        },
-                        }}
-                    >
-                        items
-                    </Button>
+                    <ButtonNav toggled={router.pathname.includes('items')}>
+                        Items
+                    </ButtonNav>
                     </Link>
                 </Flex>
                 </Flex>
