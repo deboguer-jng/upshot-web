@@ -166,7 +166,7 @@ export default function CollectionView() {
 
   return (
     <Layout>
-      <CollectionHeader />
+      <CollectionHeader {...{ id }} />
 
       {loading ? (
         loadContent

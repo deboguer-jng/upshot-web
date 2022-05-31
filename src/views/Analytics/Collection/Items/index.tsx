@@ -14,7 +14,6 @@ import {
   Flex,
   formatNumber,
   Grid,
-  Link,
   Text,
 } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
@@ -25,7 +24,6 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useAppDispatch } from 'redux/hooks'
 import { selectShowHelpModal, setShowHelpModal } from 'redux/reducers/layout'
-import { getAssetName } from 'utils/asset'
 
 import {
   genSortOptions,
@@ -34,11 +32,9 @@ import {
 } from '../../../../utils/tableSortDropdown'
 import TopCollections from '../../../Analytics/components/ExplorePanel/TopCollections'
 import Breadcrumbs from '../../components/Breadcrumbs'
-import CollectionHeader, { CollectionHeaderSkeleton } from '../../components/CollectionHeader'
+import CollectionHeader from '../../components/CollectionHeader'
 import SearchFilterSidebar from '../../components/SearchFilterSidebar'
-import NFTSearchResults, {
-  NFTSearchResultsSkeleton,
-} from '../../Search/NFTSearchResultsListView'
+import { NFTSearchResultsSkeleton } from '../../Search/NFTSearchResultsListView'
 import {
   GET_ASSETS_SEARCH,
   GET_COLLECTION,
@@ -47,7 +43,6 @@ import {
   GetCollectionData,
   GetCollectionVars,
 } from '../../Search/queries'
-import TraitStats from '../../Search/TraitStats'
 
 const ROW_SIZE = 4
 const RESULTS_PER_PAGE = 25
@@ -110,23 +105,11 @@ function TokenIdInput({ defaultValue, onSubmit }) {
 
 export default function CollectionItemsView() {
   const router = useRouter()
-  const [page, setPage] = useState(0)
-  const dispatch = useAppDispatch()
-  const helpOpen = useSelector(selectShowHelpModal)
-  const toggleHelpModal = () => dispatch(setShowHelpModal(!helpOpen))
   const scrollRef = useRef<any>(null)
 
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
-  const [collectionId, setCollectionId] = useState<number>()
-
-  useEffect(() => {
-    /* Parse assetId from router */
-    const collectionId = router.query.id
-    if (!collectionId) return
-
-    setCollectionId(Number(collectionId))
-  }, [router.query])
+  const collectionId = Number(router.query.id ?? 0)
 
   const tokenId = router.query.tokenId as string
   const minPrice = router.query.minPrice as string
@@ -137,7 +120,7 @@ export default function CollectionItemsView() {
   const collectionSearch = router.query.collectionSearch as string
   const [selectedColumn, setSelectedColumn] = useState<number>(0)
   const [sortAscending, setSortAscending] = useState(false)
-  const [listView, setListView] = useState(false)
+  const [listView] = useState(false)
   const [openMobileFilters, setOpenMobileFilters] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [assetOffset, setAssetOffset] = useState(0)
@@ -307,7 +290,6 @@ export default function CollectionItemsView() {
   }
 
   const handleApplySearch = ({ query }) => {
-    setPage(0)
     router.push({
       pathname: '/analytics/search',
       query,
@@ -352,7 +334,7 @@ export default function CollectionItemsView() {
       >
         <Breadcrumbs crumbs={breadcrumbs} />
 
-        <CollectionHeader />
+        <CollectionHeader id={collectionId} />
 
         <Grid
           sx={{
@@ -409,27 +391,6 @@ export default function CollectionItemsView() {
               gap: 6,
             }}
           >
-          {/* <CollectionHeader 
-            collectionId={collectionId ?? 0} 
-            name={collectionData?.collectionById?.name ?? ''} 
-            imageUrl={collectionData?.collectionById?.imageUrl ?? ''}
-            isAppraised={collectionData?.collectionById?.isAppraised ?? false}
-            size={collectionData?.collectionById?.size}
-            floor={collectionData?.collectionById?.latestStats?.floor}
-            weekFloorChange={collectionData?.collectionById?.latestStats?.weekFloorChange}
-            pastWeekWeiVolume={collectionData?.collectionById?.latestStats?.pastWeekWeiVolume}
-            />
-            <Flex sx={{ flexDirection: 'column' }}>
-              {!!collectionId && traitIds.length > 0 && (
-                <TraitStats
-                  selectedColumn={selectedTraitsColumn}
-                  sortAscending={sortTraitsAscending}
-                  onChangeSelection={handleChangeTraitsSelection}
-                  {...{ collectionId, traitIds }}
-                />
-              )}
-            </Flex> */}
-
             {error ? (
               <div>There was an error completing your request</div>
             ) : (

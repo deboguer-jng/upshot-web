@@ -14,8 +14,7 @@ import {
 } from '@upshot-tech/upshot-ui'
 import { Flex, Grid, Text } from '@upshot-tech/upshot-ui'
 import NextLink from 'next/link'
-import router from 'next/router'
-import React, { forwardRef, useEffect, useState } from 'react'
+import React, { forwardRef } from 'react'
 import { useSelector } from 'react-redux'
 import { useAppDispatch } from 'redux/hooks'
 import { selectShowHelpModal, setShowHelpModal } from 'redux/reducers/layout'
@@ -70,7 +69,7 @@ export function CollectionHeaderSkeleton() {
 }
 
 export default forwardRef(function CollectionHeader(
-  {},
+  { id }: { id?: number },
   ref: React.ForwardedRef<HTMLDivElement>
 ) {
   const dispatch = useAppDispatch()
@@ -79,28 +78,19 @@ export default forwardRef(function CollectionHeader(
   const theme = useTheme()
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
-  const [collectionId, setCollectionId] = useState<number>()
-
-  useEffect(() => {
-    /* Parse assetId from router */
-    const collectionId = router.query.id
-    if (!collectionId) return
-
-    setCollectionId(Number(collectionId))
-  }, [router.query])
 
   const { loading, data, error } = useQuery<
     GetCollectionData,
     GetCollectionVars
   >(GET_COLLECTION, {
     errorPolicy: 'all',
-    variables: { id: collectionId },
-    skip: !collectionId,
+    variables: { id },
+    skip: !id,
   })
 
   return (
     <>
-      {!collectionId ||
+      {!id ||
       loading ||
       error ||
       !data?.collectionById?.name ||
@@ -300,7 +290,7 @@ export default forwardRef(function CollectionHeader(
                   }}
                 >
                   <Link
-                    href={`/analytics/collection/${collectionId}`}
+                    href={`/analytics/collection/${id}`}
                     sx={{
                       width: isMobile ? '100%' : 'auto',
                     }}
@@ -323,7 +313,7 @@ export default forwardRef(function CollectionHeader(
                     </Button>
                   </Link>
                   <Link
-                    href={`/analytics/collection/${collectionId}/items`}
+                    href={`/analytics/collection/${id}/items`}
                     sx={{
                       width: isMobile ? '100%' : 'auto',
                     }}
