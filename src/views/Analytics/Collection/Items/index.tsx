@@ -21,9 +21,6 @@ import { Nav } from 'components/Nav'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useSelector } from 'react-redux'
-import { useAppDispatch } from 'redux/hooks'
-import { selectShowHelpModal, setShowHelpModal } from 'redux/reducers/layout'
 
 import {
   genSortOptions,
