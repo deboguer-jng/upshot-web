@@ -42,7 +42,9 @@ import {
 } from '../../../utils/tableSortDropdown'
 import TopCollections from '../../Analytics/components/ExplorePanel/TopCollections'
 import Breadcrumbs from '../components/Breadcrumbs'
-import CollectionHeader, { CollectionHeaderSkeleton } from '../components/CollectionHeader'
+import CollectionHeader, {
+  CollectionHeaderSkeleton,
+} from '../components/CollectionHeader'
 import SearchFilterSidebar from '../components/SearchFilterSidebar'
 import NFTSearchResults, {
   NFTSearchResultsSkeleton,
@@ -355,39 +357,26 @@ export default function SearchView() {
       >
         <Breadcrumbs crumbs={breadcrumbs} />
 
-        {!collectionId || loading || error || !collectionData?.collectionById?.name || !collectionData?.collectionById?.imageUrl ? (
-          <CollectionHeaderSkeleton />
-        ) : (
-          <Flex
-            sx={{
-              flex: '1 auto auto',
-              flexDirection: 'column',
-              width: '100%',
-              gap: 6,
-            }}
-          >
-          <CollectionHeader 
-            collectionId={collectionId ?? 0} 
-            name={collectionData?.collectionById?.name ?? ''} 
-            imageUrl={collectionData?.collectionById?.imageUrl ?? ''}
-            isAppraised={collectionData?.collectionById?.isAppraised ?? false}
-            size={collectionData?.collectionById?.size}
-            floor={collectionData?.collectionById?.latestStats?.floor}
-            weekFloorChange={collectionData?.collectionById?.latestStats?.weekFloorChange}
-            pastWeekWeiVolume={collectionData?.collectionById?.latestStats?.pastWeekWeiVolume}
-            />
-            <Flex sx={{ flexDirection: 'column' }}>
-              {!!collectionId && traitIds.length > 0 && (
-                <TraitStats
-                  selectedColumn={selectedTraitsColumn}
-                  sortAscending={sortTraitsAscending}
-                  onChangeSelection={handleChangeTraitsSelection}
-                  {...{ collectionId, traitIds }}
-                />
-              )}
-            </Flex>
+        <Flex
+          sx={{
+            flex: '1 auto auto',
+            flexDirection: 'column',
+            width: '100%',
+            gap: 6,
+          }}
+        >
+          <CollectionHeader key={collectionId} />
+          <Flex sx={{ flexDirection: 'column' }}>
+            {!!collectionId && traitIds.length > 0 && (
+              <TraitStats
+                selectedColumn={selectedTraitsColumn}
+                sortAscending={sortTraitsAscending}
+                onChangeSelection={handleChangeTraitsSelection}
+                {...{ collectionId, traitIds }}
+              />
+            )}
           </Flex>
-          )}
+        </Flex>
 
         <Grid
           sx={{
@@ -444,27 +433,6 @@ export default function SearchView() {
               gap: 6,
             }}
           >
-          {/* <CollectionHeader 
-            collectionId={collectionId ?? 0} 
-            name={collectionData?.collectionById?.name ?? ''} 
-            imageUrl={collectionData?.collectionById?.imageUrl ?? ''}
-            isAppraised={collectionData?.collectionById?.isAppraised ?? false}
-            size={collectionData?.collectionById?.size}
-            floor={collectionData?.collectionById?.latestStats?.floor}
-            weekFloorChange={collectionData?.collectionById?.latestStats?.weekFloorChange}
-            pastWeekWeiVolume={collectionData?.collectionById?.latestStats?.pastWeekWeiVolume}
-            />
-            <Flex sx={{ flexDirection: 'column' }}>
-              {!!collectionId && traitIds.length > 0 && (
-                <TraitStats
-                  selectedColumn={selectedTraitsColumn}
-                  sortAscending={sortTraitsAscending}
-                  onChangeSelection={handleChangeTraitsSelection}
-                  {...{ collectionId, traitIds }}
-                />
-              )}
-            </Flex> */}
-
             {error ? (
               <div>There was an error completing your request</div>
             ) : (

@@ -171,7 +171,7 @@ export default function CollectionView() {
   const loadLayout = useMemo(
     () => (
       <Layout>
-        <CollectionHeader />
+        <CollectionHeader key={id} />
 
         <Flex sx={{ flexDirection: 'column', gap: 4 }}>
           <img src="/img/Logo_bounce_spin.gif" width={256} alt="Loading" />
