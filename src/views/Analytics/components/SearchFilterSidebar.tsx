@@ -542,14 +542,16 @@ export default function SearchFilterSidebar({
       )}
       <Flex
         sx={{
-          width: 300,
-          maxWidth: open ? 300 : 0,
-          overflow: 'hidden',
+          maxWidth: open ? 316 : 0,
+          overflowY: 'auto',
+          overflowX: 'hidden',
           flexDirection: 'column',
+          paddingRight: '8px',
           gap: 8,
           transform: `translateX(${open ? 0 : '-300px'})`,
           transition: 'default',
         }}
+        css={theme.scroll.thin}
       >
         {!!collectionId ? (
           <>

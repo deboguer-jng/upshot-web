@@ -5,6 +5,7 @@ import {
   NFTCard,
   SpinnerBoxTemplate,
   useBreakpointIndex,
+  useTheme,
 } from '@upshot-tech/upshot-ui'
 import { Container } from '@upshot-tech/upshot-ui'
 import {
@@ -117,6 +118,7 @@ export default function CollectionItemsView() {
   const router = useRouter()
   const scrollRef = useRef<any>(null)
 
+  const { theme } = useTheme()
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
   const collectionId = Number(router.query.id ?? 0)
@@ -380,10 +382,8 @@ export default function CollectionItemsView() {
                 position: ['static', 'static', 'sticky', 'sticky'],
                 alignSelf: 'flex-start',
                 paddingRight: '10px',
-                paddingBottom: '25px',
                 top: '160px',
-                overflowY: 'auto',
-                overflowX: 'hidden',
+                maxHeight: 'calc(100vh - 160px)',
               }}
             >
               <SearchFilterSidebar
