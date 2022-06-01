@@ -133,7 +133,7 @@ export default function CollectionView() {
 
   const loadContent = useMemo(
     () => (
-      <Flex sx={{ flexDirection: 'column', gap: 4 }}>
+      <Flex sx={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4, minHeight: '60vh' }}>
         <img src="/img/Logo_bounce_spin.gif" width={256} alt="Loading" />
       </Flex>
     ),
