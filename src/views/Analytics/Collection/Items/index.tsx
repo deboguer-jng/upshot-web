@@ -74,6 +74,8 @@ enum BREAKPOINT_INDEXES {
 
 function TokenIdInput({ defaultValue, onSubmit }) {
   const [value, setValue] = useState(defaultValue)
+  const breakpointIndex = useBreakpointIndex()
+  const isMobile = breakpointIndex <= 1
 
   return (
     <Flex
@@ -83,6 +85,7 @@ function TokenIdInput({ defaultValue, onSubmit }) {
         grow: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        width: isMobile ? '100%' : 'auto',
       }}
     >
       <InputRoundedSearch
