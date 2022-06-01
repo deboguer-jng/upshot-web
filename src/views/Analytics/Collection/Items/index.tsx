@@ -378,7 +378,7 @@ export default function CollectionItemsView() {
                 flexDirection: 'column',
                 gap: 4,
                 position: ['static', 'static', 'sticky', 'sticky'],
-                height: '70vh',
+                height: '100%',
                 paddingRight: '10px',
                 paddingBottom: '25px',
                 top: '160px',
