@@ -1041,6 +1041,7 @@ export default function UserView() {
   )
 
   const getDisplayName = () => {
+    if (data?.getUser?.displayName) return data?.getUser?.displayName
     if (address.toLowerCase() === userAddress.toLowerCase() && userEns?.name) {
       return userEns.name
     }

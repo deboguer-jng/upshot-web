@@ -55,6 +55,7 @@ export type GetCollectorData = {
     }
     firstAssetPurchaseTime: number
     bio: string
+    displayName: string
     numAssets: number
     addresses: {
       address: string
@@ -111,6 +112,7 @@ export const GET_COLLECTOR = gql`
       }
       firstAssetPurchaseTime
       bio
+      displayName
       numAssets
       addresses {
         address
