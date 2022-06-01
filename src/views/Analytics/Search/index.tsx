@@ -363,50 +363,10 @@ export default function SearchView() {
 
         <Grid
           sx={{
-            gridTemplateColumns: ['1fr', '1fr', '1fr', 'auto 1fr'],
+            gridTemplateColumns: ['1fr', '1fr', '1fr', '1fr'],
             gap: [5, 5, 5, 8],
           }}
         >
-          {isMobile ? (
-            <>
-              <Box>
-                <Accordion
-                  isDropdown
-                  title="Search Filters"
-                  open={openMobileFilters}
-                  onClick={() => setOpenMobileFilters(!openMobileFilters)}
-                  onClose={() => setOpenMobileFilters(false)}
-                >
-                  <Box sx={{ paddingTop: 4 }}>
-                    <SearchFilterSidebar
-                      onHideFilters={() => setOpenMobileFilters(false)}
-                      onApply={handleApplySearch}
-                    />
-                  </Box>
-                </Accordion>
-              </Box>
-            </>
-          ) : (
-            <Flex
-              sx={{
-                flexDirection: 'column',
-                gap: 4,
-                position: ['static', 'static', 'sticky', 'sticky'],
-                height: '70vh',
-                paddingRight: '10px',
-                paddingBottom: '25px',
-                top: '160px',
-                overflowY: 'auto',
-                overflowX: 'hidden',
-              }}
-            >
-              <SearchFilterSidebar
-                onApply={handleApplySearch}
-                open={sidebarOpen}
-                onOpenSidebar={handleToggleSidebar}
-              />
-            </Flex>
-          )}
 
           <Flex
             sx={{
@@ -735,7 +695,7 @@ export default function SearchView() {
                     </Flex>
                   </Flex>
                 )}
-                {!error && !loading && (
+                {!error && !loading && !!collectionId && (
                   <Box sx={{ height: '18px' }}>
                     {!!data?.assetGlobalSearch?.count ? (
                       <Text>
