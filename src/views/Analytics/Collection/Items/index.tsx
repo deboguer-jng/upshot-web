@@ -73,6 +73,8 @@ enum BREAKPOINT_INDEXES {
 }
 
 function TokenIdInput({ defaultValue, onSubmit }) {
+  const [value, setValue] = useState(defaultValue)
+
   return (
     <Flex
       sx={{
@@ -85,16 +87,24 @@ function TokenIdInput({ defaultValue, onSubmit }) {
     >
       <InputRoundedSearch
         fullWidth
+        hasClearButton={Boolean(value)}
         sx={{
           borderRadius: '16px',
           minHeight: '54px',
           minWidth: '300px',
         }}
+        buttonProps={{
+          onClick: () => {
+            setValue('')
+            onSubmit?.('')
+          },
+        }}
         placeholder="Search by token ID or name"
+        onChange={(e) => setValue(e.currentTarget.value)}
         onKeyPress={(e) => {
           if (e.key === 'Enter') onSubmit?.(e.currentTarget.value)
         }}
-        {...{ defaultValue }}
+        {...{ value }}
       />
     </Flex>
   )
@@ -288,7 +298,7 @@ export default function CollectionItemsView() {
 
   const handleApplySearch = ({ query }) => {
     router.push({
-      pathname: '/analytics/search',
+      pathname: `/analytics/collection/${collectionId}/items`,
       query,
     })
   }
