@@ -212,6 +212,10 @@ export default function ExploreTraits({
   const isMobile = breakpointIndex <= 1
   const [page, setPage] = useState(0)
 
+  const handlePageChange = ({ selected }: { selected: number }) => {
+    setPage(selected)
+  }
+
   const handleChangeSelection = (colIdx: number, order?: 'asc' | 'desc') => {
     onChangeSelection(colIdx, order)
     setPage(0)
@@ -429,7 +433,7 @@ export default function ExploreTraits({
           }
           pageRangeDisplayed={0}
           marginPagesDisplayed={0}
-          onPageChange={setPage}
+          onPageChange={handlePageChange}
         />
       </Flex>
     </>
