@@ -209,6 +209,11 @@ export default function ExploreListedNFTs({
   const isMobileOrTablet = breakpointIndex <= 2
 
   const [page, setPage] = useState(0)
+  
+  // wrapper function for Pagination change
+  const handlePageChange = ({ selected }: { selected: number }) => {
+    setPage(selected)
+  }
 
   const handlePageChange = ({ selected }: { selected: number }) => {
     setPage(selected)
