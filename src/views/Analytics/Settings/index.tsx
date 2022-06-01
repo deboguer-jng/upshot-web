@@ -11,7 +11,6 @@ import {
   TextareaRounded,
   useTheme
 } from '@upshot-tech/upshot-ui'
-import { useWeb3React } from '@web3-react/core'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import makeBlockie from 'ethereum-blockies-base64'
@@ -20,7 +19,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { useAppSelector } from 'redux/hooks'
-import { selectAddress, selectEns, selectAuthToken } from 'redux/reducers/web3'
+import { selectAddress, selectEns } from 'redux/reducers/web3'
 import { Avatar, Box, Flex, Link, Text } from 'theme-ui'
 
 import Breadcrumbs from '../components/Breadcrumbs'
@@ -38,7 +37,7 @@ export default function SettingsView() {
   
   const [displayName, setDisplayName] = useState<string>()
   const [bio, setBio] = useState<string>()
-  const [isSaveDisabled, setIsSaveDisabled] = useState<boolean>(false);
+  const [saveEnabled, setSaveEnabled] = useState<boolean>(false);
   const [updateUser, { loading: updateUserLoading }] = useMutation<UpdateUserData, UpdateUserVars>(UPDATE_USER, {
     onError: err => console.log(err)
   })
@@ -115,6 +114,16 @@ export default function SettingsView() {
     }
   })
 
+  const onDisplayNameChange = e => {
+    setDisplayName(e.currentTarget.value)
+    setSaveEnabled(true)
+  }
+
+  const onBioChange = e => {
+    setBio(e.currentTarget.value)
+    setSaveEnabled(true)
+  }
+
   return (
     <>
       <Head>
@@ -150,7 +159,7 @@ export default function SettingsView() {
                           placeholder={userEns?.name ?? initProfileData?.getUser?.addresses?.[0]?.ens ??
                             initProfileData?.getUser?.addresses?.[0]?.address}
                           value={displayName}
-                          onChange={e => setDisplayName(e.currentTarget.value)} />
+                          onChange={onDisplayNameChange} />
                         <TextareaRounded 
                           dark={true}
                           optional={true}
@@ -158,7 +167,7 @@ export default function SettingsView() {
                           maxLength={100}
                           placeholder='Write a short bio for your profile'
                           value={bio}
-                          onChange={e => setBio(e.currentTarget.value)}
+                          onChange={onBioChange}
                         />
                         <Flex sx={{alignItems: 'center', marginBottom: '20px'}}>
                           <Icon color="grey-500" icon="twitter" size={32} />
@@ -195,7 +204,7 @@ export default function SettingsView() {
                         sx={{width: 150}}
                         onClick={onSave} 
                         capitalize={true} 
-                        disabled={isSaveDisabled}
+                        disabled={!saveEnabled}
                       >
                         { updateUserLoading ? (<Spinner />) : 'Save Changes' }
                       </Button>
