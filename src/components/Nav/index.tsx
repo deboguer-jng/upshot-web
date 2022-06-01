@@ -1,6 +1,7 @@
 import { useLazyQuery, useMutation } from '@apollo/client'
 import {
   ConnectModal,
+  DialogModal,
   Flex,
   HelpModal,
   Icon,
@@ -8,6 +9,7 @@ import {
   Link,
   Modal,
   Navbar,
+  SpinnerBoxTemplate,
   useBreakpointIndex,
   useTheme,
 } from '@upshot-tech/upshot-ui'
@@ -35,7 +37,7 @@ import {
 import { useAuth } from 'hooks/auth'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { selectFeatures } from 'redux/reducers/features'
@@ -118,7 +120,7 @@ export const Nav = () => {
   const toggleModal = () => setOpen(!open)
   const toggleHelpModal = () => dispatch(setShowHelpModal(!helpOpen))
   const outsideClicked = useOutsideAlerter(sidebarRef)
-  const [isAuthed, triggerAuth] = useAuth();
+  const { isAuthed, isSigning, triggerAuth } = useAuth()
 
   useEffect(() => {
     if (!router.query) return
@@ -226,12 +228,14 @@ export const Nav = () => {
     return 'beta'
   }
 
-  const handleShowSettings = () => {
-    triggerAuth({
-      onComplete: () => router.push('/analytics/settings'),
-      onError: e => console.error('triggerAuth: ', e)
-    })
-  }
+  const handleShowSettings = useCallback(() => {
+    if (isAuthed) router.push('/analytics/settings')
+    else
+      triggerAuth({
+        onComplete: () => router.push('/analytics/settings'),
+        onError: (e) => console.error('triggerAuth: ', e),
+      })
+  }, [isAuthed, triggerAuth])
 
   const sidebar = (
     <Sidebar ref={sidebarRef}>
@@ -380,6 +384,9 @@ export const Nav = () => {
             link="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
             onClose={toggleHelpModal}
           />
+        </Modal>
+        <Modal open={isSigning}>
+          <DialogModal header='Signing in' body='please sign the message with your wallet' />
         </Modal>
       </Flex>
       {showSidebar && <SidebarShade />}

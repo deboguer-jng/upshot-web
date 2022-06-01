@@ -34,7 +34,7 @@ export default function SettingsView() {
   const prevPath = storage.getItem('prevPath')
   const address = useAppSelector(selectAddress)
   const userEns = useAppSelector(selectEns)
-  const [isAuthed, triggerAuth] = useAuth();
+  const {isAuthed, triggerAuth} = useAuth();
   
   const [displayName, setDisplayName] = useState<string>()
   const [bio, setBio] = useState<string>()

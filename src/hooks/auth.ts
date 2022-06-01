@@ -8,26 +8,31 @@ import {
   SignInData,
   SignInVars,
 } from 'graphql/mutations'
-import {
-  GET_NONCE,
-  GetNonceData,
-  GetNonceVars,
-} from 'graphql/queries'
+import { GET_NONCE, GetNonceData, GetNonceVars } from 'graphql/queries'
 import { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { useAppDispatch } from 'redux/hooks'
+import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import {
+  selectAddress,
   selectAuthToken,
   setAuthToken,
 } from 'redux/reducers/web3'
 import { getAuthPayload } from 'utils/auth'
 import { logEvent } from 'utils/googleAnalytics'
 
-export function useAuth(): [boolean, Function] {
+export interface useAuthType {
+  isAuthed: boolean,
+  isSigning: boolean,
+  triggerAuth: Function 
+}
+
+export function useAuth(): useAuthType{
   const { library, account } = useWeb3React()
   const dispatch = useAppDispatch()
   const authToken = useSelector(selectAuthToken)
-  const [ isAuthed, setIsAuthed ] = useState<boolean>(!!(account && authToken));
+  const address = useAppSelector(selectAddress)
+  const [isAuthed, setIsAuthed] = useState<boolean>(!!(address && authToken))
+  const [isSigning, setIsSigning] = useState<boolean>(false)
 
   const [logUpshotEvent] = useMutation<LogEventData, LogEventVars>(LOG_EVENT, {
     onError: (err) => {
@@ -38,78 +43,85 @@ export function useAuth(): [boolean, Function] {
   const [signIn] = useMutation<SignInData, SignInVars>(SIGN_IN)
 
   const [getNonce] = useLazyQuery<GetNonceData, GetNonceVars>(GET_NONCE)
- 
-  const triggerAuth = useCallback(async (params: {onComplete?: Function, onError?: Function}) => {
-    /**
-     * We require an active web3 connection to manage settings.
-     * The settings button is only visible if it exists, but for
-     * type checking, we will bail on this handler if there is no account.
-     */
-    if (!account) return params?.onError?.('no address')
 
-    /**
-      * If there's no auth token, we'll run through the sequential flow.
-      *
-      * 1. We first request a nonce for the active user address.
-      *
-      * 2. Once we have the nonce, we ask the user to sign it.
-      *
-      * 3. Once we have the signature, we send that to the backend in exchange
-      * for an authToken, which is cached to redux and added to all graphQL headers.
-      */
-    if (!authToken) {
-      const { data: nonceData, error: nonceError } = await getNonce({ variables: { userAddress: account } })
+  const triggerAuth = useCallback(
+    async (params: { onComplete?: Function; onError?: Function }) => {
+      /**
+       * We require an active web3 connection to manage settings.
+       * The settings button is only visible if it exists, but for
+       * type checking, we will bail on this handler if there is no address.
+       */
+      if (!address) return params?.onError?.('no address')
 
-      if (nonceError) return params?.onError?.(nonceError)
+      /**
+       * If there's no auth token, we'll run through the sequential flow.
+       *
+       * 1. We first request a nonce for the active user address.
+       *
+       * 2. Once we have the nonce, we ask the user to sign it.
+       *
+       * 3. Once we have the signature, we send that to the backend in exchange
+       * for an authToken, which is cached to redux and added to all graphQL headers.
+       */
+      if (!authToken) {
+        setIsSigning(true)
 
-      console.log('nonceRes: ', nonceData)
-
-      const signer = library.getSigner(account)
-      let signature
-
-      try {
-        const payload = getAuthPayload({
-          address: account,
-          nonce: nonceData?.getNonce?.nonce,
+        const { data: nonceData, error: nonceError } = await getNonce({
+          variables: { userAddress: address },
         })
-        // signature = await signer.signMessage(payload)
-        signature = await signer.signMessage(`${nonceData?.getNonce?.nonce}`)
-      } catch (err) {
-        console.error(err)
+
+        if (nonceError) return params?.onError?.(nonceError)
+
+        const signer = library.getSigner(address)
+        let signature
+
+        try {
+          const payload = getAuthPayload({
+            address: address,
+            nonce: nonceData?.getNonce?.nonce,
+          })
+          // signature = await signer.signMessage(payload)
+          signature = await signer.signMessage(`${nonceData?.getNonce?.nonce}`)
+        } catch (err) {
+          console.error(err)
+        }
+
+        setIsSigning(false)
+
+        if (!signature) return params?.onError?.('no signature')
+
+        logEvent('auth', 'signature', address)
+        logUpshotEvent({
+          variables: {
+            timestamp: Math.floor(Date.now() / 1000),
+            address: address,
+            type: 'signature',
+          },
+        })
+
+        const { data: signInData } = await signIn({
+          variables: {
+            userAddress: address,
+            signature,
+          },
+        })
+
+        if (!signInData?.signIn?.authToken)
+          return params?.onError?.('no auth token')
+
+        dispatch(setAuthToken(signInData.signIn.authToken))
+        
+        const authed = !!(address && signInData.signIn.authToken)
+        setIsAuthed(authed)
+
+        if (authed) return params?.onComplete?.()
       }
 
-      if (!signature) return params?.onError?.('no signature')
+      if (address && authToken) params?.onComplete?.()
+      else params?.onError?.('auth failed')
+    },
+    [address, authToken, getNonce, signIn, library, setIsSigning]
+  )
 
-      logEvent('auth', 'signature', account)
-      logUpshotEvent({
-        variables: {
-          timestamp: Math.floor(Date.now() / 1000),
-          address: account,
-          type: 'signature',
-        },
-      })
-
-      const { data: signInData } = await signIn({
-        variables: {
-          userAddress: account,
-          signature
-        },
-      })
-
-      // if (signInError) return params?.onError?.(signInError)
-
-      if (!signInData?.signIn?.authToken) return params?.onError?.('no auth token')
-      dispatch(setAuthToken(signInData.signIn.authToken))
-      const authed = !!(account && signInData.signIn.authToken)
-      setIsAuthed(authed)
-
-      if(authed) return params?.onComplete?.()
-    }
-
-    if (account && authToken) params?.onComplete?.()
-    else params?.onError?.('auth failed')
-
-  }, [account, authToken, getNonce, signIn])
-  
-  return [isAuthed, triggerAuth]
+  return { isAuthed, isSigning, triggerAuth }
 }
