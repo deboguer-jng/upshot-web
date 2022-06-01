@@ -209,6 +209,11 @@ export default function ExploreNFTs({
   const isMobileOrTablet = breakpointIndex <= 2
 
   const [page, setPage] = useState(0)
+  
+  // wrapper function for Pagination change
+  const handlePageChange = ({ selected }: { selected: number }) => {
+    setPage(selected)
+  }
 
   const handleChangeSelection = (colIdx: number, order?: 'asc' | 'desc') => {
     onChangeSelection(colIdx, order)
@@ -411,7 +416,7 @@ export default function ExploreNFTs({
           pageCount={Math.ceil(correctedCount / PAGE_SIZE)}
           pageRangeDisplayed={0}
           marginPagesDisplayed={0}
-          onPageChange={setPage}
+          onPageChange={handlePageChange}
         />
       </Flex>
     </>
