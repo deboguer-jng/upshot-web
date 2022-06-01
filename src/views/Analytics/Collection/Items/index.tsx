@@ -205,7 +205,7 @@ export default function CollectionItemsView() {
     skip: !collectionId,
   })
 
-  const { data: collectionData } = useQuery<
+  const { data: collectionData, loading: collectionLoading } = useQuery<
     GetCollectionData,
     GetCollectionVars
   >(GET_COLLECTION, {
@@ -361,7 +361,7 @@ export default function CollectionItemsView() {
                 >
                   <Box sx={{ paddingTop: 4 }}>
                     <SearchFilterSidebar
-                      collectionId={router.query.id ? Number(router.query.id ?? 0) : undefined}
+                      collectionId={collectionId}
                       onHideFilters={() => setOpenMobileFilters(false)}
                       onApply={handleApplySearch}
                     />
@@ -384,7 +384,7 @@ export default function CollectionItemsView() {
               }}
             >
               <SearchFilterSidebar
-                collectionId={router.query.id ? Number(router.query.id ?? 0) : undefined}
+                collectionId={collectionId}
                 onApply={handleApplySearch}
                 open={sidebarOpen}
                 onOpenSidebar={handleToggleSidebar}
@@ -437,8 +437,6 @@ export default function CollectionItemsView() {
                           handleApplySearch({
                             query: {
                               ...router.query,
-                              traits: traitIds,
-                              collectionId,
                               tokenId,
                             },
                           })
@@ -511,7 +509,6 @@ export default function CollectionItemsView() {
                                 handleApplySearch({
                                   query: {
                                     ...router.query,
-                                    collectionId,
                                     listedOnly: false,
                                   },
                                 })

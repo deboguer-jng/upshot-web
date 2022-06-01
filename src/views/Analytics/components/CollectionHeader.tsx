@@ -97,14 +97,14 @@ export default forwardRef(function CollectionHeader(
         marginTop: '25px',
         minHeight: isMobile ? 0 : 100,
         marginBottom: isMobile ? 5 : 0,
-        width: isMobile ? '100%' : 'auto',
+        width: 'auto',
         gap: 4,
       }}
     >
       <Link
         href={`/analytics/collection/${id}`}
         sx={{
-          width: isMobile ? '100%' : 'auto',
+          width: 'auto',
         }}
         component={NextLink}
         noHover
@@ -116,7 +116,7 @@ export default forwardRef(function CollectionHeader(
         <Link
         href={`/analytics/collection/${id}/items`}
         sx={{
-          width: isMobile ? '100%' : 'auto',
+          width: 'auto',
         }}
         component={NextLink}
         noHover

@@ -400,10 +400,10 @@ export default function SearchFilterSidebar({
   useEffect(() => {
     if (!router.query) return
 
-    const collectionId = router.query.collectionId
+    const collId = router.query.collectionId
       ? Number(router.query.collectionId)
       : undefined
-    if (!defaultCollectionId) setCollectionId(collectionId)
+    if (!defaultCollectionId) setCollectionId(collId)
 
     const tokenId = router.query.tokenId as string
     setTokenId(tokenId)
