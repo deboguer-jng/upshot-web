@@ -386,24 +386,21 @@ export default function SearchFilterSidebar({
 }) {
   const { theme } = useTheme()
   const router = useRouter()
-  const [collectionId, setCollectionId] = useState(defaultCollectionId)
+  const [collectionId, setCollectionId] = useState<number>()
   const [tokenId, setTokenId] = useState('')
   const [minPrice, setMinPrice] = useState('')
   const [maxPrice, setMaxPrice] = useState('')
   const [traitANDMatch, setTraitANDMatch] = useState(false)
   const [traitIds, setTraitIds] = useState<number[]>([])
   const [listedOnly, setListedOnly] = useState(true)
-  const [expanded, setExpanded] = useState(false)
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
 
   useEffect(() => {
-    if (!router.query) return
+    if (!router?.query?.id) return
 
-    const collId = router.query.collectionId
-      ? Number(router.query.collectionId)
-      : undefined
-    if (!defaultCollectionId) setCollectionId(collId)
+    const collId = router.query.id ? Number(router.query.id) : undefined
+    setCollectionId(collId || defaultCollectionId)
 
     const tokenId = router.query.tokenId as string
     setTokenId(tokenId)
