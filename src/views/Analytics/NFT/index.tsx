@@ -592,11 +592,7 @@ export default function NFTView() {
                         ({ id, traitType, value, rarity }, idx) => (
                           <Box key={idx}>
                             <Link
-                              href={`/analytics/search?traits=${id}&collectionId=${
-                                collection?.id
-                              }&collectionName=${encodeURIComponent(
-                                collection?.name ?? ''
-                              )}`}
+                              href={`/analytics/collection/${collection?.id}/items?traits=${id}`}
                               key={idx}
                               sx={{
                                 whiteSpace: 'normal',
