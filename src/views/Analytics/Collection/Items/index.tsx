@@ -351,6 +351,7 @@ export default function CollectionItemsView() {
                 >
                   <Box sx={{ paddingTop: 4 }}>
                     <SearchFilterSidebar
+                      collectionId={router.query.id ? Number(router.query.id ?? 0) : undefined}
                       onHideFilters={() => setOpenMobileFilters(false)}
                       onApply={handleApplySearch}
                     />
@@ -373,6 +374,7 @@ export default function CollectionItemsView() {
               }}
             >
               <SearchFilterSidebar
+                collectionId={router.query.id ? Number(router.query.id ?? 0) : undefined}
                 onApply={handleApplySearch}
                 open={sidebarOpen}
                 onOpenSidebar={handleToggleSidebar}

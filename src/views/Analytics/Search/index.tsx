@@ -757,7 +757,7 @@ export default function SearchView() {
                         }}
                       >
                         <Text variant="h3Primary">No results found</Text>
-                        {listedOnly == 'true' && (
+                        {listedOnly == 'true' && collectionId && (
                           <>
                             <Flex sx={{ maxWidth: '300px' }}>
                               <Text
