@@ -172,7 +172,7 @@ export const GET_TRAIT_STATS = gql`
  * Get Collection
  */
 
- export type GetCollectionVars = {
+export type GetCollectionVars = {
   id?: number
 }
 

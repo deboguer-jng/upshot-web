@@ -188,7 +188,9 @@ export default function TraitStats({
 
   return (
     <>
-      <Text variant="h3Primary" sx={{ marginTop: '25px' }}>Trait Stats</Text>
+      <Text variant="h3Primary" sx={{ marginTop: '25px' }}>
+        Trait Stats
+      </Text>
 
       <TraitStatsWrapper
         {...{ selectedColumn, sortAscending, onChangeSelection }}

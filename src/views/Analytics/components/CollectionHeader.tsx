@@ -110,10 +110,10 @@ export default forwardRef(function CollectionHeader(
         noHover
       >
         <ButtonNav toggled={!router.pathname.includes('items')}>
-            Analytics
+          Analytics
         </ButtonNav>
-        </Link>
-        <Link
+      </Link>
+      <Link
         href={`/analytics/collection/${id}/items`}
         sx={{
           width: 'auto',
@@ -121,9 +121,7 @@ export default forwardRef(function CollectionHeader(
         component={NextLink}
         noHover
       >
-        <ButtonNav toggled={router.pathname.includes('items')}>
-            Items
-        </ButtonNav>
+        <ButtonNav toggled={router.pathname.includes('items')}>Items</ButtonNav>
       </Link>
     </Flex>
   )
