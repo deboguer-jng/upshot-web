@@ -131,7 +131,7 @@ export default function SearchView() {
   const scrollRef = useRef<any>(null)
 
   const breakpointIndex = useBreakpointIndex()
-  const isMobile = breakpointIndex <= 1
+  const isMobile = breakpointIndex <= 2
 
   const collectionId = router.query.collectionId
     ? Number(router.query.collectionId)

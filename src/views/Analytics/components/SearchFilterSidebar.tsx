@@ -394,7 +394,7 @@ export default function SearchFilterSidebar({
   const [traitIds, setTraitIds] = useState<number[]>([])
   const [listedOnly, setListedOnly] = useState(true)
   const breakpointIndex = useBreakpointIndex()
-  const isMobile = breakpointIndex <= 1
+  const isMobile = breakpointIndex <= 2
 
   useEffect(() => {
     if (!router?.query?.id) return
@@ -542,14 +542,16 @@ export default function SearchFilterSidebar({
       )}
       <Flex
         sx={{
-          maxWidth: open ? 316 : 0,
-          overflowY: open ? 'auto' : 'hidden',
+          maxWidth: !isMobile ? open ? 316 : 0 : '100%',
+          overflowY: !isMobile ? open ? 'auto' : 'hidden' : 'auto',
           overflowX: 'hidden',
-          opacity: open ? '1' : '0',
+          opacity: !isMobile ? open ? '1' : '0' : '1',
           flexDirection: 'column',
           paddingRight: open ? '8px' : 0,
           gap: 8,
-          transform: `translateX(${open ? 0 : '-316px'})`,
+          width: isMobile && '100%',
+          height: isMobile ? '800px' : '100%',
+          transform: !isMobile ? `translateX(${open ? 0 : '-316px'})` : 'none',
           transition: 'default',
         }}
         css={theme.scroll.thin}
@@ -638,7 +640,7 @@ export default function SearchFilterSidebar({
         )}
 
         {isMobile && (
-          <Flex sx={{ justifyContent: 'flex-end' }}>
+          <Flex sx={{ justifyContent: 'flex-end', py: 2 }}>
             <Button capitalize onClick={handleApplyFiltersClick}>
               Apply Filters
             </Button>

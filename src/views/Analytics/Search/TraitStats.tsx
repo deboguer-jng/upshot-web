@@ -116,6 +116,7 @@ function TraitStatsHead({
 const TraitStatsWrapper = ({ children, ...props }: TraitStatsHeadProps) => {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
+  const { theme } = useTheme()
 
   return (
     <>
@@ -127,7 +128,18 @@ const TraitStatsWrapper = ({ children, ...props }: TraitStatsHeadProps) => {
       ) : (
         <CollectionTable sx={{ width: 'auto' }}>
           <TraitStatsHead {...props} />
-          <TableBody>{children}</TableBody>
+          <TableBody
+            sx={{
+              '& tr': {
+                background: !isMobile && 'transparent!important',
+              },
+              '& td': {
+                background: theme.colors['grey-800'],
+              },
+            }}
+          >
+            {children}
+          </TableBody>
         </CollectionTable>
       )}
     </>

@@ -22,6 +22,7 @@ import { Nav } from 'components/Nav'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import TraitStats from 'views/Analytics/Search/TraitStats'
 
 import {
   genSortOptions,
@@ -120,7 +121,7 @@ export default function CollectionItemsView() {
 
   const { theme } = useTheme()
   const breakpointIndex = useBreakpointIndex()
-  const isMobile = breakpointIndex <= 1
+  const isMobile = breakpointIndex <= 2
   const collectionId = Number(router.query.id ?? 0)
 
   const tokenId = router.query.tokenId as string
@@ -219,6 +220,16 @@ export default function CollectionItemsView() {
     variables: { id: collectionId },
     skip: !collectionId,
   })
+
+  useEffect(() => {
+    if (collectionData?.collectionById.isAppraised === false) {
+      setSelectedNFTColumn(2)
+      setSortNFTsAscending(true)
+    } else if(selectedColumn !== 0) {
+      setSelectedColumn(0)
+      setSortNFTsAscending(false)
+    }
+  }, [collectionData])
 
   /* Infinite scroll: Assets */
   useEffect(() => {
@@ -347,6 +358,15 @@ export default function CollectionItemsView() {
         <Breadcrumbs crumbs={breadcrumbs} />
 
         <CollectionHeader id={collectionId} />
+          {!!collectionId && traitIds.length > 0 && (
+            <TraitStats
+              selectedColumn={selectedTraitsColumn}
+              sortAscending={sortTraitsAscending}
+              onChangeSelection={handleChangeTraitsSelection}
+              {...{ collectionId, traitIds }}
+            />
+          )}
+
 
         <Grid
           sx={{
