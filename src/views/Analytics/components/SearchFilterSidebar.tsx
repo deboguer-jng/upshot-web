@@ -509,7 +509,7 @@ export default function SearchFilterSidebar({
             top: '0px',
             backgroundColor: 'black',
             zIndex: '20',
-            padding: '10px',
+            padding: '10px 0',
           }}
         >
           <IconButton
@@ -542,10 +542,10 @@ export default function SearchFilterSidebar({
       )}
       <Flex
         sx={{
-          maxWidth: !isMobile ? open ? 316 : 0 : '100%',
-          overflowY: !isMobile ? open ? 'auto' : 'hidden' : 'auto',
+          maxWidth: !isMobile ? (open ? 316 : 0) : '100%',
+          overflowY: !isMobile ? (open ? 'auto' : 'hidden') : 'auto',
           overflowX: 'hidden',
-          opacity: !isMobile ? open ? '1' : '0' : '1',
+          opacity: !isMobile ? (open ? '1' : '0') : '1',
           flexDirection: 'column',
           paddingRight: open ? '8px' : 0,
           gap: 8,
