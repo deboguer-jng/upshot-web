@@ -1,4 +1,4 @@
-import { useLazyQuery, useMutation } from '@apollo/client'
+import { useLazyQuery } from '@apollo/client'
 import {
   ConnectModal,
   DialogModal,
@@ -9,7 +9,6 @@ import {
   Link,
   Modal,
   Navbar,
-  SpinnerBoxTemplate,
   useBreakpointIndex,
   useTheme,
 } from '@upshot-tech/upshot-ui'
@@ -19,20 +18,9 @@ import { ConnectorName, connectorsByName } from 'constants/connectors'
 import makeBlockie from 'ethereum-blockies-base64'
 import { ethers } from 'ethers'
 import {
-  LOG_EVENT,
-  LogEventData,
-  LogEventVars,
-  SIGN_IN,
-  SignInData,
-  SignInVars,
-} from 'graphql/mutations'
-import {
   GET_NAV_BAR_COLLECTIONS,
-  GET_NONCE,
   GetNavBarCollectionsData,
   GetNavBarCollectionsVars,
-  GetNonceData,
-  GetNonceVars,
 } from 'graphql/queries'
 import { useAuth } from 'hooks/auth'
 import NextLink from 'next/link'
@@ -54,11 +42,8 @@ import {
   selectAuthToken,
   selectEns,
   setActivatingConnector,
-  setAuthToken,
 } from 'redux/reducers/web3'
 import { shortenAddress } from 'utils/address'
-import { getAuthPayload } from 'utils/auth'
-import { logEvent } from 'utils/googleAnalytics'
 
 import { BetaBanner } from '../BetaBanner'
 import { Sidebar, SidebarShade, SideLink } from './Styled'
@@ -113,7 +98,6 @@ export const Nav = () => {
   >(GET_NAV_BAR_COLLECTIONS)
   const [open, setOpen] = useState(false)
   const helpOpen = useSelector(selectShowHelpModal)
-  const authToken = useSelector(selectAuthToken)
   const modalRef = useRef<HTMLDivElement>(null)
   const helpModalRef = useRef<HTMLDivElement>(null)
   const isMobile = useBreakpointIndex() <= 1

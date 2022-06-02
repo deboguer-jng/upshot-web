@@ -169,7 +169,7 @@ export default function SettingsView() {
                           value={bio}
                           onChange={onBioChange}
                         />
-                        <Flex sx={{alignItems: 'center', marginBottom: '20px'}}>
+                        {/* <Flex sx={{alignItems: 'center', marginBottom: '20px'}}>
                           <Icon color="grey-500" icon="twitter" size={32} />
                           <Flex sx={{
                             width: '100%',
@@ -190,7 +190,7 @@ export default function SettingsView() {
                               onClick={onTwitterConnect}
                             >Connect</Button>
                           </Flex>
-                        </Flex>
+                        </Flex> */}
                       </Flex>
                       <Flex sx={{flexDirection: 'column', gap: '30px', paddingBottom: '40px'}}>
                         <Text color={theme.colors['grey-500']}>Profile Picture</Text>
