@@ -543,12 +543,13 @@ export default function SearchFilterSidebar({
       <Flex
         sx={{
           maxWidth: open ? 316 : 0,
-          overflowY: 'auto',
+          overflowY: open ? 'auto' : 'hidden',
           overflowX: 'hidden',
+          opacity: open ? '1' : '0',
           flexDirection: 'column',
-          paddingRight: '8px',
+          paddingRight: open ? '8px' : 0,
           gap: 8,
-          transform: `translateX(${open ? 0 : '-300px'})`,
+          transform: `translateX(${open ? 0 : '-316px'})`,
           transition: 'default',
         }}
         css={theme.scroll.thin}
