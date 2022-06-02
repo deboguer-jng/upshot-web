@@ -78,7 +78,7 @@ enum BREAKPOINT_INDEXES {
 function TokenIdInput({ defaultValue, onSubmit }) {
   const [value, setValue] = useState(defaultValue)
   const breakpointIndex = useBreakpointIndex()
-  const isMobile = breakpointIndex <= 1
+  const isMobile = breakpointIndex <= 2
 
   return (
     <Flex

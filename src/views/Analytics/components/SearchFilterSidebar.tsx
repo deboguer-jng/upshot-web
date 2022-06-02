@@ -15,7 +15,6 @@ import {
   useTheme,
 } from '@upshot-tech/upshot-ui'
 import { ethers } from 'ethers'
-import { borderRightStyle } from 'html2canvas/dist/types/css/property-descriptors/border-style'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
 import { IconButton, Label as LabelUI } from 'theme-ui'
