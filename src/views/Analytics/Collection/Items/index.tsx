@@ -20,6 +20,7 @@ import {
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import { PIXELATED_CONTRACTS } from 'constants/'
+import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import TraitStats from 'views/Analytics/Search/TraitStats'
@@ -225,7 +226,7 @@ export default function CollectionItemsView() {
     if (collectionData?.collectionById.isAppraised === false) {
       setSelectedNFTColumn(2)
       setSortNFTsAscending(true)
-    } else if(selectedColumn !== 0) {
+    } else if (selectedColumn !== 0) {
       setSelectedColumn(0)
       setSortNFTsAscending(false)
     }
@@ -358,15 +359,14 @@ export default function CollectionItemsView() {
         <Breadcrumbs crumbs={breadcrumbs} />
 
         <CollectionHeader id={collectionId} />
-          {!!collectionId && traitIds.length > 0 && (
-            <TraitStats
-              selectedColumn={selectedTraitsColumn}
-              sortAscending={sortTraitsAscending}
-              onChangeSelection={handleChangeTraitsSelection}
-              {...{ collectionId, traitIds }}
-            />
-          )}
-
+        {!!collectionId && traitIds.length > 0 && (
+          <TraitStats
+            selectedColumn={selectedTraitsColumn}
+            sortAscending={sortTraitsAscending}
+            onChangeSelection={handleChangeTraitsSelection}
+            {...{ collectionId, traitIds }}
+          />
+        )}
 
         <Grid
           sx={{
@@ -604,6 +604,7 @@ export default function CollectionItemsView() {
                         ) => (
                           <Flex key={idx} sx={{ gap: 5 }}>
                             <NFTCard
+                              linkComponent={NextLink}
                               avatarImage={
                                 collectionData?.collectionById?.imageUrl
                               }

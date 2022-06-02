@@ -367,7 +367,6 @@ export default function SearchView() {
             gap: [5, 5, 5, 8],
           }}
         >
-
           <Flex
             sx={{
               flex: '1 auto auto',
@@ -808,6 +807,7 @@ export default function SearchView() {
                         ) => (
                           <Flex key={idx} sx={{ gap: 5 }}>
                             <NFTCard
+                              linkComponent={NextLink}
                               avatarImage={
                                 collectionData?.collectionById?.imageUrl
                               }
