@@ -541,16 +541,21 @@ export default function SearchFilterSidebar({
       )}
       <Flex
         sx={{
-          maxWidth: ['100%', '100%', open ? 316 : 0],
-          overflowY: ['auto', 'auto', open ? 'auto' : 'hidden'],
+          maxWidth: ['100%', '100%', '100%', open ? 316 : 0],
+          overflowY: ['auto', 'auto', 'auto', open ? 'auto' : 'hidden'],
           overflowX: 'hidden',
-          opacity: [1, 1, open ? 1 : 0],
+          opacity: [1, 1, 1, open ? 1 : 0],
           flexDirection: 'column',
           paddingRight: open ? '8px' : 0,
           gap: 8,
-          width: ['100%', '100%', 'auto'],
-          height: ['800px', '800px', '100%'],
-          transform: ['none', 'none', `translateX(${open ? 0 : '-316px'})`],
+          width: ['100%', '100%', '100%', 'auto'],
+          height: ['800px', '800px', '800px', '100%'],
+          transform: [
+            'none',
+            'none',
+            'none',
+            `translateX(${open ? 0 : '-316px'})`,
+          ],
           transition: 'default',
         }}
         css={theme.scroll.thin}
