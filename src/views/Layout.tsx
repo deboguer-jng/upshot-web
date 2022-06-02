@@ -146,7 +146,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      {router.route === '/' ||
+      {process.env.NODE_ENV === 'development' ||
+      router.route === '/' ||
       router.route.startsWith('/gmi') ||
       router.route.startsWith('/share') ||
       router.route.startsWith('/faq') ||

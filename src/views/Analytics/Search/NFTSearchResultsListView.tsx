@@ -55,8 +55,7 @@ interface NFTSearchResultsHeadProps extends React.HTMLAttributes<HTMLElement> {
   onChangeSelection?: (columnIdx: number, order?: 'asc' | 'desc') => void
 }
 
-const colSpacing =
-  '46px minmax(100px,3fr) repeat(4, minmax(105px, 2fr)) 40px'
+const colSpacing = '46px minmax(100px,3fr) repeat(4, minmax(105px, 2fr)) 40px'
 
 function NFTSearchResultsHead({
   columns,
@@ -78,7 +77,7 @@ function NFTSearchResultsHead({
           </Flex>
         </Box>
       ) : (
-        <Grid 
+        <Grid
           columns={colSpacing}
           sx={{ padding: [1, 3].map((n) => theme.space[n] + 'px').join(' ') }}
         >
@@ -118,13 +117,14 @@ function NFTSearchResultsHead({
                 },
               }}
             >
-              <Flex 
-                sx={{ 
-                  alignItems: 'center' ,
+              <Flex
+                sx={{
+                  alignItems: 'center',
                   'white-space': 'nowarp',
                   fontSize: '.85rem',
-                }}>
-                  {col}
+                }}
+              >
+                {col}
                 <Icon icon="tableSort" height={16} width={16} />
               </Flex>
             </Box>

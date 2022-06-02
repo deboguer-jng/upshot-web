@@ -12,7 +12,7 @@ interface BreadcrumbsProps extends FlexProps {
 
 function Breadcrumbs({ crumbs, ...props }: BreadcrumbsProps) {
   return (
-    <Flex {...props}>
+    <Flex {...props} sx={{ marginBottom: '10px' }}>
       {crumbs
         ?.filter((crumb) => !!crumb)
         .map((crumb, idx) => (

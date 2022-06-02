@@ -592,11 +592,7 @@ export default function NFTView() {
                         ({ id, traitType, value, rarity }, idx) => (
                           <Box key={idx}>
                             <Link
-                              href={`/analytics/search?traits=${id}&collectionId=${
-                                collection?.id
-                              }&collectionName=${encodeURIComponent(
-                                collection?.name ?? ''
-                              )}`}
+                              href={`/analytics/collection/${collection?.id}/items?traits=${id}`}
                               key={idx}
                               sx={{
                                 whiteSpace: 'normal',
@@ -960,7 +956,9 @@ export default function NFTView() {
                         name={asset.similarAsset.name}
                         type="recommend"
                         image={asset.similarAsset.mediaUrl}
-                        pixelated={PIXELATED_CONTRACTS.includes(asset.similarAsset.contractAddress)}
+                        pixelated={PIXELATED_CONTRACTS.includes(
+                          asset.similarAsset.contractAddress
+                        )}
                         listing={
                           asset.similarAsset.listPrice
                             ? formatNumber(asset.similarAsset.listPrice, {

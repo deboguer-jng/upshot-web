@@ -55,7 +55,6 @@ export default function Collectors({
   const router = useRouter()
   const [page, setPage] = useState(0)
 
-  // wrapper function for Pagination change
   const handlePageChange = ({ selected }: { selected: number }) => {
     setPage(selected)
   }

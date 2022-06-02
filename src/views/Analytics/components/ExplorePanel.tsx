@@ -184,14 +184,13 @@ export default function ExplorePanel({
       Collections: [],
       Traits: [0],
     }
-    
-    if (order === 'asc')
-      return setSortAscending(true)
-    if (order === 'desc')
-      return setSortAscending(false)
+
+    if (order === 'asc') return setSortAscending(true)
+    if (order === 'desc') return setSortAscending(false)
 
     // if order is not specified, toggle between ascending and descending
-    if (columnIdx === selectedColumn) // Toggle sort order for current selection.
+    if (columnIdx === selectedColumn)
+      // Toggle sort order for current selection.
       return setSortAscending(!sortAscending)
     // else, set to ascending for new selection.
     return setSortAscending(ascendingColumns[tab].includes(columnIdx))

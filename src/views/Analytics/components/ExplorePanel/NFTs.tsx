@@ -1,13 +1,13 @@
 import { useQuery } from '@apollo/client'
-import { ButtonDropdown, CollectorAccordion, useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import {
+  ButtonDropdown,
+  CollectorAccordion,
+  useBreakpointIndex,
+} from '@upshot-tech/upshot-ui'
 import { CollectionGridRow, CollectionTable } from '@upshot-tech/upshot-ui'
 import { Pagination, useTheme } from '@upshot-tech/upshot-ui'
 import { Box, Flex, Grid, Icon, Skeleton, Text } from '@upshot-tech/upshot-ui'
-import {
-  formatNumber,
-  TableBody,
-  TableCell,
-} from '@upshot-tech/upshot-ui'
+import { formatNumber, TableBody, TableCell } from '@upshot-tech/upshot-ui'
 import { PIXELATED_CONTRACTS } from 'constants/'
 import { PAGE_SIZE } from 'constants/'
 import NextLink from 'next/link'
@@ -20,7 +20,7 @@ import { formatDistance } from 'utils/time'
 import {
   genSortOptions,
   getDropdownValue,
-  handleChangeNFTColumnSortRadio
+  handleChangeNFTColumnSortRadio,
 } from '../../../../utils/tableSortDropdown'
 import {
   GET_EXPLORE_NFTS,
@@ -126,7 +126,13 @@ function NFTTableHead({
           hideRadio
           label="Sort by"
           name="sortBy"
-          onChange={(val) => handleChangeNFTColumnSortRadio(val, nftColumns, handleChangeSelection)}
+          onChange={(val) =>
+            handleChangeNFTColumnSortRadio(
+              val,
+              nftColumns,
+              handleChangeSelection
+            )
+          }
           options={genSortOptions(nftColumns)}
           value={getDropdownValue(selectedColumn, sortAscending, nftColumns)}
           closeOnSelect={true}
@@ -209,7 +215,7 @@ export default function ExploreNFTs({
   const isMobileOrTablet = breakpointIndex <= 2
 
   const [page, setPage] = useState(0)
-  
+
   // wrapper function for Pagination change
   const handlePageChange = ({ selected }: { selected: number }) => {
     setPage(selected)
@@ -257,7 +263,9 @@ export default function ExploreNFTs({
   if (loading)
     return (
       <ExplorePanelSkeleton>
-        <NFTTableHead {...{ selectedColumn, sortAscending, handleChangeSelection }} />
+        <NFTTableHead
+          {...{ selectedColumn, sortAscending, handleChangeSelection }}
+        />
       </ExplorePanelSkeleton>
     )
 
@@ -269,7 +277,9 @@ export default function ExploreNFTs({
 
   return (
     <>
-      <NFTItemsWrapper {...{ selectedColumn, sortAscending, handleChangeSelection }}>
+      <NFTItemsWrapper
+        {...{ selectedColumn, sortAscending, handleChangeSelection }}
+      >
         {data.assetGlobalSearch.assets.map(
           (
             {

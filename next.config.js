@@ -13,6 +13,10 @@ module.exports = {
         destination: '/dashboard/collection/:id',
       },
       {
+        source: '/analytics/collection/:id/items',
+        destination: '/dashboard/collection/:id/items',
+      },
+      {
         source: '/analytics/user/:address',
         destination: '/dashboard/user/:address',
       },

@@ -167,3 +167,49 @@ export const GET_TRAIT_STATS = gql`
     }
   }
 `
+
+/**
+ * Get Collection
+ */
+
+export type GetCollectionVars = {
+  id?: number
+}
+
+export type GetCollectionData = {
+  collectionById: {
+    name: string
+    description: string
+    imageUrl: string
+    size: string
+    isAppraised: boolean
+    numCollectors: number
+    latestStats: {
+      weekFloorChange: number
+      floor: string
+      marketCap: string
+      floorCap: string
+      pastWeekWeiVolume: string
+    }
+  }
+}
+
+export const GET_COLLECTION = gql`
+  query GetCollectionById($id: Int!) {
+    collectionById(id: $id) {
+      name
+      description
+      isAppraised
+      imageUrl
+      size
+      numCollectors
+      latestStats {
+        weekFloorChange
+        floor
+        marketCap
+        floorCap
+        pastWeekWeiVolume
+      }
+    }
+  }
+`

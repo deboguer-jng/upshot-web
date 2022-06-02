@@ -1,6 +1,4 @@
-export const genSortOptions = (
-  columns: {}
-) => {
+export const genSortOptions = (columns: {}) => {
   let sortOptions: string[] = []
   for (let key in columns) {
     sortOptions.push(columns[key] + ': low to high')
@@ -26,7 +24,7 @@ export const handleChangeNFTColumnSortRadio = (
 export const getDropdownValue = (
   selectedColumn: number,
   sortAscending: boolean,
-  columns: {},
+  columns: {}
 ) => {
   /* it maps 0, 1 -> 0
   0 -> 0
