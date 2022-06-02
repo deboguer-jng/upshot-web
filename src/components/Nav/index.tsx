@@ -13,6 +13,7 @@ import {
   useTheme,
 } from '@upshot-tech/upshot-ui'
 import { useWeb3React } from '@web3-react/core'
+import { InjectedConnector } from '@web3-react/injected-connector'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { ConnectorName, connectorsByName } from 'constants/connectors'
 import makeBlockie from 'ethereum-blockies-base64'
@@ -82,7 +83,7 @@ function useOutsideAlerter(ref) {
 
 export const Nav = () => {
   const { theme } = useTheme()
-  const { activate, deactivate, connector, library, account } = useWeb3React()
+  const { activate, deactivate, connector } = useWeb3React()
   const router = useRouter()
   const dispatch = useAppDispatch()
   const features = useAppSelector(selectFeatures)
@@ -136,6 +137,11 @@ export const Nav = () => {
     dispatch(setActivatingConnector(provider))
     activate(connectorsByName[provider], (err) => console.error(err))
     modalRef?.current?.click()
+  }
+
+  const getWalletName = () => {
+    if(connector instanceof InjectedConnector) return 'MetaMask'
+    if(connector instanceof WalletConnectConnector) return 'WalletConnect'
   }
 
   const handleNavKeyUp = () => {
@@ -370,7 +376,7 @@ export const Nav = () => {
           />
         </Modal>
         <Modal open={isSigning}>
-          <DialogModal header='Signing in' body='please sign the message with your wallet' />
+          <DialogModal header='Signing in' body={`Please sign in with ${getWalletName()}`} />
         </Modal>
       </Flex>
       {showSidebar && <SidebarShade />}
