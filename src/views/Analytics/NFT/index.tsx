@@ -339,7 +339,7 @@ export default function NFTView() {
                         })}
                       </Text>
                       <Tooltip
-                        tooltip={'How do we price NFTs?'}
+                        tooltip={'Appraised by Upshot'}
                         sx={{ marginLeft: '0', height: 18 }}
                       >
                         <Icon
