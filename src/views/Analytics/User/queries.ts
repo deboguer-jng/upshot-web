@@ -16,9 +16,7 @@ export type GetUserProfileData = {
   }
 }
 export const GET_PROFILE = gql`
-  query GetProfile(
-    $address: String
-  ) {
+  query GetProfile($address: String) {
     getUser(address: $address) {
       id
       username

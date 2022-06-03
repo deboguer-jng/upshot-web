@@ -45,15 +45,20 @@ export const layoutSlice = createSlice({
   },
 })
 
-export const { setShowSidebar, setShowHelpModal, setShowConnectModal, setAlertState } =
-  layoutSlice.actions
+export const {
+  setShowSidebar,
+  setShowHelpModal,
+  setShowConnectModal,
+  setAlertState,
+} = layoutSlice.actions
 
 export const selectShowSidebar = (state: RootState) => state.layout.showSidebar
 
 export const selectShowHelpModal = (state: RootState) =>
   state.layout.showHelpModal
 
-export const selectShowConnectModal = (state: RootState) => state.layout.showConnectModal
+export const selectShowConnectModal = (state: RootState) =>
+  state.layout.showConnectModal
 
 export const selectAlertState = (state: RootState) => state.layout.alertState
 

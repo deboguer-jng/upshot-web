@@ -21,13 +21,13 @@ import { getAuthPayload } from 'utils/auth'
 import { logEvent } from 'utils/googleAnalytics'
 
 export interface useAuthType {
-  isAuthed: boolean,
-  isSigning: boolean,
-  triggerAuth: Function 
+  isAuthed: boolean
+  isSigning: boolean
+  triggerAuth: Function
 }
 
-export function useAuth(): useAuthType{
-  const { library, account } = useWeb3React()
+export function useAuth(): useAuthType {
+  const { library } = useWeb3React()
   const dispatch = useAppDispatch()
   const authToken = useSelector(selectAuthToken)
   const address = useAppSelector(selectAddress)
@@ -110,7 +110,7 @@ export function useAuth(): useAuthType{
           return params?.onError?.('no auth token')
 
         dispatch(setAuthToken(signInData.signIn.authToken))
-        
+
         const authed = !!(address && signInData.signIn.authToken)
         setIsAuthed(authed)
 
