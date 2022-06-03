@@ -27,7 +27,7 @@ import { useEffect, useState } from 'react'
 import {
   genSortOptions,
   getDropdownValue,
-  handleChangeNFTColumnSortRadio
+  handleChangeNFTColumnSortRadio,
 } from '../../../../utils/tableSortDropdown'
 import { TRAIT_SEARCH, TraitSearchData, TraitSearchVars } from '../../queries'
 import { ExplorePanelSkeleton } from './NFTs'
@@ -147,7 +147,13 @@ function TraitsTableHead({
           hideRadio
           label="Sort by"
           name="sortBy"
-          onChange={(val) => handleChangeNFTColumnSortRadio(val, traitColumns, handleChangeSelection)}
+          onChange={(val) =>
+            handleChangeNFTColumnSortRadio(
+              val,
+              traitColumns,
+              handleChangeSelection
+            )
+          }
           options={genSortOptions(traitColumns)}
           value={getDropdownValue(selectedColumn, sortAscending, traitColumns)}
           closeOnSelect={true}
@@ -212,6 +218,10 @@ export default function ExploreTraits({
   const isMobile = breakpointIndex <= 1
   const [page, setPage] = useState(0)
 
+  const handlePageChange = ({ selected }: { selected: number }) => {
+    setPage(selected)
+  }
+
   const handleChangeSelection = (colIdx: number, order?: 'asc' | 'desc') => {
     onChangeSelection(colIdx, order)
     setPage(0)
@@ -245,7 +255,9 @@ export default function ExploreTraits({
   if (loading)
     return (
       <ExplorePanelSkeleton>
-        <TraitsTableHead {...{ selectedColumn, sortAscending, handleChangeSelection }} />
+        <TraitsTableHead
+          {...{ selectedColumn, sortAscending, handleChangeSelection }}
+        />
       </ExplorePanelSkeleton>
     )
 
@@ -261,7 +273,9 @@ export default function ExploreTraits({
 
   return (
     <>
-      <TraitsWrapper {...{ selectedColumn, sortAscending, handleChangeSelection }}>
+      <TraitsWrapper
+        {...{ selectedColumn, sortAscending, handleChangeSelection }}
+      >
         {data.traitSearch?.traits?.map(
           (
             {
@@ -429,7 +443,7 @@ export default function ExploreTraits({
           }
           pageRangeDisplayed={0}
           marginPagesDisplayed={0}
-          onPageChange={setPage}
+          onPageChange={handlePageChange}
         />
       </Flex>
     </>

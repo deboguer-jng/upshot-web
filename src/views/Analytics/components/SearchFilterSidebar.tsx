@@ -12,11 +12,12 @@ import {
   LabeledSwitch,
   Text,
   useBreakpointIndex,
+  useTheme,
 } from '@upshot-tech/upshot-ui'
 import { ethers } from 'ethers'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
-import { Label as LabelUI } from 'theme-ui'
+import { IconButton, Label as LabelUI } from 'theme-ui'
 import { parseEthString } from 'utils/number'
 
 import {
@@ -96,6 +97,9 @@ function TokenIdInput({ defaultValue, onBlur, onSubmit }) {
       </Text>
       <InputRoundedSearch
         fullWidth
+        sx={{
+          borderRadius: '10px',
+        }}
         placeholder="Token ID"
         onKeyPress={(e) => {
           if (e.key === 'Enter') onSubmit?.(e.currentTarget.value)
@@ -323,6 +327,10 @@ function TraitCategoryList({
           cursor: 'pointer',
           width: '100%',
           minWidth: '300px',
+          backgroundColor: 'grey-800',
+          padding: '10px 12px;',
+          borderRadius: '10px',
+          minHeight: '54px',
         }}
         onClick={() => setOpen(!open)}
       >
@@ -364,37 +372,34 @@ function TraitCategoryList({
 
 export default function SearchFilterSidebar({
   collectionId: defaultCollectionId,
-  collectionName: defaultCollectionName,
+  open,
+  onOpenSidebar,
   onApply,
   onHideFilters,
 }: {
   collectionId?: number
-  collectionName?: string
+  open?: boolean
+  onOpenSidebar?: () => void
   onApply?: ({ query }) => void
   onHideFilters?: () => void
 }) {
+  const { theme } = useTheme()
   const router = useRouter()
-  const [collectionId, setCollectionId] = useState(defaultCollectionId)
-  const [collectionName, setCollectionName] = useState(defaultCollectionName)
+  const [collectionId, setCollectionId] = useState<number>()
   const [tokenId, setTokenId] = useState('')
   const [minPrice, setMinPrice] = useState('')
   const [maxPrice, setMaxPrice] = useState('')
-  const [traitANDMatch, setTraitANDMatch] = useState(true)
+  const [traitANDMatch, setTraitANDMatch] = useState(false)
   const [traitIds, setTraitIds] = useState<number[]>([])
-  const [listedOnly, setListedOnly] = useState(false)
+  const [listedOnly, setListedOnly] = useState(true)
   const breakpointIndex = useBreakpointIndex()
-  const isMobile = breakpointIndex <= 1
+  const isMobile = breakpointIndex <= 2
 
   useEffect(() => {
-    if (!router.query) return
+    if (!router?.query?.id) return
 
-    const collectionId = router.query.collectionId
-      ? Number(router.query.collectionId)
-      : undefined
-    if (!defaultCollectionId) setCollectionId(collectionId)
-
-    const collectionName = router.query.collectionName as string
-    if (!defaultCollectionName) setCollectionName(collectionName)
+    const collId = router.query.id ? Number(router.query.id) : undefined
+    setCollectionId(collId || defaultCollectionId)
 
     const tokenId = router.query.tokenId as string
     setTokenId(tokenId)
@@ -411,7 +416,7 @@ export default function SearchFilterSidebar({
     }
 
     if (router.query.listedOnly) {
-      const listedOnly = router.query.listedOnly === 'true'
+      const listedOnly = router.query.listedOnly != 'false'
       setListedOnly(listedOnly)
     }
 
@@ -419,7 +424,7 @@ export default function SearchFilterSidebar({
       .flat()
       .map((val) => Number(val))
     setTraitIds(traitIds)
-  }, [router.query, defaultCollectionId, defaultCollectionName])
+  }, [router.query, defaultCollectionId])
 
   const { data } = useQuery<GetCollectionTraitsData, GetCollectionTraitsVars>(
     GET_COLLECTION_TRAITS,
@@ -456,7 +461,6 @@ export default function SearchFilterSidebar({
       query: {
         traits: traitIds,
         collectionId,
-        collectionName,
         minPrice,
         maxPrice,
         tokenId,
@@ -492,110 +496,161 @@ export default function SearchFilterSidebar({
   }
 
   return (
-    <Flex sx={{ minWidth: 300, flexDirection: 'column', gap: 8 }}>
+    <>
       {!isMobile && (
-        <Flex sx={{ alignItems: 'center', gap: 4 }}>
-          <Icon icon="filter" size={24} color="white" />
-          <Text color="white" sx={{ fontSize: 4, fontWeight: 'bold' }}>
-            Search Filters
-          </Text>
+        <Flex
+          sx={{
+            alignItems: 'center',
+            gap: 4,
+            position: ['static', 'static', 'sticky', 'sticky'],
+            height: 'min-content',
+            width: '100%',
+            top: '0px',
+            backgroundColor: 'black',
+            zIndex: '20',
+            padding: '10px 0',
+          }}
+        >
+          <IconButton
+            onClick={onOpenSidebar}
+            sx={{
+              padding: '25px',
+              borderRadius: '10px',
+              backgroundColor: `${theme.rawColors['grey-800']}`,
+            }}
+          >
+            <Icon icon="filter" size={24} color="white" />
+          </IconButton>
+          <Flex sx={{ alignItems: 'center' }}>
+            <Text
+              color="white"
+              sx={{
+                whiteSpace: 'nowrap',
+                position: 'absolute',
+                pointerEvents: 'none',
+                fontSize: 4,
+                fontWeight: 'bold',
+                opacity: open ? 1 : 0,
+                transition: 'default',
+              }}
+            >
+              Search Filters
+            </Text>
+          </Flex>
         </Flex>
       )}
+      <Flex
+        sx={{
+          maxWidth: ['100%', '100%', '100%', open ? 316 : 0],
+          overflowY: ['auto', 'auto', 'auto', open ? 'auto' : 'hidden'],
+          overflowX: 'hidden',
+          opacity: [1, 1, 1, open ? 1 : 0],
+          flexDirection: 'column',
+          paddingRight: open ? '8px' : 0,
+          gap: 8,
+          width: ['100%', '100%', '100%', 'auto'],
+          height: ['auto', 'auto', 'auto', '100%'],
+          transform: [
+            'none',
+            'none',
+            'none',
+            `translateX(${open ? 0 : '-316px'})`,
+          ],
+          transition: 'default',
+        }}
+        css={theme.scroll.thin}
+      >
+        {!!collectionId ? (
+          <>
+            <PriceInput
+              onToggleListed={() => {
+                handleApplyFilters({ listedOnly: !listedOnly })
+                setListedOnly(!listedOnly)
+              }}
+              onChangeMin={(minPrice: string) => setMinPrice(minPrice)}
+              onChangeMax={(maxPrice: string) => setMaxPrice(maxPrice)}
+              onSubmit={(minPrice: string, maxPrice: string) => {
+                handleApplyFilters({ minPrice, maxPrice })
+              }}
+              {...{ listedOnly, minPrice, maxPrice }}
+            />
 
-      {!!collectionId ? (
-        <>
-          <TokenIdInput
-            defaultValue={tokenId}
-            key={tokenId}
-            onBlur={(e: React.KeyboardEvent<HTMLInputElement>) =>
-              setTokenId(e.currentTarget.value)
-            }
-            onSubmit={(tokenId) => {
-              handleApplyFilters({ tokenId })
-            }}
-          />
+            <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+              <Text color="grey-500" sx={{ fontSize: 4, fontWeight: 'bold' }}>
+                {name} Attributes
+              </Text>
 
-          <PriceInput
-            onToggleListed={() => {
-              handleApplyFilters({ listedOnly: !listedOnly })
-              setListedOnly(!listedOnly)
-            }}
-            onChangeMin={(minPrice: string) => setMinPrice(minPrice)}
-            onChangeMax={(maxPrice: string) => setMaxPrice(maxPrice)}
-            onSubmit={(minPrice: string, maxPrice: string) => {
-              handleApplyFilters({ minPrice, maxPrice })
-            }}
-            {...{ listedOnly, minPrice, maxPrice }}
-          />
-
-          <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-            <Text color="grey-500" sx={{ fontSize: 4, fontWeight: 'bold' }}>
-              {name} Attributes
-            </Text>
-
-            <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-              <LabeledSwitch
-                on={traitANDMatch}
-                onToggle={() => {
-                  handleApplyFilters({ traitANDMatch: !traitANDMatch })
-                  setTraitANDMatch(!traitANDMatch)
-                }}
-                labelOff="Contains any"
-                labelOn="Contains all"
-              />
-
-              <AttributeSearch
-                suggestions={traits}
-                onSuggestionSelect={toggleTraitSelection}
-              />
-
-              <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-                {traitIds
-                  .filter((id) => id in traitsLUT)
-                  .map((id, idx) => (
-                    <LabelAttribute
-                      variant="removeable"
-                      key={idx}
-                      onRemove={() => toggleTraitSelection(Number(id))}
-                    >
-                      {formatTraitLabel(traitsLUT[id])}
-                    </LabelAttribute>
-                  ))}
-              </Flex>
-
-              <Box>
-                <Flex
+              <Flex sx={{ flexDirection: 'column', gap: 4 }}>
+                <Box
                   sx={{
-                    display: 'inline-flex',
-                    gap: 4,
-                    flexDirection: 'column',
+                    margin: '0 auto',
+                    width: '95%',
                   }}
                 >
-                  {traitGroups.map(({ traitType, traits }, idx) => (
-                    <TraitCategoryList
-                      {...{ traitType, traits, traitIds }}
-                      onToggleSelection={toggleTraitSelection}
-                      key={idx}
-                    />
-                  ))}
-                </Flex>
-              </Box>
-            </Flex>
-          </Flex>
-        </>
-      ) : (
-        <>
-          <CollectionNameInput onSelect={handleApplyFilters} />
-        </>
-      )}
+                  <LabeledSwitch
+                    on={traitANDMatch}
+                    onToggle={() => {
+                      handleApplyFilters({ traitANDMatch: !traitANDMatch })
+                      setTraitANDMatch(!traitANDMatch)
+                    }}
+                    labelOff="Contains any"
+                    labelOn="Contains all"
+                  />
+                </Box>
 
-      {isMobile && (
-        <Flex sx={{ justifyContent: 'flex-end' }}>
-          <Button capitalize onClick={handleApplyFiltersClick}>
-            Apply Filters
-          </Button>
-        </Flex>
-      )}
-    </Flex>
+                <AttributeSearch
+                  suggestions={traits}
+                  onSuggestionSelect={toggleTraitSelection}
+                />
+
+                <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+                  {traitIds
+                    .filter((id) => id in traitsLUT)
+                    .map((id, idx) => (
+                      <LabelAttribute
+                        variant="removeable"
+                        key={idx}
+                        onRemove={() => toggleTraitSelection(Number(id))}
+                      >
+                        {formatTraitLabel(traitsLUT[id])}
+                      </LabelAttribute>
+                    ))}
+                </Flex>
+
+                <Box>
+                  <Flex
+                    sx={{
+                      display: 'inline-flex',
+                      gap: 1,
+                      flexDirection: 'column',
+                    }}
+                  >
+                    {traitGroups.map(({ traitType, traits }, idx) => (
+                      <TraitCategoryList
+                        {...{ traitType, traits, traitIds }}
+                        onToggleSelection={toggleTraitSelection}
+                        key={idx}
+                      />
+                    ))}
+                  </Flex>
+                </Box>
+              </Flex>
+            </Flex>
+          </>
+        ) : (
+          <>
+            <CollectionNameInput onSelect={handleApplyFilters} />
+          </>
+        )}
+
+        {isMobile && (
+          <Flex sx={{ justifyContent: 'flex-end', py: 2 }}>
+            <Button capitalize onClick={handleApplyFiltersClick}>
+              Apply Filters
+            </Button>
+          </Flex>
+        )}
+      </Flex>
+    </>
   )
 }

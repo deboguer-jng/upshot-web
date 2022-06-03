@@ -654,7 +654,9 @@ export default function UserView() {
     fetchMoreTxHistories({
       variables: {
         txOffset: txHistoryData?.getTxHistory?.txHistory?.events?.length,
-        txLimit: stopIndex - (txHistoryData?.getTxHistory?.txHistory?.events?.length ?? 0)
+        txLimit:
+          stopIndex -
+          (txHistoryData?.getTxHistory?.txHistory?.events?.length ?? 0),
       },
     })
 

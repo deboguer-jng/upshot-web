@@ -9,6 +9,11 @@
   status = 200
 
 [[redirects]]
+  from = "/analytics/collection/:id/items"
+  to = "/dashboard/collection/[id]/items.html"
+  status = 200
+
+[[redirects]]
   from = "/analytics/user/:address"
   to = "/dashboard/user/[address].html?address=:address"
   status = 200

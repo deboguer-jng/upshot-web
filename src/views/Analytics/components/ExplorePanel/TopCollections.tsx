@@ -20,7 +20,7 @@ import { getPriceChangeLabel } from 'utils/number'
 import {
   genSortOptions,
   getDropdownValue,
-  handleChangeNFTColumnSortRadio
+  handleChangeNFTColumnSortRadio,
 } from '../../../../utils/tableSortDropdown'
 import {
   GET_EXPLORE_COLLECTIONS,
@@ -145,9 +145,19 @@ function CollectionTableHead({
           hideRadio
           label="Sort by"
           name="sortBy"
-          onChange={(val) => handleChangeNFTColumnSortRadio(val, collectionColumns, handleChangeSelection)}
+          onChange={(val) =>
+            handleChangeNFTColumnSortRadio(
+              val,
+              collectionColumns,
+              handleChangeSelection
+            )
+          }
           options={genSortOptions(collectionColumns)}
-          value={getDropdownValue(selectedColumn, sortAscending, collectionColumns)}
+          value={getDropdownValue(
+            selectedColumn,
+            sortAscending,
+            collectionColumns
+          )}
           closeOnSelect={true}
           style={{
             marginTop: '10px',
@@ -209,6 +219,11 @@ export default function ExploreCollections({
   const isMobile = breakpointIndex <= 1
   const [page, setPage] = useState(0)
 
+  // wrapper function for Pagination change
+  const handlePageChange = ({ selected }: { selected: number }) => {
+    setPage(selected)
+  }
+
   const handleChangeSelection = (colIdx: number, order?: 'asc' | 'desc') => {
     onChangeSelection(colIdx, order)
     setPage(0)
@@ -236,7 +251,9 @@ export default function ExploreCollections({
   if (loading)
     return (
       <ExplorePanelSkeleton>
-        <CollectionTableHead {...{ selectedColumn, sortAscending, handleChangeSelection }} />
+        <CollectionTableHead
+          {...{ selectedColumn, sortAscending, handleChangeSelection }}
+        />
       </ExplorePanelSkeleton>
     )
 
@@ -394,7 +411,7 @@ export default function ExploreCollections({
           pageCount={Math.ceil(data.searchCollectionByMetric.count / PAGE_SIZE)}
           pageRangeDisplayed={0}
           marginPagesDisplayed={0}
-          onPageChange={setPage}
+          onPageChange={handlePageChange}
         />
       </Flex>
     </>

@@ -1,16 +1,11 @@
 import { useQuery } from '@apollo/client'
 import {
-  Avatar,
   Button,
-  Icon,
-  IconButton,
-  imageOptimizer,
   InputRoundedSearch,
   NFTCard,
   SpinnerBoxTemplate,
-  theme,
-  Tooltip,
   useBreakpointIndex,
+  useTheme,
 } from '@upshot-tech/upshot-ui'
 import { Container } from '@upshot-tech/upshot-ui'
 import {
@@ -20,7 +15,6 @@ import {
   Flex,
   formatNumber,
   Grid,
-  Link,
   Text,
 } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
@@ -29,23 +23,18 @@ import { PIXELATED_CONTRACTS } from 'constants/'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useSelector } from 'react-redux'
-import { useAppDispatch } from 'redux/hooks'
-import { selectShowHelpModal, setShowHelpModal } from 'redux/reducers/layout'
-import { shortenAddress } from 'utils/address'
-import { getAssetName } from 'utils/asset'
+import TraitStats from 'views/Analytics/Search/TraitStats'
 
 import {
   genSortOptions,
   getDropdownValue,
   handleChangeNFTColumnSortRadio,
-} from '../../../utils/tableSortDropdown'
-import TopCollections from '../../Analytics/components/ExplorePanel/TopCollections'
-import Breadcrumbs from '../components/Breadcrumbs'
-import SearchFilterSidebar from '../components/SearchFilterSidebar'
-import NFTSearchResults, {
-  NFTSearchResultsSkeleton,
-} from './NFTSearchResultsListView'
+} from '../../../../utils/tableSortDropdown'
+import TopCollections from '../../../Analytics/components/ExplorePanel/TopCollections'
+import Breadcrumbs from '../../components/Breadcrumbs'
+import CollectionHeader from '../../components/CollectionHeader'
+import SearchFilterSidebar from '../../components/SearchFilterSidebar'
+import { NFTSearchResultsSkeleton } from '../../Search/NFTSearchResultsListView'
 import {
   GET_ASSETS_SEARCH,
   GET_COLLECTION,
@@ -53,8 +42,7 @@ import {
   GetAssetsSearchVars,
   GetCollectionData,
   GetCollectionVars,
-} from './queries'
-import TraitStats from './TraitStats'
+} from '../../Search/queries'
 
 const ROW_SIZE = 4
 const RESULTS_PER_PAGE = 25
@@ -89,6 +77,8 @@ enum BREAKPOINT_INDEXES {
 
 function TokenIdInput({ defaultValue, onSubmit }) {
   const [value, setValue] = useState(defaultValue)
+  const breakpointIndex = useBreakpointIndex()
+  const isMobile = breakpointIndex <= 2
 
   return (
     <Flex
@@ -98,6 +88,7 @@ function TokenIdInput({ defaultValue, onSubmit }) {
         grow: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        width: isMobile ? '100%' : 'auto',
       }}
     >
       <InputRoundedSearch
@@ -109,12 +100,15 @@ function TokenIdInput({ defaultValue, onSubmit }) {
           minWidth: '300px',
         }}
         buttonProps={{
-          onClick: () => setValue(''),
+          onClick: () => {
+            setValue('')
+            onSubmit?.('')
+          },
         }}
         placeholder="Search by token ID or name"
         onChange={(e) => setValue(e.currentTarget.value)}
         onKeyPress={(e) => {
-          if (e.key === 'Enter') onSubmit?.(value)
+          if (e.key === 'Enter') onSubmit?.(e.currentTarget.value)
         }}
         {...{ value }}
       />
@@ -122,20 +116,14 @@ function TokenIdInput({ defaultValue, onSubmit }) {
   )
 }
 
-export default function SearchView() {
+export default function CollectionItemsView() {
   const router = useRouter()
-  const [page, setPage] = useState(0)
-  const dispatch = useAppDispatch()
-  const helpOpen = useSelector(selectShowHelpModal)
-  const toggleHelpModal = () => dispatch(setShowHelpModal(!helpOpen))
   const scrollRef = useRef<any>(null)
 
+  const { theme } = useTheme()
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 2
-
-  const collectionId = router.query.collectionId
-    ? Number(router.query.collectionId)
-    : undefined
+  const collectionId = Number(router.query.id ?? 0)
 
   const tokenId = router.query.tokenId as string
   const minPrice = router.query.minPrice as string
@@ -146,7 +134,7 @@ export default function SearchView() {
   const collectionSearch = router.query.collectionSearch as string
   const [selectedColumn, setSelectedColumn] = useState<number>(0)
   const [sortAscending, setSortAscending] = useState(false)
-  const [listView, setListView] = useState(false)
+  const [listView] = useState(false)
   const [openMobileFilters, setOpenMobileFilters] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [assetOffset, setAssetOffset] = useState(0)
@@ -200,7 +188,6 @@ export default function SearchView() {
 
   const chunkSize = chunks[breakpointIndex]
   const loadArr = [...new Array(ROW_SIZE * chunkSize)]
-  const searchQueryParam = (router.query.query as string) ?? ''
 
   const {
     loading,
@@ -225,14 +212,25 @@ export default function SearchView() {
     skip: !collectionId,
   })
 
-  const { loading: collectionLoading, data: collectionData } = useQuery<
+  const { data: collectionData, loading: collectionLoading } = useQuery<
     GetCollectionData,
     GetCollectionVars
   >(GET_COLLECTION, {
+    fetchPolicy: 'network-only',
     errorPolicy: 'all',
     variables: { id: collectionId },
     skip: !collectionId,
   })
+
+  useEffect(() => {
+    if (collectionData?.collectionById.isAppraised === false) {
+      setSelectedNFTColumn(2)
+      setSortNFTsAscending(true)
+    } else if (selectedColumn !== 0) {
+      setSelectedColumn(0)
+      setSortNFTsAscending(false)
+    }
+  }, [collectionData])
 
   /* Infinite scroll: Assets */
   useEffect(() => {
@@ -316,9 +314,8 @@ export default function SearchView() {
   }
 
   const handleApplySearch = ({ query }) => {
-    setPage(0)
     router.push({
-      pathname: '/analytics/search',
+      pathname: `/analytics/collection/${collectionId}/items`,
       query,
     })
   }
@@ -361,12 +358,63 @@ export default function SearchView() {
       >
         <Breadcrumbs crumbs={breadcrumbs} />
 
+        <CollectionHeader id={collectionId} />
+        {!!collectionId && traitIds.length > 0 && (
+          <TraitStats
+            selectedColumn={selectedTraitsColumn}
+            sortAscending={sortTraitsAscending}
+            onChangeSelection={handleChangeTraitsSelection}
+            {...{ collectionId, traitIds }}
+          />
+        )}
+
         <Grid
           sx={{
-            gridTemplateColumns: ['1fr', '1fr', '1fr', '1fr'],
+            gridTemplateColumns: ['1fr', '1fr', '1fr', 'auto 1fr'],
             gap: [5, 5, 5, 8],
           }}
         >
+          {isMobile ? (
+            <>
+              <Box>
+                <Accordion
+                  isDropdown
+                  title="Search Filters"
+                  open={openMobileFilters}
+                  onClick={() => setOpenMobileFilters(!openMobileFilters)}
+                  onClose={() => setOpenMobileFilters(false)}
+                >
+                  <Box sx={{ paddingTop: 4 }}>
+                    <SearchFilterSidebar
+                      collectionId={collectionId}
+                      onHideFilters={() => setOpenMobileFilters(false)}
+                      onApply={handleApplySearch}
+                    />
+                  </Box>
+                </Accordion>
+              </Box>
+            </>
+          ) : (
+            <Flex
+              sx={{
+                flexDirection: 'column',
+                gap: 4,
+                position: ['static', 'static', 'sticky', 'sticky'],
+                alignSelf: 'flex-start',
+                paddingRight: '10px',
+                top: '160px',
+                maxHeight: 'calc(100vh - 160px)',
+              }}
+            >
+              <SearchFilterSidebar
+                collectionId={collectionId}
+                onApply={handleApplySearch}
+                open={sidebarOpen}
+                onOpenSidebar={handleToggleSidebar}
+              />
+            </Flex>
+          )}
+
           <Flex
             sx={{
               flex: '1 auto auto',
@@ -375,254 +423,6 @@ export default function SearchView() {
               gap: 6,
             }}
           >
-            <Flex sx={{ flexDirection: 'column' }}>
-              {collectionData?.collectionById?.name &&
-                collectionData?.collectionById?.imageUrl &&
-                collectionId && (
-                  <Flex sx={{ flexDirection: 'column', gap: '16px' }}>
-                    <Grid
-                      columns={['1fr', '1fr', '1fr 1fr']}
-                      sx={{ gap: '40px' }}
-                    >
-                      <Flex sx={{ flexDirection: 'column', gap: '16px' }}>
-                        <Flex
-                          sx={{ gap: 6, height: 100, alignItems: 'center' }}
-                        >
-                          <Box
-                            sx={{
-                              backgroundColor: '#231F20',
-                              minWidth: '63px',
-                              padding: isMobile ? '4px' : '8px',
-                              borderRadius: '50%',
-
-                              flexShrink: 0,
-                            }}
-                          >
-                            <Avatar
-                              size="xl"
-                              sx={{
-                                width: isMobile ? '55px' : '100px',
-                                height: isMobile ? '55px' : '100px',
-                                minWidth: 'unset',
-                              }}
-                              src={
-                                imageOptimizer(
-                                  collectionData?.collectionById?.imageUrl,
-                                  {
-                                    width: parseInt(
-                                      theme.images.avatar.xl.size
-                                    ),
-                                    height: parseInt(
-                                      theme.images.avatar.xl.size
-                                    ),
-                                  }
-                                ) ?? collectionData?.collectionById?.imageUrl
-                              }
-                            />
-                          </Box>
-                          <Flex sx={{ flexDirection: 'column', gap: 2 }}>
-                            <Flex sx={{ alignItems: 'center', gap: 2 }}>
-                              <Text
-                                variant="h1Secondary"
-                                sx={{ lineHeight: '2rem' }}
-                              >
-                                {collectionData?.collectionById?.name}
-                              </Text>
-                              {collectionData?.collectionById?.isAppraised && (
-                                <Tooltip
-                                  tooltip={'Appraised by Upshot'}
-                                  sx={{
-                                    marginLeft: '0',
-                                    marginTop: '5px',
-                                    height: 25,
-                                  }}
-                                >
-                                  <Icon
-                                    icon="upshot"
-                                    onClick={toggleHelpModal}
-                                    size={25}
-                                    color="primary"
-                                  />
-                                </Tooltip>
-                              )}
-                            </Flex>
-
-                            <Flex
-                              sx={{
-                                flexDirection: 'row',
-                                gap: 2,
-                                flexWrap: 'wrap',
-                                height: 'min-content',
-                              }}
-                            >
-                              {collectionData?.collectionById?.size && (
-                                <Flex
-                                  sx={{
-                                    flexDirection: 'row',
-                                    gap: 1,
-                                    width: 'min-content',
-                                  }}
-                                >
-                                  <Text color="grey" variant="large">
-                                    NFTs:
-                                  </Text>
-                                  <Text
-                                    color="white"
-                                    variant="large"
-                                    sx={{
-                                      fontWeight: 600,
-                                    }}
-                                  >
-                                    {formatNumber(
-                                      collectionData.collectionById.size
-                                    )}
-                                  </Text>
-                                </Flex>
-                              )}
-                              {collectionData?.collectionById?.latestStats
-                                ?.floor && (
-                                <Flex
-                                  sx={{
-                                    flexDirection: 'row',
-                                    gap: 1,
-                                    width: 'min-content',
-                                  }}
-                                >
-                                  <Text color="grey" variant="large">
-                                    Floor:
-                                  </Text>
-                                  <Text
-                                    color="white"
-                                    variant="large"
-                                    sx={{
-                                      fontWeight: 600,
-                                    }}
-                                  >
-                                    Ξ
-                                    {formatNumber(
-                                      collectionData.collectionById.latestStats
-                                        .floor,
-                                      { fromWei: true, decimals: 2 }
-                                    )}
-                                  </Text>
-                                  {collectionData?.collectionById?.latestStats
-                                    ?.weekFloorChange &&
-                                    collectionData?.collectionById?.latestStats
-                                      ?.weekFloorChange != 0 && (
-                                      <Text
-                                        color={
-                                          collectionData.collectionById
-                                            .latestStats.weekFloorChange > 0
-                                            ? 'green'
-                                            : 'red'
-                                        }
-                                        variant="large"
-                                      >
-                                        (
-                                        {
-                                          collectionData.collectionById
-                                            .latestStats.weekFloorChange
-                                        }
-                                        %)
-                                      </Text>
-                                    )}
-                                </Flex>
-                              )}
-                              {collectionData?.collectionById?.latestStats
-                                ?.pastWeekWeiVolume && (
-                                <Flex
-                                  sx={{
-                                    flexDirection: 'row',
-                                    gap: 1,
-                                    width: 'min-content',
-                                  }}
-                                >
-                                  <Text
-                                    color="grey"
-                                    variant="large"
-                                    sx={{
-                                      whiteSpace: 'nowrap',
-                                    }}
-                                  >
-                                    Volume (1W):
-                                  </Text>
-                                  <Text
-                                    color="white"
-                                    variant="large"
-                                    sx={{
-                                      fontWeight: 600,
-                                    }}
-                                  >
-                                    Ξ
-                                    {formatNumber(
-                                      collectionData.collectionById.latestStats
-                                        .pastWeekWeiVolume,
-                                      {
-                                        fromWei: true,
-                                        decimals: 2,
-                                        kmbUnits: true,
-                                      }
-                                    )}
-                                  </Text>
-                                </Flex>
-                              )}
-                            </Flex>
-                          </Flex>
-                        </Flex>
-                      </Flex>
-                      <Flex
-                        sx={{
-                          flexDirection: 'column',
-                          gap: '16px',
-                        }}
-                      >
-                        <Flex
-                          sx={{
-                            justifyContent: 'flex-end',
-                            minHeight: isMobile ? 0 : 100,
-                            marginBottom: isMobile ? 5 : 0,
-                            width: isMobile ? '100%' : 'auto',
-                          }}
-                        >
-                          <Link
-                            href={`/analytics/collection/${collectionId}`}
-                            sx={{
-                              width: isMobile ? '100%' : 'auto',
-                            }}
-                            component={NextLink}
-                            noHover
-                          >
-                            <Button
-                              icon={<Icon icon="analytics" />}
-                              sx={{
-                                width: isMobile ? '100%' : 'auto',
-                                '& span': {
-                                  textTransform: 'none',
-                                },
-                                '&:not(:hover) svg': {
-                                  path: { fill: '#000 !important' },
-                                },
-                              }}
-                            >
-                              Collection Analytics
-                            </Button>
-                          </Link>
-                        </Flex>
-                      </Flex>
-                    </Grid>
-                  </Flex>
-                )}
-
-              {!!collectionId && traitIds.length > 0 && (
-                <TraitStats
-                  selectedColumn={selectedTraitsColumn}
-                  sortAscending={sortTraitsAscending}
-                  onChangeSelection={handleChangeTraitsSelection}
-                  {...{ collectionId, traitIds }}
-                />
-              )}
-            </Flex>
-
             {error ? (
               <div>There was an error completing your request</div>
             ) : (
@@ -660,8 +460,6 @@ export default function SearchView() {
                           handleApplySearch({
                             query: {
                               ...router.query,
-                              traits: traitIds,
-                              collectionId,
                               tokenId,
                             },
                           })
@@ -694,7 +492,7 @@ export default function SearchView() {
                     </Flex>
                   </Flex>
                 )}
-                {!error && !loading && !!collectionId && (
+                {!!collectionId && !error && !loading && (
                   <Box sx={{ height: '18px' }}>
                     {!!data?.assetGlobalSearch?.count ? (
                       <Text>
@@ -716,7 +514,7 @@ export default function SearchView() {
                         }}
                       >
                         <Text variant="h3Primary">No results found</Text>
-                        {listedOnly == 'true' && collectionId && (
+                        {listedOnly == 'true' && (
                           <>
                             <Flex sx={{ maxWidth: '300px' }}>
                               <Text
@@ -734,7 +532,6 @@ export default function SearchView() {
                                 handleApplySearch({
                                   query: {
                                     ...router.query,
-                                    collectionId,
                                     listedOnly: false,
                                   },
                                 })

@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { ScatterChart, ChartDataItem } from '@upshot-tech/upshot-ui'
+import { ChartDataItem, ScatterChart } from '@upshot-tech/upshot-ui'
 import { shortenAddress } from 'utils/address'
 
 import {
@@ -34,14 +34,21 @@ export default function CollectionScatterChart({
     return <ScatterChart noData />
 
   const chartData = data.collectionById.allSaleEvents.map(
-    ({ ethFloatPrice, millisecondsTimestamp, asset, assetEvent }): ChartDataItem => {
+    ({
+      ethFloatPrice,
+      millisecondsTimestamp,
+      asset,
+      assetEvent,
+    }): ChartDataItem => {
       return {
         x: millisecondsTimestamp,
         y: ethFloatPrice,
         id: asset.tokenId,
-        address: assetEvent?.txToAddress ? shortenAddress(assetEvent.txToAddress) : null,
+        address: assetEvent?.txToAddress
+          ? shortenAddress(assetEvent.txToAddress)
+          : null,
         gmi: assetEvent?.txToUser?.addresses[0]?.gmi,
-        ens: assetEvent?.txToUser?.addresses[0]?.ens
+        ens: assetEvent?.txToUser?.addresses[0]?.ens,
       }
     }
   )
