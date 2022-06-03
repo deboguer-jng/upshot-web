@@ -53,9 +53,12 @@ export default function SettingsView() {
   useEffect(() => {
     if (!isAuthed) {
       if (!active) dispatch(setShowConnectModal(true))
-      else triggerAuth({ onError: () => router.push('/analytics') })
+      else {
+        dispatch(setShowConnectModal(false))
+        triggerAuth({ onError: () => router.push('/analytics') })
+      }
     }
-  }, [isAuthed])
+  }, [isAuthed, active])
 
   const breadcrumbs = prevPath?.includes('/nft/')
     ? [
