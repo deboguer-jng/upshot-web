@@ -549,7 +549,7 @@ export default function SearchFilterSidebar({
           paddingRight: open ? '8px' : 0,
           gap: 8,
           width: ['100%', '100%', '100%', 'auto'],
-          height: ['800px', '800px', '800px', '100%'],
+          height: ['auto', 'auto', 'auto', '100%'],
           transform: [
             'none',
             'none',
