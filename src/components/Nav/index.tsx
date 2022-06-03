@@ -34,9 +34,12 @@ import {
   selectShowConnectModal,
   selectShowHelpModal,
   selectShowSidebar,
+  selectDialogModalState,
   setShowHelpModal,
   setShowSidebar,
-  setShowConnectModal
+  setShowConnectModal,
+  setDialogModalState,
+  DialogModals,
 } from 'redux/reducers/layout'
 import { setIsBeta } from 'redux/reducers/user'
 import {
@@ -93,6 +96,7 @@ export const Nav = () => {
   const address = useAppSelector(selectAddress)
   const showSidebar = useAppSelector(selectShowSidebar)
   const showConnect = useAppSelector(selectShowConnectModal)
+  const dialogModalState = useAppSelector(selectDialogModalState)
   const sidebarRef = useRef(null)
   const ens = useAppSelector(selectEns)
   const [navSearchTerm, setNavSearchTerm] = useState('')
@@ -226,14 +230,12 @@ export const Nav = () => {
   const handleShowSettings = useCallback(() => {
     if (isAuthed) router.push('/settings')
     else {
-      if (!active) return dispatch(setShowConnectModal(true))
       triggerAuth({
         onComplete: () => router.push('/settings'),
         onError: (e) => console.error('triggerAuth: ', e),
       })
     }
   }, [isAuthed, triggerAuth, active])
-
 
   const sidebar = (
     <Sidebar ref={sidebarRef}>
@@ -388,7 +390,7 @@ export const Nav = () => {
             onClose={toggleHelpModal}
           />
         </Modal>
-        <Modal open={isSigning}>
+        <Modal open={dialogModalState === DialogModals.SIGN_MESSAGE}>
           <DialogModal
             header="Signing in"
             body={`Please sign in with ${getWalletName()}`}

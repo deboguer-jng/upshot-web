@@ -20,7 +20,6 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
-import { setShowConnectModal } from 'redux/reducers/layout'
 import { selectAddress, selectEns } from 'redux/reducers/web3'
 import { Avatar, Box, Flex, Link, Text } from 'theme-ui'
 
@@ -52,11 +51,7 @@ export default function SettingsView() {
 
   useEffect(() => {
     if (!isAuthed) {
-      if (!active) dispatch(setShowConnectModal(true))
-      else {
-        dispatch(setShowConnectModal(false))
-        triggerAuth({ onError: () => router.push('/analytics') })
-      }
+      triggerAuth({ onError: () => router.push('/analytics') })
     }
   }, [isAuthed, active])
 

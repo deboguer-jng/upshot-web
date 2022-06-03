@@ -12,6 +12,7 @@ import { GET_NONCE, GetNonceData, GetNonceVars } from 'graphql/queries'
 import { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
+import { DialogModals, setDialogModalState, setShowConnectModal } from 'redux/reducers/layout'
 import {
   selectAddress,
   selectAuthToken,
@@ -64,17 +65,20 @@ export function useAuth(): useAuthType {
        * for an authToken, which is cached to redux and added to all graphQL headers.
        */
       if (!authToken) {
-        setIsSigning(true)
-
         const { data: nonceData, error: nonceError } = await getNonce({
           variables: { userAddress: address },
         })
 
         if (nonceError) return params?.onError?.(nonceError)
 
+        if (!library) return dispatch(setShowConnectModal(true))
+        else dispatch(setShowConnectModal(false))
+
         const signer = library.getSigner(address)
         let signature
 
+        dispatch(setDialogModalState(DialogModals.SIGN_MESSAGE))
+        
         try {
           const payload = getAuthPayload({
             address: address,
@@ -86,7 +90,7 @@ export function useAuth(): useAuthType {
           console.error(err)
         }
 
-        setIsSigning(false)
+        dispatch(setDialogModalState(null))
 
         if (!signature) return params?.onError?.('no signature')
 
