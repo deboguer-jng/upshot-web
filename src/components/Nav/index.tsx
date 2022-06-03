@@ -31,10 +31,12 @@ import { useSelector } from 'react-redux'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { selectFeatures } from 'redux/reducers/features'
 import {
+  selectShowConnectModal,
   selectShowHelpModal,
   selectShowSidebar,
   setShowHelpModal,
   setShowSidebar,
+  setShowConnectModal
 } from 'redux/reducers/layout'
 import { setIsBeta } from 'redux/reducers/user'
 import {
@@ -83,13 +85,14 @@ function useOutsideAlerter(ref) {
 
 export const Nav = () => {
   const { theme } = useTheme()
-  const { activate, deactivate, connector } = useWeb3React()
+  const { active, activate, deactivate, connector } = useWeb3React()
   const router = useRouter()
   const dispatch = useAppDispatch()
   const features = useAppSelector(selectFeatures)
 
   const address = useAppSelector(selectAddress)
   const showSidebar = useAppSelector(selectShowSidebar)
+  const showConnect = useAppSelector(selectShowConnectModal)
   const sidebarRef = useRef(null)
   const ens = useAppSelector(selectEns)
   const [navSearchTerm, setNavSearchTerm] = useState('')
@@ -97,12 +100,10 @@ export const Nav = () => {
     GetNavBarCollectionsData,
     GetNavBarCollectionsVars
   >(GET_NAV_BAR_COLLECTIONS)
-  const [open, setOpen] = useState(false)
   const helpOpen = useSelector(selectShowHelpModal)
   const modalRef = useRef<HTMLDivElement>(null)
   const helpModalRef = useRef<HTMLDivElement>(null)
   const isMobile = useBreakpointIndex() <= 1
-  const toggleModal = () => setOpen(!open)
   const toggleHelpModal = () => dispatch(setShowHelpModal(!helpOpen))
   const outsideClicked = useOutsideAlerter(sidebarRef)
   const { isAuthed, isSigning, triggerAuth } = useAuth()
@@ -212,6 +213,10 @@ export const Nav = () => {
     dispatch(setShowSidebar(!showSidebar))
   }
 
+  const handleToggleConnect = () => {
+    dispatch(setShowConnectModal(!showConnect))
+  }
+
   const getVariant = () => {
     if (features?.status?.maintenance) return 'maintenance'
 
@@ -220,12 +225,15 @@ export const Nav = () => {
 
   const handleShowSettings = useCallback(() => {
     if (isAuthed) router.push('/settings')
-    else
+    else {
+      if(!active) return dispatch(setShowConnectModal(true))
       triggerAuth({
         onComplete: () => router.push('/settings'),
         onError: (e) => console.error('triggerAuth: ', e),
       })
-  }, [isAuthed, triggerAuth])
+    }
+  }, [isAuthed, triggerAuth, active])
+
 
   const sidebar = (
     <Sidebar ref={sidebarRef}>
@@ -350,7 +358,7 @@ export const Nav = () => {
           onSearchKeyUp={handleNavKeyUp}
           onConnectClick={() => {
             if (showSidebar) handleToggleMenu()
-            toggleModal()
+            handleToggleConnect()
           }}
           onSettings={handleShowSettings}
           onDisconnectClick={handleDisconnect}
@@ -361,7 +369,7 @@ export const Nav = () => {
         >
           {showSidebar && sidebar}
         </Navbar>
-        <Modal ref={modalRef} onClose={toggleModal} {...{ open }} hideScroll>
+        <Modal ref={modalRef} onClose={handleToggleConnect} open={showConnect} hideScroll>
           <ConnectModal {...{ hideMetaMask }} onConnect={handleConnect} />
         </Modal>
         <Modal

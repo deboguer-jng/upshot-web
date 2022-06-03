@@ -9,6 +9,7 @@ export interface AlertState {
 export interface LayoutState {
   showSidebar: boolean
   showHelpModal: boolean
+  showConnectModal: boolean
   alertState: AlertState
 }
 
@@ -18,6 +19,7 @@ const initialState: LayoutState = {
    */
   showSidebar: false,
   showHelpModal: false,
+  showConnectModal: false,
   alertState: {
     showAlert: false,
     alertText: '',
@@ -34,19 +36,24 @@ export const layoutSlice = createSlice({
     setShowHelpModal: (state, action: PayloadAction<boolean>) => {
       state.showHelpModal = action.payload
     },
+    setShowConnectModal: (state, action: PayloadAction<boolean>) => {
+      state.showConnectModal = action.payload
+    },
     setAlertState: (state, action: PayloadAction<AlertState>) => {
       state.alertState = action.payload
     },
   },
 })
 
-export const { setShowSidebar, setShowHelpModal, setAlertState } =
+export const { setShowSidebar, setShowHelpModal, setShowConnectModal, setAlertState } =
   layoutSlice.actions
 
 export const selectShowSidebar = (state: RootState) => state.layout.showSidebar
 
 export const selectShowHelpModal = (state: RootState) =>
   state.layout.showHelpModal
+
+export const selectShowConnectModal = (state: RootState) => state.layout.showConnectModal
 
 export const selectAlertState = (state: RootState) => state.layout.alertState
 

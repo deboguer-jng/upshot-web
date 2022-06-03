@@ -11,6 +11,7 @@ import {
   TextareaRounded,
   useTheme
 } from '@upshot-tech/upshot-ui'
+import { useWeb3React } from '@web3-react/core'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import makeBlockie from 'ethereum-blockies-base64'
@@ -18,7 +19,8 @@ import { useAuth } from 'hooks/auth'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { useAppSelector } from 'redux/hooks'
+import { useAppDispatch, useAppSelector } from 'redux/hooks'
+import { setShowConnectModal } from 'redux/reducers/layout'
 import { selectAddress, selectEns } from 'redux/reducers/web3'
 import { Avatar, Box, Flex, Link, Text } from 'theme-ui'
 
@@ -33,7 +35,9 @@ export default function SettingsView() {
   const prevPath = storage.getItem('prevPath')
   const address = useAppSelector(selectAddress)
   const userEns = useAppSelector(selectEns)
-  const {isAuthed, triggerAuth} = useAuth();
+  const {active} = useWeb3React()
+  const {isAuthed, triggerAuth} = useAuth()
+  const dispatch = useAppDispatch()
   
   const [displayName, setDisplayName] = useState<string>()
   const [bio, setBio] = useState<string>()
@@ -43,8 +47,11 @@ export default function SettingsView() {
   })
 
   useEffect(() => {
-    if (!isAuthed) triggerAuth({onError: () => router.push('/analytics')})
-  }, [])
+    if (!isAuthed) {
+      if(!active) dispatch(setShowConnectModal(true))
+      else triggerAuth({onError: () => router.push('/analytics')})
+    }
+  }, [isAuthed])
 
   const breadcrumbs = prevPath?.includes('/nft/')
     ? [
