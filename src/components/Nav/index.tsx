@@ -31,15 +31,15 @@ import { useSelector } from 'react-redux'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { selectFeatures } from 'redux/reducers/features'
 import {
+  DialogModals,
+  selectDialogModalState,
   selectShowConnectModal,
   selectShowHelpModal,
   selectShowSidebar,
-  selectDialogModalState,
+  setDialogModalState,
+  setShowConnectModal,
   setShowHelpModal,
   setShowSidebar,
-  setShowConnectModal,
-  setDialogModalState,
-  DialogModals,
 } from 'redux/reducers/layout'
 import { setIsBeta } from 'redux/reducers/user'
 import {
