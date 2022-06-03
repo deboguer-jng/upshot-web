@@ -141,8 +141,8 @@ export const Nav = () => {
   }
 
   const getWalletName = () => {
-    if(connector instanceof InjectedConnector) return 'MetaMask'
-    if(connector instanceof WalletConnectConnector) return 'WalletConnect'
+    if (connector instanceof InjectedConnector) return 'MetaMask'
+    if (connector instanceof WalletConnectConnector) return 'WalletConnect'
   }
 
   const handleNavKeyUp = () => {
@@ -226,7 +226,7 @@ export const Nav = () => {
   const handleShowSettings = useCallback(() => {
     if (isAuthed) router.push('/settings')
     else {
-      if(!active) return dispatch(setShowConnectModal(true))
+      if (!active) return dispatch(setShowConnectModal(true))
       triggerAuth({
         onComplete: () => router.push('/settings'),
         onError: (e) => console.error('triggerAuth: ', e),
@@ -369,7 +369,12 @@ export const Nav = () => {
         >
           {showSidebar && sidebar}
         </Navbar>
-        <Modal ref={modalRef} onClose={handleToggleConnect} open={showConnect} hideScroll>
+        <Modal
+          ref={modalRef}
+          onClose={handleToggleConnect}
+          open={showConnect}
+          hideScroll
+        >
           <ConnectModal {...{ hideMetaMask }} onConnect={handleConnect} />
         </Modal>
         <Modal
@@ -384,7 +389,10 @@ export const Nav = () => {
           />
         </Modal>
         <Modal open={isSigning}>
-          <DialogModal header='Signing in' body={`Please sign in with ${getWalletName()}`} />
+          <DialogModal
+            header="Signing in"
+            body={`Please sign in with ${getWalletName()}`}
+          />
         </Modal>
       </Flex>
       {showSidebar && <SidebarShade />}

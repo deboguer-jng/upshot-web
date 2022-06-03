@@ -165,15 +165,15 @@ export default function SettingsView() {
                         <Text color={theme.colors['grey-500']}>Information</Text>
                         <InputRounded 
                           dark={true} 
-                        sx={{ padding: '16px' }}
-                        placeholder={
-                          userEns?.name ??
-                          initProfileData?.getUser?.addresses?.[0]?.ens ??
-                          initProfileData?.getUser?.addresses?.[0]?.address
-                        }
+                          sx={{ padding: '16px' }}
+                          placeholder={
+                            userEns?.name ??
+                            initProfileData?.getUser?.addresses?.[0]?.ens ??
+                            initProfileData?.getUser?.addresses?.[0]?.address
+                          }
                           value={displayName}
-                        onChange={onDisplayNameChange}
-                      />
+                          onChange={onDisplayNameChange}
+                        />
                         <TextareaRounded 
                           dark={true}
                           optional={true}
