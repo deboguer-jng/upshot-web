@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { ChartDataItem,ScatterChart } from '@upshot-tech/upshot-ui'
+import { ChartDataItem, ScatterChart } from '@upshot-tech/upshot-ui'
 import { shortenAddress } from 'utils/address'
 
 import {
