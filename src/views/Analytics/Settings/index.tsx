@@ -30,6 +30,7 @@ import {
   GET_PROFILE,
 } from '../User/queries'
 import { UpdateUserData, UpdateUserVars, UPDATE_USER } from './mutations'
+import NotificationsSettings from './Notifications'
 
 export default function SettingsView() {
   const { theme } = useTheme()
@@ -236,7 +237,7 @@ export default function SettingsView() {
               )}
             </SettingsMenuItem>
             <SettingsMenuItem label="Notifications">
-              
+              <NotificationsSettings />
             </SettingsMenuItem>
           </SettingsPanel>
         )}
