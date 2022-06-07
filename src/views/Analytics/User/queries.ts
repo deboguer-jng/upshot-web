@@ -1,5 +1,36 @@
 import { gql } from '@apollo/client'
 
+export type GetUserProfileVars = { address: string }
+export type GetUserProfileData = {
+  getUser: {
+    id: number
+    username: string
+    displayName: string
+    bio: string
+    avatar: string
+    addresses: {
+      address: string
+      ens: string
+      gmi: number
+    }[]
+  }
+}
+export const GET_PROFILE = gql`
+  query GetProfile($address: String) {
+    getUser(address: $address) {
+      id
+      username
+      displayName
+      bio
+      avatar
+      addresses {
+        address
+        ens
+      }
+    }
+  }
+`
+
 /**
  * Get collector stats
  * @see /user
@@ -22,6 +53,7 @@ export type GetCollectorData = {
     }
     firstAssetPurchaseTime: number
     bio: string
+    displayName: string
     numAssets: number
     addresses: {
       address: string
@@ -78,6 +110,7 @@ export const GET_COLLECTOR = gql`
       }
       firstAssetPurchaseTime
       bio
+      displayName
       numAssets
       addresses {
         address
