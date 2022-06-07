@@ -390,6 +390,7 @@ export const Nav = ({ onSignInRetry }: NavProps) => {
             body={`Please sign in ${getWalletName()}`}
             button="Retry"
             onButtonClick={e => handleSignInRetry()}
+            sx={{minWidth: 320}}
           />
         </Modal>
         <Modal
