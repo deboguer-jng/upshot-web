@@ -37,9 +37,7 @@ export default function SettingsView() {
   const prevPath = storage.getItem('prevPath')
   const address = useAppSelector(selectAddress)
   const userEns = useAppSelector(selectEns)
-  const { active } = useWeb3React()
   const { isAuthed, triggerAuth } = useAuth()
-  const dispatch = useAppDispatch()
   
   const [displayName, setDisplayName] = useState<string>()
   const [bio, setBio] = useState<string>()
@@ -48,11 +46,13 @@ export default function SettingsView() {
     onError: err => console.log(err)
   })
 
-  useEffect(() => {
+  const handleSignIn = useCallback(() => {
     if (!isAuthed) {
       triggerAuth({ onError: () => router.push(address ? `/analytics/user/${address}` : '/analytics') })
     }
-  }, [isAuthed, active, address])
+  }, [isAuthed, address, triggerAuth])
+
+  useEffect(() => handleSignIn(), [handleSignIn])
 
   const breadcrumbs = prevPath?.includes('/nft/')
     ? [
@@ -137,7 +137,7 @@ export default function SettingsView() {
       <Head>
         <title>Settings | Upshot Analytics</title>
       </Head>
-      <Nav />
+      <Nav onSignInRetry={handleSignIn}/>
       <Container
         maxBreakpoint="xxl"
         sx={{
@@ -148,97 +148,86 @@ export default function SettingsView() {
         }}
       >
         <Breadcrumbs crumbs={breadcrumbs} />
-        {!isAuthed ? (
-          <SpinnerBoxTemplate sx={{ height: '500px' }} />
-        ) : (
-          <SettingsPanel>
-            <SettingsMenuItem label="Profile">
-              {getProfileLoading ? (
-                <Spinner sx={{ margin: 'auto' }} />
-              ) : (
-                <>
-                  <Flex sx={{ flexWrap: 'wrap', gap: '20px 50px' }}>
-                    <Flex sx={{ flexDirection: 'column', gap: '10px' }}>
-                        <Text color={theme.colors['grey-500']}>Information</Text>
-                        <InputRounded 
-                          dark={true} 
-                          sx={{ padding: '16px' }}
-                          placeholder={
-                            userEns?.name ??
-                            initProfileData?.getUser?.addresses?.[0]?.ens ??
-                            initProfileData?.getUser?.addresses?.[0]?.address
-                          }
-                          value={displayName}
-                          onChange={onDisplayNameChange}
-                        />
-                        <TextareaRounded 
-                          dark={true}
-                          optional={true}
-                          showCount={true}
-                          maxLength={100}
-                          placeholder="Write a short bio for your profile"
-                          value={bio}
-                          onChange={onBioChange}
-                        />
-                        {/* <Flex sx={{alignItems: 'center', marginBottom: '20px'}}>
-                          <Icon color="grey-500" icon="twitter" size={32} />
-                          <Flex sx={{
-                            width: '100%',
-                            borderRadius: theme.radii.lg,
-                            position: 'relative',
-                            backgroundColor: theme.colors.black,
-                            height: '60px',
-                            alignItems: 'center',
-                            padding: '16px',
-                            marginLeft: '10px'
-                          }}>
-                            <Text color="grey-500">Twitter</Text>
-                            <Button 
-                              variant="secondary" 
-                              capitalize={true}
-                              color="grey-500"
-                              sx={{position: 'absolute', right: '10px'}}
-                              onClick={onTwitterConnect}
-                            >Connect</Button>
-                          </Flex>
-                        </Flex> */}
-                      </Flex>
-                    <Flex
-                      sx={{
-                        flexDirection: 'column',
-                        gap: '30px',
-                        paddingBottom: '40px',
-                      }}
-                    >
-                      <Text color={theme.colors['grey-500']}>
-                        Profile Picture
-                      </Text>
-                        {/* <Link onClick={onAvatarClick}> */}
-                      <Avatar
-                        size="200"
-                        src={address ? makeBlockie(address) : undefined}
-                      ></Avatar>
-                        {/* </Link> */}
-                      </Flex>
-                    </Flex>
-                  <Flex sx={{ width: '100%' }}>
-                      <Button 
-                      sx={{ width: 150 }}
-                        onClick={onSave} 
-                        capitalize={true} 
-                        disabled={!saveEnabled}
-                      >
-                      {updateUserLoading ? <Spinner /> : 'Save Changes'}
-                      </Button>
-                    </Flex>
-                </>
-              )}
-            </SettingsMenuItem>
-            <SettingsMenuItem label="Notifications">
-              
-            </SettingsMenuItem>
-          </SettingsPanel>
-        )}
+        <SettingsPanel loading={getProfileLoading || !isAuthed}>
+          <SettingsMenuItem label="Profile">
+            <Flex sx={{ flexWrap: 'wrap', gap: '20px 50px' }}>
+              <Flex sx={{ flexDirection: 'column', gap: '10px' }}>
+                <Text color={theme.colors['grey-500']}>Information</Text>
+                <InputRounded 
+                  dark={true} 
+                  sx={{ padding: '16px' }}
+                  placeholder={
+                    userEns?.name ??
+                    initProfileData?.getUser?.addresses?.[0]?.ens ??
+                    initProfileData?.getUser?.addresses?.[0]?.address
+                  }
+                  value={displayName}
+                  onChange={onDisplayNameChange}
+                />
+                <TextareaRounded 
+                  dark={true}
+                  optional={true}
+                  showCount={true}
+                  maxLength={100}
+                  placeholder="Write a short bio for your profile"
+                  value={bio}
+                  onChange={onBioChange}
+                />
+                {/* <Flex sx={{alignItems: 'center', marginBottom: '20px'}}>
+                  <Icon color="grey-500" icon="twitter" size={32} />
+                  <Flex sx={{
+                    width: '100%',
+                    borderRadius: theme.radii.lg,
+                    position: 'relative',
+                    backgroundColor: theme.colors.black,
+                    height: '60px',
+                    alignItems: 'center',
+                    padding: '16px',
+                    marginLeft: '10px'
+                  }}>
+                    <Text color="grey-500">Twitter</Text>
+                    <Button 
+                      variant="secondary" 
+                      capitalize={true}
+                      color="grey-500"
+                      sx={{position: 'absolute', right: '10px'}}
+                      onClick={onTwitterConnect}
+                    >Connect</Button>
+                  </Flex>
+                </Flex> */}
+              </Flex>
+              <Flex
+                sx={{
+                  flexDirection: 'column',
+                  gap: '30px',
+                  paddingBottom: '40px',
+                }}
+              >
+                <Text color={theme.colors['grey-500']}>
+                  Profile Picture
+                </Text>
+                  {/* <Link onClick={onAvatarClick}> */}
+                <Avatar
+                  size="200"
+                  src={address ? makeBlockie(address) : undefined}
+                ></Avatar>
+                  {/* </Link> */}
+                </Flex>
+              </Flex>
+            <Flex sx={{ width: '100%' }}>
+              <Button 
+              sx={{ width: 150 }}
+                onClick={onSave} 
+                capitalize={true} 
+                disabled={!saveEnabled}
+              >
+              {updateUserLoading ? <Spinner /> : 'Save Changes'}
+              </Button>
+            </Flex>
+          </SettingsMenuItem>
+          <SettingsMenuItem label="Notifications">
+          </SettingsMenuItem>
+        </SettingsPanel>
       </Container>
       <Footer />
     </>

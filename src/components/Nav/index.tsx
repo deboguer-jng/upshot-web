@@ -60,6 +60,10 @@ interface InputSuggestion {
   [key: string]: any
 }
 
+interface NavProps {
+  onSignInRetry?: Function
+}
+
 function useOutsideAlerter(ref) {
   const [status, setStatus] = useState(false)
 
@@ -86,7 +90,7 @@ function useOutsideAlerter(ref) {
   return status
 }
 
-export const Nav = () => {
+export const Nav = ({ onSignInRetry }: NavProps) => {
   const { theme } = useTheme()
   const { active, activate, deactivate, connector } = useWeb3React()
   const router = useRouter()
@@ -227,7 +231,15 @@ export const Nav = () => {
     return 'beta'
   }
 
+  const handleSignInRetry = () => {
+    if (clickedSettings) handleShowSettings()
+    else onSignInRetry?.()
+  }
+
+  const [clickedSettings, setClickedSettings] = useState<boolean>(false)
+
   const handleShowSettings = useCallback(() => {
+    setClickedSettings(true)
     if (isAuthed) router.push(`/analytics/user/${address}/settings`)
     else {
       triggerAuth({
@@ -235,7 +247,7 @@ export const Nav = () => {
         onError: e => console.error('triggerAuth: ', e),
       })
     }
-  }, [isAuthed, triggerAuth, active])
+  }, [isAuthed, triggerAuth, active, address])
 
   const sidebar = (
     <Sidebar ref={sidebarRef}>
@@ -371,6 +383,14 @@ export const Nav = () => {
         >
           {showSidebar && sidebar}
         </Navbar>
+        <Modal open={dialogModalState === DialogModals.SIGN_MESSAGE}>
+          <DialogModal
+            header="Signing in"
+            body={`Please sign in with ${getWalletName()}`}
+            button="Retry"
+            onButtonClick={e => handleSignInRetry()}
+          />
+        </Modal>
         <Modal
           ref={modalRef}
           onClose={handleToggleConnect}
@@ -388,12 +408,6 @@ export const Nav = () => {
           <HelpModal
             link="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
             onClose={toggleHelpModal}
-          />
-        </Modal>
-        <Modal open={dialogModalState === DialogModals.SIGN_MESSAGE}>
-          <DialogModal
-            header="Signing in"
-            body={`Please sign in with ${getWalletName()}`}
           />
         </Modal>
       </Flex>
