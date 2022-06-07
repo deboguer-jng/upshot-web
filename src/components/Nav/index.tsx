@@ -228,11 +228,11 @@ export const Nav = () => {
   }
 
   const handleShowSettings = useCallback(() => {
-    if (isAuthed) router.push('/settings')
+    if (isAuthed) router.push(`/analytics/user/${address}/settings`)
     else {
       triggerAuth({
-        onComplete: () => router.push('/settings'),
-        onError: (e) => console.error('triggerAuth: ', e),
+        onComplete: () => router.push(`/analytics/user/${address}/settings`),
+        onError: e => console.error('triggerAuth: ', e),
       })
     }
   }, [isAuthed, triggerAuth, active])

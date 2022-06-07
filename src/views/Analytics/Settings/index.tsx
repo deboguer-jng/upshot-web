@@ -7,7 +7,6 @@ import {
   SettingsMenuItem,
   SettingsPanel,
   Spinner,
-  SpinnerBoxTemplate,
   TextareaRounded,
   useTheme,
 } from '@upshot-tech/upshot-ui'
@@ -18,8 +17,8 @@ import makeBlockie from 'ethereum-blockies-base64'
 import { useAuth } from 'hooks/auth'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
-import { useAppDispatch, useAppSelector } from 'redux/hooks'
+import { useCallback, useEffect, useState } from 'react'
+import { useAppSelector } from 'redux/hooks'
 import { selectAddress, selectEns } from 'redux/reducers/web3'
 import { Avatar, Box, Flex, Link, Text } from 'theme-ui'
 
@@ -51,9 +50,9 @@ export default function SettingsView() {
 
   useEffect(() => {
     if (!isAuthed) {
-      triggerAuth({ onError: () => router.push('/analytics') })
+      triggerAuth({ onError: () => router.push(address ? `/analytics/user/${address}` : '/analytics') })
     }
-  }, [isAuthed, active])
+  }, [isAuthed, active, address])
 
   const breadcrumbs = prevPath?.includes('/nft/')
     ? [
