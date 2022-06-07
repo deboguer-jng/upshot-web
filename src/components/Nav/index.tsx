@@ -31,15 +31,15 @@ import { useSelector } from 'react-redux'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { selectFeatures } from 'redux/reducers/features'
 import {
+  DialogModals,
+  selectDialogModalState,
   selectShowConnectModal,
   selectShowHelpModal,
   selectShowSidebar,
-  selectDialogModalState,
+  setDialogModalState,
+  setShowConnectModal,
   setShowHelpModal,
   setShowSidebar,
-  setShowConnectModal,
-  setDialogModalState,
-  DialogModals,
 } from 'redux/reducers/layout'
 import { setIsBeta } from 'redux/reducers/user'
 import {
@@ -58,6 +58,10 @@ interface InputSuggestion {
   id: number | string
   name: string
   [key: string]: any
+}
+
+interface NavProps {
+  onSignInRetry?: Function
 }
 
 function useOutsideAlerter(ref) {
@@ -86,7 +90,7 @@ function useOutsideAlerter(ref) {
   return status
 }
 
-export const Nav = () => {
+export const Nav = ({ onSignInRetry }: NavProps) => {
   const { theme } = useTheme()
   const { active, activate, deactivate, connector } = useWeb3React()
   const router = useRouter()
@@ -227,15 +231,23 @@ export const Nav = () => {
     return 'beta'
   }
 
+  const handleSignInRetry = () => {
+    if (clickedSettings) handleShowSettings()
+    else onSignInRetry?.()
+  }
+
+  const [clickedSettings, setClickedSettings] = useState<boolean>(false)
+
   const handleShowSettings = useCallback(() => {
-    if (isAuthed) router.push('/settings')
+    setClickedSettings(true)
+    if (isAuthed) router.push(`/analytics/user/${address}/settings`)
     else {
       triggerAuth({
-        onComplete: () => router.push('/settings'),
-        onError: (e) => console.error('triggerAuth: ', e),
+        onComplete: () => router.push(`/analytics/user/${address}/settings`),
+        onError: e => console.error('triggerAuth: ', e),
       })
     }
-  }, [isAuthed, triggerAuth, active])
+  }, [isAuthed, triggerAuth, active, address])
 
   const sidebar = (
     <Sidebar ref={sidebarRef}>
@@ -371,6 +383,14 @@ export const Nav = () => {
         >
           {showSidebar && sidebar}
         </Navbar>
+        <Modal open={dialogModalState === DialogModals.SIGN_MESSAGE}>
+          <DialogModal
+            header="Signing in"
+            body={`Please sign in with ${getWalletName()}`}
+            button="Retry"
+            onButtonClick={e => handleSignInRetry()}
+          />
+        </Modal>
         <Modal
           ref={modalRef}
           onClose={handleToggleConnect}
@@ -388,12 +408,6 @@ export const Nav = () => {
           <HelpModal
             link="https://mirror.xyz/0x82FE4757D134a56BFC7968A0f0d1635345053104"
             onClose={toggleHelpModal}
-          />
-        </Modal>
-        <Modal open={dialogModalState === DialogModals.SIGN_MESSAGE}>
-          <DialogModal
-            header="Signing in"
-            body={`Please sign in with ${getWalletName()}`}
           />
         </Modal>
       </Flex>

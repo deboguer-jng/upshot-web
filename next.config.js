@@ -29,8 +29,8 @@ module.exports = {
         destination: '/dashboard/search',
       },
       {
-        source: '/settings',
-        destination: '/dashboard/settings'
+        source: '/analytics/user/:address/settings',
+        destination: '/dashboard/user/:address/settings'
       }
     ]
   },
