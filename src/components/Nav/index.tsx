@@ -149,8 +149,9 @@ export const Nav = ({ onSignInRetry }: NavProps) => {
   }
 
   const getWalletName = () => {
-    if (connector instanceof InjectedConnector) return 'MetaMask'
-    if (connector instanceof WalletConnectConnector) return 'WalletConnect'
+    if (connector instanceof InjectedConnector) return 'with MetaMask'
+    if (connector instanceof WalletConnectConnector) return 'with WalletConnect'
+    return ''
   }
 
   const handleNavKeyUp = () => {
@@ -386,7 +387,7 @@ export const Nav = ({ onSignInRetry }: NavProps) => {
         <Modal open={dialogModalState === DialogModals.SIGN_MESSAGE}>
           <DialogModal
             header="Signing in"
-            body={`Please sign in with ${getWalletName()}`}
+            body={`Please sign in ${getWalletName()}`}
             button="Retry"
             onButtonClick={e => handleSignInRetry()}
           />
