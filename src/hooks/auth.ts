@@ -1,5 +1,7 @@
 import { useLazyQuery, useMutation } from '@apollo/client'
 import { useWeb3React } from '@web3-react/core'
+import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
+import { ethers } from 'ethers'
 import {
   LOG_EVENT,
   LogEventData,
@@ -18,7 +20,6 @@ import {
   selectAuthToken,
   setAuthToken,
 } from 'redux/reducers/web3'
-import { getAuthPayload } from 'utils/auth'
 import { logEvent } from 'utils/googleAnalytics'
 
 export interface useAuthType {
@@ -28,7 +29,7 @@ export interface useAuthType {
 }
 
 export function useAuth(): useAuthType {
-  const { library } = useWeb3React()
+  const { library, connector } = useWeb3React()
   const dispatch = useAppDispatch()
   const authToken = useSelector(selectAuthToken)
   const address = useAppSelector(selectAddress)
@@ -65,6 +66,8 @@ export function useAuth(): useAuthType {
        * for an authToken, which is cached to redux and added to all graphQL headers.
        */
       if (!authToken) {
+        dispatch(setDialogModalState(DialogModals.SIGN_MESSAGE))
+
         const { data: nonceData, error: nonceError } = await getNonce({
           variables: { userAddress: address },
         })
@@ -77,15 +80,16 @@ export function useAuth(): useAuthType {
         const signer = library.getSigner(address)
         let signature
 
-        dispatch(setDialogModalState(DialogModals.SIGN_MESSAGE))
-        
         try {
-          const payload = getAuthPayload({
-            address: address,
-            nonce: nonceData?.getNonce?.nonce,
-          })
-          // signature = await signer.signMessage(payload)
-          signature = await signer.signMessage(`${nonceData?.getNonce?.nonce}`)
+          // const payload = getAuthPayload({
+          //   address: address,
+          //   nonce: nonceData?.getNonce?.nonce,
+          // })
+          const payload = `${nonceData?.getNonce?.nonce}`
+          if (connector instanceof WalletConnectConnector && connector?.walletConnectProvider)
+            signature = await (connector as WalletConnectConnector).walletConnectProvider.connector.signPersonalMessage([ethers.utils.hexlify(ethers.utils.toUtf8Bytes(payload)), address])
+          else 
+            signature = await signer.signMessage(payload)
         } catch (err) {
           console.error(err)
         }
@@ -124,7 +128,7 @@ export function useAuth(): useAuthType {
       if (address && authToken) params?.onComplete?.()
       else params?.onError?.('auth failed')
     },
-    [address, authToken, getNonce, signIn, library, setIsSigning]
+    [address, authToken, getNonce, signIn, library, connector, setIsSigning]
   )
 
   return { isAuthed, isSigning, triggerAuth }
