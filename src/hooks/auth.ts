@@ -74,7 +74,9 @@ export function useAuth(): useAuthType {
 
         if (nonceError) return params?.onError?.(nonceError)
 
-        if (!library) return dispatch(setShowConnectModal(true))
+        if ((!library && !(connector instanceof WalletConnectConnector)) ||
+            (connector instanceof WalletConnectConnector && !connector?.walletConnectProvider)
+        ) return dispatch(setShowConnectModal(true))
         else dispatch(setShowConnectModal(false))
 
         const signer = library.getSigner(address)
@@ -89,7 +91,7 @@ export function useAuth(): useAuthType {
           if (connector instanceof WalletConnectConnector && connector?.walletConnectProvider)
             signature = await (connector as WalletConnectConnector).walletConnectProvider.connector.signPersonalMessage([ethers.utils.hexlify(ethers.utils.toUtf8Bytes(payload)), address])
           else 
-            signature = await signer.signMessage(payload)
+            signature = await library.getSigner(address).signMessage(payload)
         } catch (err) {
           console.error(err)
         }
