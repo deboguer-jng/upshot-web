@@ -167,7 +167,6 @@ export default function NFTView() {
     skip: !id,
   })
 
-  
   const changePageTraits = () => {
     if (traits) {
       let startingIndex = traitPage * TRAIT_PAGE_SIZE
@@ -321,7 +320,15 @@ export default function NFTView() {
               }}
             />
             <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-              <Text variant="h2Primary" sx={{ wordBreak: 'break-word', fontSize: breakpointIndex === 2 ? '1.5rem' : '' }}>{assetName}</Text>
+              <Text
+                variant="h2Primary"
+                sx={{
+                  wordBreak: 'break-word',
+                  fontSize: breakpointIndex === 2 ? '1.5rem' : '',
+                }}
+              >
+                {assetName}
+              </Text>
               <>
                 <Flex sx={{ alignItems: 'center', gap: 3, flexWrap: 'wrap' }}>
                   {!!lastAppraisalWeiPrice && (
@@ -931,7 +938,10 @@ export default function NFTView() {
               </Flex>
             </Panel>
             <Box>
-              <Text variant="h3Secondary">More like this</Text>
+              {!!similarData?.similarAssets?.length && (
+                <Text variant="h3Secondary">More like this</Text>
+              )}
+
               <MiniNFTContainer mt={3}>
                 {similarData?.similarAssets?.map((asset, key) => {
                   return (
