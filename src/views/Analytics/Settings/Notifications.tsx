@@ -459,9 +459,9 @@ export default function NotificationsSettings() {
           value={email}
         />
       </Flex>
-      <Flex sx={{gap: '10px'}}>
+      <Flex sx={{gap: '10px', alignItems: 'center'}}>
         <Button
-          sx={{ width: 150 }}
+          sx={{ width: 150, marginTop: '10px' }}
           onClick={handleSave}
           capitalize={true}
           disabled={!saveEnabled}
@@ -470,7 +470,7 @@ export default function NotificationsSettings() {
           Save Changes
         </Button>
         <Flex sx={{flexDirection: 'column'}}>
-          <Button variant="plain" onClick={handleReset} sx={{height: '20px'}} capitalize={true}>
+          <Button variant="plain" onClick={handleReset} sx={{paddingBottom: 0, paddingTop: '15px'}} capitalize={true}>
             Reset
           </Button>
           <Text variant='small' sx={{paddingLeft: '13px'}}>Reset all changes</Text>
