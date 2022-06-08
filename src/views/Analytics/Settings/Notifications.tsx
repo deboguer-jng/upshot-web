@@ -4,6 +4,7 @@ import {
   Button,
   Checkbox,
   InputRounded,
+  useBreakpointIndex,
   useTheme,
 } from '@upshot-tech/upshot-ui'
 import { useAuth } from 'hooks/auth'
@@ -11,7 +12,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { useAppSelector } from 'redux/hooks'
 import { selectAddress } from 'redux/reducers/web3'
-import { Flex, Label, Text } from 'theme-ui'
+import { Box, Flex, Grid, Label, Text } from 'theme-ui'
 
 import {
   GetUserProfileData,
@@ -73,35 +74,55 @@ const alertDefaults: AlertValsType = {
   collectionsFloorDec: 5,
   collectionsVolInc: 5,
   collectionsVolDec: 5,
-  collectionsSigSalesAboveFloor: 150,
-  collectionsSigSalesLimit: 0,
+  collectionsSigSalesAboveFloor: 3,
+  collectionsSigSalesLimit: 3,
   collectorsMints: 5,
   collectorsBuysMin: 5,
-  collectorsBuysLimit: 5,
+  collectorsBuysLimit: 3,
   collectorsSellsMin: 5,
-  collectorsSellsLimit: 5,
+  collectorsSellsLimit: 3,
   nftPriceChange: 5,
   nftAppraisalChange: 5,
   nftDealAlerts: 10,
 }
 
-const InputContainer = styled(Flex)`
-  align-items: center;
+const InputContainer = styled(Grid)`
+  align-items: center;  
   gap: 15px;
+  grid-template-columns: auto 1fr;
 `
 
 const InputLabel = styled(Text)`
-  width: 85px;
+  width: 60px;
+  font-size: 14px;
 `
 
-const SettingGroup = styled(Flex)`
+const SettingsHeader = styled(Text)`
+  padding-bottom: 20px;
+`
+SettingsHeader.defaultProps = { variant: 'large' }
+
+const Setting = styled(Flex)`
   padding-bottom: 15px;
   flex-direction: column;
   gap: 10px;
 `
 
+const SettingsGroup = styled(Grid)`
+  column-gap: 30px;
+`
+SettingsGroup.defaultProps = { columns: ['1fr', '1fr 1fr', '1fr 1fr', '1fr']}
+
+const SettingsContainer = styled(Flex)`
+  flex-direction: column;
+  gap: 10px;
+`
+
+InputRounded.defaultProps = { dark: true }
+
 export default function NotificationsSettings() {
   const { theme } = useTheme()
+  const breakpointIndex = useBreakpointIndex() 
   const router = useRouter()
   const address = useAppSelector(selectAddress)
   const { isAuthed, triggerAuth } = useAuth()
@@ -118,7 +139,10 @@ export default function NotificationsSettings() {
   }, [])
 
   const handleSave = () => {}
-  const handleReset = () => {}
+  const handleReset = () => {
+    setEnabledAlerts(enabledAlertsDefault)
+    setAlertVals(alertDefaults)
+  }
 
   const {
     loading: getProfileLoading,
@@ -145,287 +169,282 @@ export default function NotificationsSettings() {
   return (
     <Flex sx={{ flexDirection: 'column', gap: '30px' }}>
       <Text>Select which notifications you would like to recieve</Text>
-      <Flex sx={{ gap: '65px' }}>
-        <Flex sx={{ flexDirection: 'column', gap: '10px' }}>
-          <Text variant="large">Collections</Text>
-          <SettingGroup>
-            <Label>
-              <Checkbox
-                checked={enabledAlerts.collectionsFloorInc}
-                onChange={e => handleCheckboxChange('collectionsFloorInc')}
-              />
-              Floor Increase
-            </Label>
-            <InputContainer>
-              <InputLabel>Threshold</InputLabel>
-              <InputRounded
-                onChange={e => handleInputChange('collectionsFloorInc', e.currentTarget.value)}
-                value={alertVals.collectionsFloorInc}
-                dark={true}
-                prefix="+"
-                suffix="%"
-                disabled={!enabledAlerts.collectionsFloorInc}
-              />
-            </InputContainer>
-          </SettingGroup>
+      <Flex sx={{ columnGap: [0, 0, 0, '25px', '45px', '65px'], rowGap: '30px', flexDirection: breakpointIndex <= 2 ? 'column' : 'row' }}>
+        <SettingsContainer>
+          <SettingsHeader>Collections</SettingsHeader>
+          
+          <SettingsGroup>
+            <Setting>
+              <Label>
+                <Checkbox
+                  checked={enabledAlerts.collectionsFloorInc}
+                  onChange={e => handleCheckboxChange('collectionsFloorInc')}
+                />
+                Floor Increase
+              </Label>
+              <InputContainer>
+                <InputLabel variant='small'>Threshold</InputLabel>
+                <InputRounded
+                  onChange={e => handleInputChange('collectionsFloorInc', e.currentTarget.value)}
+                  value={alertVals.collectionsFloorInc}
+                  prefix="+"
+                  suffix="%"
+                  disabled={!enabledAlerts.collectionsFloorInc}
+                  sx={{flex: 1}}
+                />
+              </InputContainer>
+            </Setting>
 
-          <SettingGroup>
-            <Label>
-              <Checkbox
-                checked={enabledAlerts.collectionsFloorDec}
-                onChange={e => handleCheckboxChange('collectionsFloorDec')}
-              />
-              Floor Decrease
-            </Label>
-            <InputContainer>
-              <InputLabel>Threshold</InputLabel>
-              <InputRounded
-                onChange={e => handleInputChange('collectionsFloorDec', e.currentTarget.value)}
-                value={alertVals.collectionsFloorDec}
-                dark={true}
-                prefix="-"
-                suffix="%"
-                disabled={!enabledAlerts.collectionsFloorDec}
-              />
-            </InputContainer>
-          </SettingGroup>
+            <Setting>
+              <Label>
+                <Checkbox
+                  checked={enabledAlerts.collectionsFloorDec}
+                  onChange={e => handleCheckboxChange('collectionsFloorDec')}
+                />
+                Floor Decrease
+              </Label>
+              <InputContainer>
+                <InputLabel>Threshold</InputLabel>
+                <InputRounded
+                  onChange={e => handleInputChange('collectionsFloorDec', e.currentTarget.value)}
+                  value={alertVals.collectionsFloorDec}
+                  prefix="-"
+                  suffix="%"
+                  disabled={!enabledAlerts.collectionsFloorDec}
+                />
+              </InputContainer>
+            </Setting>
 
-          <SettingGroup>
-            <Label>
-              <Checkbox
-                checked={enabledAlerts.collectionsVolInc}
-                onChange={e => handleCheckboxChange('collectionsVolInc')}
-              />
-              Volume Increase
-            </Label>
-            <InputContainer>
-              <InputLabel>Threshold</InputLabel>
-              <InputRounded
-                onChange={e => handleInputChange('collectionsVolInc', e.currentTarget.value)}
-                value={alertVals.collectionsVolInc}
-                dark={true}
-                prefix="+"
-                suffix="%"
-                disabled={!enabledAlerts.collectionsVolInc}
-              />
-            </InputContainer>
-          </SettingGroup>
+            <Setting>
+              <Label>
+                <Checkbox
+                  checked={enabledAlerts.collectionsVolInc}
+                  onChange={e => handleCheckboxChange('collectionsVolInc')}
+                />
+                Volume Increase
+              </Label>
+              <InputContainer>
+                <InputLabel>Threshold</InputLabel>
+                <InputRounded
+                  onChange={e => handleInputChange('collectionsVolInc', e.currentTarget.value)}
+                  value={alertVals.collectionsVolInc}
+                  prefix="+"
+                  suffix="%"
+                  disabled={!enabledAlerts.collectionsVolInc}
+                />
+              </InputContainer>
+            </Setting>
 
-          <SettingGroup>
-            <Label>
-              <Checkbox
-                checked={enabledAlerts.collectionsVolDec}
-                onChange={e => handleCheckboxChange('collectionsVolDec')}
-              />
-              Volume Decrease
-            </Label>
-            <InputContainer>
-              <InputLabel>Threshold</InputLabel>
-              <InputRounded
-                onChange={e => handleInputChange('collectionsVolDec', e.currentTarget.value)}
-                value={alertVals.collectionsVolDec}
-                dark={true}
-                prefix="-"
-                suffix="%"
-                disabled={!enabledAlerts.collectionsVolDec}
-              />
-            </InputContainer>
-          </SettingGroup>
+            <Setting>
+              <Label>
+                <Checkbox
+                  checked={enabledAlerts.collectionsVolDec}
+                  onChange={e => handleCheckboxChange('collectionsVolDec')}
+                />
+                Volume Decrease
+              </Label>
+              <InputContainer>
+                <InputLabel>Threshold</InputLabel>
+                <InputRounded
+                  onChange={e => handleInputChange('collectionsVolDec', e.currentTarget.value)}
+                  value={alertVals.collectionsVolDec}
+                  prefix="-"
+                  suffix="%"
+                  disabled={!enabledAlerts.collectionsVolDec}
+                />
+              </InputContainer>
+            </Setting>
 
-          <SettingGroup>
-            <Label>
-              <Checkbox
-                checked={enabledAlerts.collectionsSigSales}
-                onChange={e => handleCheckboxChange('collectionsSigSales')}
-              />
-              Significant Sales
-            </Label>
-            <InputContainer>
-              <InputLabel>Above Floor</InputLabel>
-              <InputRounded
-                onChange={e => handleInputChange('collectionsSigSalesAboveFloor', e.currentTarget.value)}
-                value={alertVals.collectionsSigSalesAboveFloor}
-                dark={true}
-                prefix="+"
-                suffix="%"
-                disabled={!enabledAlerts.collectionsSigSales}
-              />
-            </InputContainer>
-            <InputContainer>
-              <InputLabel>Daily Limit</InputLabel>
-              <InputRounded
-                onChange={e => handleInputChange('collectionsSigSalesLimit', e.currentTarget.value)}
-                value={alertVals.collectionsSigSalesLimit}
-                dark={true}
-                suffix="alerts"
-                disabled={!enabledAlerts.collectionsSigSales}
-              />
-            </InputContainer>
-          </SettingGroup>
-        </Flex>
-        <Flex sx={{ flexDirection: 'column', gap: '10px' }}>
-          <Text variant="large">Collectors</Text>
+            <Setting>
+              <Label>
+                <Checkbox
+                  checked={enabledAlerts.collectionsSigSales}
+                  onChange={e => handleCheckboxChange('collectionsSigSales')}
+                />
+                Significant Sales
+              </Label>
+              <InputContainer>
+                <InputLabel>Above Floor</InputLabel>
+                <InputRounded
+                  onChange={e => handleInputChange('collectionsSigSalesAboveFloor', e.currentTarget.value)}
+                  value={alertVals.collectionsSigSalesAboveFloor}
+                  prefix="+"
+                  suffix="%"
+                  disabled={!enabledAlerts.collectionsSigSales}
+                />
+              </InputContainer>
+              <InputContainer>
+                <InputLabel>Daily Limit</InputLabel>
+                <InputRounded
+                  onChange={e => handleInputChange('collectionsSigSalesLimit', e.currentTarget.value)}
+                  value={alertVals.collectionsSigSalesLimit}
+                  suffix="alerts"
+                  disabled={!enabledAlerts.collectionsSigSales}
+                />
+              </InputContainer>
+            </Setting>
+          </SettingsGroup>
+        </SettingsContainer>
+        <SettingsContainer>
+          <SettingsHeader>Collectors</SettingsHeader>
 
-          <SettingGroup>
-            <Label>
-              <Checkbox
-                checked={enabledAlerts.collectorsMints}
-                onChange={e => handleCheckboxChange('collectorsMints')}
-              />
-              Mints
-            </Label>
-            <InputContainer>
-              <InputLabel>Min. Tokens</InputLabel>
-              <InputRounded
-                onChange={e => handleInputChange('collectorsMints', e.currentTarget.value)}
-                value={alertVals.collectorsMints}
-                dark={true}
-                suffix="tokens"
-                disabled={!enabledAlerts.collectorsMints}
-              />
-            </InputContainer>
-          </SettingGroup>
+          <SettingsGroup>
+            <Setting>
+              <Label>
+                <Checkbox
+                  checked={enabledAlerts.collectorsMints}
+                  onChange={e => handleCheckboxChange('collectorsMints')}
+                />
+                Mints
+              </Label>
+              <InputContainer>
+                <InputLabel>Min. Tokens</InputLabel>
+                <InputRounded
+                  onChange={e => handleInputChange('collectorsMints', e.currentTarget.value)}
+                  value={alertVals.collectorsMints}
+                  suffix="tokens"
+                  disabled={!enabledAlerts.collectorsMints}
+                />
+              </InputContainer>
+            </Setting>
 
-          <SettingGroup>
-            <Label>
-              <Checkbox
-                checked={enabledAlerts.collectorsBuys}
-                onChange={e => handleCheckboxChange('collectorsBuys')}
-              />
-              Buys
-            </Label>
-            <InputContainer>
-              <InputLabel>Min. Tokens</InputLabel>
-              <InputRounded
-                onChange={e => handleInputChange('collectorsBuysMin', e.currentTarget.value)}
-                value={alertVals.collectorsBuysMin}
-                dark={true}
-                suffix="tokens"
-                disabled={!enabledAlerts.collectorsBuys}
-              />
-            </InputContainer>
-            <InputContainer>
-              <InputLabel>Daily Limit</InputLabel>
-              <InputRounded
-                onChange={e => handleInputChange('collectorsBuysLimit', e.currentTarget.value)}
-                value={alertVals.collectorsBuysLimit}
-                dark={true}
-                suffix="tokens"
-                disabled={!enabledAlerts.collectorsBuys}
-              />
-            </InputContainer>
-          </SettingGroup>
+            <Setting>
+              <Label>
+                <Checkbox
+                  checked={enabledAlerts.collectorsBuys}
+                  onChange={e => handleCheckboxChange('collectorsBuys')}
+                />
+                Buys
+              </Label>
+              <InputContainer>
+                <InputLabel>Min. Tokens</InputLabel>
+                <InputRounded
+                  onChange={e => handleInputChange('collectorsBuysMin', e.currentTarget.value)}
+                  value={alertVals.collectorsBuysMin}
+                  suffix="tokens"
+                  disabled={!enabledAlerts.collectorsBuys}
+                />
+              </InputContainer>
+              <InputContainer>
+                <InputLabel>Daily Limit</InputLabel>
+                <InputRounded
+                  onChange={e => handleInputChange('collectorsBuysLimit', e.currentTarget.value)}
+                  value={alertVals.collectorsBuysLimit}
+                  suffix="tokens"
+                  disabled={!enabledAlerts.collectorsBuys}
+                />
+              </InputContainer>
+            </Setting>
 
-          <SettingGroup>
-            <Label>
-              <Checkbox
-                checked={enabledAlerts.collectorsSells}
-                onChange={e => handleCheckboxChange('collectorsSells')}
-              />
-              Sells
-            </Label>
-            <InputContainer>
-              <InputLabel>Min. Tokens</InputLabel>
-              <InputRounded
-                onChange={e => handleInputChange('collectorsSellsMin', e.currentTarget.value)}
-                value={alertVals.collectorsSellsMin}
-                dark={true}
-                suffix="tokens"
-                disabled={!enabledAlerts.collectorsSells}
-              />
-            </InputContainer>
-            <InputContainer>
-              <InputLabel>Daily Limit</InputLabel>
-              <InputRounded
-                onChange={e => handleInputChange('collectorsSellsLimit', e.currentTarget.value)}
-                value={alertVals.collectorsSellsLimit}
-                dark={true}
-                suffix="tokens"
-                disabled={!enabledAlerts.collectorsSells}
-              />
-            </InputContainer>
-          </SettingGroup>
-        </Flex>
-        <Flex sx={{ flexDirection: 'column', gap: '10px' }}>
-          <Text variant="large">NFTs</Text>
+            <Setting>
+              <Label>
+                <Checkbox
+                  checked={enabledAlerts.collectorsSells}
+                  onChange={e => handleCheckboxChange('collectorsSells')}
+                />
+                Sells
+              </Label>
+              <InputContainer>
+                <InputLabel>Min. Tokens</InputLabel>
+                <InputRounded
+                  onChange={e => handleInputChange('collectorsSellsMin', e.currentTarget.value)}
+                  value={alertVals.collectorsSellsMin}
+                  suffix="tokens"
+                  disabled={!enabledAlerts.collectorsSells}
+                />
+              </InputContainer>
+              <InputContainer>
+                <InputLabel>Daily Limit</InputLabel>
+                <InputRounded
+                  onChange={e => handleInputChange('collectorsSellsLimit', e.currentTarget.value)}
+                  value={alertVals.collectorsSellsLimit}
+                  suffix="tokens"
+                  disabled={!enabledAlerts.collectorsSells}
+                />
+              </InputContainer>
+            </Setting>
+          </SettingsGroup>
+        </SettingsContainer>
+        <SettingsContainer>
+          <SettingsHeader>NFTs</SettingsHeader>
+          <SettingsGroup>
+            <Setting>
+              <Label>
+                <Checkbox
+                  checked={enabledAlerts.nftPriceChange}
+                  onChange={e => handleCheckboxChange('nftPriceChange')}
+                />
+                Price Change
+              </Label>
+              <InputContainer>
+                <InputLabel>Price Change</InputLabel>
+                <InputRounded
+                  onChange={e => handleInputChange('nftPriceChange', e.currentTarget.value)}
+                  value={alertVals.nftPriceChange}
+                  prefix="+/-"
+                  suffix="%"
+                  disabled={!enabledAlerts.nftPriceChange}
+                />
+              </InputContainer>
+            </Setting>
 
-          <SettingGroup>
-            <Label>
-              <Checkbox
-                checked={enabledAlerts.nftPriceChange}
-                onChange={e => handleCheckboxChange('nftPriceChange')}
-              />
-              Price Change
-            </Label>
-            <InputContainer>
-              <InputLabel>Price Change</InputLabel>
-              <InputRounded
-                onChange={e => handleInputChange('nftPriceChange', e.currentTarget.value)}
-                value={alertVals.nftPriceChange}
-                dark={true}
-                prefix="+/-"
-                suffix="%"
-                disabled={!enabledAlerts.nftPriceChange}
-              />
-            </InputContainer>
-          </SettingGroup>
+            <Setting>
+              <Label>
+                <Checkbox
+                  checked={enabledAlerts.nftAppraisalChange}
+                  onChange={e => handleCheckboxChange('nftAppraisalChange')}
+                />
+                Appraisal Change
+              </Label>
+              <InputContainer>
+                <InputLabel>Appraisal Change</InputLabel>
+                <InputRounded
+                  onChange={e => handleInputChange('nftAppraisalChange', e.currentTarget.value)}
+                  value={alertVals.nftAppraisalChange}
+                  prefix="+/-"
+                  suffix="%"
+                  disabled={!enabledAlerts.nftAppraisalChange}
+                />
+              </InputContainer>
+            </Setting>
 
-          <SettingGroup>
-            <Label>
-              <Checkbox
-                checked={enabledAlerts.nftAppraisalChange}
-                onChange={e => handleCheckboxChange('nftAppraisalChange')}
-              />
-              Appraisal Change
-            </Label>
-            <InputContainer>
-              <InputLabel>Appraisal Change</InputLabel>
-              <InputRounded
-                onChange={e => handleInputChange('nftAppraisalChange', e.currentTarget.value)}
-                value={alertVals.nftAppraisalChange}
-                dark={true}
-                prefix="+/-"
-                suffix="%"
-                disabled={!enabledAlerts.nftAppraisalChange}
-              />
-            </InputContainer>
-          </SettingGroup>
+            <Setting>
+              <Label>
+                <Checkbox
+                  checked={enabledAlerts.nftDealAlerts}
+                  onChange={e => handleCheckboxChange('nftDealAlerts')}
+                />
+                Deal Alerts
+              </Label>
+              <InputContainer>
+                <InputLabel>Under- priced</InputLabel>
+                <InputRounded
+                  onChange={e => handleInputChange('nftDealAlerts', e.currentTarget.value)}
+                  value={alertVals.nftDealAlerts}
+                  suffix="%"
+                  disabled={!enabledAlerts.nftDealAlerts}
+                />
+              </InputContainer>
+            </Setting>
 
-          <SettingGroup>
-            <Label>
-              <Checkbox
-                checked={enabledAlerts.nftDealAlerts}
-                onChange={e => handleCheckboxChange('nftDealAlerts')}
-              />
-              Deal Alerts
-            </Label>
-            <InputContainer>
-              <InputLabel>Under- priced</InputLabel>
-              <InputRounded
-                onChange={e => handleInputChange('nftDealAlerts', e.currentTarget.value)}
-                value={alertVals.nftDealAlerts}
-                dark={true}
-                suffix="%"
-                disabled={!enabledAlerts.nftDealAlerts}
-              />
-            </InputContainer>
-          </SettingGroup>
-
-          <Label paddingBottom='10px'>
-            <Checkbox
-              checked={enabledAlerts.nftListed}
-              onChange={e => handleCheckboxChange('nftListed')}
-            />
-            Listed
-          </Label>
-          <Label>
-            <Checkbox
-              checked={enabledAlerts.nftSold}
-              onChange={e => handleCheckboxChange('nftSold')}
-            />
-            Sold
-          </Label>
-        </Flex>
+            <Box>
+              <Label paddingBottom='10px'>
+                <Checkbox
+                  checked={enabledAlerts.nftListed}
+                  onChange={e => handleCheckboxChange('nftListed')}
+                />
+                Listed
+              </Label>
+              <Label>
+                <Checkbox
+                  checked={enabledAlerts.nftSold}
+                  onChange={e => handleCheckboxChange('nftSold')}
+                />
+                Sold
+              </Label>
+            </Box>
+          </SettingsGroup>
+        </SettingsContainer>
       </Flex>
       <Flex>
         <Label sx={{width: 'auto', alignItems: 'center', paddingRight: '15px'}}>
@@ -433,14 +452,14 @@ export default function NotificationsSettings() {
           Receive email alert notifications
         </Label>
         <InputRounded
-          dark={true}
           sx={{ padding: '16px' }}
           placeholder="Email address"
           onChange={e => setEmail(e.currentTarget.value)}
           disabled={!emailEnabled}
+          value={email}
         />
       </Flex>
-      <Flex>
+      <Flex sx={{gap: '10px'}}>
         <Button
           sx={{ width: 150 }}
           onClick={handleSave}
@@ -450,9 +469,12 @@ export default function NotificationsSettings() {
           {/* { updateUserLoading ? (<Spinner />) : 'Save Changes' } */}
           Save Changes
         </Button>
-        <Button variant="secondary" onClick={handleReset}>
-          Reset
-        </Button>
+        <Flex sx={{flexDirection: 'column'}}>
+          <Button variant="plain" onClick={handleReset} sx={{height: '20px'}} capitalize={true}>
+            Reset
+          </Button>
+          <Text variant='small' sx={{paddingLeft: '13px'}}>Reset all changes</Text>
+        </Flex>
       </Flex>
     </Flex>
   )
