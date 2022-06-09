@@ -144,7 +144,23 @@ export const Nav = ({ onSignInRetry }: NavProps) => {
     }
 
     dispatch(setActivatingConnector(provider))
-    activate(connectorsByName[provider], (err) => console.error(err))
+
+    activate(
+      connectorsByName[provider],
+      async (err) => {
+        switch (err.name) {
+          case 'UnsupportedChainIdError': {
+            console.warn('Unsupported chain.')
+            break
+          }
+          default: {
+            console.error(err)
+          }
+        }
+      },
+      false
+    )
+
     modalRef?.current?.click()
   }
 
@@ -245,7 +261,7 @@ export const Nav = ({ onSignInRetry }: NavProps) => {
     else {
       triggerAuth({
         onComplete: () => router.push(`/analytics/user/${address}/settings`),
-        onError: e => console.error('triggerAuth: ', e),
+        onError: (e) => console.error('triggerAuth: ', e),
       })
     }
   }, [isAuthed, triggerAuth, active, address])
@@ -389,8 +405,8 @@ export const Nav = ({ onSignInRetry }: NavProps) => {
             header="Signing in"
             body={`Please sign in ${getWalletName()}`}
             button="Retry"
-            onButtonClick={e => handleSignInRetry()}
-            sx={{minWidth: 320}}
+            onButtonClick={(e) => handleSignInRetry()}
+            sx={{ minWidth: 320 }}
           />
         </Modal>
         <Modal
