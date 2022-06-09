@@ -112,14 +112,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       library.getNetwork().then((network) => {
         if (!network.chainId) return
 
-        if (network.chainId !== 1 && process.env.NODE_ENV !== 'development') {
+        if (
+          network.chainId !== 1 &&
+          typeof window['ethereum'] !== 'undefined'
+        ) {
           window['ethereum'].request({
-            method: 'wallet_addEthereumChain',
-            params: [
-              {
-                chainId: '0x01',
-              },
-            ],
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: '0x1' }],
           })
         }
 
