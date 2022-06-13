@@ -457,6 +457,7 @@ export default function NotificationsSettings() {
           onChange={e => setEmail(e.currentTarget.value)}
           disabled={!emailEnabled}
           value={email}
+          type="email"
         />
       </Flex>
       <Flex sx={{gap: '10px', alignItems: 'center'}}>
