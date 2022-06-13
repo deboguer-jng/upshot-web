@@ -29,6 +29,7 @@ import {
   GET_PROFILE,
 } from '../User/queries'
 import { UpdateUserData, UpdateUserVars, UPDATE_USER } from './mutations'
+import NotificationsSettings from './Notifications'
 
 export default function SettingsView() {
   const { theme } = useTheme()
@@ -206,12 +207,12 @@ export default function SettingsView() {
                 <Text color={theme.colors['grey-500']}>
                   Profile Picture
                 </Text>
-                  {/* <Link onClick={onAvatarClick}> */}
+                {/* <Link onClick={onAvatarClick}> */}
                 <Avatar
                   size="200"
                   src={address ? makeBlockie(address) : undefined}
                 ></Avatar>
-                  {/* </Link> */}
+                {/* </Link> */}
                 </Flex>
               </Flex>
             <Flex sx={{ width: '100%' }}>
@@ -226,6 +227,7 @@ export default function SettingsView() {
             </Flex>
           </SettingsMenuItem>
           <SettingsMenuItem label="Notifications">
+            <NotificationsSettings />
           </SettingsMenuItem>
         </SettingsPanel>
       </Container>
