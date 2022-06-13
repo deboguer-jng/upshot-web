@@ -74,7 +74,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         window['ethereum'],
         'any'
       )
-      if (!provider) return
+      if (!provider || !txs) return
 
       txs.map((hash) =>
         provider.waitForTransaction(hash).then((tx) => {
