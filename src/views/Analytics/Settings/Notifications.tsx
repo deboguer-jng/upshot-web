@@ -118,7 +118,7 @@ const SettingsContainer = styled(Flex)`
   gap: 10px;
 `
 
-InputRounded.defaultProps = { dark: true }
+InputRounded.defaultProps = { dark: true, type: 'number' }
 
 export default function NotificationsSettings() {
   const { theme } = useTheme()
