@@ -16,6 +16,7 @@ import {
   selectAddress,
   setActivatingConnector,
   setAddress,
+  setChain,
   setEns,
 } from 'redux/reducers/web3'
 
@@ -85,8 +86,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       }
     }
 
+    const handleChainChanged = async (chainId) => {
+      if (chainId !== 1 && process.env.NODE_ENV !== 'development') {
+        console.warn('Unsupported chain.')
+      }
+
+      dispatch(setChain(chainId))
+    }
+
     if (window['ethereum']) {
       window['ethereum'].on('accountsChanged', handleAccountsChanged)
+      window['ethereum'].on('chainChanged', handleChainChanged)
     }
 
     if (account && (!address || account !== address)) {
@@ -97,6 +107,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           address: account,
           type: 'auth',
         },
+      })
+
+      library.getNetwork().then((network) => {
+        if (!network.chainId) return
+
+        if (
+          network.chainId !== 1 &&
+          typeof window['ethereum'] !== 'undefined'
+        ) {
+          window['ethereum'].request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: '0x1' }],
+          })
+        }
+
+        handleChainChanged(network.chainId)
       })
 
       dispatch(setAddress(account))
@@ -129,11 +155,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     if (account) fetchEns(account)
 
     if (window['ethereum'])
-      return () =>
+      return () => {
         window['ethereum'].removeListener(
           'accountsChanged',
           handleAccountsChanged
         )
+        window['ethereum'].removeListener('chainChanged', handleChainChanged)
+      }
   }, [account, library, dispatch, ready, address])
 
   // Eagerly connect to the Injected provider, if granted access and authenticated in redux.

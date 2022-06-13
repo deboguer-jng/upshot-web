@@ -10,6 +10,7 @@ export interface Web3State {
   activatingConnector?: ConnectorName
   address?: string
   authToken?: string
+  chain?: number
   ens: ENSAccount
 }
 
@@ -32,6 +33,10 @@ const initialState: Web3State = {
   ens: {
     name: undefined,
   },
+  /**
+   * RPC Chain ID
+   */
+  chain: undefined,
 }
 
 export const web3Slice = createSlice({
@@ -53,9 +58,13 @@ export const web3Slice = createSlice({
     setEns: (state, action: PayloadAction<ENSAccount>) => {
       state.ens = action.payload
     },
+    setChain: (state, action: PayloadAction<number | undefined>) => {
+      state.chain = action.payload
+    },
     resetWeb3: (state) => {
       state.address = undefined
       state.authToken = undefined
+      state.chain = undefined
       state.ens = {
         name: undefined,
       }
@@ -68,6 +77,7 @@ export const {
   setAddress,
   setAuthToken,
   setEns,
+  setChain,
   resetWeb3,
 } = web3Slice.actions
 
