@@ -8,12 +8,14 @@ import { useEffect, useState } from 'react'
 import { useAppSelector } from 'redux/hooks'
 import { useAppDispatch } from 'redux/hooks'
 import { fetchFeatures } from 'redux/reducers/features'
-import { selectIsBeta } from 'redux/reducers/user'
-import { setIsBeta } from 'redux/reducers/user'
+import { setAlertState } from 'redux/reducers/layout'
+import { selectIsBeta, setIsBeta } from 'redux/reducers/user'
 import {
+  removeTransaction,
   resetWeb3,
   selectActivatingConnector,
   selectAddress,
+  selectTransactions,
   setActivatingConnector,
   setAddress,
   setChain,
@@ -26,12 +28,13 @@ import WaitList from '../views/WaitList'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [ready, setReady] = useState(false)
-  const { connector, account, library } = useWeb3React()
+  const { connector, account, library, deactivate } = useWeb3React()
 
   const dispatch = useAppDispatch()
   const activatingConnector = useAppSelector(selectActivatingConnector)
   const address = useAppSelector(selectAddress)
   const isBeta = useAppSelector(selectIsBeta)
+  const txs = useAppSelector(selectTransactions)
   const router = useRouter()
   const [logUpshotEvent] = useMutation<LogEventData, LogEventVars>(LOG_EVENT, {
     onError: (err) => {
@@ -65,6 +68,35 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     setReady(true)
   }, [dispatch])
 
+  useEffect(() => {
+    const watchTxs = async () => {
+      const provider = new ethers.providers.Web3Provider(
+        window['ethereum'],
+        'any'
+      )
+      if (!provider || !txs) return
+
+      txs.map((hash) =>
+        provider.waitForTransaction(hash).then((tx) => {
+          dispatch(removeTransaction(hash))
+
+          let isSuccess = Boolean(tx.blockHash)
+
+          dispatch(
+            setAlertState({
+              showAlert: true,
+              alertText: `Transaction [${
+                isSuccess ? 'SUCCESS' : 'FAIL'
+              }] - ${hash.slice(0, 6)}...${hash.slice(-4)}`,
+            })
+          )
+        })
+      )
+    }
+
+    watchTxs()
+  }, [dispatch, txs])
+
   // Recognize the connector currently being activated.
   useEffect(() => {
     if (
@@ -79,11 +111,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!ready) return
 
-    const handleAccountsChanged = async (accounts) => {
-      if (!accounts.length) {
-        dispatch(resetWeb3())
-        dispatch(setIsBeta(undefined))
-      }
+    const handleAccountsChanged = async () => {
+      deactivate()
+      dispatch(resetWeb3())
+      dispatch(setIsBeta(undefined))
     }
 
     const handleChainChanged = async (chainId) => {
@@ -114,7 +145,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
         if (
           network.chainId !== 1 &&
-          typeof window['ethereum'] !== 'undefined'
+          typeof window['ethereum'] !== 'undefined' &&
+          process.env.NODE_ENV !== 'development'
         ) {
           window['ethereum'].request({
             method: 'wallet_switchEthereumChain',
@@ -128,16 +160,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       dispatch(setAddress(account))
     }
 
-    if (account && address && account !== address) {
-      dispatch(setIsBeta(undefined))
-      return
-    }
-
     const fetchEns = async (address: string) => {
-      const provider = library
-        ? new ethers.providers.Web3Provider(library.provider)
-        : null
-
+      const provider = ethers.getDefaultProvider()
       if (!provider) return
 
       /* Reverse lookup of ENS name via address */
@@ -162,7 +186,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         )
         window['ethereum'].removeListener('chainChanged', handleChainChanged)
       }
-  }, [account, library, dispatch, ready, address])
+  }, [account, library, dispatch, ready, address, deactivate, logUpshotEvent])
 
   // Eagerly connect to the Injected provider, if granted access and authenticated in redux.
   const triedEager = useEagerConnect(address)

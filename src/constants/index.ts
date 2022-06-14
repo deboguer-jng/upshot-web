@@ -9,3 +9,7 @@ export const ART_BLOCKS_CONTRACTS = [
 
 export const OPENSEA_REFERRAL_LINK =
   '0x31f75b7bdb183664B4d17e97eaeFCbe09C58742b'
+
+export const ABI = {
+  ERC721: ['function transferFrom(address, address, uint256)'],
+}
