@@ -189,7 +189,7 @@ export default function CollectionAvgPricePanel({
                 text={name ?? 'Unknown'}
                 subText={
                   printMetricData(metric, {
-                    average: latestStats?.pastDayWeiAverage,
+                    average: latestStats?.pastWeekWeiAverage,
                     floor: latestStats?.floor,
                     volume: latestStats?.pastWeekWeiVolume,
                   }) ?? ''
@@ -209,6 +209,7 @@ function printMetricData(
   metric: METRIC,
   data: { average?: string; floor?: string; volume?: string }
 ) {
+  console.log({ metric }, data)
   if (metric === 'PAST_WEEK_VOLUME' && data['volume']) {
     return (
       formatNumber(data['volume'], {
