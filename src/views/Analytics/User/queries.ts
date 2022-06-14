@@ -521,3 +521,188 @@ export const GET_UNSUPPORTED_AGGREGATE_COLLECTION_STATS = gql`
     }
   }
 `
+
+export type GetFollowedCollectionsVars = {
+  userId?: number
+}
+
+export type GetFollowedCollectionsData = {
+  collectionsFollowedByUser: {
+    id: number
+    description: string
+    name: string
+    imageUrl: string
+    latestStats: {
+      floor: number
+      pastDayWeiAverage: number
+      pastWeekWeiVolume: number
+      weekFloorChange: number
+    }
+  }[]
+}
+
+export const GET_FOLLOWED_COLLECTIONS = gql`
+  query GetFollowedCollections($userId: Int!) {
+    collectionsFollowedByUser(userId: $userId) {
+      id
+      description
+      name
+      imageUrl
+      latestStats {
+        floor
+        pastDayWeiAverage
+        pastWeekWeiVolume
+        weekFloorChange
+      }
+    }
+  }
+`
+
+export type GetFollowedNFTsVars = {
+  userId?: number
+}
+
+export type GetFollowedNFTsData = {
+  assetsFollowedByUser: {
+    id: string
+    name: string
+    contractAddress: string
+    mediaUrl: string
+    totalSaleCount: number
+    priceChangeFromFirstSale: number
+    lastSale: {
+      timestamp: number
+      ethSalePrice: string
+    }
+    lastAppraisalWeiPrice: string
+    lastAppraisalSaleRatio: number
+    listPrice
+    listPriceUsd
+    listUrl
+    listMarketplace
+    listTimestamp
+    listExpiration
+    listAppraisalRatio
+  }[]
+}
+
+export const GET_FOLLOWED_NFTS = gql`
+  query GetFollowedNFTs($userId: Int!) {
+    assetsFollowedByUser(userId: $userId) {
+      id
+      name
+      contractAddress
+      mediaUrl
+      totalSaleCount
+      priceChangeFromFirstSale
+      lastSale {
+        timestamp
+        ethSalePrice
+      }
+      lastAppraisalWeiPrice
+      lastAppraisalSaleRatio
+      listPrice
+      listPriceUsd
+      listUrl
+      listMarketplace
+      listTimestamp
+      listExpiration
+      listAppraisalRatio
+    }
+  }
+`
+
+export type GetFollowedCollectorsVars = {
+  userId?: number
+}
+
+export type GetFollowedCollectorsData = {
+  usersFollowedByUser: {
+    id: number
+    username: string
+    ownedAppraisalValue: {
+      appraisalWei: string
+    }
+    mostRecentBuy: {
+      assetId: string
+      asset: {
+        name: string
+      }
+    }
+    addresses: { address: string; ens: string }[]
+    firstAssetPurchaseTime: number
+    avgHoldTime: number
+    ownedAssets: {
+      count: number
+      assets: {
+        id: string
+        mediaUrl: string
+      }[]
+    }
+    extraCollections: {
+      collectionAssetCounts: {
+        count: number
+        collection: {
+          id: number
+          name: string
+          imageUrl: string
+          ownerAssetsInCollection: {
+            count: number
+            assets: {
+              id: string
+              mediaUrl: string
+            }
+          }
+        }
+      }[]
+    }
+  }[]
+}
+
+export const GET_FOLLOWED_COLLECTORS = gql`
+  query GetFollowedCollectors($userId: Int!) {
+    usersFollowedByUser(userId: $userId) {
+      ownedAppraisalValue {
+        appraisalWei
+      }
+      mostRecentBuy {
+        assetId
+        asset {
+          name
+        }
+      }
+      id
+      username
+      addresses {
+        address
+        ens
+      }
+      firstAssetPurchaseTime
+      avgHoldTime
+      ownedAssets(notable: true, limit: 100) {
+        count
+        assets {
+          id
+          mediaUrl
+        }
+      }
+      extraCollections(limit: 10) {
+        collectionAssetCounts {
+          count
+          collection {
+            id
+            name
+            imageUrl
+            ownerAssetsInCollection(limit: 100) {
+              count
+              assets {
+                id
+                mediaUrl
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`

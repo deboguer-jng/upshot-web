@@ -1,31 +1,37 @@
 /** @jsxImportSource theme-ui */
 
 import { useQuery } from '@apollo/client'
-import { Container } from '@upshot-tech/upshot-ui'
-import { Avatar, Flex, Grid, Panel, Text } from '@upshot-tech/upshot-ui'
 import {
+  Avatar,
   Box,
   CollectionCard,
   CollectionCardExpanded,
   CollectionRow,
   CollectionTable,
+  Container,
+  Flex,
   formatNumber,
+  Grid,
   Icon,
   IconButton,
+  imageOptimizer,
   Link,
   Modal,
+  Panel,
   parseUint256,
   RadarChart,
   Skeleton,
   Spinner,
+  SwitchDropdown,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
+  Text,
   Tooltip,
-  useTheme,
+  useBreakpointIndex,
+  useTheme
 } from '@upshot-tech/upshot-ui'
-import { imageOptimizer, useBreakpointIndex } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import { OPENSEA_REFERRAL_LINK, PIXELATED_CONTRACTS } from 'constants/'
@@ -35,28 +41,23 @@ import { ethers } from 'ethers'
 import { Masonry, useInfiniteLoader } from 'masonic'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
-import { resolve } from 'path'
 import { transparentize } from 'polished'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import {
-  AutoSizer,
-  Column,
-  Grid as GridVirtualized,
-  InfiniteLoader,
-  Table,
-} from 'react-virtualized'
+import { AutoSizer, Column, InfiniteLoader, Table } from 'react-virtualized'
 import { useAppSelector } from 'redux/hooks'
 import { setAlertState } from 'redux/reducers/layout'
 import { selectAddress, selectEns } from 'redux/reducers/web3'
-import { Label as LabelUI } from 'theme-ui'
 import { extractEns, shortenAddress } from 'utils/address'
 import { gmiLabel } from 'utils/gmi'
 import { formatDistance } from 'utils/time'
 
 import Breadcrumbs from '../components/Breadcrumbs'
+import FollowedCollections from '../components/User/FollowedCollections'
+import FollowedCollectors from '../components/User/FollowedCollectors'
+import FollowedNFTs from '../components/User/FollowedNFTs'
 import {
-  GET_ALL_OWNED_COLLECTIONS_WRAPPER,
+GET_ALL_OWNED_COLLECTIONS_WRAPPER,
   GET_COLLECTION_ASSETS,
   GET_COLLECTOR,
   GET_COLLECTOR_TX_HISTORY,
@@ -76,8 +77,12 @@ import {
   GetUnsupportedAssetsData,
   GetUnsupportedAssetsVars,
   GetUnsupportedFloorsData,
-  GetUnsupportedFloorsVars,
-} from './queries'
+  GetUnsupportedFloorsVars} from './queries'
+
+
+
+
+
 
 type Collection = {
   id: number | null
@@ -423,6 +428,14 @@ export default function UserView() {
   const userEns = useAppSelector(selectEns)
   const shortAddress = useMemo(() => shortenAddress(address), [address])
   const loadingAddressFormatted = !addressFormatted && !errorAddress
+  const [profileOption, setProfileOption] = useState('')
+  const dropdownOptions = [
+    'Collected',
+    'Followed Collections',
+    'Followed NFTs',
+    'Followed Collectors',
+  ]
+  const [open, setOpen] = useState(false)
 
   useEffect(() => {
     if (!router.query.address) return
@@ -1061,6 +1074,62 @@ export default function UserView() {
 
     if (gmi) return gmiLabel(gmi)
     else ''
+  }
+
+  const renderBottomSection = () => {
+    switch (profileOption) {
+      case 'Followed Collections':
+        return <Panel
+          sx={{
+            marginLeft: isMobile ? '-1rem' : 0,
+            marginRight: isMobile ? '-1rem' : 0,
+          }}
+        >
+          <FollowedCollections userId={data?.getUser?.id} />
+        </Panel>
+      case 'Followed NFTs':
+        return <Panel
+        sx={{
+          marginLeft: isMobile ? '-1rem' : 0,
+          marginRight: isMobile ? '-1rem' : 0,
+        }}
+      >
+        <FollowedNFTs userId={data?.getUser?.id} />
+      </Panel>
+      case 'Followed Collectors':
+        return <Panel
+        sx={{
+          marginLeft: isMobile ? '-1rem' : 0,
+          marginRight: isMobile ? '-1rem' : 0,
+        }}
+      >
+        <FollowedCollectors userId={data?.getUser?.id} name={""} />
+      </Panel>
+      default:
+        return (
+          <Masonry
+            columnWidth={300}
+            columnGutter={16}
+            rowGutter={16}
+            items={[
+              ...(dataAllOwnedCollections?.getAllOwnedCollectionsWrapper
+                ?.extraCollections?.collectionAssetCounts ?? []),
+              ...(dataAllOwnedCollections?.getAllOwnedCollectionsWrapper
+                .unsupportedCollections?.collections ?? []),
+            ]}
+            render={RenderMasonryItem}
+            onRender={maybeLoadMoreCollections}
+            style={{ outline: 'none' }}
+            key={
+              dataAllOwnedCollections?.getAllOwnedCollectionsWrapper
+                ?.extraCollections?.collectionAssetCounts?.length ??
+              0 +
+                (dataAllOwnedCollections?.getAllOwnedCollectionsWrapper
+                  ?.unsupportedCollections?.collections?.length ?? 0)
+            }
+          />
+        )
+    }
   }
 
   return (
@@ -2077,32 +2146,42 @@ export default function UserView() {
               </>
             )} */}
           </Box>
+          <Box sx={{ position: 'relative', height: '60px' }}>
+            <Flex
+              sx={{
+                justifyContent: 'space-between',
+                flexDirection: ['column', 'row'],
+                paddingBottom: '1rem',
+                gap: 1,
+                position: 'absolute',
+                width: '100%',
+                height: open ? '250px' : 'auto',
+                zIndex: 2,
+                background: `linear-gradient(180deg, #000000 18.23%, rgba(35, 31, 32, 0) 100%)`,
+              }}
+            >
+              <Flex sx={{ flexDirection: 'column' }}>
+                <Flex
+                  variant="text.h1Secondary"
+                  sx={{ gap: 2, alignItems: 'flex-start' }}
+                >
+                  View
+                  <SwitchDropdown
+                    onValueChange={(val) => setProfileOption(val)}
+                    value={profileOption}
+                    options={dropdownOptions}
+                    onToggle={(status) => setOpen(status)}
+                  />
+                </Flex>
+              </Flex>
+            </Flex>
+          </Box>
 
-          {!!dataAllOwnedCollections?.getAllOwnedCollectionsWrapper
+          {/* {!!dataAllOwnedCollections?.getAllOwnedCollectionsWrapper
             ?.extraCollections?.count && (
             <Text variant="h1Primary">Collection</Text>
-          )}
-          <Masonry
-            columnWidth={300}
-            columnGutter={16}
-            rowGutter={16}
-            items={[
-              ...(dataAllOwnedCollections?.getAllOwnedCollectionsWrapper
-                ?.extraCollections?.collectionAssetCounts ?? []),
-              ...(dataAllOwnedCollections?.getAllOwnedCollectionsWrapper
-                .unsupportedCollections?.collections ?? []),
-            ]}
-            render={RenderMasonryItem}
-            onRender={maybeLoadMoreCollections}
-            style={{ outline: 'none' }}
-            key={
-              dataAllOwnedCollections?.getAllOwnedCollectionsWrapper
-                ?.extraCollections?.collectionAssetCounts?.length ??
-              0 +
-                (dataAllOwnedCollections?.getAllOwnedCollectionsWrapper
-                  ?.unsupportedCollections?.collections?.length ?? 0)
-            }
-          />
+          )} */}
+          {renderBottomSection()}
         </Flex>
       </Layout>
       <Modal
