@@ -1,4 +1,4 @@
-import css from '@emotion/css'
+import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 import { Link } from '@upshot-tech/upshot-ui'
 

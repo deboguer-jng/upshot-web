@@ -148,7 +148,7 @@ export default forwardRef(function CollectionPanel(
           }}
           css={theme.scroll.thin}
         >
-          {(splitArray(childrenArray) as Array<Array<HTMLElement>>).map(
+          {(splitArray(childrenArray) as Array<Array<React.ReactNode>>).map(
             (subArray, index) => (
               <Grid
                 key={index}
