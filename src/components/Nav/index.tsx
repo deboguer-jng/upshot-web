@@ -192,8 +192,18 @@ export const Nav = ({ onSignInRetry }: NavProps) => {
     ;(document.activeElement as HTMLElement).blur()
 
     if (isENS) {
+      let provider
+      // Use the injected provider if available.
       try {
-        const provider = ethers.getDefaultProvider()
+        provider = new ethers.providers.Web3Provider(window['ethereum'], 'any')
+      } catch (err) {
+        console.warn(err)
+      }
+
+      // Fallback readonly provider.
+      if (!provider) provider = ethers.getDefaultProvider()
+
+      try {
         const address = await provider.resolveName(navSearchTerm)
         if (!address) return
 

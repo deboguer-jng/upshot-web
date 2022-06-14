@@ -70,10 +70,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const watchTxs = async () => {
-      const provider = new ethers.providers.Web3Provider(
-        window['ethereum'],
-        'any'
-      )
+      let provider
+
+      // Use the injected provider if available.
+      try {
+        provider = new ethers.providers.Web3Provider(window['ethereum'], 'any')
+      } catch (err) {
+        console.warn(err)
+      }
+
+      // Fallback readonly provider.
+      if (!provider) provider = ethers.getDefaultProvider()
+
       if (!provider || !txs) return
 
       txs.map((hash) =>
@@ -161,8 +169,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     }
 
     const fetchEns = async (address: string) => {
-      const provider = ethers.getDefaultProvider()
-      if (!provider) return
+      let provider
+
+      // Use the injected provider if available.
+      try {
+        provider = new ethers.providers.Web3Provider(window['ethereum'], 'any')
+      } catch (err) {
+        console.warn(err)
+      }
+
+      // Fallback readonly provider.
+      if (!provider) provider = ethers.getDefaultProvider()
 
       /* Reverse lookup of ENS name via address */
       let name
