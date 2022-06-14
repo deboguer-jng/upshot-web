@@ -27,8 +27,8 @@ interface CollectionPanelProps extends React.HTMLAttributes<HTMLDivElement> {
 const splitArray = (arr) => {
   let i
   let j
-  let temporary = []
-  const array = new Array<Array<HTMLElement>>()
+  let temporary: React.ReactNode[] = []
+  const array: React.ReactNode[] = []
   let chunk = 5
   for (i = 0, j = arr.length; i < j; i += chunk) {
     temporary = arr.slice(i, i + chunk)
@@ -148,20 +148,18 @@ export default forwardRef(function CollectionPanel(
           }}
           css={theme.scroll.thin}
         >
-          {(splitArray(childrenArray) as Array<Array<React.ReactNode>>).map(
-            (subArray, index) => (
-              <Grid
-                key={index}
-                sx={{
-                  columnGap: '32px',
-                  rowGap: '16px',
-                  gridTemplateRows: 'repeat(4, 1fr)',
-                }}
-              >
-                {subArray}
-              </Grid>
-            )
-          )}
+          {splitArray(childrenArray).map((subArray, index) => (
+            <Grid
+              key={index}
+              sx={{
+                columnGap: '32px',
+                rowGap: '16px',
+                gridTemplateRows: 'repeat(4, 1fr)',
+              }}
+            >
+              {subArray}
+            </Grid>
+          ))}
         </Grid>
       </Flex>
     </Panel>
