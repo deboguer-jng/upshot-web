@@ -292,7 +292,11 @@ function TraitCategoryItem({
       transparent={!selected}
       variant={rarity ? 'percentage' : 'regular'}
       percentage={rarity ? (100 - rarity * 100).toFixed(2).toString() : ''}
-      style={{ cursor: 'pointer', textTransform: 'capitalize' }}
+      style={{
+        cursor: 'pointer',
+        textTransform: 'capitalize',
+        maxWidth: '276px',
+      }}
     >
       {children}
     </LabelAttribute>
