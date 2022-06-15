@@ -26,9 +26,7 @@ import {
   NFTItemsWrapper,
   NFTTableHead
 } from '../ExplorePanel/NFTs'
-
-
-
+import { getOrderDirection } from '../ExplorePanel/util'
 
 export const nftColumns = {
   LAST_SALE_DATE: 'Last Sale',
@@ -47,6 +45,8 @@ const FollowedNFTs = ({ userId }: { userId?: number }) => {
   const isMobile = breakpointIndex <= 1
   const [selectedColumn, setSelectedColumn] = useState<number>(0)
   const [sortAscending, setSortAscending] = useState(false)
+  const orderColumn = Object.keys(nftColumns)[selectedColumn]
+  const orderDirection = getOrderDirection(orderColumn, sortAscending)
   const { loading, error, data } = useQuery<
     GetFollowedNFTsData,
     GetFollowedNFTsVars
@@ -54,6 +54,10 @@ const FollowedNFTs = ({ userId }: { userId?: number }) => {
     errorPolicy: 'all',
     variables: {
       userId: userId,
+      limit: PAGE_SIZE,
+      offset: page * PAGE_SIZE,
+      orderColumn,
+      orderDirection,
     },
     skip: !userId,
   })
@@ -62,22 +66,45 @@ const FollowedNFTs = ({ userId }: { userId?: number }) => {
     setPage(selected)
   }
 
+  const onChangeSelection = (columnIdx: number, order?: 'asc' | 'desc') => {
+    setSelectedColumn(columnIdx)
+
+    const ascendingColumns = [0, 1, 2]
+
+    if (order === 'asc') return setSortAscending(true)
+    if (order === 'desc') return setSortAscending(false)
+
+    // if order is not specified, toggle between ascending and descending
+    if (columnIdx === selectedColumn)
+      // Toggle sort order for current selection.
+      return setSortAscending(!sortAscending)
+    // else, set to ascending for new selection.
+    return setSortAscending(ascendingColumns.includes(columnIdx))
+  }
+
+  const handleChangeSelection = (colIdx: number, order?: 'asc' | 'desc') => {
+    onChangeSelection(colIdx, order)
+    setPage(0)
+  }
+
   const handleShowNFT = (id: string) => {
     router.push('/analytics/nft/' + id)
   }
 
   if (loading) {
-    return <ExplorePanelSkeleton>
-      <NFTTableHead
-        {...{ selectedColumn, sortAscending, handleChangeSelection: () => {} }}
-      />
-    </ExplorePanelSkeleton>
+    return (
+      <ExplorePanelSkeleton>
+        <NFTTableHead
+          {...{ selectedColumn, sortAscending, handleChangeSelection }}
+        />
+      </ExplorePanelSkeleton>
+    )
   }
 
   return (
     <>
       <NFTItemsWrapper
-        {...{ selectedColumn, sortAscending, handleChangeSelection: () => {} }}
+        {...{ selectedColumn, sortAscending, handleChangeSelection }}
       >
         {data?.assetsFollowedByUser.map(
           (

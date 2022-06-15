@@ -524,6 +524,10 @@ export const GET_UNSUPPORTED_AGGREGATE_COLLECTION_STATS = gql`
 
 export type GetFollowedCollectionsVars = {
   userId?: number
+  limit: number
+  offset: number
+  orderColumn: string
+  orderDirection: string
 }
 
 export type GetFollowedCollectionsData = {
@@ -542,8 +546,8 @@ export type GetFollowedCollectionsData = {
 }
 
 export const GET_FOLLOWED_COLLECTIONS = gql`
-  query GetFollowedCollections($userId: Int!) {
-    collectionsFollowedByUser(userId: $userId) {
+  query GetFollowedCollections($userId: Int!, $limit: Int!, $offset: Int!, $orderColumn: CollectionSortOption!, $orderDirection: OrderDirection!) {
+    collectionsFollowedByUser(userId: $userId, limit: $limit, offset: $offset, orderColumn: $orderColumn, orderDirection: $orderDirection) {
       id
       description
       name
@@ -560,6 +564,10 @@ export const GET_FOLLOWED_COLLECTIONS = gql`
 
 export type GetFollowedNFTsVars = {
   userId?: number
+  limit: number
+  offset: number
+  orderColumn: string
+  orderDirection: string
 }
 
 export type GetFollowedNFTsData = {
@@ -587,8 +595,8 @@ export type GetFollowedNFTsData = {
 }
 
 export const GET_FOLLOWED_NFTS = gql`
-  query GetFollowedNFTs($userId: Int!) {
-    assetsFollowedByUser(userId: $userId) {
+  query GetFollowedNFTs($userId: Int!, $limit: Int!, $offset: Int!, $orderColumn: AssetSearchSortOption, $orderDirection: OrderDirection) {
+    assetsFollowedByUser(userId: $userId, limit: $limit, offset: $offset, orderColumn: $orderColumn, orderDirection: $orderDirection) {
       id
       name
       contractAddress
@@ -614,6 +622,8 @@ export const GET_FOLLOWED_NFTS = gql`
 
 export type GetFollowedCollectorsVars = {
   userId?: number
+  limit: number
+  offset: number
 }
 
 export type GetFollowedCollectorsData = {
@@ -660,8 +670,8 @@ export type GetFollowedCollectorsData = {
 }
 
 export const GET_FOLLOWED_COLLECTORS = gql`
-  query GetFollowedCollectors($userId: Int!) {
-    usersFollowedByUser(userId: $userId) {
+  query GetFollowedCollectors($userId: Int!, $limit: Int!, $offset: Int!) {
+    usersFollowedByUser(userId: $userId, limit: $limit, offset: $offset) {
       ownedAppraisalValue {
         appraisalWei
       }

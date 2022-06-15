@@ -1,11 +1,27 @@
 import { useQuery } from '@apollo/client'
-import { Box, CollectorAccordion, CollectorAccordionHead, CollectorAccordionRow, Flex, formatNumber, Pagination, Skeleton, TableCell, Text, useBreakpointIndex } from '@upshot-tech/upshot-ui'
+import {
+  Box,
+  CollectorAccordion,
+  CollectorAccordionHead,
+  CollectorAccordionRow,
+  Flex,
+  formatNumber,
+  Pagination,
+  Skeleton,
+  TableCell,
+  Text,
+  useBreakpointIndex
+} from '@upshot-tech/upshot-ui'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { setAlertState } from 'redux/reducers/layout'
 import { shortenAddress } from 'utils/address'
+import {
+GET_USER_OWNED_ASSETS,
+  GetUserOwnedAssetsData,
+  GetUserOwnedAssetsVars} from 'views/Analytics/queries'
 import {
 GET_FOLLOWED_COLLECTORS,
   GetFollowedCollectorsData,
@@ -13,8 +29,13 @@ GET_FOLLOWED_COLLECTORS,
 
 import { PAGE_SIZE, PIXELATED_CONTRACTS } from '../../../../constants'
 
-
-const FollowedCollectors = ({ userId, name }: { userId?: number, name?: string }) => {
+const FollowedCollectors = ({
+  userId,
+  name,
+}: {
+  userId?: number
+  name?: string
+}) => {
   const dispatch = useDispatch()
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
@@ -33,7 +54,7 @@ const FollowedCollectors = ({ userId, name }: { userId?: number, name?: string }
   const handlePageChange = ({ selected }: { selected: number }) => {
     setPage(selected)
   }
-  
+
   const { loading, error, data } = useQuery<
     GetFollowedCollectorsData,
     GetFollowedCollectorsVars
@@ -41,9 +62,36 @@ const FollowedCollectors = ({ userId, name }: { userId?: number, name?: string }
     errorPolicy: 'all',
     variables: {
       userId: userId,
+      limit: PAGE_SIZE,
+      offset: page * PAGE_SIZE,
     },
     skip: !userId,
   })
+
+  const { data: extraCollectionData } = useQuery<
+    GetUserOwnedAssetsData,
+    GetUserOwnedAssetsVars
+  >(GET_USER_OWNED_ASSETS, {
+    errorPolicy: 'all',
+    variables: {
+      userId: selectedCollectorId,
+      collectionId: selectedExtraCollectionId,
+    },
+    skip: !selectedCollectorId || !selectedExtraCollectionId,
+  })
+
+  useEffect(() => {
+    if (
+      extraCollectionData?.getUser?.ownedAssets?.assets &&
+      selectedCollectorId
+    ) {
+      setSelectedExtraCollections({
+        ...selectedExtraCollections,
+        [selectedCollectorId]:
+          extraCollectionData?.getUser?.ownedAssets?.assets,
+      })
+    }
+  }, [extraCollectionData])
 
   const ExplorePanelSkeleton = () => {
     return (
@@ -76,9 +124,7 @@ const FollowedCollectors = ({ userId, name }: { userId?: number, name?: string }
             {`${isMobile ? '' : name} Count`}
           </Text>
         )}
-        {!name && (
-          <Text sx={{ whiteSpace: 'nowrap' }}>NFT Count</Text>
-        )}
+        {!name && <Text sx={{ whiteSpace: 'nowrap' }}>NFT Count</Text>}
       </CollectorAccordionHead>
       <CollectorAccordion>
         {data?.usersFollowedByUser
@@ -157,7 +203,9 @@ const FollowedCollectors = ({ userId, name }: { userId?: number, name?: string }
       <Flex sx={{ justifyContent: 'center', marginTop: '18px' }}>
         <Pagination
           forcePage={page}
-          pageCount={Math.ceil((data?.usersFollowedByUser?.length ?? 0) / PAGE_SIZE)}
+          pageCount={Math.ceil(
+            (data?.usersFollowedByUser?.length ?? 0) / PAGE_SIZE
+          )}
           pageRangeDisplayed={0}
           marginPagesDisplayed={0}
           onPageChange={handlePageChange}

@@ -21,9 +21,11 @@ GET_FOLLOWED_COLLECTIONS,
 
 import { PAGE_SIZE } from '../../../../constants/index'
 import { ExplorePanelSkeleton } from '../ExplorePanel/NFTs'
-import { CollectionItemsWrapper, CollectionTableHead, OrderedAssetColumns } from '../ExplorePanel/TopCollections'
-
-
+import {
+  CollectionItemsWrapper,
+  CollectionTableHead,
+  OrderedAssetColumns
+} from '../ExplorePanel/TopCollections'
 
 export const collectionColumns: Partial<OrderedAssetColumns> = {
   PAST_WEEK_VOLUME: 'Volume',
@@ -49,10 +51,33 @@ const FollowedCollections = ({ userId }: { userId?: number }) => {
   >(GET_FOLLOWED_COLLECTIONS, {
     errorPolicy: 'all',
     variables: {
+      orderColumn: Object.keys(collectionColumns)[selectedColumn],
+      orderDirection: sortAscending ? 'ASC' : 'DESC',
       userId: userId,
+      limit: PAGE_SIZE,
+      offset: page * PAGE_SIZE,
     },
     skip: !userId,
   })
+
+  const onChangeSelection = (columnIdx: number, order?: 'asc' | 'desc') => {
+    setSelectedColumn(columnIdx)
+
+    if (order === 'asc') return setSortAscending(true)
+    if (order === 'desc') return setSortAscending(false)
+
+    // if order is not specified, toggle between ascending and descending
+    if (columnIdx === selectedColumn)
+      // Toggle sort order for current selection.
+      return setSortAscending(!sortAscending)
+    // else, set to ascending for new selection.
+    return setSortAscending(false)
+  }
+
+  const handleChangeSelection = (colIdx: number, order?: 'asc' | 'desc') => {
+    onChangeSelection(colIdx, order)
+    setPage(0)
+  }
 
   const handlePageChange = ({ selected }: { selected: number }) => {
     setPage(selected)
@@ -66,15 +91,15 @@ const FollowedCollections = ({ userId }: { userId?: number }) => {
     return (
       <ExplorePanelSkeleton>
         <CollectionTableHead
-          {...{ selectedColumn, sortAscending, handleChangeSelection: () => {} }}
-          />
+          {...{ selectedColumn, sortAscending, handleChangeSelection }}
+        />
       </ExplorePanelSkeleton>
     )
 
   return (
     <>
       <CollectionItemsWrapper
-        {...{ selectedColumn, sortAscending, handleChangeSelection: () => {} }}
+        {...{ selectedColumn, sortAscending, handleChangeSelection }}
       >
         {data?.collectionsFollowedByUser.map(
           ({ id, name, imageUrl, latestStats }, idx) => (
@@ -212,7 +237,9 @@ const FollowedCollections = ({ userId }: { userId?: number }) => {
       <Flex sx={{ justifyContent: 'center', marginTop: '10px', width: '100%' }}>
         <Pagination
           forcePage={page}
-          pageCount={Math.ceil((data?.collectionsFollowedByUser?.length ?? 0) / PAGE_SIZE)}
+          pageCount={Math.ceil(
+            (data?.collectionsFollowedByUser?.length ?? 0) / PAGE_SIZE
+          )}
           pageRangeDisplayed={0}
           marginPagesDisplayed={0}
           onPageChange={handlePageChange}

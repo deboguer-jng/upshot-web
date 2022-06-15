@@ -81,9 +81,6 @@ GET_ALL_OWNED_COLLECTIONS_WRAPPER,
 
 
 
-
-
-
 type Collection = {
   id: number | null
   osCollectionSlug?: string
@@ -1079,32 +1076,38 @@ export default function UserView() {
   const renderBottomSection = () => {
     switch (profileOption) {
       case 'Followed Collections':
-        return <Panel
-          sx={{
-            marginLeft: isMobile ? '-1rem' : 0,
-            marginRight: isMobile ? '-1rem' : 0,
-          }}
-        >
-          <FollowedCollections userId={data?.getUser?.id} />
-        </Panel>
+        return (
+          <Panel
+            sx={{
+              marginLeft: isMobile ? '-1rem' : 0,
+              marginRight: isMobile ? '-1rem' : 0,
+            }}
+          >
+            <FollowedCollections userId={data?.getUser?.id} />
+          </Panel>
+        )
       case 'Followed NFTs':
-        return <Panel
-        sx={{
-          marginLeft: isMobile ? '-1rem' : 0,
-          marginRight: isMobile ? '-1rem' : 0,
-        }}
-      >
-        <FollowedNFTs userId={data?.getUser?.id} />
-      </Panel>
+        return (
+          <Panel
+            sx={{
+              marginLeft: isMobile ? '-1rem' : 0,
+              marginRight: isMobile ? '-1rem' : 0,
+            }}
+          >
+            <FollowedNFTs userId={data?.getUser?.id} />
+          </Panel>
+        )
       case 'Followed Collectors':
-        return <Panel
-        sx={{
-          marginLeft: isMobile ? '-1rem' : 0,
-          marginRight: isMobile ? '-1rem' : 0,
-        }}
-      >
-        <FollowedCollectors userId={data?.getUser?.id} name={""} />
-      </Panel>
+        return (
+          <Panel
+            sx={{
+              marginLeft: isMobile ? '-1rem' : 0,
+              marginRight: isMobile ? '-1rem' : 0,
+            }}
+          >
+            <FollowedCollectors userId={data?.getUser?.id} name={''} />
+          </Panel>
+        )
       default:
         return (
           <Masonry
@@ -2146,41 +2149,40 @@ export default function UserView() {
               </>
             )} */}
           </Box>
-          <Box sx={{ position: 'relative', height: '60px' }}>
-            <Flex
-              sx={{
-                justifyContent: 'space-between',
-                flexDirection: ['column', 'row'],
-                paddingBottom: '1rem',
-                gap: 1,
-                position: 'absolute',
-                width: '100%',
-                height: open ? '250px' : 'auto',
-                zIndex: 2,
-                background: `linear-gradient(180deg, #000000 18.23%, rgba(35, 31, 32, 0) 100%)`,
-              }}
-            >
-              <Flex sx={{ flexDirection: 'column' }}>
-                <Flex
-                  variant="text.h1Secondary"
-                  sx={{ gap: 2, alignItems: 'flex-start' }}
-                >
-                  View
-                  <SwitchDropdown
-                    onValueChange={(val) => setProfileOption(val)}
-                    value={profileOption}
-                    options={dropdownOptions}
-                    onToggle={(status) => setOpen(status)}
-                  />
+
+          {!!dataAllOwnedCollections?.getAllOwnedCollectionsWrapper
+            ?.extraCollections?.count && (
+            <Box sx={{ position: 'relative', height: '60px' }}>
+              <Flex
+                sx={{
+                  justifyContent: 'space-between',
+                  flexDirection: ['column', 'row'],
+                  paddingBottom: '1rem',
+                  gap: 1,
+                  position: 'absolute',
+                  width: '100%',
+                  height: open ? '250px' : 'auto',
+                  zIndex: 2,
+                  background: `linear-gradient(180deg, #000000 18.23%, rgba(35, 31, 32, 0) 100%)`,
+                }}
+              >
+                <Flex sx={{ flexDirection: 'column' }}>
+                  <Flex
+                    variant="text.h1Secondary"
+                    sx={{ gap: 2, alignItems: 'flex-start' }}
+                  >
+                    View
+                    <SwitchDropdown
+                      onValueChange={(val) => setProfileOption(val)}
+                      value={profileOption}
+                      options={dropdownOptions}
+                      onToggle={(status) => setOpen(status)}
+                    />
+                  </Flex>
                 </Flex>
               </Flex>
-            </Flex>
-          </Box>
-
-          {/* {!!dataAllOwnedCollections?.getAllOwnedCollectionsWrapper
-            ?.extraCollections?.count && (
-            <Text variant="h1Primary">Collection</Text>
-          )} */}
+            </Box>
+          )}
           {renderBottomSection()}
         </Flex>
       </Layout>
