@@ -170,7 +170,7 @@ export default function CollectionView() {
           sx={{
             flexDirection: 'column',
             gap: 4,
-            maxWidth: '1280px',
+            maxWidth: '100%',
             marginX: 'auto',
           }}
         >
