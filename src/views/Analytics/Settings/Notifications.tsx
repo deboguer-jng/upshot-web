@@ -117,8 +117,8 @@ const SettingsContainer = styled(Flex)`
   flex-direction: column;
   gap: 10px;
 `
-
-InputRounded.defaultProps = { dark: true, type: 'number' }
+const NumberInput = styled(InputRounded)``
+NumberInput.defaultProps = { dark: true, type: 'number' }
 
 export default function NotificationsSettings() {
   const { theme } = useTheme()
@@ -184,7 +184,7 @@ export default function NotificationsSettings() {
               </Label>
               <InputContainer>
                 <InputLabel variant='small'>Threshold</InputLabel>
-                <InputRounded
+                <NumberInput
                   onChange={e => handleInputChange('collectionsFloorInc', e.currentTarget.value)}
                   value={alertVals.collectionsFloorInc}
                   prefix="+"
@@ -205,7 +205,7 @@ export default function NotificationsSettings() {
               </Label>
               <InputContainer>
                 <InputLabel>Threshold</InputLabel>
-                <InputRounded
+                <NumberInput
                   onChange={e => handleInputChange('collectionsFloorDec', e.currentTarget.value)}
                   value={alertVals.collectionsFloorDec}
                   prefix="-"
@@ -225,7 +225,7 @@ export default function NotificationsSettings() {
               </Label>
               <InputContainer>
                 <InputLabel>Threshold</InputLabel>
-                <InputRounded
+                <NumberInput
                   onChange={e => handleInputChange('collectionsVolInc', e.currentTarget.value)}
                   value={alertVals.collectionsVolInc}
                   prefix="+"
@@ -245,7 +245,7 @@ export default function NotificationsSettings() {
               </Label>
               <InputContainer>
                 <InputLabel>Threshold</InputLabel>
-                <InputRounded
+                <NumberInput
                   onChange={e => handleInputChange('collectionsVolDec', e.currentTarget.value)}
                   value={alertVals.collectionsVolDec}
                   prefix="-"
@@ -265,7 +265,7 @@ export default function NotificationsSettings() {
               </Label>
               <InputContainer>
                 <InputLabel>Above Floor</InputLabel>
-                <InputRounded
+                <NumberInput
                   onChange={e => handleInputChange('collectionsSigSalesAboveFloor', e.currentTarget.value)}
                   value={alertVals.collectionsSigSalesAboveFloor}
                   prefix="+"
@@ -275,7 +275,7 @@ export default function NotificationsSettings() {
               </InputContainer>
               <InputContainer>
                 <InputLabel>Daily Limit</InputLabel>
-                <InputRounded
+                <NumberInput
                   onChange={e => handleInputChange('collectionsSigSalesLimit', e.currentTarget.value)}
                   value={alertVals.collectionsSigSalesLimit}
                   suffix="alerts"
@@ -299,7 +299,7 @@ export default function NotificationsSettings() {
               </Label>
               <InputContainer>
                 <InputLabel>Min. Tokens</InputLabel>
-                <InputRounded
+                <NumberInput
                   onChange={e => handleInputChange('collectorsMints', e.currentTarget.value)}
                   value={alertVals.collectorsMints}
                   suffix="tokens"
@@ -318,7 +318,7 @@ export default function NotificationsSettings() {
               </Label>
               <InputContainer>
                 <InputLabel>Min. Tokens</InputLabel>
-                <InputRounded
+                <NumberInput
                   onChange={e => handleInputChange('collectorsBuysMin', e.currentTarget.value)}
                   value={alertVals.collectorsBuysMin}
                   suffix="tokens"
@@ -327,7 +327,7 @@ export default function NotificationsSettings() {
               </InputContainer>
               <InputContainer>
                 <InputLabel>Daily Limit</InputLabel>
-                <InputRounded
+                <NumberInput
                   onChange={e => handleInputChange('collectorsBuysLimit', e.currentTarget.value)}
                   value={alertVals.collectorsBuysLimit}
                   suffix="tokens"
@@ -346,7 +346,7 @@ export default function NotificationsSettings() {
               </Label>
               <InputContainer>
                 <InputLabel>Min. Tokens</InputLabel>
-                <InputRounded
+                <NumberInput
                   onChange={e => handleInputChange('collectorsSellsMin', e.currentTarget.value)}
                   value={alertVals.collectorsSellsMin}
                   suffix="tokens"
@@ -355,7 +355,7 @@ export default function NotificationsSettings() {
               </InputContainer>
               <InputContainer>
                 <InputLabel>Daily Limit</InputLabel>
-                <InputRounded
+                <NumberInput
                   onChange={e => handleInputChange('collectorsSellsLimit', e.currentTarget.value)}
                   value={alertVals.collectorsSellsLimit}
                   suffix="tokens"
@@ -378,7 +378,7 @@ export default function NotificationsSettings() {
               </Label>
               <InputContainer>
                 <InputLabel>Price Change</InputLabel>
-                <InputRounded
+                <NumberInput
                   onChange={e => handleInputChange('nftPriceChange', e.currentTarget.value)}
                   value={alertVals.nftPriceChange}
                   prefix="+/-"
@@ -398,7 +398,7 @@ export default function NotificationsSettings() {
               </Label>
               <InputContainer>
                 <InputLabel>Appraisal Change</InputLabel>
-                <InputRounded
+                <NumberInput
                   onChange={e => handleInputChange('nftAppraisalChange', e.currentTarget.value)}
                   value={alertVals.nftAppraisalChange}
                   prefix="+/-"
@@ -418,7 +418,7 @@ export default function NotificationsSettings() {
               </Label>
               <InputContainer>
                 <InputLabel>Under- priced</InputLabel>
-                <InputRounded
+                <NumberInput
                   onChange={e => handleInputChange('nftDealAlerts', e.currentTarget.value)}
                   value={alertVals.nftDealAlerts}
                   suffix="%"
@@ -458,6 +458,7 @@ export default function NotificationsSettings() {
           disabled={!emailEnabled}
           value={email}
           type="email"
+          dark
         />
       </Flex>
       <Flex sx={{gap: '10px', alignItems: 'center'}}>
