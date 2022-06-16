@@ -1,6 +1,7 @@
-import { useLazyQuery, useMutation } from '@apollo/client'
+import { useLazyQuery } from '@apollo/client'
 import {
   ConnectModal,
+  DialogModal,
   Flex,
   HelpModal,
   Icon,
@@ -12,35 +13,31 @@ import {
   useTheme,
 } from '@upshot-tech/upshot-ui'
 import { useWeb3React } from '@web3-react/core'
+import { InjectedConnector } from '@web3-react/injected-connector'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { ConnectorName, connectorsByName } from 'constants/connectors'
 import makeBlockie from 'ethereum-blockies-base64'
 import { ethers } from 'ethers'
 import {
-  LOG_EVENT,
-  LogEventData,
-  LogEventVars,
-  SIGN_IN,
-  SignInData,
-  SignInVars,
-} from 'graphql/mutations'
-import {
   GET_NAV_BAR_COLLECTIONS,
-  GET_NONCE,
   GetNavBarCollectionsData,
   GetNavBarCollectionsVars,
-  GetNonceData,
-  GetNonceVars,
 } from 'graphql/queries'
+import { useAuth } from 'hooks/auth'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { selectFeatures } from 'redux/reducers/features'
 import {
+  DialogModals,
+  selectDialogModalState,
+  selectShowConnectModal,
   selectShowHelpModal,
   selectShowSidebar,
+  setDialogModalState,
+  setShowConnectModal,
   setShowHelpModal,
   setShowSidebar,
 } from 'redux/reducers/layout'
@@ -51,11 +48,8 @@ import {
   selectAuthToken,
   selectEns,
   setActivatingConnector,
-  setAuthToken,
 } from 'redux/reducers/web3'
 import { shortenAddress } from 'utils/address'
-import { getAuthPayload } from 'utils/auth'
-import { logEvent } from 'utils/googleAnalytics'
 
 import { BetaBanner } from '../BetaBanner'
 import { Sidebar, SidebarShade, SideLink } from './Styled'
@@ -64,6 +58,10 @@ interface InputSuggestion {
   id: number | string
   name: string
   [key: string]: any
+}
+
+interface NavProps {
+  onSignInRetry?: Function
 }
 
 function useOutsideAlerter(ref) {
@@ -92,15 +90,17 @@ function useOutsideAlerter(ref) {
   return status
 }
 
-export const Nav = () => {
+export const Nav = ({ onSignInRetry }: NavProps) => {
   const { theme } = useTheme()
-  const { activate, deactivate, connector, library, account } = useWeb3React()
+  const { active, activate, deactivate, connector } = useWeb3React()
   const router = useRouter()
   const dispatch = useAppDispatch()
   const features = useAppSelector(selectFeatures)
 
   const address = useAppSelector(selectAddress)
   const showSidebar = useAppSelector(selectShowSidebar)
+  const showConnect = useAppSelector(selectShowConnectModal)
+  const dialogModalState = useAppSelector(selectDialogModalState)
   const sidebarRef = useRef(null)
   const ens = useAppSelector(selectEns)
   const [navSearchTerm, setNavSearchTerm] = useState('')
@@ -108,15 +108,13 @@ export const Nav = () => {
     GetNavBarCollectionsData,
     GetNavBarCollectionsVars
   >(GET_NAV_BAR_COLLECTIONS)
-  const [open, setOpen] = useState(false)
   const helpOpen = useSelector(selectShowHelpModal)
-  const authToken = useSelector(selectAuthToken)
   const modalRef = useRef<HTMLDivElement>(null)
   const helpModalRef = useRef<HTMLDivElement>(null)
   const isMobile = useBreakpointIndex() <= 1
-  const toggleModal = () => setOpen(!open)
   const toggleHelpModal = () => dispatch(setShowHelpModal(!helpOpen))
   const outsideClicked = useOutsideAlerter(sidebarRef)
+  const { isAuthed, isSigning, triggerAuth } = useAuth()
 
   useEffect(() => {
     if (!router.query) return
@@ -132,62 +130,6 @@ export const Nav = () => {
     }
   }, [outsideClicked])
 
-  const [logUpshotEvent] = useMutation<LogEventData, LogEventVars>(LOG_EVENT, {
-    onError: (err) => {
-      console.error(err)
-    },
-  })
-
-  const [signIn] = useMutation<SignInData, SignInVars>(SIGN_IN, {
-    onError: (err) => {
-      console.error(err)
-    },
-    onCompleted: (data) => {
-      if (!data?.signIn?.authToken) return
-      dispatch(setAuthToken(data.signIn.authToken))
-
-      router.push('/settings')
-    },
-  })
-
-  const [getNonce] = useLazyQuery<GetNonceData, GetNonceVars>(GET_NONCE, {
-    onCompleted: async (data) => {
-      if (!account) return
-
-      const signer = library.getSigner(account)
-      let signature
-
-      try {
-        const payload = getAuthPayload({
-          address: account,
-          nonce: data?.getNonce?.nonce,
-        })
-        signature = await signer.signMessage(payload)
-      } catch (err) {
-        console.error(err)
-      }
-
-      if (!signature) return
-
-      logEvent('auth', 'signature', account)
-      logUpshotEvent({
-        variables: {
-          timestamp: Math.floor(Date.now() / 1000),
-          address: account,
-          type: 'signature',
-        },
-      })
-
-      await signIn({
-        variables: {
-          userAddress: account,
-        },
-      })
-
-      router.push('/settings')
-    },
-  })
-
   const isAddress =
     navSearchTerm?.substring(0, 2) === '0x' && navSearchTerm?.length === 42
 
@@ -202,8 +144,30 @@ export const Nav = () => {
     }
 
     dispatch(setActivatingConnector(provider))
-    activate(connectorsByName[provider], (err) => console.error(err))
+
+    activate(
+      connectorsByName[provider],
+      async (err) => {
+        switch (err.name) {
+          case 'UnsupportedChainIdError': {
+            console.warn('Unsupported chain.')
+            break
+          }
+          default: {
+            console.error(err)
+          }
+        }
+      },
+      false
+    )
+
     modalRef?.current?.click()
+  }
+
+  const getWalletName = () => {
+    if (connector instanceof InjectedConnector) return 'with MetaMask'
+    if (connector instanceof WalletConnectConnector) return 'with WalletConnect'
+    return ''
   }
 
   const handleNavKeyUp = () => {
@@ -228,8 +192,18 @@ export const Nav = () => {
     ;(document.activeElement as HTMLElement).blur()
 
     if (isENS) {
+      let provider
+      // Use the injected provider if available.
       try {
-        const provider = ethers.getDefaultProvider()
+        provider = new ethers.providers.Web3Provider(window['ethereum'], 'any')
+      } catch (err) {
+        console.warn(err)
+      }
+
+      // Fallback readonly provider.
+      if (!provider) provider = ethers.getDefaultProvider()
+
+      try {
         const address = await provider.resolveName(navSearchTerm)
         if (!address) return
 
@@ -274,37 +248,33 @@ export const Nav = () => {
     dispatch(setShowSidebar(!showSidebar))
   }
 
+  const handleToggleConnect = () => {
+    dispatch(setShowConnectModal(!showConnect))
+  }
+
   const getVariant = () => {
     if (features?.status?.maintenance) return 'maintenance'
 
     return 'beta'
   }
 
-  const handleShowSettings = () => {
-    /**
-     * We require an active web3 connection to manage settings.
-     * The settings button is only visible if it exists, but for
-     * type checking, we will bail on this handler if there is no account.
-     */
-    if (!account) return
-
-    /**
-     * If there's no auth token, we'll run through the sequential flow.
-     *
-     * 1. We first request a nonce for the active user address.
-     *
-     * 2. Once we have the nonce, we ask the user to sign it.
-     *
-     * 3. Once we have the signature, we send that to the backend in exchange
-     * for an authToken, which is cached to redux and added to all graphQL headers.
-     */
-    if (!authToken) return getNonce({ variables: { userAddress: account } })
-
-    /**
-     * If we've got an authToken cached from previous use, we're ready to go.
-     */
-    router.push('/settings')
+  const handleSignInRetry = () => {
+    if (clickedSettings) handleShowSettings()
+    else onSignInRetry?.()
   }
+
+  const [clickedSettings, setClickedSettings] = useState<boolean>(false)
+
+  const handleShowSettings = useCallback(() => {
+    setClickedSettings(true)
+    if (isAuthed) router.push(`/analytics/user/${address}/settings`)
+    else {
+      triggerAuth({
+        onComplete: () => router.push(`/analytics/user/${address}/settings`),
+        onError: (e) => console.error('triggerAuth: ', e),
+      })
+    }
+  }, [isAuthed, triggerAuth, active, address])
 
   const sidebar = (
     <Sidebar ref={sidebarRef}>
@@ -429,9 +399,9 @@ export const Nav = () => {
           onSearchKeyUp={handleNavKeyUp}
           onConnectClick={() => {
             if (showSidebar) handleToggleMenu()
-            toggleModal()
+            handleToggleConnect()
           }}
-          // onSettings={handleShowSettings}
+          onSettings={handleShowSettings}
           onDisconnectClick={handleDisconnect}
           onMenuClick={handleToggleMenu}
           onHelpClick={toggleHelpModal}
@@ -440,7 +410,21 @@ export const Nav = () => {
         >
           {showSidebar && sidebar}
         </Navbar>
-        <Modal ref={modalRef} onClose={toggleModal} {...{ open }} hideScroll>
+        <Modal open={dialogModalState === DialogModals.SIGN_MESSAGE}>
+          <DialogModal
+            header="Signing in"
+            body={`Please sign in ${getWalletName()}`}
+            button="Retry"
+            onButtonClick={(e) => handleSignInRetry()}
+            sx={{ minWidth: 320 }}
+          />
+        </Modal>
+        <Modal
+          ref={modalRef}
+          onClose={handleToggleConnect}
+          open={showConnect}
+          hideScroll
+        >
           <ConnectModal {...{ hideMetaMask }} onConnect={handleConnect} />
         </Modal>
         <Modal

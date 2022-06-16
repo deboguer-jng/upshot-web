@@ -265,7 +265,7 @@ const MasonryItem = memo<{
   data: any
   setShowCollection: any
   collectionFloors: any
-}>(({ index, data, setShowCollection, collectionFloors }) => {
+}>(function MasonryItem({ index, data, setShowCollection, collectionFloors }) {
   if ('ownedAppraisedValue' in data) {
     const { ownedAppraisedValue, count, collection } =
       data as AppraisedCollection
@@ -1053,6 +1053,7 @@ export default function UserView() {
   )
 
   const getDisplayName = () => {
+    if (data?.getUser?.displayName) return data?.getUser?.displayName
     if (address.toLowerCase() === userAddress.toLowerCase() && userEns?.name) {
       return userEns.name
     }

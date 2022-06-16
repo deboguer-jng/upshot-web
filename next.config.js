@@ -28,6 +28,10 @@ module.exports = {
         source: '/analytics/search',
         destination: '/dashboard/search',
       },
+      {
+        source: '/analytics/user/:address/settings',
+        destination: '/dashboard/user/:address/settings'
+      }
     ]
   },
 }

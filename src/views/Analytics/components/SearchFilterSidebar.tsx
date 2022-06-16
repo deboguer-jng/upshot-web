@@ -577,7 +577,7 @@ export default function SearchFilterSidebar({
 
             <Flex sx={{ flexDirection: 'column', gap: 2 }}>
               <Text color="grey-500" sx={{ fontSize: 4, fontWeight: 'bold' }}>
-                {name} Attributes
+                {`${name} Attributes`}
               </Text>
 
               <Flex sx={{ flexDirection: 'column', gap: 4 }}>

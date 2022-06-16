@@ -10,7 +10,9 @@ export interface Web3State {
   activatingConnector?: ConnectorName
   address?: string
   authToken?: string
+  chain?: number
   ens: ENSAccount
+  transactions: string[]
 }
 
 const initialState: Web3State = {
@@ -32,6 +34,14 @@ const initialState: Web3State = {
   ens: {
     name: undefined,
   },
+  /**
+   * RPC Chain ID
+   */
+  chain: undefined,
+  /**
+   * Pending transaction hashes
+   */
+  transactions: [],
 }
 
 export const web3Slice = createSlice({
@@ -53,12 +63,29 @@ export const web3Slice = createSlice({
     setEns: (state, action: PayloadAction<ENSAccount>) => {
       state.ens = action.payload
     },
+    setChain: (state, action: PayloadAction<number | undefined>) => {
+      state.chain = action.payload
+    },
+    addTransaction: (state, action: PayloadAction<string>) => {
+      if (state.transactions?.includes(action.payload)) return
+
+      state.transactions = [...(state.transactions ?? []), action.payload]
+    },
+    removeTransaction: (state, action: PayloadAction<string>) => {
+      state.transactions =
+        state.transactions?.filter((hash) => hash !== action.payload) ?? []
+    },
+    resetTransactions: (state) => {
+      state.transactions = []
+    },
     resetWeb3: (state) => {
       state.address = undefined
       state.authToken = undefined
+      state.chain = undefined
       state.ens = {
         name: undefined,
       }
+      state.transactions = []
     },
   },
 })
@@ -68,6 +95,9 @@ export const {
   setAddress,
   setAuthToken,
   setEns,
+  setChain,
+  addTransaction,
+  removeTransaction,
   resetWeb3,
 } = web3Slice.actions
 
@@ -79,5 +109,7 @@ export const selectAddress = (state: RootState) => state.web3.address
 export const selectAuthToken = (state: RootState) => state.web3.authToken
 
 export const selectEns = (state: RootState) => state.web3.ens
+
+export const selectTransactions = (state: RootState) => state.web3.transactions
 
 export default web3Slice.reducer

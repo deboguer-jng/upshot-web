@@ -8,14 +8,17 @@ import { useEffect, useState } from 'react'
 import { useAppSelector } from 'redux/hooks'
 import { useAppDispatch } from 'redux/hooks'
 import { fetchFeatures } from 'redux/reducers/features'
-import { selectIsBeta } from 'redux/reducers/user'
-import { setIsBeta } from 'redux/reducers/user'
+import { setAlertState } from 'redux/reducers/layout'
+import { selectIsBeta, setIsBeta } from 'redux/reducers/user'
 import {
+  removeTransaction,
   resetWeb3,
   selectActivatingConnector,
   selectAddress,
+  selectTransactions,
   setActivatingConnector,
   setAddress,
+  setChain,
   setEns,
 } from 'redux/reducers/web3'
 
@@ -25,12 +28,13 @@ import WaitList from '../views/WaitList'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [ready, setReady] = useState(false)
-  const { connector, account, library } = useWeb3React()
+  const { connector, account, library, deactivate } = useWeb3React()
 
   const dispatch = useAppDispatch()
   const activatingConnector = useAppSelector(selectActivatingConnector)
   const address = useAppSelector(selectAddress)
   const isBeta = useAppSelector(selectIsBeta)
+  const txs = useAppSelector(selectTransactions)
   const router = useRouter()
   const [logUpshotEvent] = useMutation<LogEventData, LogEventVars>(LOG_EVENT, {
     onError: (err) => {
@@ -64,6 +68,43 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     setReady(true)
   }, [dispatch])
 
+  useEffect(() => {
+    const watchTxs = async () => {
+      let provider
+
+      // Use the injected provider if available.
+      try {
+        provider = new ethers.providers.Web3Provider(window['ethereum'], 'any')
+      } catch (err) {
+        console.warn(err)
+      }
+
+      // Fallback readonly provider.
+      if (!provider) provider = ethers.getDefaultProvider()
+
+      if (!provider || !txs) return
+
+      txs.map((hash) =>
+        provider.waitForTransaction(hash).then((tx) => {
+          dispatch(removeTransaction(hash))
+
+          let isSuccess = Boolean(tx.blockHash)
+
+          dispatch(
+            setAlertState({
+              showAlert: true,
+              alertText: `Transaction [${
+                isSuccess ? 'SUCCESS' : 'FAIL'
+              }] - ${hash.slice(0, 6)}...${hash.slice(-4)}`,
+            })
+          )
+        })
+      )
+    }
+
+    watchTxs()
+  }, [dispatch, txs])
+
   // Recognize the connector currently being activated.
   useEffect(() => {
     if (
@@ -78,15 +119,23 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!ready) return
 
-    const handleAccountsChanged = async (accounts) => {
-      if (!accounts.length) {
-        dispatch(resetWeb3())
-        dispatch(setIsBeta(undefined))
+    const handleAccountsChanged = async () => {
+      deactivate()
+      dispatch(resetWeb3())
+      dispatch(setIsBeta(undefined))
+    }
+
+    const handleChainChanged = async (chainId) => {
+      if (chainId !== 1 && process.env.NODE_ENV !== 'development') {
+        console.warn('Unsupported chain.')
       }
+
+      dispatch(setChain(chainId))
     }
 
     if (window['ethereum']) {
       window['ethereum'].on('accountsChanged', handleAccountsChanged)
+      window['ethereum'].on('chainChanged', handleChainChanged)
     }
 
     if (account && (!address || account !== address)) {
@@ -99,20 +148,38 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         },
       })
 
+      library.getNetwork().then((network) => {
+        if (!network.chainId) return
+
+        if (
+          network.chainId !== 1 &&
+          typeof window['ethereum'] !== 'undefined' &&
+          process.env.NODE_ENV !== 'development'
+        ) {
+          window['ethereum'].request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: '0x1' }],
+          })
+        }
+
+        handleChainChanged(network.chainId)
+      })
+
       dispatch(setAddress(account))
     }
 
-    if (account && address && account !== address) {
-      dispatch(setIsBeta(undefined))
-      return
-    }
-
     const fetchEns = async (address: string) => {
-      const provider = library
-        ? new ethers.providers.Web3Provider(library.provider)
-        : null
+      let provider
 
-      if (!provider) return
+      // Use the injected provider if available.
+      try {
+        provider = new ethers.providers.Web3Provider(window['ethereum'], 'any')
+      } catch (err) {
+        console.warn(err)
+      }
+
+      // Fallback readonly provider.
+      if (!provider) provider = ethers.getDefaultProvider()
 
       /* Reverse lookup of ENS name via address */
       let name
@@ -129,12 +196,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     if (account) fetchEns(account)
 
     if (window['ethereum'])
-      return () =>
+      return () => {
         window['ethereum'].removeListener(
           'accountsChanged',
           handleAccountsChanged
         )
-  }, [account, library, dispatch, ready, address])
+        window['ethereum'].removeListener('chainChanged', handleChainChanged)
+      }
+  }, [account, library, dispatch, ready, address, deactivate, logUpshotEvent])
 
   // Eagerly connect to the Injected provider, if granted access and authenticated in redux.
   const triedEager = useEagerConnect(address)
