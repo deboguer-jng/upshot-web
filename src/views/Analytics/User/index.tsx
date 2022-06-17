@@ -30,7 +30,7 @@ import {
   Text,
   Tooltip,
   useBreakpointIndex,
-  useTheme
+  useTheme,
 } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
@@ -57,7 +57,7 @@ import FollowedCollections from '../components/User/FollowedCollections'
 import FollowedCollectors from '../components/User/FollowedCollectors'
 import FollowedNFTs from '../components/User/FollowedNFTs'
 import {
-GET_ALL_OWNED_COLLECTIONS_WRAPPER,
+  GET_ALL_OWNED_COLLECTIONS_WRAPPER,
   GET_COLLECTION_ASSETS,
   GET_COLLECTOR,
   GET_COLLECTOR_TX_HISTORY,
@@ -77,9 +77,8 @@ GET_ALL_OWNED_COLLECTIONS_WRAPPER,
   GetUnsupportedAssetsData,
   GetUnsupportedAssetsVars,
   GetUnsupportedFloorsData,
-  GetUnsupportedFloorsVars} from './queries'
-
-
+  GetUnsupportedFloorsVars,
+} from './queries'
 
 type Collection = {
   id: number | null
@@ -1054,7 +1053,10 @@ export default function UserView() {
 
   const getDisplayName = () => {
     if (data?.getUser?.displayName) return data?.getUser?.displayName
-    if (address.toLowerCase() === userAddress.toLowerCase() && userEns?.name) {
+    if (
+      address?.toLowerCase() === userAddress?.toLowerCase() &&
+      userEns?.name
+    ) {
       return userEns.name
     }
     return extractEns(data?.getUser?.addresses, address) ?? shortAddress
