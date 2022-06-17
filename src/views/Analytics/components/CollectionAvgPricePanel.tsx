@@ -209,7 +209,6 @@ function printMetricData(
   metric: METRIC,
   data: { average?: string; floor?: string; volume?: string }
 ) {
-  console.log({ metric }, data)
   if (metric === 'PAST_WEEK_VOLUME' && data['volume']) {
     return (
       formatNumber(data['volume'], {
