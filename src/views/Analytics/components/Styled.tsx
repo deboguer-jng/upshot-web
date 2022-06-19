@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
-import { Box, Text } from '@upshot-tech/upshot-ui'
+import { Box, Text, transientOptions } from '@upshot-tech/upshot-ui'
 
-export const MiniNFTContainer = styled(Box)`
+export const MiniNFTContainer = styled(Box, transientOptions)`
   display: flex;
   margin-bottom: ${({ theme }) => theme.sizes[3] + 'px'};
   gap: ${({ theme }) => theme.sizes[7] + 'px'};
@@ -30,7 +30,7 @@ export const MiniNFTContainer = styled(Box)`
   }
 `
 
-export const DescriptionWrapper = styled(Text)`
+export const DescriptionWrapper = styled(Text, transientOptions)`
   line-height: 1.4;
   overflow: auto;
   height: 148px;
