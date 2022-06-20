@@ -2,7 +2,6 @@ import { useMutation, useQuery } from '@apollo/client'
 import { 
   Button,
   Container, 
-  Icon, 
   InputRounded,
   SettingsMenuItem,
   SettingsPanel,
@@ -10,7 +9,6 @@ import {
   TextareaRounded,
   useTheme,
 } from '@upshot-tech/upshot-ui'
-import { useWeb3React } from '@web3-react/core'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
 import makeBlockie from 'ethereum-blockies-base64'
@@ -20,15 +18,15 @@ import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
 import { useAppSelector } from 'redux/hooks'
 import { selectAddress, selectEns } from 'redux/reducers/web3'
-import { Avatar, Box, Flex, Link, Text } from 'theme-ui'
+import { Avatar, Flex, Text } from 'theme-ui'
 
 import Breadcrumbs from '../components/Breadcrumbs'
 import {
+  GET_PROFILE,
   GetUserProfileData,
   GetUserProfileVars,
-  GET_PROFILE,
 } from '../User/queries'
-import { UpdateUserData, UpdateUserVars, UPDATE_USER } from './mutations'
+import { UPDATE_USER, UpdateUserData, UpdateUserVars } from './mutations'
 import NotificationsSettings from './Notifications'
 
 export default function SettingsView() {
