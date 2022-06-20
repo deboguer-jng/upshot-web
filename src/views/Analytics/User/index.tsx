@@ -80,6 +80,7 @@ GET_ALL_OWNED_COLLECTIONS_WRAPPER,
   GetUnsupportedFloorsVars} from './queries'
 
 
+
 type Collection = {
   id: number | null
   osCollectionSlug?: string
@@ -2166,7 +2167,7 @@ export default function UserView() {
                   width: '100%',
                   height: open ? '250px' : 'auto',
                   zIndex: 2,
-                  background: `linear-gradient(180deg, #000000 18.23%, rgba(35, 31, 32, 0.5) 90%, rgba(35, 31, 32, 0) 100%)`,
+                  background: open ? `linear-gradient(180deg, #000000 18.23%, rgba(35, 31, 32, 0.5) 90%, rgba(35, 31, 32, 0) 100%)` : 'transparent',
                 }}
               >
                 <Flex sx={{ flexDirection: 'column' }}>

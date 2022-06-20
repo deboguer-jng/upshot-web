@@ -29,6 +29,8 @@ GET_FOLLOWED_COLLECTORS,
 
 import { PAGE_SIZE, PIXELATED_CONTRACTS } from '../../../../constants'
 
+
+
 const FollowedCollectors = ({
   userId,
   name,
@@ -215,11 +217,9 @@ const FollowedCollectors = ({
           </Flex>
         </>
       ): (
-        <>
-          <Text sx={{textAlign: 'center'}} as="h4">
-            This user is not currently following any other collectors.
-          </Text>
-        </>
+        <Text sx={{textAlign: 'center'}} as="h4">
+          This user is not currently following any other collectors.
+        </Text>
       )}
     </>
   )

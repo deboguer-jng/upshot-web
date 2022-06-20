@@ -27,6 +27,8 @@ import {
   OrderedAssetColumns
 } from '../ExplorePanel/TopCollections'
 
+
+
 export const collectionColumns: Partial<OrderedAssetColumns> = {
   PAST_WEEK_VOLUME: 'Volume',
   PAST_WEEK_AVERAGE: 'Avg Price',
@@ -98,153 +100,165 @@ const FollowedCollections = ({ userId }: { userId?: number }) => {
 
   return (
     <>
-      <CollectionItemsWrapper
-        {...{ selectedColumn, sortAscending, handleChangeSelection }}
-      >
-        {data?.collectionsFollowedByUser.map(
-          ({ id, name, imageUrl, latestStats }, idx) => (
-            <CollectionGridRow
-              title={name}
-              imageSrc={imageUrl!}
-              key={idx}
-              onClick={() => handleShowCollection(id)}
-              href={`/analytics/collection/${id}`}
-              defaultOpen={idx === 0 ? true : false}
-              subtitle={
-                isMobile && latestStats?.pastWeekWeiVolume
-                  ? formatNumber(latestStats.pastWeekWeiVolume, {
-                      fromWei: true,
-                      decimals: 2,
-                      kmbUnits: true,
-                      prefix: 'ETHER',
-                    })
-                  : undefined
-              }
-              fullWidth={isMobile}
-              linkComponent={NextLink}
-              columns={colSpacing}
-              {...{ variant: 'black' }}
-            >
-              {isMobile ? (
-                <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>
-                  <Flex
-                    sx={{
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Text sx={{ marginBottom: 1 }}>
-                      {collectionColumns.PAST_WEEK_AVERAGE}
-                    </Text>
-                    <Text>
-                      {latestStats?.pastDayWeiAverage
-                        ? formatNumber(latestStats.pastDayWeiAverage, {
-                            fromWei: true,
-                            decimals: 2,
-                            prefix: 'ETHER',
-                          })
-                        : '-'}
-                    </Text>
-                  </Flex>
-                  <Flex
-                    sx={{
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Text sx={{ marginBottom: 1 }}>
-                      {collectionColumns.FLOOR}
-                    </Text>
-                    <Text>
-                      {latestStats?.floor
-                        ? formatNumber(latestStats.floor, {
-                            fromWei: true,
-                            decimals: 2,
-                            prefix: 'ETHER',
-                          })
-                        : '-'}
-                    </Text>
-                  </Flex>
-                  <Flex
-                    sx={{
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Text sx={{ textAlign: 'center', marginBottom: 1 }}>
-                      {collectionColumns.PAST_WEEK_FLOOR_CHANGE}
-                    </Text>
-                    <Text
-                      sx={{
-                        color: getPriceChangeColor(
-                          latestStats?.weekFloorChange
-                        ),
-                      }}
-                    >
-                      {getPriceChangeLabel(latestStats?.weekFloorChange)}
-                    </Text>
-                  </Flex>
-                </Grid>
-              ) : (
-                <>
-                  <Box>
-                    {latestStats?.pastWeekWeiVolume
+      {data?.collectionsFollowedByUser?.length ? (
+        <>
+          <CollectionItemsWrapper
+            {...{ selectedColumn, sortAscending, handleChangeSelection }}
+          >
+            {data?.collectionsFollowedByUser.map(
+              ({ id, name, imageUrl, latestStats }, idx) => (
+                <CollectionGridRow
+                  title={name}
+                  imageSrc={imageUrl!}
+                  key={idx}
+                  onClick={() => handleShowCollection(id)}
+                  href={`/analytics/collection/${id}`}
+                  defaultOpen={idx === 0 ? true : false}
+                  subtitle={
+                    isMobile && latestStats?.pastWeekWeiVolume
                       ? formatNumber(latestStats.pastWeekWeiVolume, {
                           fromWei: true,
                           decimals: 2,
                           kmbUnits: true,
                           prefix: 'ETHER',
                         })
-                      : '-'}
-                  </Box>
-                  <Box>
-                    {latestStats?.pastDayWeiAverage
-                      ? formatNumber(latestStats.pastDayWeiAverage, {
-                          fromWei: true,
-                          decimals: 2,
-                          kmbUnits: true,
-                          prefix: 'ETHER',
-                        })
-                      : '-'}
-                  </Box>
-                  <Box>
-                    {latestStats?.floor
-                      ? formatNumber(latestStats.floor, {
-                          fromWei: true,
-                          decimals: 2,
-                          prefix: 'ETHER',
-                        })
-                      : '-'}
-                  </Box>
-                  <Box
-                    sx={{
-                      maxWidth: [100, 100, 200],
-                      color: getPriceChangeColor(latestStats?.weekFloorChange),
-                    }}
-                  >
-                    {getPriceChangeLabel(latestStats?.weekFloorChange)}
-                  </Box>
-                </>
-              )}
-            </CollectionGridRow>
-          )
-        )}
-      </CollectionItemsWrapper>
+                      : undefined
+                  }
+                  fullWidth={isMobile}
+                  linkComponent={NextLink}
+                  columns={colSpacing}
+                  {...{ variant: 'black' }}
+                >
+                  {isMobile ? (
+                    <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>
+                      <Flex
+                        sx={{
+                          flexDirection: 'column',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <Text sx={{ marginBottom: 1 }}>
+                          {collectionColumns.PAST_WEEK_AVERAGE}
+                        </Text>
+                        <Text>
+                          {latestStats?.pastDayWeiAverage
+                            ? formatNumber(latestStats.pastDayWeiAverage, {
+                                fromWei: true,
+                                decimals: 2,
+                                prefix: 'ETHER',
+                              })
+                            : '-'}
+                        </Text>
+                      </Flex>
+                      <Flex
+                        sx={{
+                          flexDirection: 'column',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <Text sx={{ marginBottom: 1 }}>
+                          {collectionColumns.FLOOR}
+                        </Text>
+                        <Text>
+                          {latestStats?.floor
+                            ? formatNumber(latestStats.floor, {
+                                fromWei: true,
+                                decimals: 2,
+                                prefix: 'ETHER',
+                              })
+                            : '-'}
+                        </Text>
+                      </Flex>
+                      <Flex
+                        sx={{
+                          flexDirection: 'column',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <Text sx={{ textAlign: 'center', marginBottom: 1 }}>
+                          {collectionColumns.PAST_WEEK_FLOOR_CHANGE}
+                        </Text>
+                        <Text
+                          sx={{
+                            color: getPriceChangeColor(
+                              latestStats?.weekFloorChange
+                            ),
+                          }}
+                        >
+                          {getPriceChangeLabel(latestStats?.weekFloorChange)}
+                        </Text>
+                      </Flex>
+                    </Grid>
+                  ) : (
+                    <>
+                      <Box>
+                        {latestStats?.pastWeekWeiVolume
+                          ? formatNumber(latestStats.pastWeekWeiVolume, {
+                              fromWei: true,
+                              decimals: 2,
+                              kmbUnits: true,
+                              prefix: 'ETHER',
+                            })
+                          : '-'}
+                      </Box>
+                      <Box>
+                        {latestStats?.pastDayWeiAverage
+                          ? formatNumber(latestStats.pastDayWeiAverage, {
+                              fromWei: true,
+                              decimals: 2,
+                              kmbUnits: true,
+                              prefix: 'ETHER',
+                            })
+                          : '-'}
+                      </Box>
+                      <Box>
+                        {latestStats?.floor
+                          ? formatNumber(latestStats.floor, {
+                              fromWei: true,
+                              decimals: 2,
+                              prefix: 'ETHER',
+                            })
+                          : '-'}
+                      </Box>
+                      <Box
+                        sx={{
+                          maxWidth: [100, 100, 200],
+                          color: getPriceChangeColor(
+                            latestStats?.weekFloorChange
+                          ),
+                        }}
+                      >
+                        {getPriceChangeLabel(latestStats?.weekFloorChange)}
+                      </Box>
+                    </>
+                  )}
+                </CollectionGridRow>
+              )
+            )}
+          </CollectionItemsWrapper>
 
-      <Flex sx={{ justifyContent: 'center', marginTop: '10px', width: '100%' }}>
-        <Pagination
-          forcePage={page}
-          pageCount={Math.ceil(
-            (data?.collectionsFollowedByUser?.length ?? 0) / PAGE_SIZE
-          )}
-          pageRangeDisplayed={0}
-          marginPagesDisplayed={0}
-          onPageChange={handlePageChange}
-        />
-      </Flex>
+          <Flex
+            sx={{ justifyContent: 'center', marginTop: '10px', width: '100%' }}
+          >
+            <Pagination
+              forcePage={page}
+              pageCount={Math.ceil(
+                (data?.collectionsFollowedByUser?.length ?? 0) / PAGE_SIZE
+              )}
+              pageRangeDisplayed={0}
+              marginPagesDisplayed={0}
+              onPageChange={handlePageChange}
+            />
+          </Flex>
+        </>
+      ) : (
+        <Text sx={{ textAlign: 'center' }} as="h4">
+          This user is not currently following any collections.
+        </Text>
+      )}
     </>
   )
 }

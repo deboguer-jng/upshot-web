@@ -28,6 +28,7 @@ import {
 } from '../ExplorePanel/NFTs'
 import { getOrderDirection } from '../ExplorePanel/util'
 
+
 export const nftColumns = {
   LAST_SALE_DATE: 'Last Sale',
   LAST_SALE_PRICE: 'Last Sale Price',
@@ -103,160 +104,168 @@ const FollowedNFTs = ({ userId }: { userId?: number }) => {
 
   return (
     <>
-      <NFTItemsWrapper
-        {...{ selectedColumn, sortAscending, handleChangeSelection }}
-      >
-        {data?.assetsFollowedByUser.map(
-          (
-            {
-              id,
-              name,
-              contractAddress,
-              mediaUrl,
-              lastSale,
-              lastAppraisalWeiPrice,
-              lastAppraisalSaleRatio,
-            },
-            idx
-          ) => (
-            <CollectionGridRow
-              variant="black"
-              title={name}
-              imageSrc={mediaUrl}
-              key={idx}
-              defaultOpen={idx === 0 ? true : false}
-              onClick={() => handleShowNFT(id)}
-              pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
-              href={`/analytics/nft/${id}`}
-              linkComponent={NextLink}
-              columns={colSpacing}
-            >
-              {isMobile ? (
-                <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>
-                  <Flex
-                    sx={{
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
-                      {nftColumns.LAST_SALE_DATE}
-                    </Text>
-                    <Text>
-                      {lastSale?.timestamp
-                        ? formatDistance(lastSale.timestamp * 1000) + ' ago'
-                        : '-'}
-                    </Text>
-                  </Flex>
-                  <Flex
-                    sx={{
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
-                      {nftColumns.LAST_SALE_PRICE}
-                    </Text>
-                    <Text>
-                      {lastSale?.ethSalePrice
-                        ? formatNumber(lastSale.ethSalePrice, {
-                            decimals: 4,
-                            prefix: 'ETHER',
-                            fromWei: true,
-                          })
-                        : '-'}
-                    </Text>
-                  </Flex>
-                  <Flex
-                    sx={{
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
-                      {nftColumns.LAST_APPRAISAL_PRICE}
-                    </Text>
-                    <Text>
-                      {lastAppraisalWeiPrice
-                        ? formatNumber(lastAppraisalWeiPrice, {
-                            decimals: 4,
-                            prefix: 'ETHER',
-                            fromWei: true,
-                          })
-                        : '-'}
-                    </Text>
-                  </Flex>
-                  <Flex
-                    sx={{
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
-                      {nftColumns.LAST_APPRAISAL_SALE_RATIO}
-                    </Text>
-                    <Text
-                      sx={{
-                        color: getPriceChangeColor(lastAppraisalSaleRatio),
-                      }}
-                    >
-                      {getUnderOverPricedLabel(lastAppraisalSaleRatio)}
-                    </Text>
-                  </Flex>
-                </Grid>
-              ) : (
-                <>
-                  <Box>
-                    {lastSale?.timestamp
-                      ? formatDistance(lastSale.timestamp * 1000) + ' ago'
-                      : '-'}
-                  </Box>
-                  <Box>
-                    {lastSale?.ethSalePrice
-                      ? formatNumber(lastSale.ethSalePrice, {
-                          decimals: 4,
-                          prefix: 'ETHER',
-                          fromWei: true,
-                        })
-                      : '-'}
-                  </Box>
-                  <Box>
-                    {lastAppraisalWeiPrice
-                      ? formatNumber(lastAppraisalWeiPrice, {
-                          decimals: 4,
-                          prefix: 'ETHER',
-                          fromWei: true,
-                        })
-                      : '-'}
-                  </Box>
-                  <Box
-                    sx={{
-                      color: getPriceChangeColor(lastAppraisalSaleRatio),
-                    }}
-                  >
-                    {getUnderOverPricedLabel(lastAppraisalSaleRatio)}
-                  </Box>
-                </>
+      {data?.assetsFollowedByUser?.length ? (
+        <>
+          <NFTItemsWrapper
+            {...{ selectedColumn, sortAscending, handleChangeSelection }}
+          >
+            {data?.assetsFollowedByUser.map(
+              (
+                {
+                  id,
+                  name,
+                  contractAddress,
+                  mediaUrl,
+                  lastSale,
+                  lastAppraisalWeiPrice,
+                  lastAppraisalSaleRatio,
+                },
+                idx
+              ) => (
+                <CollectionGridRow
+                  variant="black"
+                  title={name}
+                  imageSrc={mediaUrl}
+                  key={idx}
+                  defaultOpen={idx === 0 ? true : false}
+                  onClick={() => handleShowNFT(id)}
+                  pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
+                  href={`/analytics/nft/${id}`}
+                  linkComponent={NextLink}
+                  columns={colSpacing}
+                >
+                  {isMobile ? (
+                    <Grid columns={['1fr 1fr']} sx={{ padding: 4 }}>
+                      <Flex
+                        sx={{
+                          flexDirection: 'column',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
+                          {nftColumns.LAST_SALE_DATE}
+                        </Text>
+                        <Text>
+                          {lastSale?.timestamp
+                            ? formatDistance(lastSale.timestamp * 1000) + ' ago'
+                            : '-'}
+                        </Text>
+                      </Flex>
+                      <Flex
+                        sx={{
+                          flexDirection: 'column',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
+                          {nftColumns.LAST_SALE_PRICE}
+                        </Text>
+                        <Text>
+                          {lastSale?.ethSalePrice
+                            ? formatNumber(lastSale.ethSalePrice, {
+                                decimals: 4,
+                                prefix: 'ETHER',
+                                fromWei: true,
+                              })
+                            : '-'}
+                        </Text>
+                      </Flex>
+                      <Flex
+                        sx={{
+                          flexDirection: 'column',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
+                          {nftColumns.LAST_APPRAISAL_PRICE}
+                        </Text>
+                        <Text>
+                          {lastAppraisalWeiPrice
+                            ? formatNumber(lastAppraisalWeiPrice, {
+                                decimals: 4,
+                                prefix: 'ETHER',
+                                fromWei: true,
+                              })
+                            : '-'}
+                        </Text>
+                      </Flex>
+                      <Flex
+                        sx={{
+                          flexDirection: 'column',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <Text sx={{ marginBottom: 1, textAlign: 'center' }}>
+                          {nftColumns.LAST_APPRAISAL_SALE_RATIO}
+                        </Text>
+                        <Text
+                          sx={{
+                            color: getPriceChangeColor(lastAppraisalSaleRatio),
+                          }}
+                        >
+                          {getUnderOverPricedLabel(lastAppraisalSaleRatio)}
+                        </Text>
+                      </Flex>
+                    </Grid>
+                  ) : (
+                    <>
+                      <Box>
+                        {lastSale?.timestamp
+                          ? formatDistance(lastSale.timestamp * 1000) + ' ago'
+                          : '-'}
+                      </Box>
+                      <Box>
+                        {lastSale?.ethSalePrice
+                          ? formatNumber(lastSale.ethSalePrice, {
+                              decimals: 4,
+                              prefix: 'ETHER',
+                              fromWei: true,
+                            })
+                          : '-'}
+                      </Box>
+                      <Box>
+                        {lastAppraisalWeiPrice
+                          ? formatNumber(lastAppraisalWeiPrice, {
+                              decimals: 4,
+                              prefix: 'ETHER',
+                              fromWei: true,
+                            })
+                          : '-'}
+                      </Box>
+                      <Box
+                        sx={{
+                          color: getPriceChangeColor(lastAppraisalSaleRatio),
+                        }}
+                      >
+                        {getUnderOverPricedLabel(lastAppraisalSaleRatio)}
+                      </Box>
+                    </>
+                  )}
+                </CollectionGridRow>
+              )
+            )}
+          </NFTItemsWrapper>
+          <Flex sx={{ justifyContent: 'center', marginTop: '10px' }}>
+            <Pagination
+              forcePage={page}
+              pageCount={Math.ceil(
+                (data?.assetsFollowedByUser?.length ?? 0) / PAGE_SIZE
               )}
-            </CollectionGridRow>
-          )
-        )}
-      </NFTItemsWrapper>
-      <Flex sx={{ justifyContent: 'center', marginTop: '10px' }}>
-        <Pagination
-          forcePage={page}
-          pageCount={Math.ceil(
-            (data?.assetsFollowedByUser?.length ?? 0) / PAGE_SIZE
-          )}
-          pageRangeDisplayed={0}
-          marginPagesDisplayed={0}
-          onPageChange={handlePageChange}
-        />
-      </Flex>
+              pageRangeDisplayed={0}
+              marginPagesDisplayed={0}
+              onPageChange={handlePageChange}
+            />
+          </Flex>
+        </>
+      ) : (
+        <Text sx={{ textAlign: 'center' }} as="h4">
+          This user is not currently following any nfts.
+        </Text>
+      )}
     </>
   )
 }
