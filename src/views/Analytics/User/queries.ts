@@ -554,3 +554,198 @@ export const GET_UNSUPPORTED_AGGREGATE_COLLECTION_STATS = gql`
     }
   }
 `
+
+export type GetFollowedCollectionsVars = {
+  userId?: number
+  limit: number
+  offset: number
+  orderColumn: string
+  orderDirection: string
+}
+
+export type GetFollowedCollectionsData = {
+  collectionsFollowedByUser: {
+    id: number
+    description: string
+    name: string
+    imageUrl: string
+    latestStats: {
+      floor: number
+      pastDayWeiAverage: number
+      pastWeekWeiVolume: number
+      weekFloorChange: number
+    }
+  }[]
+}
+
+export const GET_FOLLOWED_COLLECTIONS = gql`
+  query GetFollowedCollections($userId: Int!, $limit: Int!, $offset: Int!, $orderColumn: CollectionSortOption!, $orderDirection: OrderDirection!) {
+    collectionsFollowedByUser(userId: $userId, limit: $limit, offset: $offset, orderColumn: $orderColumn, orderDirection: $orderDirection) {
+      id
+      description
+      name
+      imageUrl
+      latestStats {
+        floor
+        pastDayWeiAverage
+        pastWeekWeiVolume
+        weekFloorChange
+      }
+    }
+  }
+`
+
+export type GetFollowedNFTsVars = {
+  userId?: number
+  limit: number
+  offset: number
+  orderColumn: string
+  orderDirection: string
+}
+
+export type GetFollowedNFTsData = {
+  assetsFollowedByUser: {
+    id: string
+    name: string
+    contractAddress: string
+    mediaUrl: string
+    totalSaleCount: number
+    priceChangeFromFirstSale: number
+    lastSale: {
+      timestamp: number
+      ethSalePrice: string
+    }
+    lastAppraisalWeiPrice: string
+    lastAppraisalSaleRatio: number
+    listPrice
+    listPriceUsd
+    listUrl
+    listMarketplace
+    listTimestamp
+    listExpiration
+    listAppraisalRatio
+  }[]
+}
+
+export const GET_FOLLOWED_NFTS = gql`
+  query GetFollowedNFTs($userId: Int!, $limit: Int!, $offset: Int!, $orderColumn: AssetSearchSortOption, $orderDirection: OrderDirection) {
+    assetsFollowedByUser(userId: $userId, limit: $limit, offset: $offset, orderColumn: $orderColumn, orderDirection: $orderDirection) {
+      id
+      name
+      contractAddress
+      mediaUrl
+      totalSaleCount
+      priceChangeFromFirstSale
+      lastSale {
+        timestamp
+        ethSalePrice
+      }
+      lastAppraisalWeiPrice
+      lastAppraisalSaleRatio
+      listPrice
+      listPriceUsd
+      listUrl
+      listMarketplace
+      listTimestamp
+      listExpiration
+      listAppraisalRatio
+    }
+  }
+`
+
+export type GetFollowedCollectorsVars = {
+  userId?: number
+  limit: number
+  offset: number
+}
+
+export type GetFollowedCollectorsData = {
+  usersFollowedByUser: {
+    id: number
+    username: string
+    ownedAppraisalValue: {
+      appraisalWei: string
+    }
+    mostRecentBuy: {
+      assetId: string
+      asset: {
+        name: string
+      }
+    }
+    addresses: { address: string; ens: string }[]
+    firstAssetPurchaseTime: number
+    avgHoldTime: number
+    ownedAssets: {
+      count: number
+      assets: {
+        id: string
+        mediaUrl: string
+      }[]
+    }
+    extraCollections: {
+      collectionAssetCounts: {
+        count: number
+        collection: {
+          id: number
+          name: string
+          imageUrl: string
+          ownerAssetsInCollection: {
+            count: number
+            assets: {
+              id: string
+              mediaUrl: string
+            }
+          }
+        }
+      }[]
+    }
+  }[]
+}
+
+export const GET_FOLLOWED_COLLECTORS = gql`
+  query GetFollowedCollectors($userId: Int!, $limit: Int!, $offset: Int!) {
+    usersFollowedByUser(userId: $userId, limit: $limit, offset: $offset) {
+      ownedAppraisalValue {
+        appraisalWei
+      }
+      mostRecentBuy {
+        assetId
+        asset {
+          name
+        }
+      }
+      id
+      username
+      addresses {
+        address
+        ens
+      }
+      firstAssetPurchaseTime
+      avgHoldTime
+      ownedAssets(notable: true, limit: 100) {
+        count
+        assets {
+          id
+          mediaUrl
+        }
+      }
+      extraCollections(limit: 10) {
+        collectionAssetCounts {
+          count
+          collection {
+            id
+            name
+            imageUrl
+            ownerAssetsInCollection(limit: 100) {
+              count
+              assets {
+                id
+                mediaUrl
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`
