@@ -1,6 +1,7 @@
 import styled from '@emotion/styled'
+import { transientOptions } from '@upshot-tech/upshot-ui'
 
-export const BetaBannerBase = styled.div`
+export const BetaBannerBase = styled('div', transientOptions)`
   position: sticky;
   top: 0;
   padding: ${({ theme }) => theme.space[4] + 'px'};

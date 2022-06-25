@@ -9,6 +9,7 @@ import {
   IconButton,
   Modal,
   Text,
+  transientOptions,
   useTheme,
 } from '@upshot-tech/upshot-ui'
 import { useWeb3React } from '@web3-react/core'
@@ -25,7 +26,7 @@ import { selectIsBeta, setIsBeta } from 'redux/reducers/user'
 import { selectAddress, setActivatingConnector } from 'redux/reducers/web3'
 import { shortenAddress } from 'utils/address'
 
-const StyledLink = styled.a`
+const StyledLink = styled('a', transientOptions)`
   cursor: pointer;
   color: inherit;
   font-size: inherit;
