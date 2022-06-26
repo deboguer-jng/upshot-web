@@ -274,7 +274,6 @@ export default function ExploreNFTs({
 
   if (!data?.assetGlobalSearch?.assets?.length)
     return <div>No results available.</div>
-
   return (
     <>
       <NFTItemsWrapper
