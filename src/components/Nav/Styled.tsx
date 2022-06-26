@@ -1,8 +1,8 @@
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import { Link } from '@upshot-tech/upshot-ui'
+import { Link, transientOptions } from '@upshot-tech/upshot-ui'
 
-export const SidebarShade = styled.div`
+export const SidebarShade = styled('div', transientOptions)`
   position: fixed;
   top: 0;
   right: 0;
@@ -24,7 +24,7 @@ export const SidebarShade = styled.div`
   `}
 `
 
-export const Sidebar = styled.div`
+export const Sidebar = styled('div', transientOptions)`
   display: flex;
   flex-direction: column;
   position: fixed;
@@ -49,7 +49,7 @@ export const Sidebar = styled.div`
   `}
 `
 
-export const SideLink = styled(Link)<{ $isActive?: boolean }>`
+export const SideLink = styled(Link, transientOptions)<{ $isActive?: boolean }>`
   color: ${({ theme, $isActive }) =>
     theme.colors[$isActive ? 'primary' : 'grey-400']};
   text-decoration: none !important;

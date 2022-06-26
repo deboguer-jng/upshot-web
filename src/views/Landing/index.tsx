@@ -12,6 +12,7 @@ import {
   Panel,
   Text,
   theme,
+  transientOptions,
 } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import NextLink from 'next/link'
@@ -26,7 +27,7 @@ import GmiSvg from './panelBackgrounds/Gmi.svg'
 import GmiHoverSvg from './panelBackgrounds/GmiHover.svg'
 import UpshotArtworkSVG from './panelBackgrounds/UpshotArtwork.svg'
 
-const BlogButton = styled(Button)`
+const BlogButton = styled(Button, transientOptions)`
   border-radius: 8px;
   height: 32px;
   padding: 8px 12px;

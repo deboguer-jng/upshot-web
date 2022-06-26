@@ -4,6 +4,7 @@ import {
   Button,
   Checkbox,
   InputRounded,
+  transientOptions,
   useBreakpointIndex,
   useTheme,
 } from '@upshot-tech/upshot-ui'
@@ -86,38 +87,38 @@ const alertDefaults: AlertValsType = {
   nftDealAlerts: 10,
 }
 
-const InputContainer = styled(Grid)`
+const InputContainer = styled(Grid, transientOptions)`
   align-items: center;
   gap: 15px;
   grid-template-columns: auto 1fr;
 `
 
-const InputLabel = styled(Text)`
+const InputLabel = styled(Text, transientOptions)`
   width: 60px;
   font-size: 14px;
 `
 
-const SettingsHeader = styled(Text)`
+const SettingsHeader = styled(Text, transientOptions)`
   padding-bottom: 20px;
 `
 SettingsHeader.defaultProps = { variant: 'large' }
 
-const Setting = styled(Flex)`
+const Setting = styled(Flex, transientOptions)`
   padding-bottom: 15px;
   flex-direction: column;
   gap: 10px;
 `
 
-const SettingsGroup = styled(Grid)`
+const SettingsGroup = styled(Grid, transientOptions)`
   column-gap: 30px;
 `
 SettingsGroup.defaultProps = { columns: ['1fr', '1fr 1fr', '1fr 1fr', '1fr'] }
 
-const SettingsContainer = styled(Flex)`
+const SettingsContainer = styled(Flex, transientOptions)`
   flex-direction: column;
   gap: 10px;
 `
-const NumberInput = styled(InputRounded)``
+const NumberInput = styled(InputRounded, transientOptions)``
 NumberInput.defaultProps = { dark: true, type: 'number' }
 
 export default function NotificationsSettings() {
