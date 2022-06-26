@@ -34,7 +34,6 @@ const SettingsGroup = styled(Grid)`
   column-gap: 30px;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 `
-// SettingsGroup.defaultProps = { columns: ['1fr', '1fr', '1fr'] }
 const NumberInput = styled(InputRounded)``
 NumberInput.defaultProps = { dark: true, type: 'number' }
 
@@ -206,7 +205,6 @@ function SettingsContent({ ...data }: AlertValsType | undefined) {
           capitalize={true}
           disabled={true}
         >
-          {/* { updateUserLoading ? (<Spinner />) : 'Save Changes' } */}
           Save Changes
         </Button>
         <Flex sx={{ flexDirection: 'column' }}>

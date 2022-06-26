@@ -206,7 +206,6 @@ function SettingsContent({ ...data }: AlertValsType) {
           capitalize={true}
           disabled={true}
         >
-          {/* { updateUserLoading ? (<Spinner />) : 'Save Changes' } */}
           Save Changes
         </Button>
         <Flex sx={{ flexDirection: 'column' }}>
