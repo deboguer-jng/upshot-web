@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client'
-import { 
+import {
   Button,
-  Container, 
+  Container,
   InputRounded,
   SettingsMenuItem,
   SettingsPanel,
@@ -26,7 +26,10 @@ import {
   GetUserProfileData,
   GetUserProfileVars,
 } from '../User/queries'
+import CollectionAlertSettings from './CollectionAlertSettings'
+import CollectorAlertSettings from './CollectorAlertSettings'
 import { UPDATE_USER, UpdateUserData, UpdateUserVars } from './mutations'
+import NFTAlertSettings from './NFTAlertSettings'
 import NotificationsSettings from './Notifications'
 
 export default function SettingsView() {
@@ -37,17 +40,23 @@ export default function SettingsView() {
   const address = useAppSelector(selectAddress)
   const userEns = useAppSelector(selectEns)
   const { isAuthed, triggerAuth } = useAuth()
-  
+
   const [displayName, setDisplayName] = useState<string>()
   const [bio, setBio] = useState<string>()
-  const [saveEnabled, setSaveEnabled] = useState<boolean>(false);
-  const [updateUser, { loading: updateUserLoading }] = useMutation<UpdateUserData, UpdateUserVars>(UPDATE_USER, {
-    onError: err => console.log(err)
+  const [saveEnabled, setSaveEnabled] = useState<boolean>(false)
+  const [updateUser, { loading: updateUserLoading }] = useMutation<
+    UpdateUserData,
+    UpdateUserVars
+  >(UPDATE_USER, {
+    onError: (err) => console.log(err),
   })
 
   const handleSignIn = useCallback(() => {
     if (!isAuthed) {
-      triggerAuth({ onError: () => router.push(address ? `/analytics/user/${address}` : '/analytics') })
+      triggerAuth({
+        onError: () =>
+          router.push(address ? `/analytics/user/${address}` : '/analytics'),
+      })
     }
   }, [isAuthed, address, triggerAuth])
 
@@ -55,17 +64,17 @@ export default function SettingsView() {
 
   const breadcrumbs = prevPath?.includes('/nft/')
     ? [
-      {
-        text: 'Analytics Home',
-        link: '/analytics',
-      },
-      {
-        text: decodeURI(prevPath as string).split('nftName=')[1],
-        link: prevPath,
-      },
-    ]
+        {
+          text: 'Analytics Home',
+          link: '/analytics',
+        },
+        {
+          text: decodeURI(prevPath as string).split('nftName=')[1],
+          link: prevPath,
+        },
+      ]
     : prevPath?.includes('collection')
-      ? [
+    ? [
         {
           text: 'Analytics Home',
           link: '/analytics',
@@ -75,24 +84,25 @@ export default function SettingsView() {
           link: prevPath,
         },
       ]
-      : prevPath?.includes('user')
-        ? [
-          {
-            text: 'Analytics Home',
-            link: '/analytics',
-          },
-          {
-            text: `${decodeURI(prevPath as string).split('?userWallet=')[1]
-              }'s Collection`,
-            link: prevPath,
-          },
-        ]
-        : [
-          {
-            text: 'Analytics Home',
-            link: '/analytics',
-          },
-        ]
+    : prevPath?.includes('user')
+    ? [
+        {
+          text: 'Analytics Home',
+          link: '/analytics',
+        },
+        {
+          text: `${
+            decodeURI(prevPath as string).split('?userWallet=')[1]
+          }'s Collection`,
+          link: prevPath,
+        },
+      ]
+    : [
+        {
+          text: 'Analytics Home',
+          link: '/analytics',
+        },
+      ]
 
   const onSave = () => {
     updateUser({
@@ -121,12 +131,12 @@ export default function SettingsView() {
     },
   })
 
-  const onDisplayNameChange = e => {
+  const onDisplayNameChange = (e) => {
     setDisplayName(e.currentTarget.value)
     setSaveEnabled(true)
   }
 
-  const onBioChange = e => {
+  const onBioChange = (e) => {
     setBio(e.currentTarget.value)
     setSaveEnabled(true)
   }
@@ -136,7 +146,7 @@ export default function SettingsView() {
       <Head>
         <title>Settings | Upshot Analytics</title>
       </Head>
-      <Nav onSignInRetry={handleSignIn}/>
+      <Nav onSignInRetry={handleSignIn} />
       <Container
         maxBreakpoint="xxl"
         sx={{
@@ -152,8 +162,8 @@ export default function SettingsView() {
             <Flex sx={{ flexWrap: 'wrap', gap: '20px 50px' }}>
               <Flex sx={{ flexDirection: 'column', gap: '10px' }}>
                 <Text color={theme.colors['grey-500']}>Information</Text>
-                <InputRounded 
-                  dark={true} 
+                <InputRounded
+                  dark={true}
                   sx={{ padding: '16px' }}
                   placeholder={
                     userEns?.name ??
@@ -163,7 +173,7 @@ export default function SettingsView() {
                   value={displayName}
                   onChange={onDisplayNameChange}
                 />
-                <TextareaRounded 
+                <TextareaRounded
                   dark={true}
                   optional={true}
                   showCount={true}
@@ -202,30 +212,37 @@ export default function SettingsView() {
                   paddingBottom: '40px',
                 }}
               >
-                <Text color={theme.colors['grey-500']}>
-                  Profile Picture
-                </Text>
+                <Text color={theme.colors['grey-500']}>Profile Picture</Text>
                 {/* <Link onClick={onAvatarClick}> */}
                 <Avatar
                   size="200"
                   src={address ? makeBlockie(address) : undefined}
                 ></Avatar>
                 {/* </Link> */}
-                </Flex>
               </Flex>
+            </Flex>
             <Flex sx={{ width: '100%' }}>
-              <Button 
-              sx={{ width: 150 }}
-                onClick={onSave} 
-                capitalize={true} 
+              <Button
+                sx={{ width: 150 }}
+                onClick={onSave}
+                capitalize={true}
                 disabled={!saveEnabled}
               >
-              {updateUserLoading ? <Spinner /> : 'Save Changes'}
+                {updateUserLoading ? <Spinner /> : 'Save Changes'}
               </Button>
             </Flex>
           </SettingsMenuItem>
           <SettingsMenuItem label="Notifications">
             <NotificationsSettings />
+          </SettingsMenuItem>
+          <SettingsMenuItem label="Collections" subMenu={true}>
+            <CollectionAlertSettings />
+          </SettingsMenuItem>
+          <SettingsMenuItem label="Collectors" subMenu={true}>
+            <CollectorAlertSettings />
+          </SettingsMenuItem>
+          <SettingsMenuItem label="NFTs" subMenu={true}>
+            <NFTAlertSettings />
           </SettingsMenuItem>
         </SettingsPanel>
       </Container>
