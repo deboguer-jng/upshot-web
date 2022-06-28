@@ -156,5 +156,5 @@ export default function TopCollectionsCharts({
       }
     })
 
-  return <Chart data={chartData} linkComponent={NextLink} {...{ onClose }} height={400} />
+  return <Chart data={chartData} linkComponent={NextLink} {...{ onClose }} height={350} margin={{ top: 20, right: 0, bottom: 50, left: 40 }} />
 }
