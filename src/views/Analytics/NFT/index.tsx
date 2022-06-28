@@ -258,10 +258,10 @@ export default function NFTView() {
 
   const appraisalSeries = appraisalHistory
     .filter(({ timestamp, estimatedPrice }) => timestamp && estimatedPrice)
-    .map(({ timestamp, estimatedPrice }) => [
-      timestamp * 1000,
-      parseFloat(ethers.utils.formatEther(estimatedPrice)),
-    ])
+    .map(({ timestamp, estimatedPrice }) => { return {
+      x: timestamp * 1000,
+      y: parseFloat(ethers.utils.formatEther(estimatedPrice)),
+    }})
 
   const isFloor = !latestAppraisal && appraisalHistory.length
 
@@ -757,7 +757,7 @@ export default function NFTView() {
                         </Text>
                       </Flex>
                     )}
-                    <Chart data={chartData} linkComponent={NextLink} embedded />
+                    <Chart data={chartData} linkComponent={NextLink} height={280} embedded margin={{ top: 0, right: 20, bottom: 50, left: 25 }} />
                   </Flex>
                 </Panel>
               </Flex>

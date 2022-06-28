@@ -1,7 +1,6 @@
 import { useQuery } from '@apollo/client'
-import { ChartDataItem, ScatterChart, ScatterChartVisx } from '@upshot-tech/upshot-ui'
+import { ChartDataItem, ScatterChart } from '@upshot-tech/upshot-ui'
 import { PIXELATED_CONTRACTS } from 'constants'
-import { shortenAddress } from 'utils/address'
 
 import {
   GET_ALL_COLLECTION_SALES,
@@ -57,10 +56,9 @@ export default function CollectionScatterChart({
 
   console.log('chartData:', chartData)
 
-  // return <ScatterChart data={[{ name, data: chartData }]} />
   return (
-    <div style={{height: '500px', position: 'relative'}}>
-      <ScatterChartVisx data={chartData} name={name} />
+    <div style={{height: '400px', position: 'relative'}}>
+      <ScatterChart data={chartData} name={name} />
     </div>
   )
 }
