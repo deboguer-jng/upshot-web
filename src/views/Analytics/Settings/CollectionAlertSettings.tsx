@@ -81,8 +81,8 @@ const data = [
   },
 ]
 
-function SettingsContent({ ...data }: AlertValsType) {
-  const [alertVals, setAlertVals] = useState<AlertValsType>({ ...data })
+function SettingsContent({ data }) {
+  const [alertVals, setAlertVals] = useState<AlertValsType>(data)
 
   const handleInputChange = (
     alertKey: keyof AlertValsType,
