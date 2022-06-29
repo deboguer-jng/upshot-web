@@ -953,6 +953,7 @@ export default function UserView() {
                 '',
               ],
             }}
+            height={420}
           />
         </Box>
       </Flex>
