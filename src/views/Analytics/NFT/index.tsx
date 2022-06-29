@@ -757,7 +757,16 @@ export default function NFTView() {
                         </Text>
                       </Flex>
                     )}
-                    <Chart data={chartData} linkComponent={NextLink} height={280} embedded margin={{ top: 0, right: 20, bottom: 50, left: 25 }} />
+                    <Chart
+                      data={chartData}
+                      linkComponent={NextLink}
+                      height={260}
+                      embedded
+                      margin={{ top: 0, right: -30, bottom: 0, left: -30 }}
+                      showXAxis={false}
+                      showYAxis={false}
+                      showTooltip={true}
+                    />
                   </Flex>
                 </Panel>
               </Flex>
