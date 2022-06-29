@@ -142,7 +142,7 @@ export default function TopCollectionsCharts({
           metric === 'PAST_WEEK_VOLUME' && latestStats?.pastWeekWeiVolume
             ? Number(ethers.utils.formatEther(latestStats.pastWeekWeiVolume))
             : 0,
-        data: data.map((val, i) => val),
+        data: data.map((val, i) => ({x: val[0], y: val[1]})),
         metric,
         currentFloor: latestStats?.floor
           ? parseUint256(latestStats.floor)
@@ -156,5 +156,5 @@ export default function TopCollectionsCharts({
       }
     })
 
-  return <Chart data={chartData} linkComponent={NextLink} {...{ onClose }} />
+  return <Chart data={chartData} linkComponent={NextLink} {...{ onClose }} height={350} margin={{ top: 20, right: 0, bottom: 50, left: 40 }} />
 }

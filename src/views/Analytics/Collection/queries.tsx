@@ -72,6 +72,8 @@ export type GetAllCollectionSalesData = {
       id: string
       asset: {
         tokenId: string
+        mediaUrl: string
+        contractAddress: string
       }
       assetEvent: {
         txToAddress: string
@@ -95,6 +97,8 @@ export const GET_ALL_COLLECTION_SALES = gql`
         id
         asset {
           tokenId
+          mediaUrl
+          contractAddress
         }
         assetEvent {
           txToAddress
