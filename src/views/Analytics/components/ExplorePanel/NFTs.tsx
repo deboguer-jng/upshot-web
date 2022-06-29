@@ -1,15 +1,6 @@
 import { useQuery } from '@apollo/client'
-import {
-  ButtonDropdown,
-  CollectorAccordion,
-  useBreakpointIndex,
-} from '@upshot-tech/upshot-ui'
-import { CollectionGridRow, CollectionTable } from '@upshot-tech/upshot-ui'
-import { Pagination, useTheme } from '@upshot-tech/upshot-ui'
-import { Box, Flex, Grid, Icon, Skeleton, Text } from '@upshot-tech/upshot-ui'
-import { formatNumber, TableBody, TableCell } from '@upshot-tech/upshot-ui'
-import { PIXELATED_CONTRACTS } from 'constants/'
-import { PAGE_SIZE } from 'constants/'
+import { Box, ButtonDropdown, CollectionGridRow, CollectionTable, CollectorAccordion, Flex, formatNumber, Grid, Icon, Pagination, Skeleton, TableBody, TableCell, Text, useBreakpointIndex, useTheme } from '@upshot-tech/upshot-ui'
+import { PAGE_SIZE, PIXELATED_CONTRACTS } from 'constants/'
 import NextLink from 'next/link'
 import router from 'next/router'
 import React, { useEffect, useState } from 'react'
@@ -20,14 +11,15 @@ import { formatDistance } from 'utils/time'
 import {
   genSortOptions,
   getDropdownValue,
-  handleChangeNFTColumnSortRadio,
+  handleChangeNFTColumnSortRadio
 } from '../../../../utils/tableSortDropdown'
 import {
-  GET_EXPLORE_NFTS,
+GET_EXPLORE_NFTS,
   GetExploreNFTsData,
-  GetExploreNFTsVars,
-} from '../../queries'
+  GetExploreNFTsVars} from '../../queries'
 import { getOrderDirection, lacksGlobalAssetFilters } from './util'
+
+
 
 interface NFTTableHeadProps extends React.HTMLAttributes<HTMLElement> {
   /**
@@ -54,7 +46,7 @@ export const nftColumns = {
 const colSpacing =
   '46px minmax(100px,3fr) minmax(80px, 1fr) minmax(110px, 1fr) minmax(120px, 1fr) minmax(80px, 1fr) 40px'
 
-function NFTTableHead({
+export function NFTTableHead({
   selectedColumn,
   sortAscending,
   handleChangeSelection,
@@ -173,7 +165,7 @@ export function ExplorePanelSkeleton({
   )
 }
 
-const NFTItemsWrapper = ({ children, ...props }: NFTTableHeadProps) => {
+export const NFTItemsWrapper = ({ children, ...props }: NFTTableHeadProps) => {
   const breakpointIndex = useBreakpointIndex()
   const isMobile = breakpointIndex <= 1
 
@@ -274,7 +266,6 @@ export default function ExploreNFTs({
 
   if (!data?.assetGlobalSearch?.assets?.length)
     return <div>No results available.</div>
-
   return (
     <>
       <NFTItemsWrapper

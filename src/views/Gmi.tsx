@@ -14,6 +14,7 @@ import {
   parseUint256,
   ProgressBar,
   Text,
+  transientOptions,
   useBreakpointIndex,
   useTheme,
 } from '@upshot-tech/upshot-ui'
@@ -52,7 +53,7 @@ interface GmiPanelProps {
   onTogglePreview: () => void
 }
 
-export const WideButton = styled(Flex)`
+export const WideButton = styled(Flex, transientOptions)`
   align-items: center;
   justify-content: center;
   background: ${({ theme }) => theme.colors.blue};
@@ -78,7 +79,7 @@ export const WideButton = styled(Flex)`
   }
 `
 
-const ShareButton = styled(Box)`
+const ShareButton = styled(Box, transientOptions)`
   display: flex;
   align-items: center;
   justify-content: space-between;

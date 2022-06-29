@@ -11,6 +11,7 @@ import {
   LabelAttribute,
   LabeledSwitch,
   Text,
+  transientOptions,
   useBreakpointIndex,
   useTheme,
 } from '@upshot-tech/upshot-ui'
@@ -264,7 +265,7 @@ function AttributeSearch({ suggestions, onSuggestionSelect }) {
   )
 }
 
-const TraitList = styled.div<{ $isExpanded?: boolean }>`
+const TraitList = styled('div', transientOptions)<{ $isExpanded?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.space[2] + 'px'};

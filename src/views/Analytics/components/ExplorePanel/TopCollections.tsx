@@ -1,15 +1,6 @@
 /** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
-import {
-  ButtonDropdown,
-  CollectorAccordion,
-  Icon,
-  useBreakpointIndex,
-} from '@upshot-tech/upshot-ui'
-import { CollectionGridRow } from '@upshot-tech/upshot-ui'
-import { Pagination, useTheme } from '@upshot-tech/upshot-ui'
-import { Box, Flex, Grid, Text } from '@upshot-tech/upshot-ui'
-import { formatNumber } from '@upshot-tech/upshot-ui'
+import { Box, ButtonDropdown, CollectionGridRow, CollectorAccordion, Flex, formatNumber, Grid, Icon, Pagination, Text, useBreakpointIndex, useTheme } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE } from 'constants/'
 import NextLink from 'next/link'
 import router from 'next/router'
@@ -20,14 +11,15 @@ import { getPriceChangeLabel } from 'utils/number'
 import {
   genSortOptions,
   getDropdownValue,
-  handleChangeNFTColumnSortRadio,
+  handleChangeNFTColumnSortRadio
 } from '../../../../utils/tableSortDropdown'
 import {
-  GET_EXPLORE_COLLECTIONS,
+GET_EXPLORE_COLLECTIONS,
   GetExploreCollectionsData,
-  GetExploreCollectionsVars,
-} from '../../queries'
+  GetExploreCollectionsVars} from '../../queries'
 import { ExplorePanelSkeleton } from './NFTs'
+
+
 
 export enum EAssetSetStatSearchOrder {
   FLOOR,
@@ -72,7 +64,7 @@ export const collectionColumns: Partial<OrderedAssetColumns> = {
 const colSpacing =
   '46px minmax(100px,3fr) repeat(4, minmax(80px, 1fr)) minmax(0,50px)'
 
-function CollectionTableHead({
+export function CollectionTableHead({
   selectedColumn,
   sortAscending,
   handleChangeSelection,
@@ -175,7 +167,7 @@ const handleShowCollection = (id: number) => {
   router.push('/analytics/collection/' + id)
 }
 
-const CollectionItemsWrapper = ({
+export const CollectionItemsWrapper = ({
   children,
   ...props
 }: CollectionTableHeadProps) => {
