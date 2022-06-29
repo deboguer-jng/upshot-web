@@ -1,15 +1,17 @@
 /** @jsxImportSource theme-ui */
 
-import { useQuery } from '@apollo/client'
+import { useLazyQuery, useQuery } from '@apollo/client'
 import {
   Avatar,
   Box,
+  Button,
   CollectionCard,
   CollectionCardExpanded,
   CollectionRow,
   CollectionTable,
   Container,
   Flex,
+  FollowerModal,
   formatNumber,
   Grid,
   Icon,
@@ -30,7 +32,7 @@ import {
   Text,
   Tooltip,
   useBreakpointIndex,
-  useTheme
+  useTheme,
 } from '@upshot-tech/upshot-ui'
 import { Footer } from 'components/Footer'
 import { Nav } from 'components/Nav'
@@ -57,13 +59,14 @@ import FollowedCollections from '../components/User/FollowedCollections'
 import FollowedCollectors from '../components/User/FollowedCollectors'
 import FollowedNFTs from '../components/User/FollowedNFTs'
 import {
-GET_ALL_OWNED_COLLECTIONS_WRAPPER,
+  GET_ALL_OWNED_COLLECTIONS_WRAPPER,
   GET_COLLECTION_ASSETS,
   GET_COLLECTOR,
   GET_COLLECTOR_TX_HISTORY,
   GET_UNSUPPORTED_AGGREGATE_COLLECTION_STATS,
   GET_UNSUPPORTED_ASSETS,
   GET_UNSUPPORTED_FLOORS,
+  GET_USER_FOLLOW_DATA,
   GetAllOwnedCollectionsWrapperData,
   GetAllOwnedCollectionsWrapperVars,
   GetCollectionAssetsData,
@@ -77,9 +80,10 @@ GET_ALL_OWNED_COLLECTIONS_WRAPPER,
   GetUnsupportedAssetsData,
   GetUnsupportedAssetsVars,
   GetUnsupportedFloorsData,
-  GetUnsupportedFloorsVars} from './queries'
-
-
+  GetUnsupportedFloorsVars,
+  GetUserFollowData,
+  GetUserFollowDataVar,
+} from './queries'
 
 type Collection = {
   id: number | null
@@ -196,14 +200,29 @@ function Layout({
 function Header({
   address,
   displayName,
+  id,
 }: {
   address: string
   displayName?: string
+  id: number
 }) {
+  const { loading: userFollowLoading, data: userFollowData } = useQuery<
+    GetUserFollowData,
+    GetUserFollowDataVar
+  >(GET_USER_FOLLOW_DATA, {
+    variables: { userId: 689071 },
+  })
   const shortAddress = shortenAddress(address)
   const { theme } = useTheme()
+  const [openFollow, setOpenFollow] = useState(false)
   const dispatch = useDispatch()
 
+  console.log(id, 'id')
+  useEffect(() => {
+    if (userFollowData) {
+      console.log('user follow data', userFollowData)
+    }
+  }, [userFollowData])
   useEffect(() => {
     if (!displayName) return
 
@@ -214,49 +233,77 @@ function Header({
       storage.setItem('currentPath', `${curPath}?userWallet=${displayName}`)
   }, [displayName])
 
+  const onFollowSelect = (value: number) => {
+    console.log(value, 'on follow')
+  }
   return (
-    <Flex sx={{ alignItems: 'center', gap: 4 }}>
-      <Avatar size="lg" src={makeBlockie(address)} />
-      <Flex sx={{ flexDirection: 'column', gap: 1 }}>
-        <Text variant="h1Primary" sx={{ lineHeight: 1 }}>
-          {displayName}&apos;s Collection
-        </Text>
-        <Flex sx={{ alignItems: 'center', gap: 1 }}>
-          <Text color="grey-400" sx={{ lineHeight: 1 }}>
-            {shortAddress}
-          </Text>
-          <Tooltip
-            tooltip={'Copy to clipboard'}
-            placement="top"
-            sx={{
-              marginLeft: '0',
-              height: '13px',
-              '&:hover': {
-                svg: {
-                  color: theme.colors['grey-500'],
-                },
-              },
-            }}
-          >
-            <Icon
-              icon="copy"
-              size="13"
-              color="grey-400"
-              sx={{ cursor: 'pointer' }}
-              onClick={() => {
-                dispatch(
-                  setAlertState({
-                    showAlert: true,
-                    alertText: 'Address copied to clipboard!',
-                  })
-                )
-                navigator.clipboard.writeText(address)
-              }}
-            />
-          </Tooltip>
+    <>
+      <Flex
+        sx={{ alignItems: 'center', gap: 4, justifyContent: 'space-between' }}
+      >
+        <Flex>
+          <Avatar size="lg" src={makeBlockie(address)} />
+          <Flex sx={{ flexDirection: 'column', gap: 1 }}>
+            <Text variant="h1Primary" sx={{ lineHeight: 1 }}>
+              {displayName}&apos;s Collection
+            </Text>
+            <Flex sx={{ alignItems: 'center', gap: 1 }}>
+              <Text color="grey-400" sx={{ lineHeight: 1 }}>
+                {shortAddress}
+              </Text>
+              <Tooltip
+                tooltip={'Copy to clipboard'}
+                placement="top"
+                sx={{
+                  marginLeft: '0',
+                  height: '13px',
+                  '&:hover': {
+                    svg: {
+                      color: theme.colors['grey-500'],
+                    },
+                  },
+                }}
+              >
+                <Icon
+                  icon="copy"
+                  size="13"
+                  color="grey-400"
+                  sx={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    dispatch(
+                      setAlertState({
+                        showAlert: true,
+                        alertText: 'Address copied to clipboard!',
+                      })
+                    )
+                    navigator.clipboard.writeText(address)
+                  }}
+                />
+              </Tooltip>
+            </Flex>
+          </Flex>
         </Flex>
+        <Button variant="secondary" onClick={() => setOpenFollow(!openFollow)}>
+          {' '}
+          + Follow{' '}
+        </Button>
       </Flex>
-    </Flex>
+      <Modal open={openFollow} onClose={() => setOpenFollow(false)}>
+        <FollowerModal
+          onFollow={onFollowSelect}
+          onClose={() => setOpenFollow(false)}
+          userAddress={'Samm'}
+          follower={Array(10).fill({
+            img: '/img/defaultAvatar.png',
+            address: 'Sam.eth',
+          })}
+          following={Array(10).fill({
+            img: '/img/defaultAvatar.png',
+            address: 'Sam.eth',
+          })}
+        ></FollowerModal>
+      </Modal>
+    </>
   )
 }
 
@@ -1053,6 +1100,7 @@ export default function UserView() {
   )
 
   const getDisplayName = () => {
+    console.log(data?.getUser)
     if (data?.getUser?.displayName) return data?.getUser?.displayName
     if (
       address?.toLowerCase() === userAddress?.toLowerCase() &&
@@ -1149,6 +1197,7 @@ export default function UserView() {
               {...{
                 address,
                 displayName: getDisplayName(),
+                id: data?.getUser?.id,
               }}
             />
           )}
@@ -2167,7 +2216,9 @@ export default function UserView() {
                   width: '100%',
                   height: open ? '250px' : 'auto',
                   zIndex: 2,
-                  background: open ? `linear-gradient(180deg, #000000 18.23%, rgba(35, 31, 32, 0.5) 90%, rgba(35, 31, 32, 0) 100%)` : 'transparent',
+                  background: open
+                    ? `linear-gradient(180deg, #000000 18.23%, rgba(35, 31, 32, 0.5) 90%, rgba(35, 31, 32, 0) 100%)`
+                    : 'transparent',
                 }}
               >
                 <Flex sx={{ flexDirection: 'column' }}>
