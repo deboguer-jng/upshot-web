@@ -31,7 +31,7 @@ export default function CollectionScatterChart({
 
   /* No results state. */
   if (!data?.collectionById?.allSaleEvents?.length)
-    return <ScatterChart noData />
+    return <ScatterChart data={[]} />
 
   const chartData = data.collectionById.allSaleEvents.map(
     ({
