@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client'
 import { ChartDataItem, ScatterChart } from '@upshot-tech/upshot-ui'
-import { PIXELATED_CONTRACTS } from 'constants'
 
+import { PIXELATED_CONTRACTS } from '../../../constants'
 import {
   GET_ALL_COLLECTION_SALES,
   GetAllCollectionSalesData,
@@ -49,13 +49,13 @@ export default function CollectionScatterChart({
         ens: assetEvent?.txToUser?.addresses[0]?.ens,
         img: asset.mediaUrl,
         contractAddress: asset.contractAddress,
-        pixelated: PIXELATED_CONTRACTS.includes(asset.contractAddress)
+        pixelated: PIXELATED_CONTRACTS.includes(asset.contractAddress),
       }
     }
   )
 
   return (
-    <div style={{height: '400px', position: 'relative'}}>
+    <div style={{ height: '400px', position: 'relative' }}>
       <ScatterChart data={chartData} name={name} />
     </div>
   )
