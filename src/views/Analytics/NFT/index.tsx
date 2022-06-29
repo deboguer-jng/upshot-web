@@ -258,10 +258,12 @@ export default function NFTView() {
 
   const appraisalSeries = appraisalHistory
     .filter(({ timestamp, estimatedPrice }) => timestamp && estimatedPrice)
-    .map(({ timestamp, estimatedPrice }) => { return {
-      x: timestamp * 1000,
-      y: parseFloat(ethers.utils.formatEther(estimatedPrice)),
-    }})
+    .map(({ timestamp, estimatedPrice }) => {
+      return {
+        x: timestamp * 1000,
+        y: parseFloat(ethers.utils.formatEther(estimatedPrice)),
+      }
+    })
 
   const isFloor = !latestAppraisal && appraisalHistory.length
 
@@ -269,7 +271,7 @@ export default function NFTView() {
     {
       name: isFloor ? 'Collection Floor' : 'Appraisals',
       data: appraisalSeries,
-      color: theme.rawColors[isFloor ? 'pink' : 'blue'],
+      color: theme.rawColors[isFloor ? 'pink' : 'blue'] as typeof theme.colors,
     },
   ]
 
