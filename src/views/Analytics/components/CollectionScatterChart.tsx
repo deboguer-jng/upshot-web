@@ -54,8 +54,6 @@ export default function CollectionScatterChart({
     }
   )
 
-  console.log('chartData:', chartData)
-
   return (
     <div style={{height: '400px', position: 'relative'}}>
       <ScatterChart data={chartData} name={name} />
