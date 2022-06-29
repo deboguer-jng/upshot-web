@@ -271,7 +271,9 @@ export default function NFTView() {
     {
       name: isFloor ? 'Collection Floor' : 'Appraisals',
       data: appraisalSeries,
-      color: theme.rawColors[isFloor ? 'pink' : 'blue'] as typeof theme.colors,
+      color: theme.rawColors[
+        isFloor ? 'pink' : 'blue'
+      ] as keyof typeof theme.colors,
     },
   ]
 
