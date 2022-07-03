@@ -780,24 +780,28 @@ export type GetUserFollowDataVar = {
 export type GetUserFollowData = {
   usersFollowedByUser: {
     id: number
-    username: string
-  }
+    addresses: { address: string; ens: string }[]
+  }[]
   usersFollowingUser: {
     id: number
-    username: string
-  }
+    addresses: { address: string; ens: string }[]
+  }[]
 }
 export const GET_USER_FOLLOW_DATA = gql`
-  query getUserFollowData($userId: Int!){ 
+  query getUserFollowData($userId: Int!) {
     usersFollowedByUser(userId: $userId) {
-      id,
-      username
+      id
+      addresses {
+        address
+        ens
+      }
     }
-    usersFollowingUser(
-      userId: $userId
-    ) {
-      id,
-      username,
+    usersFollowingUser(userId: $userId) {
+      id
+      addresses {
+        address
+        ens
+      }
     }
   }
 `

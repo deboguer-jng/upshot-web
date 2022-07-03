@@ -58,6 +58,7 @@ import Breadcrumbs from '../components/Breadcrumbs'
 import FollowedCollections from '../components/User/FollowedCollections'
 import FollowedCollectors from '../components/User/FollowedCollectors'
 import FollowedNFTs from '../components/User/FollowedNFTs'
+import FollowerUser from '../components/User/FollowerUser'
 import {
   GET_ALL_OWNED_COLLECTIONS_WRAPPER,
   GET_COLLECTION_ASSETS,
@@ -66,7 +67,6 @@ import {
   GET_UNSUPPORTED_AGGREGATE_COLLECTION_STATS,
   GET_UNSUPPORTED_ASSETS,
   GET_UNSUPPORTED_FLOORS,
-  GET_USER_FOLLOW_DATA,
   GetAllOwnedCollectionsWrapperData,
   GetAllOwnedCollectionsWrapperVars,
   GetCollectionAssetsData,
@@ -81,8 +81,6 @@ import {
   GetUnsupportedAssetsVars,
   GetUnsupportedFloorsData,
   GetUnsupportedFloorsVars,
-  GetUserFollowData,
-  GetUserFollowDataVar,
 } from './queries'
 
 type Collection = {
@@ -200,29 +198,15 @@ function Layout({
 function Header({
   address,
   displayName,
-  id,
+  userId,
 }: {
   address: string
-  displayName?: string
-  id: number
+  displayName: string
+  userId: any
 }) {
-  const { loading: userFollowLoading, data: userFollowData } = useQuery<
-    GetUserFollowData,
-    GetUserFollowDataVar
-  >(GET_USER_FOLLOW_DATA, {
-    variables: { userId: 689071 },
-  })
   const shortAddress = shortenAddress(address)
   const { theme } = useTheme()
-  const [openFollow, setOpenFollow] = useState(false)
   const dispatch = useDispatch()
-
-  console.log(id, 'id')
-  useEffect(() => {
-    if (userFollowData) {
-      console.log('user follow data', userFollowData)
-    }
-  }, [userFollowData])
   useEffect(() => {
     if (!displayName) return
 
@@ -233,9 +217,6 @@ function Header({
       storage.setItem('currentPath', `${curPath}?userWallet=${displayName}`)
   }, [displayName])
 
-  const onFollowSelect = (value: number) => {
-    console.log(value, 'on follow')
-  }
   return (
     <>
       <Flex
@@ -283,26 +264,8 @@ function Header({
             </Flex>
           </Flex>
         </Flex>
-        <Button variant="secondary" onClick={() => setOpenFollow(!openFollow)}>
-          {' '}
-          + Follow{' '}
-        </Button>
+        <FollowerUser userId={userId} displayName={displayName} />
       </Flex>
-      <Modal open={openFollow} onClose={() => setOpenFollow(false)}>
-        <FollowerModal
-          onFollow={onFollowSelect}
-          onClose={() => setOpenFollow(false)}
-          userAddress={'Samm'}
-          follower={Array(10).fill({
-            img: '/img/defaultAvatar.png',
-            address: 'Sam.eth',
-          })}
-          following={Array(10).fill({
-            img: '/img/defaultAvatar.png',
-            address: 'Sam.eth',
-          })}
-        ></FollowerModal>
-      </Modal>
     </>
   )
 }
@@ -1100,7 +1063,6 @@ export default function UserView() {
   )
 
   const getDisplayName = () => {
-    console.log(data?.getUser)
     if (data?.getUser?.displayName) return data?.getUser?.displayName
     if (
       address?.toLowerCase() === userAddress?.toLowerCase() &&
@@ -1109,6 +1071,9 @@ export default function UserView() {
       return userEns.name
     }
     return extractEns(data?.getUser?.addresses, address) ?? shortAddress
+  }
+  const getUserId = () => {
+    return data?.getUser?.id
   }
 
   const getGmiNum = () => {
@@ -1191,13 +1156,13 @@ export default function UserView() {
     <>
       <Layout title={getDisplayName()}>
         <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-          {!!address && (
+          {!!address && !!data?.getUser && (
             <Header
               key={address}
               {...{
                 address,
                 displayName: getDisplayName(),
-                id: data?.getUser?.id,
+                userId: getUserId(),
               }}
             />
           )}

@@ -14,12 +14,17 @@ import { GET_NONCE, GetNonceData, GetNonceVars } from 'graphql/queries'
 import { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
-import { DialogModals, setDialogModalState, setShowConnectModal } from 'redux/reducers/layout'
+import {
+  DialogModals,
+  setDialogModalState,
+  setShowConnectModal,
+} from 'redux/reducers/layout'
 import {
   selectAddress,
   selectAuthToken,
   setAuthToken,
 } from 'redux/reducers/web3'
+import { getAuthPayload } from 'utils/auth'
 import { logEvent } from 'utils/googleAnalytics'
 
 export interface useAuthType {
@@ -74,24 +79,34 @@ export function useAuth(): useAuthType {
 
         if (nonceError) return params?.onError?.(nonceError)
 
-        if ((!library && !(connector instanceof WalletConnectConnector)) ||
-            (connector instanceof WalletConnectConnector && !connector?.walletConnectProvider)
-        ) return dispatch(setShowConnectModal(true))
+        if (
+          (!library && !(connector instanceof WalletConnectConnector)) ||
+          (connector instanceof WalletConnectConnector &&
+            !connector?.walletConnectProvider)
+        )
+          return dispatch(setShowConnectModal(true))
         else dispatch(setShowConnectModal(false))
 
         const signer = library.getSigner(address)
         let signature
 
         try {
-          // const payload = getAuthPayload({
-          //   address: address,
-          //   nonce: nonceData?.getNonce?.nonce,
-          // })
-          const payload = `${nonceData?.getNonce?.nonce}`
-          if (connector instanceof WalletConnectConnector && connector?.walletConnectProvider)
-            signature = await (connector as WalletConnectConnector).walletConnectProvider.connector.signPersonalMessage([ethers.utils.hexlify(ethers.utils.toUtf8Bytes(payload)), address])
-          else 
-            signature = await library.getSigner(address).signMessage(payload)
+          const payload = getAuthPayload({
+            address: address,
+            nonce: nonceData?.getNonce?.nonce,
+          })
+          // const payload = `${nonceData?.getNonce?.nonce}`
+          if (
+            connector instanceof WalletConnectConnector &&
+            connector?.walletConnectProvider
+          )
+            signature = await (
+              connector as WalletConnectConnector
+            ).walletConnectProvider.connector.signPersonalMessage([
+              ethers.utils.hexlify(ethers.utils.toUtf8Bytes(payload)),
+              address,
+            ])
+          else signature = await library.getSigner(address).signMessage(payload)
         } catch (err) {
           console.error(err)
         }

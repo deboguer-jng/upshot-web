@@ -67,3 +67,17 @@ export const SIGN_IN = gql`
     }
   }
 `
+export type UnFollowVars = {
+  userId: number
+}
+
+export type UnFollowData = {
+  id: number
+}
+export const UNFOLLOW = gql`
+  mutation UnFollow($userId:Int!){
+    unFollow($userId: Int!){
+      id
+    }
+  }
+`
