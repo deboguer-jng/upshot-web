@@ -773,35 +773,3 @@ export const GET_FOLLOWED_COLLECTORS = gql`
     }
   }
 `
-
-export type GetUserFollowDataVar = {
-  userId: number
-}
-export type GetUserFollowData = {
-  usersFollowedByUser: {
-    id: number
-    addresses: { address: string; ens: string }[]
-  }[]
-  usersFollowingUser: {
-    id: number
-    addresses: { address: string; ens: string }[]
-  }[]
-}
-export const GET_USER_FOLLOW_DATA = gql`
-  query getUserFollowData($userId: Int!) {
-    usersFollowedByUser(userId: $userId) {
-      id
-      addresses {
-        address
-        ens
-      }
-    }
-    usersFollowingUser(userId: $userId) {
-      id
-      addresses {
-        address
-        ens
-      }
-    }
-  }
-`
