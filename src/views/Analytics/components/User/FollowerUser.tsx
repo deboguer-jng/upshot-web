@@ -14,7 +14,7 @@ import {
   GetUserFollowData,
   GetUserFollowDataVar,
 } from 'graphql/queries'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { extractEns, shortenAddress } from 'utils/address'
 
 export default function FollowerUser({
@@ -28,18 +28,26 @@ export default function FollowerUser({
 
   const {
     loading: userFollowLoading,
-    data: userFollowData,
+    data,
     refetch,
   } = useQuery<GetUserFollowData, GetUserFollowDataVar>(GET_USER_FOLLOW_DATA, {
     variables: { userId },
     errorPolicy: 'all',
     fetchPolicy: 'no-cache',
   })
+  const [userFollowData, setUserFollowData] = useState(data)
+
   const [unfollowUser] = useMutation<UnFollowUserData, UnFollowUserVars>(
     UNFOLLOW_USER
   )
   const [followUser] = useMutation<FollowUserData, FollowUserVars>(FOLLOW_USER)
 
+  useEffect(() => {
+    console.log('use effect called')
+    if (data) {
+      setUserFollowData(data)
+    }
+  }, [data])
   const getNameFromAddresses = (
     addresses: { address: string; ens: string }[]
   ) => {
@@ -81,26 +89,35 @@ export default function FollowerUser({
       variables: {
         userId: id,
       },
-      refetchQueries: [
-        {
-          query: GET_USER_FOLLOW_DATA,
-          variables: { userId },
-        },
-      ],
-    })
+      onCompleted: (data) => {
+        const followings: any[] = userFollowData?.usersFollowedByUser || []
+        const followers: any[] = userFollowData?.usersFollowingUser || []
+        const userFollowed = followers.find((user) => user.id === id)
+        console.log('userFollowed', userFollowed)
+        const updatedFollowings = [...followings, userFollowed]
 
+        setUserFollowData({
+          usersFollowedByUser: updatedFollowings,
+          usersFollowingUser: followers,
+        })
+      },
+    })
   }
   const handleUnFollow = async (id: number) => {
     const { data } = await unfollowUser({
       variables: {
         userId: id,
       },
-      refetchQueries: [
-        {
-          query: GET_USER_FOLLOW_DATA,
-          variables: { userId },
-        },
-      ],
+      onCompleted: (data) => {
+        const followings: any[] = userFollowData?.usersFollowedByUser || []
+        const followers: any[] = userFollowData?.usersFollowingUser || []
+        const updatedFollowings = followings.filter((user) => user.id !== id)
+
+        setUserFollowData({
+          usersFollowedByUser: updatedFollowings,
+          usersFollowingUser: followers,
+        })
+      },
     })
   }
   return (
@@ -110,14 +127,14 @@ export default function FollowerUser({
         + Follow{' '}
       </Button>
       <Modal open={open} onClose={() => setOpen(false)}>
-          <FollowerModal
-            onFollow={handleFollowUser}
-            onUnFollow={handleUnFollow}
-            onClose={() => setOpen(false)}
-            userAddress={displayName}
-            follower={getFormattedFollowers()}
-            following={getFormattedFollowings()}
-          />
+        <FollowerModal
+          onFollow={handleFollowUser}
+          onUnFollow={handleUnFollow}
+          onClose={() => setOpen(false)}
+          userAddress={displayName}
+          follower={getFormattedFollowers()}
+          following={getFormattedFollowings()}
+        />
       </Modal>
     </>
   )
