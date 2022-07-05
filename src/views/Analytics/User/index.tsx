@@ -279,7 +279,28 @@ const MasonryItem = memo<{
   data: any
   setShowCollection: any
   collectionFloors: any
-}>(function MasonryItem({ index, data, setShowCollection, collectionFloors }) {
+  address: any
+}>(function MasonryItem({
+  index,
+  data,
+  setShowCollection,
+  collectionFloors,
+  address,
+}) {
+  const { data: dataUnsupportedAssets } = useQuery<
+    GetUnsupportedAssetsData,
+    GetUnsupportedAssetsVars
+  >(GET_UNSUPPORTED_ASSETS, {
+    errorPolicy: 'all',
+    variables: {
+      userAddress: address,
+      osCollectionSlug: data?.osCollectionSlug,
+      limit: 8,
+      offset: 0,
+    },
+    skip: !address || !data?.osCollectionSlug,
+  })
+
   if ('ownedAppraisedValue' in data) {
     const { ownedAppraisedValue, count, collection } =
       data as AppraisedCollection
@@ -358,10 +379,10 @@ const MasonryItem = memo<{
       floorEth,
       numOwnedAssets,
     } = data as UnappraisedCollection
+
     return (
       <>
         <CollectionCard
-          isUnsupported
           linkComponent={NextLink}
           link={`https://opensea.io/collection/${osCollectionSlug}?ref=${OPENSEA_REFERRAL_LINK}`}
           avatarImage={imageUrl}
@@ -382,36 +403,43 @@ const MasonryItem = memo<{
             })
           }
         >
-          <Box
-            onClick={() =>
-              setShowCollection({
-                id: null,
-                osCollectionSlug,
-                name,
-                imageUrl,
-              })
-            }
-            sx={{
-              width: '100%',
-              cursor: 'pointer',
-              '&::after': {
-                content: "''",
-                display: 'block',
-                paddingTop: '50%',
-                backgroundImage: `url(${imageOptimizer(imageUrl, {
-                  width: 500,
-                  height: 500,
-                })})`,
-                backgroundSize: 'cover',
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'center',
-                borderRadius: 'sm',
-                imageRendering: PIXELATED_CONTRACTS.includes(address)
-                  ? 'pixelated'
-                  : 'auto',
-              },
-            }}
-          />
+          {dataUnsupportedAssets?.getUnsupportedAssetPage?.assets
+            ?.slice(0, 5)
+            .map((asset, idx) => (
+              <Box
+                key={idx}
+                onClick={() =>
+                  setShowCollection({
+                    id: null,
+                    osCollectionSlug,
+                    name,
+                    imageUrl,
+                  })
+                }
+                sx={{
+                  width: '100%',
+                  cursor: 'pointer',
+                  '&::after': {
+                    content: "''",
+                    display: 'block',
+                    paddingTop: '100%',
+                    backgroundImage: `url(${
+                      imageOptimizer(asset.imageUrl, {
+                        width: 180,
+                        height: 180,
+                      }) ?? asset.imageUrl
+                    })`,
+                    backgroundSize: 'cover',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'center',
+                    borderRadius: 'sm',
+                    imageRendering: PIXELATED_CONTRACTS.includes(address)
+                      ? 'pixelated'
+                      : 'auto',
+                  },
+                }}
+              />
+            ))}
         </CollectionCard>
       </>
     )
@@ -829,6 +857,7 @@ export default function UserView() {
         data={data}
         setShowCollection={setShowCollection}
         collectionFloors={collectionFloors}
+        address={addressFormatted}
       />
     )
   }
@@ -967,6 +996,7 @@ export default function UserView() {
                 '',
               ],
             }}
+            height={420}
           />
         </Box>
       </Flex>
