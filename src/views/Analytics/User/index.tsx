@@ -199,8 +199,10 @@ function Header({
   address,
   displayName,
   userId,
+  userAddress,
 }: {
   address: string
+  userAddress: string
   displayName: string
   userId: any
 }) {
@@ -264,7 +266,9 @@ function Header({
             </Flex>
           </Flex>
         </Flex>
-        <FollowerUser userId={userId} displayName={displayName} />
+        {userAddress == address && (
+          <FollowerUser userId={userId} displayName={displayName} />
+        )}
       </Flex>
     </>
   )
@@ -1163,6 +1167,7 @@ export default function UserView() {
                 address,
                 displayName: getDisplayName(),
                 userId: getUserId(),
+                userAddress,
               }}
             />
           )}
