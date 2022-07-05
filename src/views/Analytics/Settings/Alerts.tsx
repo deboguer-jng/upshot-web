@@ -22,10 +22,10 @@ import {
 } from '../User/queries'
 
 interface EnabledAlertsType {
-  collectionsFloorInc: boolean
-  collectionsFloorDec: boolean
-  collectionsVolInc: boolean
-  collectionsVolDec: boolean
+  collectionsFloorAsc: boolean
+  collectionsFloorDesc: boolean
+  collectionsVolAsc: boolean
+  collectionsVolDesc: boolean
   collectionsSigSales: boolean
   collectorsMints: boolean
   collectorsBuys: boolean
@@ -38,10 +38,10 @@ interface EnabledAlertsType {
 }
 
 const enabledAlertsDefault: EnabledAlertsType = {
-  collectionsFloorInc: true,
-  collectionsFloorDec: true,
-  collectionsVolInc: false,
-  collectionsVolDec: false,
+  collectionsFloorAsc: true,
+  collectionsFloorDesc: true,
+  collectionsVolAsc: false,
+  collectionsVolDesc: false,
   collectionsSigSales: false,
   collectorsMints: false,
   collectorsBuys: true,
@@ -53,11 +53,11 @@ const enabledAlertsDefault: EnabledAlertsType = {
   nftSold: true,
 }
 
-interface AlertValsType {
-  collectionsFloorInc: number
-  collectionsFloorDec: number
-  collectionsVolInc: number
-  collectionsVolDec: number
+interface AlertThresholds {
+  collectionsFloorAsc: number
+  collectionsFloorDesc: number
+  collectionsVolAsc: number
+  collectionsVolDesc: number
   collectionsSigSalesAboveFloor: number
   collectionsSigSalesLimit: number
   collectorsMints: number
@@ -70,11 +70,11 @@ interface AlertValsType {
   nftDealAlerts: number
 }
 
-const alertDefaults: AlertValsType = {
-  collectionsFloorInc: 5,
-  collectionsFloorDec: 5,
-  collectionsVolInc: 5,
-  collectionsVolDec: 5,
+const alertThresholdDefaults: AlertThresholds = {
+  collectionsFloorAsc: 5,
+  collectionsFloorDesc: 5,
+  collectionsVolAsc: 5,
+  collectionsVolDesc: 5,
   collectionsSigSalesAboveFloor: 3,
   collectionsSigSalesLimit: 3,
   collectorsMints: 5,
@@ -121,7 +121,7 @@ const SettingsContainer = styled(Flex, transientOptions)`
 const NumberInput = styled(InputRounded, transientOptions)``
 NumberInput.defaultProps = { dark: true, type: 'number' }
 
-export default function NotificationsSettings() {
+export default function AlertsSettings() {
   const { theme } = useTheme()
   const breakpointIndex = useBreakpointIndex()
   const router = useRouter()
@@ -133,7 +133,7 @@ export default function NotificationsSettings() {
   const [email, setEmail] = useState<string>('')
   const [enabledAlerts, setEnabledAlerts] =
     useState<EnabledAlertsType>(enabledAlertsDefault)
-  const [alertVals, setAlertVals] = useState<AlertValsType>(alertDefaults)
+  const [alertVals, setAlertVals] = useState<AlertThresholds>(alertThresholdDefaults)
 
   useEffect(() => {
     if (!isAuthed) triggerAuth({ onError: () => router.push('/analytics') })
@@ -142,7 +142,7 @@ export default function NotificationsSettings() {
   const handleSave = () => {}
   const handleReset = () => {
     setEnabledAlerts(enabledAlertsDefault)
-    setAlertVals(alertDefaults)
+    setAlertVals(alertThresholdDefaults)
   }
 
   const {
@@ -163,13 +163,13 @@ export default function NotificationsSettings() {
     setEnabledAlerts({ ...enabledAlerts, [alertKey]: !currState })
   }
 
-  const handleInputChange = (alertKey: keyof AlertValsType, val: string) => {
+  const handleInputChange = (alertKey: keyof AlertThresholds, val: string) => {
     setAlertVals({ ...alertVals, [alertKey]: parseFloat(val) })
   }
 
   return (
     <Flex sx={{ flexDirection: 'column', gap: '30px' }}>
-      <Text>Select which notifications you would like to recieve</Text>
+      <Text>Select which alerts you would like to receive</Text>
       <Flex
         sx={{
           columnGap: [0, 0, 0, '25px', '45px', '65px'],
@@ -184,8 +184,8 @@ export default function NotificationsSettings() {
             <Setting>
               <Label>
                 <Checkbox
-                  checked={enabledAlerts.collectionsFloorInc}
-                  onChange={(e) => handleCheckboxChange('collectionsFloorInc')}
+                  checked={enabledAlerts.collectionsFloorAsc}
+                  onChange={(e) => handleCheckboxChange('collectionsFloorAsc')}
                 />
                 Floor Increase
               </Label>
@@ -194,14 +194,14 @@ export default function NotificationsSettings() {
                 <NumberInput
                   onChange={(e) =>
                     handleInputChange(
-                      'collectionsFloorInc',
+                      'collectionsFloorAsc',
                       e.currentTarget.value
                     )
                   }
-                  value={alertVals.collectionsFloorInc}
+                  value={alertVals.collectionsFloorAsc}
                   prefix="+"
                   suffix="%"
-                  disabled={!enabledAlerts.collectionsFloorInc}
+                  disabled={!enabledAlerts.collectionsFloorAsc}
                   sx={{ flex: 1 }}
                 />
               </InputContainer>
@@ -210,8 +210,8 @@ export default function NotificationsSettings() {
             <Setting>
               <Label>
                 <Checkbox
-                  checked={enabledAlerts.collectionsFloorDec}
-                  onChange={(e) => handleCheckboxChange('collectionsFloorDec')}
+                  checked={enabledAlerts.collectionsFloorDesc}
+                  onChange={(e) => handleCheckboxChange('collectionsFloorDesc')}
                 />
                 Floor Decrease
               </Label>
@@ -220,14 +220,14 @@ export default function NotificationsSettings() {
                 <NumberInput
                   onChange={(e) =>
                     handleInputChange(
-                      'collectionsFloorDec',
+                      'collectionsFloorDesc',
                       e.currentTarget.value
                     )
                   }
-                  value={alertVals.collectionsFloorDec}
+                  value={alertVals.collectionsFloorDesc}
                   prefix="-"
                   suffix="%"
-                  disabled={!enabledAlerts.collectionsFloorDec}
+                  disabled={!enabledAlerts.collectionsFloorDesc}
                 />
               </InputContainer>
             </Setting>
@@ -235,8 +235,8 @@ export default function NotificationsSettings() {
             <Setting>
               <Label>
                 <Checkbox
-                  checked={enabledAlerts.collectionsVolInc}
-                  onChange={(e) => handleCheckboxChange('collectionsVolInc')}
+                  checked={enabledAlerts.collectionsVolAsc}
+                  onChange={(e) => handleCheckboxChange('collectionsVolAsc')}
                 />
                 Volume Increase
               </Label>
@@ -245,14 +245,14 @@ export default function NotificationsSettings() {
                 <NumberInput
                   onChange={(e) =>
                     handleInputChange(
-                      'collectionsVolInc',
+                      'collectionsVolAsc',
                       e.currentTarget.value
                     )
                   }
-                  value={alertVals.collectionsVolInc}
+                  value={alertVals.collectionsVolAsc}
                   prefix="+"
                   suffix="%"
-                  disabled={!enabledAlerts.collectionsVolInc}
+                  disabled={!enabledAlerts.collectionsVolAsc}
                 />
               </InputContainer>
             </Setting>
@@ -260,8 +260,8 @@ export default function NotificationsSettings() {
             <Setting>
               <Label>
                 <Checkbox
-                  checked={enabledAlerts.collectionsVolDec}
-                  onChange={(e) => handleCheckboxChange('collectionsVolDec')}
+                  checked={enabledAlerts.collectionsVolDesc}
+                  onChange={(e) => handleCheckboxChange('collectionsVolDesc')}
                 />
                 Volume Decrease
               </Label>
@@ -270,14 +270,14 @@ export default function NotificationsSettings() {
                 <NumberInput
                   onChange={(e) =>
                     handleInputChange(
-                      'collectionsVolDec',
+                      'collectionsVolDesc',
                       e.currentTarget.value
                     )
                   }
-                  value={alertVals.collectionsVolDec}
+                  value={alertVals.collectionsVolDesc}
                   prefix="-"
                   suffix="%"
-                  disabled={!enabledAlerts.collectionsVolDec}
+                  disabled={!enabledAlerts.collectionsVolDesc}
                 />
               </InputContainer>
             </Setting>
