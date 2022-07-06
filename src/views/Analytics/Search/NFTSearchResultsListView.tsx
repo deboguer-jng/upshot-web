@@ -120,7 +120,7 @@ function NFTSearchResultsHead({
               <Flex
                 sx={{
                   alignItems: 'center',
-                  'white-space': 'nowarp',
+                  whiteSpace: 'nowrap',
                   fontSize: '.85rem',
                 }}
               >

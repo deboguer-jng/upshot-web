@@ -108,7 +108,7 @@ function ListedNFTTableHead({
               <Flex sx={{ alignItems: 'center', gap: 1 }}>
                 <Flex
                   sx={{
-                    'white-space': 'nowarp',
+                    whiteSpace: 'nowrap',
                     fontSize: '.85rem',
                   }}
                 >
