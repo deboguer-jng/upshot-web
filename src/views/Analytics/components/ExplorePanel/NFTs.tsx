@@ -83,13 +83,13 @@ export function NFTTableHead({
                 ],
                 '& svg path': {
                   transition: 'default',
-                  '&:nth-child(1)': {
+                  '&:nth-of-type(1)': {
                     fill:
                       selectedColumn === idx && sortAscending
                         ? 'white'
                         : theme.rawColors['grey-500'],
                   },
-                  '&:nth-child(2)': {
+                  '&:nth-of-type(2)': {
                     fill:
                       !sortAscending && selectedColumn === idx
                         ? 'white'
