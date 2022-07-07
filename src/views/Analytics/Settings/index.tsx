@@ -30,7 +30,7 @@ import CollectionAlertSettings from './CollectionAlertSettings'
 import CollectorAlertSettings from './CollectorAlertSettings'
 import { UPDATE_USER, UpdateUserData, UpdateUserVars } from './mutations'
 import NFTAlertSettings from './NFTAlertSettings'
-import NotificationsSettings from './Notifications'
+import AlertsSettings from './Alerts'
 
 export default function SettingsView() {
   const { theme } = useTheme()
@@ -196,8 +196,8 @@ export default function SettingsView() {
                     marginLeft: '10px'
                   }}>
                     <Text color="grey-500">Twitter</Text>
-                    <Button 
-                      variant="secondary" 
+                    <Button
+                      variant="secondary"
                       capitalize={true}
                       color="grey-500"
                       sx={{position: 'absolute', right: '10px'}}
@@ -233,8 +233,8 @@ export default function SettingsView() {
               </Button>
             </Flex>
           </SettingsMenuItem>
-          <SettingsMenuItem label="Notifications">
-            <NotificationsSettings />
+          <SettingsMenuItem label="Alerts">
+            <AlertsSettings />
           </SettingsMenuItem>
           <SettingsMenuItem label="Collections" subMenu={true}>
             <CollectionAlertSettings />

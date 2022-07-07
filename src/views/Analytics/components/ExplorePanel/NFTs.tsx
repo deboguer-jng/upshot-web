@@ -1,5 +1,19 @@
 import { useQuery } from '@apollo/client'
-import { Box, ButtonDropdown, CollectionGridRow, CollectionTable, CollectorAccordion, Flex, formatNumber, Grid, Icon, Pagination, Skeleton, TableBody, TableCell, Text, useBreakpointIndex, useTheme } from '@upshot-tech/upshot-ui'
+import {
+  Box,
+  ButtonDropdown,
+  CollectionGridRow,
+  CollectorAccordion,
+  Flex,
+  formatNumber,
+  Grid,
+  Icon,
+  Pagination,
+  Skeleton,
+  Text,
+  useBreakpointIndex,
+  useTheme,
+} from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE, PIXELATED_CONTRACTS } from 'constants/'
 import NextLink from 'next/link'
 import router from 'next/router'
@@ -11,15 +25,14 @@ import { formatDistance } from 'utils/time'
 import {
   genSortOptions,
   getDropdownValue,
-  handleChangeNFTColumnSortRadio
+  handleChangeNFTColumnSortRadio,
 } from '../../../../utils/tableSortDropdown'
 import {
-GET_EXPLORE_NFTS,
+  GET_EXPLORE_NFTS,
   GetExploreNFTsData,
-  GetExploreNFTsVars} from '../../queries'
+  GetExploreNFTsVars,
+} from '../../queries'
 import { getOrderDirection, lacksGlobalAssetFilters } from './util'
-
-
 
 interface NFTTableHeadProps extends React.HTMLAttributes<HTMLElement> {
   /**
@@ -83,13 +96,13 @@ export function NFTTableHead({
                 ],
                 '& svg path': {
                   transition: 'default',
-                  '&:nth-child(1)': {
+                  '&:nth-of-type(1)': {
                     fill:
                       selectedColumn === idx && sortAscending
                         ? 'white'
                         : theme.rawColors['grey-500'],
                   },
-                  '&:nth-child(2)': {
+                  '&:nth-of-type(2)': {
                     fill:
                       !sortAscending && selectedColumn === idx
                         ? 'white'
@@ -101,7 +114,7 @@ export function NFTTableHead({
               <Flex sx={{ alignItems: 'center', gap: 1 }}>
                 <Flex
                   sx={{
-                    'white-space': 'nowarp',
+                    whiteSpace: 'nowrap',
                     fontSize: '.85rem',
                   }}
                 >
@@ -150,18 +163,14 @@ export function ExplorePanelSkeleton({
   children?: React.ReactNode
 }) {
   return (
-    <CollectionTable>
+    <>
       {children}
-      <TableBody>
+      <Box>
         {[...new Array(PAGE_SIZE)].map((_, idx) => (
-          <Skeleton sx={{ height: 56 }} as="tr" key={idx}>
-            <TableCell colSpan={7}>
-              <Box sx={{ height: 40, width: '100%' }} />
-            </TableCell>
-          </Skeleton>
+          <Skeleton sx={{ height: 56, margin: '8px 0' }} key={idx} />
         ))}
-      </TableBody>
-    </CollectionTable>
+      </Box>
+    </>
   )
 }
 

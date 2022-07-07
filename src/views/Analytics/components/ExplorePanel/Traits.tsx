@@ -111,13 +111,13 @@ function TraitsTableHead({
                   minWidth: [100, 100, 100, 120, 180],
                   '& svg path': {
                     transition: 'default',
-                    '&:nth-child(1)': {
+                    '&:nth-of-type(1)': {
                       fill:
                         selectedColumn === idx && sortAscending
                           ? 'white'
                           : theme.rawColors['grey-500'],
                     },
-                    '&:nth-child(2)': {
+                    '&:nth-of-type(2)': {
                       fill:
                         !sortAscending && selectedColumn === idx
                           ? 'white'
@@ -129,7 +129,7 @@ function TraitsTableHead({
                 <Flex sx={{ alignItems: 'center' }}>
                   <Flex
                     sx={{
-                      'white-space': 'nowarp',
+                      whiteSpace: 'nowrap',
                       fontSize: '.85rem',
                     }}
                   >

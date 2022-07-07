@@ -90,13 +90,13 @@ function ListedNFTTableHead({
                 ],
                 '& svg path': {
                   transition: 'default',
-                  '&:nth-child(1)': {
+                  '&:nth-of-type(1)': {
                     fill:
                       selectedColumn === idx && sortAscending
                         ? 'white'
                         : theme.rawColors['grey-500'],
                   },
-                  '&:nth-child(2)': {
+                  '&:nth-of-type(2)': {
                     fill:
                       !sortAscending && selectedColumn === idx
                         ? 'white'
@@ -108,7 +108,7 @@ function ListedNFTTableHead({
               <Flex sx={{ alignItems: 'center', gap: 1 }}>
                 <Flex
                   sx={{
-                    'white-space': 'nowarp',
+                    whiteSpace: 'nowrap',
                     fontSize: '.85rem',
                   }}
                 >
@@ -161,18 +161,14 @@ export function ExplorePanelSkeleton({
   children?: React.ReactNode
 }) {
   return (
-    <CollectionTable>
+    <>
       {children}
-      <TableBody>
+      <Box>
         {[...new Array(PAGE_SIZE)].map((_, idx) => (
-          <Skeleton sx={{ height: 56 }} as="tr" key={idx}>
-            <TableCell colSpan={8}>
-              <Box sx={{ height: 40, width: '100%' }} />
-            </TableCell>
-          </Skeleton>
+          <Skeleton sx={{ height: 56, margin: '8px 0' }}key={idx} />
         ))}
-      </TableBody>
-    </CollectionTable>
+      </Box>
+    </>
   )
 }
 

@@ -53,7 +53,7 @@ const enabledAlertsDefault: EnabledAlertsType = {
   nftSold: true,
 }
 
-interface AlertValsType {
+interface AlertThresholds {
   collectionsFloorInc: number
   collectionsFloorDec: number
   collectionsVolInc: number
@@ -70,7 +70,7 @@ interface AlertValsType {
   nftDealAlerts: number
 }
 
-const alertDefaults: AlertValsType = {
+const alertThresholdDefaults: AlertThresholds = {
   collectionsFloorInc: 5,
   collectionsFloorDec: 5,
   collectionsVolInc: 5,
@@ -121,7 +121,7 @@ const SettingsContainer = styled(Flex, transientOptions)`
 const NumberInput = styled(InputRounded, transientOptions)``
 NumberInput.defaultProps = { dark: true, type: 'number' }
 
-export default function NotificationsSettings() {
+export default function AlertsSettings() {
   const { theme } = useTheme()
   const breakpointIndex = useBreakpointIndex()
   const router = useRouter()
@@ -133,7 +133,7 @@ export default function NotificationsSettings() {
   const [email, setEmail] = useState<string>('')
   const [enabledAlerts, setEnabledAlerts] =
     useState<EnabledAlertsType>(enabledAlertsDefault)
-  const [alertVals, setAlertVals] = useState<AlertValsType>(alertDefaults)
+  const [alertVals, setAlertVals] = useState<AlertThresholds>(alertThresholdDefaults)
 
   useEffect(() => {
     if (!isAuthed) triggerAuth({ onError: () => router.push('/analytics') })
@@ -142,7 +142,7 @@ export default function NotificationsSettings() {
   const handleSave = () => {}
   const handleReset = () => {
     setEnabledAlerts(enabledAlertsDefault)
-    setAlertVals(alertDefaults)
+    setAlertVals(alertThresholdDefaults)
   }
 
   const {
@@ -163,13 +163,13 @@ export default function NotificationsSettings() {
     setEnabledAlerts({ ...enabledAlerts, [alertKey]: !currState })
   }
 
-  const handleInputChange = (alertKey: keyof AlertValsType, val: string) => {
+  const handleInputChange = (alertKey: keyof AlertThresholds, val: string) => {
     setAlertVals({ ...alertVals, [alertKey]: parseFloat(val) })
   }
 
   return (
     <Flex sx={{ flexDirection: 'column', gap: '30px' }}>
-      <Text>Select which notifications you would like to recieve</Text>
+      <Text>Select which alerts you would like to receive</Text>
       <Flex
         sx={{
           columnGap: [0, 0, 0, '25px', '45px', '65px'],
