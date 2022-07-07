@@ -17,7 +17,11 @@
     "@emotion/styled": "^11.9.3",
     "@reduxjs/toolkit": "^1.8.2",
     "@types/react-virtualized": "^9.21.21",
+<<<<<<< HEAD
     "@upshot-tech/upshot-ui": "^0.6.12",
+=======
+    "@upshot-tech/upshot-ui": "^0.6.10",
+>>>>>>> 5b5593836abece2b170fa2e12d6ebd6e7403ba18
     "@web3-react/core": "^6.1.9",
     "@web3-react/injected-connector": "^6.0.7",
     "@web3-react/walletconnect-connector": "^7.0.2-alpha.0",
