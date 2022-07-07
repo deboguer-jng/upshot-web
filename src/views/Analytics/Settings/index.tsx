@@ -52,7 +52,6 @@ export default function SettingsView() {
   })
 
   const handleSignIn = useCallback(() => {
-    console.log(isAuthed)
     if (!isAuthed) {
       triggerAuth({
         onError: () =>
