@@ -33,7 +33,6 @@ export default function AlertSettingsModal(props) {
     })
   }, [])
 
-  // console.log(open, 'open');
   return (
     <>
       <IconButton ref={elRef} onClick={() => setOpen(!open)}>

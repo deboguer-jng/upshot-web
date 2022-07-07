@@ -26,11 +26,11 @@ import {
   GetUserProfileData,
   GetUserProfileVars,
 } from '../User/queries'
+import AlertsSettings from './Alerts'
 import CollectionAlertSettings from './CollectionAlertSettings'
 import CollectorAlertSettings from './CollectorAlertSettings'
 import { UPDATE_USER, UpdateUserData, UpdateUserVars } from './mutations'
 import NFTAlertSettings from './NFTAlertSettings'
-import AlertsSettings from './Alerts'
 
 export default function SettingsView() {
   const { theme } = useTheme()
@@ -48,7 +48,7 @@ export default function SettingsView() {
     UpdateUserData,
     UpdateUserVars
   >(UPDATE_USER, {
-    onError: (err) => console.log(err),
+    onError: (err) => console.error(err),
   })
 
   const handleSignIn = useCallback(() => {
