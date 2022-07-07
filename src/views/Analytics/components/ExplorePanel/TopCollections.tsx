@@ -1,6 +1,19 @@
 /** @jsxImportSource theme-ui */
 import { useQuery } from '@apollo/client'
-import { Box, ButtonDropdown, CollectionGridRow, CollectorAccordion, Flex, formatNumber, Grid, Icon, Pagination, Text, useBreakpointIndex, useTheme } from '@upshot-tech/upshot-ui'
+import {
+  Box,
+  ButtonDropdown,
+  CollectionGridRow,
+  CollectorAccordion,
+  Flex,
+  formatNumber,
+  Grid,
+  Icon,
+  Pagination,
+  Text,
+  useBreakpointIndex,
+  useTheme,
+} from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE } from 'constants/'
 import NextLink from 'next/link'
 import router from 'next/router'
@@ -11,15 +24,14 @@ import { getPriceChangeLabel } from 'utils/number'
 import {
   genSortOptions,
   getDropdownValue,
-  handleChangeNFTColumnSortRadio
+  handleChangeNFTColumnSortRadio,
 } from '../../../../utils/tableSortDropdown'
 import {
-GET_EXPLORE_COLLECTIONS,
+  GET_EXPLORE_COLLECTIONS,
   GetExploreCollectionsData,
-  GetExploreCollectionsVars} from '../../queries'
+  GetExploreCollectionsVars,
+} from '../../queries'
 import { ExplorePanelSkeleton } from './NFTs'
-
-
 
 export enum EAssetSetStatSearchOrder {
   FLOOR,
@@ -102,13 +114,13 @@ export function CollectionTableHead({
                 userSelect: 'none',
                 '& svg path': {
                   transition: 'default',
-                  '&:nth-child(1)': {
+                  '&:nth-of-type(1)': {
                     fill:
                       selectedColumn === idx && sortAscending
                         ? 'white'
                         : theme.rawColors['grey-500'],
                   },
-                  '&:nth-child(2)': {
+                  '&:nth-of-type(2)': {
                     fill:
                       !sortAscending && selectedColumn === idx
                         ? 'white'
