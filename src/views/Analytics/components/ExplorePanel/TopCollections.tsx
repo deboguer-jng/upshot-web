@@ -132,7 +132,7 @@ export function CollectionTableHead({
               <Flex
                 sx={{
                   alignItems: 'center',
-                  'white-space': 'nowrap',
+                  whiteSpace: 'nowrap',
                   fontSize: '.85rem',
                 }}
               >

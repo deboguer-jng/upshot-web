@@ -3,7 +3,6 @@ import {
   Box,
   ButtonDropdown,
   CollectionGridRow,
-  CollectionTable,
   CollectorAccordion,
   Flex,
   formatNumber,
@@ -11,8 +10,6 @@ import {
   Icon,
   Pagination,
   Skeleton,
-  TableBody,
-  TableCell,
   Text,
   useBreakpointIndex,
   useTheme,
@@ -117,7 +114,7 @@ export function NFTTableHead({
               <Flex sx={{ alignItems: 'center', gap: 1 }}>
                 <Flex
                   sx={{
-                    'white-space': 'nowarp',
+                    whiteSpace: 'nowrap',
                     fontSize: '.85rem',
                   }}
                 >
@@ -166,18 +163,14 @@ export function ExplorePanelSkeleton({
   children?: React.ReactNode
 }) {
   return (
-    <CollectionTable>
+    <>
       {children}
-      <TableBody>
+      <Box>
         {[...new Array(PAGE_SIZE)].map((_, idx) => (
-          <Skeleton sx={{ height: 56 }} as="tr" key={idx}>
-            <TableCell colSpan={7}>
-              <Box sx={{ height: 40, width: '100%' }} />
-            </TableCell>
-          </Skeleton>
+          <Skeleton sx={{ height: 56, margin: '8px 0' }} key={idx} />
         ))}
-      </TableBody>
-    </CollectionTable>
+      </Box>
+    </>
   )
 }
 

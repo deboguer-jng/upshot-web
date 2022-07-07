@@ -129,7 +129,7 @@ function TraitsTableHead({
                 <Flex sx={{ alignItems: 'center' }}>
                   <Flex
                     sx={{
-                      'white-space': 'nowarp',
+                      whiteSpace: 'nowrap',
                       fontSize: '.85rem',
                     }}
                   >

@@ -8,6 +8,7 @@ import {
   Link,
   MiniNftCard,
   SwitchDropdown,
+  Text,
   useBreakpointIndex,
 } from '@upshot-tech/upshot-ui'
 import { PIXELATED_CONTRACTS } from 'constants/'
@@ -148,7 +149,7 @@ export default function TopSellingNFTs({
           period={period}
           setPeriod={(val) => setPeriod(val)}
         />
-        <text sx={{ paddingTop: '80px' }}>No results available. </text>
+        <Text sx={{ paddingTop: '80px' }}>No results available. </Text>
       </Flex>
     )
 
