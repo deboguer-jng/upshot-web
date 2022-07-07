@@ -956,60 +956,56 @@ export default function NFTView() {
               )}
 
               <MiniNFTContainer mt={3}>
+                <Flex sx={{minWidth: 'auto', gap: 'inherit'}}>
                 {similarData?.similarAssets?.map((asset, key) => {
                   return (
-                    <Link
-                      key={key}
-                      href={'/analytics/nft/' + asset.similarAsset.id}
-                      component={NextLink}
-                      noHover
-                    >
-                      <MiniNftCard
-                        price={
-                          asset.similarAsset.lastSale?.ethSalePrice
-                            ? formatNumber(
-                                asset.similarAsset.lastSale?.ethSalePrice,
-                                {
-                                  fromWei: true,
-                                  decimals: 2,
-                                  prefix: 'ETHER',
-                                }
-                              )
-                            : undefined
-                        }
-                        name={asset.similarAsset.name}
-                        type="recommend"
-                        image={asset.similarAsset.mediaUrl}
-                        pixelated={PIXELATED_CONTRACTS.includes(
-                          asset.similarAsset.contractAddress
-                        )}
-                        listing={
-                          asset.similarAsset.listPrice
-                            ? formatNumber(asset.similarAsset.listPrice, {
+                    <MiniNftCard
+                      price={
+                        asset.similarAsset.lastSale?.ethSalePrice
+                          ? formatNumber(
+                              asset.similarAsset.lastSale?.ethSalePrice,
+                              {
                                 fromWei: true,
                                 decimals: 2,
                                 prefix: 'ETHER',
-                              })
-                            : undefined
-                        }
-                        appraisal={
-                          asset.similarAsset.lastAppraisalWeiPrice
-                            ? formatNumber(
-                                asset.similarAsset.lastAppraisalWeiPrice,
-                                {
-                                  fromWei: true,
-                                  decimals: 2,
-                                  prefix: 'ETHER',
-                                }
-                              )
-                            : undefined
-                        }
-                        linkComponent={NextLink}
-                        link={`https://opensea.io/assets/${asset.similarAsset.id}`}
-                      />
-                    </Link>
+                              }
+                            )
+                          : undefined
+                      }
+                      name={asset.similarAsset.name}
+                      type="recommend"
+                      image={asset.similarAsset.mediaUrl}
+                      pixelated={PIXELATED_CONTRACTS.includes(
+                        asset.similarAsset.contractAddress
+                      )}
+                      listing={
+                        asset.similarAsset.listPrice
+                          ? formatNumber(asset.similarAsset.listPrice, {
+                              fromWei: true,
+                              decimals: 2,
+                              prefix: 'ETHER',
+                            })
+                          : undefined
+                      }
+                      appraisal={
+                        asset.similarAsset.lastAppraisalWeiPrice
+                          ? formatNumber(
+                              asset.similarAsset.lastAppraisalWeiPrice,
+                              {
+                                fromWei: true,
+                                decimals: 2,
+                                prefix: 'ETHER',
+                              }
+                            )
+                          : undefined
+                      }
+                      linkComponent={NextLink}
+                      collectionLink={`https://opensea.io/assets/${asset.similarAsset.id}`}
+                      nftLink={'/analytics/nft/' + asset.similarAsset.id}
+                    />
                   )
                 })}
+                </Flex>
               </MiniNFTContainer>
             </Box>
           </Flex>
