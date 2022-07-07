@@ -23,6 +23,7 @@ import {
   selectAddress,
   selectAuthToken,
   setAuthToken,
+  setUserId,
 } from 'redux/reducers/web3'
 import { getAuthPayload } from 'utils/auth'
 import { logEvent } from 'utils/googleAnalytics'
@@ -135,6 +136,7 @@ export function useAuth(): useAuthType {
           return params?.onError?.('no auth token')
 
         dispatch(setAuthToken(signInData.signIn.authToken))
+        dispatch(setUserId(signInData.signIn.id))
 
         const authed = !!(address && signInData.signIn.authToken)
         setIsAuthed(authed)

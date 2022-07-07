@@ -13,6 +13,7 @@ export interface Web3State {
   chain?: number
   ens: ENSAccount
   transactions: string[]
+  userId?: number
 }
 
 const initialState: Web3State = {
@@ -42,6 +43,7 @@ const initialState: Web3State = {
    * Pending transaction hashes
    */
   transactions: [],
+  userId: undefined,
 }
 
 export const web3Slice = createSlice({
@@ -56,6 +58,9 @@ export const web3Slice = createSlice({
     },
     setAddress: (state, action: PayloadAction<string | undefined>) => {
       state.address = action.payload
+    },
+    setUserId: (state, action: PayloadAction<number | undefined>) => {
+      state.userId = action.payload
     },
     setAuthToken: (state, action: PayloadAction<string | undefined>) => {
       state.authToken = action.payload
@@ -93,6 +98,7 @@ export const web3Slice = createSlice({
 export const {
   setActivatingConnector,
   setAddress,
+  setUserId,
   setAuthToken,
   setEns,
   setChain,
@@ -106,6 +112,7 @@ export const selectActivatingConnector = (state: RootState) =>
 
 export const selectAddress = (state: RootState) => state.web3.address
 
+export const selectSignedUserId = (state: RootState) => state.web3.userId
 export const selectAuthToken = (state: RootState) => state.web3.authToken
 
 export const selectEns = (state: RootState) => state.web3.ens

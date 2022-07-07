@@ -43,7 +43,6 @@ export default function FollowerUser({
   const [followUser] = useMutation<FollowUserData, FollowUserVars>(FOLLOW_USER)
 
   useEffect(() => {
-    console.log('use effect called')
     if (data) {
       setUserFollowData(data)
     }
@@ -93,13 +92,15 @@ export default function FollowerUser({
         const followings: any[] = userFollowData?.usersFollowedByUser || []
         const followers: any[] = userFollowData?.usersFollowingUser || []
         const userFollowed = followers.find((user) => user.id === id)
-        console.log('userFollowed', userFollowed)
         const updatedFollowings = [...followings, userFollowed]
 
         setUserFollowData({
           usersFollowedByUser: updatedFollowings,
           usersFollowingUser: followers,
         })
+      },
+      onError: (err) => {
+        console.error(err)
       },
     })
   }
@@ -117,6 +118,9 @@ export default function FollowerUser({
           usersFollowedByUser: updatedFollowings,
           usersFollowingUser: followers,
         })
+      },
+      onError: (err) => {
+        console.error(err)
       },
     })
   }

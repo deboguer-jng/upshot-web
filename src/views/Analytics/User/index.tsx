@@ -59,6 +59,7 @@ import FollowedCollections from '../components/User/FollowedCollections'
 import FollowedCollectors from '../components/User/FollowedCollectors'
 import FollowedNFTs from '../components/User/FollowedNFTs'
 import FollowerUser from '../components/User/FollowerUser'
+import FollowUser from '../components/User/FollowUser'
 import {
   GET_ALL_OWNED_COLLECTIONS_WRAPPER,
   GET_COLLECTION_ASSETS,
@@ -266,8 +267,10 @@ function Header({
             </Flex>
           </Flex>
         </Flex>
-        {userAddress == address && (
+        {userAddress == address ? (
           <FollowerUser userId={userId} displayName={displayName} />
+        ) : (
+          <FollowUser userId={userId} />
         )}
       </Flex>
     </>

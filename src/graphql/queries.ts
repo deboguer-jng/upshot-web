@@ -189,18 +189,15 @@ export type GetNonceData = {
   getNonce: {
     nonce: string
   }
-  getUser: {
-    isBeta: boolean
-  }
+  // getUser: {
+  //   isBeta: boolean
+  // }
 }
 
 export const GET_NONCE = gql`
   query getNonce($userAddress: String!) {
     getNonce(userAddress: $userAddress) {
       nonce
-    }
-    getUser(address: $userAddress) {
-      isBeta
     }
   }
 `
@@ -232,6 +229,22 @@ export const GET_USER_FOLLOW_DATA = gql`
         address
         ens
       }
+    }
+  }
+`
+export type GetUserFollowingsVars = {
+  userId: number
+}
+export type GetUserFollowingsData = {
+  usersFollowedByUser: {
+    id: number
+  }[]
+}
+
+export const GET_USER_FOLLOWINGS = gql`
+  query getUserFollowings($userId: Int!) {
+    usersFollowedByUser(userId: $userId) {
+      id
     }
   }
 `

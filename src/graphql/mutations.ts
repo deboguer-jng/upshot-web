@@ -72,7 +72,9 @@ export type UnFollowUserVars = {
 }
 
 export type UnFollowUserData = {
-  unfollowUser: {}
+  unfollowUser: {
+    id: number
+  }
 }
 export const UNFOLLOW_USER = gql`
   mutation unfollowUser($userId: Int!) {
@@ -88,7 +90,7 @@ export type FollowUserVars = {
 
 export type FollowUserData = {
   followUser: {
-    userId: number
+    id: number
   }
 }
 
