@@ -96,7 +96,6 @@ export function useAuth(): useAuthType {
             address: address,
             nonce: nonceData?.getNonce?.nonce,
           })
-          // const payload = `${nonceData?.getNonce?.nonce}`
           if (
             connector instanceof WalletConnectConnector &&
             connector?.walletConnectProvider
