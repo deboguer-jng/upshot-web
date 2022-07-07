@@ -1,5 +1,19 @@
 import { useQuery } from '@apollo/client'
-import { Box, ButtonDropdown, CollectionGridRow, CollectionTable, CollectorAccordion, Flex, formatNumber, Grid, Icon, Pagination, Skeleton, TableBody, TableCell, TableHead, Text, useBreakpointIndex, useTheme } from '@upshot-tech/upshot-ui'
+import {
+  Box,
+  ButtonDropdown,
+  CollectionGridRow,
+  CollectorAccordion,
+  Flex,
+  formatNumber,
+  Grid,
+  Icon,
+  Pagination,
+  Skeleton,
+  Text,
+  useBreakpointIndex,
+  useTheme,
+} from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE, PIXELATED_CONTRACTS } from 'constants/'
 import NextLink from 'next/link'
 import router from 'next/router'
@@ -11,15 +25,14 @@ import { formatDistance } from 'utils/time'
 import {
   genSortOptions,
   getDropdownValue,
-  handleChangeNFTColumnSortRadio
+  handleChangeNFTColumnSortRadio,
 } from '../../../../utils/tableSortDropdown'
 import {
-GET_EXPLORE_NFTS,
+  GET_EXPLORE_NFTS,
   GetExploreNFTsData,
-  GetExploreNFTsVars} from '../../queries'
+  GetExploreNFTsVars,
+} from '../../queries'
 import { getOrderDirection, lacksGlobalAssetFilters } from './util'
-
-
 
 interface NFTTableHeadProps extends React.HTMLAttributes<HTMLElement> {
   /**
