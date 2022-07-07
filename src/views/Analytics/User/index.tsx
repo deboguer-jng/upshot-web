@@ -40,6 +40,7 @@ import { OPENSEA_REFERRAL_LINK, PIXELATED_CONTRACTS } from 'constants/'
 import { format } from 'date-fns'
 import makeBlockie from 'ethereum-blockies-base64'
 import { ethers } from 'ethers'
+import { useAuth } from 'hooks/auth'
 import { Masonry, useInfiniteLoader } from 'masonic'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
@@ -477,7 +478,20 @@ export default function UserView() {
     'Followed NFTs',
     'Followed Collectors',
   ]
+  const { isAuthed, triggerAuth } = useAuth()
+
   const [open, setOpen] = useState(false)
+
+  const handleSignIn = useCallback(() => {
+    console.log(isAuthed)
+    if (!isAuthed) {
+      triggerAuth({
+        onError: () => router.push('/analytics'),
+      })
+    }
+  }, [isAuthed, address, triggerAuth])
+
+  useEffect(() => handleSignIn(), [handleSignIn])
 
   useEffect(() => {
     if (!router.query.address) return
@@ -1193,7 +1207,7 @@ export default function UserView() {
     <>
       <Layout title={getDisplayName()}>
         <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-          {!!address && !!data?.getUser && (
+          {!!address && !!data?.getUser && isAuthed && (
             <Header
               key={address}
               {...{
@@ -1214,7 +1228,7 @@ export default function UserView() {
                   Appraised Assets Summary
                 </Text>
                 <Grid gap={2} columns={[2, 2, 3]}>
-                  {isLoading ? (
+                  {isLoading || !isAuthed ? (
                     [...new Array(6)].map((_, idx) => (
                       <Skeleton
                         sx={{ height: 80, borderRadius: '20px' }}
@@ -1465,7 +1479,7 @@ export default function UserView() {
                   <Flex sx={{ flexDirection: 'column', gap: 4 }}>
                     <Flex sx={{ flexDirection: 'column', gap: 4 }}>
                       <Text variant="h3Secondary">Transaction History</Text>
-                      {isLoading ? (
+                      {isLoading || !isAuthed ? (
                         <Flex sx={{ flexDirection: 'column', gap: 4 }}>
                           {[...new Array(3)].map((_, idx) => (
                             <Skeleton
@@ -2118,7 +2132,7 @@ export default function UserView() {
                 </Panel>
               </Flex>
               <>
-                {isLoading ? (
+                {isLoading || !isAuthed ? (
                   <Skeleton sx={{ borderRadius: 'lg' }} />
                 ) : noCollection ? (
                   <></>
