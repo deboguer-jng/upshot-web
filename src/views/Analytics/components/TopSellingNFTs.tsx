@@ -148,7 +148,7 @@ export default function TopSellingNFTs({
           period={period}
           setPeriod={(val) => setPeriod(val)}
         />
-        <text sx={{ paddingTop: '80px' }}>No results available. </text>
+        <Text sx={{ paddingTop: '80px' }}>No results available. </Text>
       </Flex>
     )
 
