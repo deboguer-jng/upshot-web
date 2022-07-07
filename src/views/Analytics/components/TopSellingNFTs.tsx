@@ -5,7 +5,6 @@ import {
   Box,
   Flex,
   formatNumber,
-  Text,
   MiniNftCard,
   SwitchDropdown,
   Text,
