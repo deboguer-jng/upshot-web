@@ -8,6 +8,7 @@ import {
   Text,
   MiniNftCard,
   SwitchDropdown,
+  Text,
   useBreakpointIndex,
 } from '@upshot-tech/upshot-ui'
 import { PIXELATED_CONTRACTS } from 'constants/'
