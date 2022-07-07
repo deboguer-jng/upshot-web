@@ -5,7 +5,7 @@ import {
   Box,
   Flex,
   formatNumber,
-  Link,
+  Text,
   MiniNftCard,
   SwitchDropdown,
   useBreakpointIndex,
@@ -174,6 +174,7 @@ export default function TopSellingNFTs({
           }}
         ></Box>
         <MiniNFTContainer sx={{ paddingTop: '80px', height: '255px' }}>
+          <Flex sx={{minWidth: 'auto', gap: 'inherit'}}>
           {data.topSales.map(
             (
               {
@@ -185,35 +186,31 @@ export default function TopSellingNFTs({
               },
               key
             ) => (
-              <Link
-                href={'/analytics/nft/' + id}
+              <MiniNftCard
                 key={key}
-                component={NextLink}
-                noHover
-              >
-                <MiniNftCard
-                  price={
-                    ethSalePrice
-                      ? formatNumber(ethSalePrice, {
-                          fromWei: true,
-                          decimals: 2,
-                          prefix: 'ETHER',
-                        })
-                      : undefined
-                  }
-                  linkComponent={NextLink}
-                  to={shortenAddress(txToAddress, 2, 4)}
-                  toLink={`/analytics/user/${txToAddress}`}
-                  from={shortenAddress(txFromAddress, 2, 4)}
-                  fromLink={`/analytics/user/${txFromAddress}`}
-                  rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
-                  image={mediaUrl}
-                  date={formatDistance(txAt * 1000)}
-                  pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
-                />
-              </Link>
+                price={
+                  ethSalePrice
+                    ? formatNumber(ethSalePrice, {
+                        fromWei: true,
+                        decimals: 2,
+                        prefix: 'ETHER',
+                      })
+                    : undefined
+                }
+                linkComponent={NextLink}
+                to={shortenAddress(txToAddress, 2, 4)}
+                toLink={`/analytics/user/${txToAddress}`}
+                from={shortenAddress(txFromAddress, 2, 4)}
+                fromLink={`/analytics/user/${txFromAddress}`}
+                rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
+                image={mediaUrl}
+                date={formatDistance(txAt * 1000)}
+                pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
+                nftLink={'/analytics/nft/' + id}
+              />
             )
           )}
+          </Flex>
         </MiniNFTContainer>
       </Box>
     </>
