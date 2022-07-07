@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { Box, ButtonDropdown, CollectionGridRow, CollectionTable, CollectorAccordion, Flex, formatNumber, Grid, Icon, Pagination, Skeleton, TableBody, TableCell, Text, useBreakpointIndex, useTheme } from '@upshot-tech/upshot-ui'
+import { Box, ButtonDropdown, CollectionGridRow, CollectionTable, CollectorAccordion, Flex, formatNumber, Grid, Icon, Pagination, Skeleton, TableBody, TableCell, TableHead, Text, useBreakpointIndex, useTheme } from '@upshot-tech/upshot-ui'
 import { PAGE_SIZE, PIXELATED_CONTRACTS } from 'constants/'
 import NextLink from 'next/link'
 import router from 'next/router'
@@ -150,18 +150,14 @@ export function ExplorePanelSkeleton({
   children?: React.ReactNode
 }) {
   return (
-    <CollectionTable>
+    <>
       {children}
-      <TableBody>
+      <Box>
         {[...new Array(PAGE_SIZE)].map((_, idx) => (
-          <Skeleton sx={{ height: 56 }} as="tr" key={idx}>
-            <TableCell colSpan={7}>
-              <Box sx={{ height: 40, width: '100%' }} />
-            </TableCell>
-          </Skeleton>
+          <Skeleton sx={{ height: 56, margin: '8px 0' }} key={idx} />
         ))}
-      </TableBody>
-    </CollectionTable>
+      </Box>
+    </>
   )
 }
 
