@@ -483,7 +483,6 @@ export default function UserView() {
   const [open, setOpen] = useState(false)
 
   const handleSignIn = useCallback(() => {
-    console.log(isAuthed)
     if (!isAuthed) {
       triggerAuth({
         onError: () => router.push('/analytics'),
