@@ -956,10 +956,10 @@ export default function NFTView() {
               )}
 
               <MiniNFTContainer mt={3}>
-                <Flex sx={{minWidth: 'auto', gap: 'inherit'}}>
-                {similarData?.similarAssets?.map((asset, key) => {
-                  return (
+                <Flex sx={{ minWidth: 'auto', gap: 'inherit' }}>
+                  {similarData?.similarAssets?.map((asset, key) => (
                     <MiniNftCard
+                      key={key}
                       price={
                         asset.similarAsset.lastSale?.ethSalePrice
                           ? formatNumber(
@@ -1003,8 +1003,7 @@ export default function NFTView() {
                       collectionLink={`https://opensea.io/assets/${asset.similarAsset.id}`}
                       nftLink={'/analytics/nft/' + asset.similarAsset.id}
                     />
-                  )
-                })}
+                  ))}
                 </Flex>
               </MiniNFTContainer>
             </Box>
