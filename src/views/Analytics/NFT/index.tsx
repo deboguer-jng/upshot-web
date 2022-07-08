@@ -834,7 +834,6 @@ export default function NFTView() {
                               txToUser,
                               txFromUser,
                               price,
-                              currency: { symbol, decimals },
                             },
                             idx
                           ) => (
