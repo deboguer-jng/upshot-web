@@ -478,19 +478,8 @@ export default function UserView() {
     'Followed NFTs',
     'Followed Collectors',
   ]
-  const { isAuthed, triggerAuth } = useAuth()
 
   const [open, setOpen] = useState(false)
-
-  const handleSignIn = useCallback(() => {
-    if (!isAuthed) {
-      triggerAuth({
-        onError: () => router.push('/analytics'),
-      })
-    }
-  }, [isAuthed, address, triggerAuth])
-
-  useEffect(() => handleSignIn(), [handleSignIn])
 
   useEffect(() => {
     if (!router.query.address) return
@@ -1206,7 +1195,7 @@ export default function UserView() {
     <>
       <Layout title={getDisplayName()}>
         <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-          {!!address && !!data?.getUser && isAuthed && (
+          {!!address && !!data?.getUser && (
             <Header
               key={address}
               {...{
@@ -1227,7 +1216,7 @@ export default function UserView() {
                   Appraised Assets Summary
                 </Text>
                 <Grid gap={2} columns={[2, 2, 3]}>
-                  {isLoading || !isAuthed ? (
+                  {isLoading ? (
                     [...new Array(6)].map((_, idx) => (
                       <Skeleton
                         sx={{ height: 80, borderRadius: '20px' }}
@@ -1478,7 +1467,7 @@ export default function UserView() {
                   <Flex sx={{ flexDirection: 'column', gap: 4 }}>
                     <Flex sx={{ flexDirection: 'column', gap: 4 }}>
                       <Text variant="h3Secondary">Transaction History</Text>
-                      {isLoading || !isAuthed ? (
+                      {isLoading ? (
                         <Flex sx={{ flexDirection: 'column', gap: 4 }}>
                           {[...new Array(3)].map((_, idx) => (
                             <Skeleton
@@ -2042,7 +2031,7 @@ export default function UserView() {
                                                           {`${parseUint256(
                                                             rowData.price,
                                                             rowData.currency
-                                                              .decimals,
+                                                              ?.decimals,
                                                             2
                                                           )} ${
                                                             rowData?.currency
@@ -2131,7 +2120,7 @@ export default function UserView() {
                 </Panel>
               </Flex>
               <>
-                {isLoading || !isAuthed ? (
+                {isLoading ? (
                   <Skeleton sx={{ borderRadius: 'lg' }} />
                 ) : noCollection ? (
                   <></>

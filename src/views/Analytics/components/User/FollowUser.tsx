@@ -13,11 +13,18 @@ import {
   GetUserFollowingsData,
   GetUserFollowingsVars,
 } from 'graphql/queries'
+import { useAuth } from 'hooks/auth'
+import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { useAppSelector } from 'redux/hooks'
+import { selectAddress } from 'redux/reducers/web3'
 import { selectSignedUserId } from 'redux/reducers/web3'
 
 export default function FollowUSer({ userId }: { userId: number }) {
+  const address = useAppSelector(selectAddress)
+  const { isAuthed, triggerAuth } = useAuth()
+  const router = useRouter()
+
   const signedUserId = useAppSelector(selectSignedUserId)
   const { data, loading } = useQuery<
     GetUserFollowingsData,
@@ -36,20 +43,28 @@ export default function FollowUSer({ userId }: { userId: number }) {
   const [followUser] = useMutation<FollowUserData, FollowUserVars>(FOLLOW_USER)
 
   const handleFollowUser = async () => {
-    await followUser({
-      variables: {
-        userId,
-      },
-      onCompleted: (data) => {
-        const updatedFollowings = followings
-          ? [...followings, { id: userId }]
-          : []
-        setFollowings(updatedFollowings)
-      },
-      onError: (err) => {
-        console.error(err)
-      },
-    })
+    if (!isAuthed) {
+      triggerAuth({
+        onComplete: async () => {
+          await followUser({
+            variables: {
+              userId,
+            },
+            onCompleted: (data) => {
+              const updatedFollowings = followings
+                ? [...followings, { id: userId }]
+                : []
+              setFollowings(updatedFollowings)
+            },
+            onError: (err) => {
+              console.error(err)
+            },
+          })
+        },
+        onError: () =>
+          router.push(address ? `/analytics/user/${address}` : '/analytics'),
+      })
+    }
   }
   const handleUnFollowUser = async () => {
     await unfollowUser({

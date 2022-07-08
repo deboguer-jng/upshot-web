@@ -85,7 +85,7 @@ export function useAuth(): useAuthType {
           (connector instanceof WalletConnectConnector &&
             !connector?.walletConnectProvider)
         )
-          return dispatch(setShowConnectModal(true))
+          dispatch(setShowConnectModal(true))
         else dispatch(setShowConnectModal(false))
 
         const signer = library.getSigner(address)
