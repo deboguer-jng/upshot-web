@@ -92,18 +92,10 @@ export function useAuth(): useAuthType {
         let signature
 
         try {
-<<<<<<< HEAD
           const payload = getAuthPayload({
             address: address,
             nonce: nonceData?.getNonce?.nonce,
           })
-=======
-          // const payload = getAuthPayload({
-          //   address: address,
-          //   nonce: nonceData?.getNonce?.nonce,
-          // })
-          const payload = `${nonceData?.getNonce?.nonce}`
->>>>>>> 3cc1c92d5f22df0cff16bfcc0cbc7ff7ea470c98
           if (
             connector instanceof WalletConnectConnector &&
             connector?.walletConnectProvider

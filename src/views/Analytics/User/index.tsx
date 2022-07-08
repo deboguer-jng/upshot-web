@@ -2027,11 +2027,11 @@ export default function UserView() {
                                                           {`${parseUint256(
                                                             rowData.price,
                                                             rowData.currency
-<<<<<<< HEAD
-                                                              ?.decimals,
-=======
                                                               ?.decimals ?? 18,
+                                                            2
+                                                          )} ${
                                                             rowData?.currency
+                                                              ?.symbol ?? 'ETH'
                                                           }
                                                         `}
                                                         </Text>
