@@ -268,94 +268,94 @@ export default function TopSellingCollectionNFTs({
           }}
         ></Box>
         <MiniNFTContainer sx={{ paddingTop: '80px', height: '255px' }}>
-          <Flex sx={{minWidth: 'auto', gap: 'inherit'}}>
-          {topSellingType === 'NFTs' ? (
-            <>
-              {data.topSales.map(
-                (
-                  {
-                    txAt,
-                    txFromAddress,
-                    txToAddress,
-                    ethSalePrice,
-                    asset: {
-                      id,
-                      contractAddress,
-                      mediaUrl,
-                      rarity,
-                      collection,
+          <Flex sx={{ minWidth: 'auto', gap: 'inherit' }}>
+            {topSellingType === 'NFTs' ? (
+              <>
+                {data.topSales.map(
+                  (
+                    {
+                      txAt,
+                      txFromAddress,
+                      txToAddress,
+                      ethSalePrice,
+                      asset: {
+                        id,
+                        contractAddress,
+                        mediaUrl,
+                        rarity,
+                        collection,
+                      },
                     },
-                  },
-                  key
-                ) => (
-                  <MiniNftCard
-                    key={key}
-                    price={
-                      ethSalePrice
-                        ? formatNumber(ethSalePrice, {
-                            fromWei: true,
-                            decimals: 2,
-                            prefix: 'ETHER',
-                          })
-                        : undefined
-                    }
-                    linkComponent={NextLink}
-                    to={shortenAddress(txToAddress, 2, 4)}
-                    toLink={`/analytics/user/${txToAddress}`}
-                    from={shortenAddress(txFromAddress, 2, 4)}
-                    fromLink={`/analytics/user/${txFromAddress}`}
-                    rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
-                    image={mediaUrl}
-                    date={formatDistance(txAt * 1000)}
-                    pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
-                    collectionLink={`/analytics/collection/${collection?.id}`}
-                    nftLink={'/analytics/nft/' + id}
-                  />
-                )
-              )}
-            </>
-          ) : (
-            <>
-              {collectionData?.searchCollectionByMetric.assetSets?.map(
-                ({ id, name, imageUrl, latestStats }) => (
-                  <MiniNftCard
-                    key={id}
-                    tooltip={`volume / ${period}`}
-                    price={
-                      getPeriodPrice(latestStats)
-                        ? formatNumber(getPeriodPrice(latestStats), {
-                            fromWei: true,
-                            kmbUnits: true,
-                            decimals: 2,
-                            prefix: 'ETHER',
-                          })
-                        : undefined
-                    }
-                    linkComponent={NextLink}
-                    name={name}
-                    type="collection"
-                    image={imageUrl}
-                    floorPrice={
-                      latestStats?.floor
-                        ? formatNumber(latestStats.floor, { fromWei: true })
-                        : undefined
-                    }
-                    sales={
-                      getSalesNumber(latestStats) +
-                      ' / ' +
-                      (period === '1 month'
-                        ? '1 mth'
-                        : period === '1 week'
-                        ? '1 wk'
-                        : '1 d')
-                    }
-                    collectionLink={`/analytics/collection/${id}`}
-                    nftLink={`/analytics/collection/${id}`}
-                  />
-                )
-              )}
-            </>
-          )}
+                    key
+                  ) => (
+                    <MiniNftCard
+                      key={key}
+                      price={
+                        ethSalePrice
+                          ? formatNumber(ethSalePrice, {
+                              fromWei: true,
+                              decimals: 2,
+                              prefix: 'ETHER',
+                            })
+                          : undefined
+                      }
+                      linkComponent={NextLink}
+                      to={shortenAddress(txToAddress, 2, 4)}
+                      toLink={`/analytics/user/${txToAddress}`}
+                      from={shortenAddress(txFromAddress, 2, 4)}
+                      fromLink={`/analytics/user/${txFromAddress}`}
+                      rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
+                      image={mediaUrl}
+                      date={formatDistance(txAt * 1000)}
+                      pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
+                      collectionLink={`/analytics/collection/${collection?.id}`}
+                      nftLink={'/analytics/nft/' + id}
+                    />
+                  )
+                )}
+              </>
+            ) : (
+              <>
+                {collectionData?.searchCollectionByMetric.assetSets?.map(
+                  ({ id, name, imageUrl, latestStats }) => (
+                    <MiniNftCard
+                      key={id}
+                      tooltip={`volume / ${period}`}
+                      price={
+                        getPeriodPrice(latestStats)
+                          ? formatNumber(getPeriodPrice(latestStats), {
+                              fromWei: true,
+                              kmbUnits: true,
+                              decimals: 2,
+                              prefix: 'ETHER',
+                            })
+                          : undefined
+                      }
+                      linkComponent={NextLink}
+                      name={name}
+                      type="collection"
+                      image={imageUrl}
+                      floorPrice={
+                        latestStats?.floor
+                          ? formatNumber(latestStats.floor, { fromWei: true })
+                          : undefined
+                      }
+                      sales={
+                        getSalesNumber(latestStats) +
+                        ' / ' +
+                        (period === '1 month'
+                          ? '1 mth'
+                          : period === '1 week'
+                          ? '1 wk'
+                          : '1 d')
+                      }
+                      collectionLink={`/analytics/collection/${id}`}
+                      nftLink={`/analytics/collection/${id}`}
+                    />
+                  )
+                )}
+              </>
+            )}
           </Flex>
         </MiniNFTContainer>
       </Box>

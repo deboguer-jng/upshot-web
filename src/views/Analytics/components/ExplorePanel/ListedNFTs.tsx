@@ -165,7 +165,7 @@ export function ExplorePanelSkeleton({
       {children}
       <Box>
         {[...new Array(PAGE_SIZE)].map((_, idx) => (
-          <Skeleton sx={{ height: 56, margin: '8px 0' }}key={idx} />
+          <Skeleton sx={{ height: 56, margin: '8px 0' }} key={idx} />
         ))}
       </Box>
     </>

@@ -7,7 +7,7 @@ import {
   Grid,
   Pagination,
   Text,
-  useBreakpointIndex
+  useBreakpointIndex,
 } from '@upshot-tech/upshot-ui'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
@@ -16,18 +16,18 @@ import { getPriceChangeColor } from 'utils/color'
 import { getUnderOverPricedLabel } from 'utils/number'
 import { formatDistance } from 'utils/time'
 import {
-GET_FOLLOWED_NFTS,
+  GET_FOLLOWED_NFTS,
   GetFollowedNFTsData,
-  GetFollowedNFTsVars} from 'views/Analytics/User/queries'
+  GetFollowedNFTsVars,
+} from 'views/Analytics/User/queries'
 
 import { PAGE_SIZE, PIXELATED_CONTRACTS } from '../../../../constants'
 import {
   ExplorePanelSkeleton,
   NFTItemsWrapper,
-  NFTTableHead
+  NFTTableHead,
 } from '../ExplorePanel/NFTs'
 import { getOrderDirection } from '../ExplorePanel/util'
-
 
 export const nftColumns = {
   LAST_SALE_DATE: 'Last Sale',
