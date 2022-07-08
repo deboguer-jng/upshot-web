@@ -268,11 +268,7 @@ function Header({
             </Flex>
           </Flex>
         </Flex>
-        {userAddress == address ? (
-          <FollowerUser userId={userId} displayName={displayName} />
-        ) : (
-          <FollowUser userId={userId} />
-        )}
+        {userAddress !== address && <FollowUser userId={userId} />}
       </Flex>
     </>
   )
@@ -1744,7 +1740,7 @@ export default function UserView() {
                                                           {`${parseUint256(
                                                             rowData.price,
                                                             rowData.currency
-                                                              .decimals,
+                                                              ?.decimals,
                                                             2
                                                           )}
                                                       ${

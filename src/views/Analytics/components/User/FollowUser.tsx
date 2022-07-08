@@ -14,8 +14,7 @@ import {
   GetUserFollowingsVars,
 } from 'graphql/queries'
 import { useAuth } from 'hooks/auth'
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import {  useEffect, useState } from 'react'
 import { useAppSelector } from 'redux/hooks'
 import { selectAddress } from 'redux/reducers/web3'
 import { selectSignedUserId } from 'redux/reducers/web3'
@@ -23,7 +22,7 @@ import { selectSignedUserId } from 'redux/reducers/web3'
 export default function FollowUSer({ userId }: { userId: number }) {
   const address = useAppSelector(selectAddress)
   const { isAuthed, triggerAuth } = useAuth()
-  const router = useRouter()
+  const [callAuth, setCallAuth] = useState(false)
 
   const signedUserId = useAppSelector(selectSignedUserId)
   const { data, loading } = useQuery<
@@ -37,6 +36,17 @@ export default function FollowUSer({ userId }: { userId: number }) {
   useEffect(() => {
     setFollowings(data?.usersFollowedByUser)
   }, [data])
+
+  useEffect(() => {
+    if (!isAuthed && callAuth) {
+      triggerAuth({
+        onError: (err) => {
+          console.error(err)
+          setCallAuth(false)
+        },
+      })
+    }
+  }, [isAuthed, address, triggerAuth, callAuth])
   const [unfollowUser] = useMutation<UnFollowUserData, UnFollowUserVars>(
     UNFOLLOW_USER
   )
@@ -44,29 +54,29 @@ export default function FollowUSer({ userId }: { userId: number }) {
 
   const handleFollowUser = async () => {
     if (!isAuthed) {
-      triggerAuth({
-        onComplete: async () => {
-          await followUser({
-            variables: {
-              userId,
-            },
-            onCompleted: (data) => {
-              const updatedFollowings = followings
-                ? [...followings, { id: userId }]
-                : []
-              setFollowings(updatedFollowings)
-            },
-            onError: (err) => {
-              console.error(err)
-            },
-          })
-        },
-        onError: () =>
-          router.push(address ? `/analytics/user/${address}` : '/analytics'),
-      })
+      setCallAuth(true)
+      return
     }
+    await followUser({
+      variables: {
+        userId,
+      },
+      onCompleted: (data) => {
+        const updatedFollowings = followings
+          ? [...followings, { id: userId }]
+          : []
+        setFollowings(updatedFollowings)
+      },
+      onError: (err) => {
+        console.error(err)
+      },
+    })
   }
   const handleUnFollowUser = async () => {
+    if (!isAuthed) {
+      setCallAuth(true)
+      return
+    }
     await unfollowUser({
       variables: {
         userId,

@@ -14,7 +14,10 @@ import {
   GetUserFollowData,
   GetUserFollowDataVar,
 } from 'graphql/queries'
+import { useAuth } from 'hooks/auth'
 import { useCallback, useEffect, useState } from 'react'
+import { useAppSelector } from 'redux/hooks'
+import { selectAddress } from 'redux/reducers/web3'
 import { extractEns, shortenAddress } from 'utils/address'
 
 export default function FollowerUser({
@@ -25,22 +28,34 @@ export default function FollowerUser({
   displayName
 }) {
   const [open, setOpen] = useState(false)
-
-  const {
-    loading: userFollowLoading,
-    data,
-    refetch,
-  } = useQuery<GetUserFollowData, GetUserFollowDataVar>(GET_USER_FOLLOW_DATA, {
-    variables: { userId },
-    errorPolicy: 'all',
-    fetchPolicy: 'no-cache',
-  })
+  const address = useAppSelector(selectAddress)
+  const { isAuthed, triggerAuth } = useAuth()
+  const [callAuth, setCallAuth] = useState(false)
+  const { data } = useQuery<GetUserFollowData, GetUserFollowDataVar>(
+    GET_USER_FOLLOW_DATA,
+    {
+      variables: { userId },
+      errorPolicy: 'all',
+      fetchPolicy: 'no-cache',
+    }
+  )
   const [userFollowData, setUserFollowData] = useState(data)
 
   const [unfollowUser] = useMutation<UnFollowUserData, UnFollowUserVars>(
     UNFOLLOW_USER
   )
   const [followUser] = useMutation<FollowUserData, FollowUserVars>(FOLLOW_USER)
+
+  useEffect(() => {
+    if (!isAuthed && callAuth) {
+      triggerAuth({
+        onError: (err) => {
+          console.error(err)
+          setCallAuth(false)
+        },
+      })
+    }
+  }, [isAuthed, address, triggerAuth, callAuth])
 
   useEffect(() => {
     if (data) {
@@ -84,7 +99,11 @@ export default function FollowerUser({
     return formatFollowings
   }, [userFollowData])
   const handleFollowUser = async (id: number) => {
-    const { data } = await followUser({
+    if (!isAuthed) {
+      setCallAuth(true)
+      return
+    }
+    await followUser({
       variables: {
         userId: id,
       },
@@ -105,7 +124,11 @@ export default function FollowerUser({
     })
   }
   const handleUnFollow = async (id: number) => {
-    const { data } = await unfollowUser({
+    if (!isAuthed) {
+      setCallAuth(true)
+      return
+    }
+    await unfollowUser({
       variables: {
         userId: id,
       },
