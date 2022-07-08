@@ -268,6 +268,7 @@ export default function TopSellingCollectionNFTs({
           }}
         ></Box>
         <MiniNFTContainer sx={{ paddingTop: '80px', height: '255px' }}>
+          <Flex sx={{minWidth: 'auto', gap: 'inherit'}}>
           {topSellingType === 'NFTs' ? (
             <>
               {data.topSales.map(
@@ -287,34 +288,29 @@ export default function TopSellingCollectionNFTs({
                   },
                   key
                 ) => (
-                  <Link
+                  <MiniNftCard
                     key={key}
-                    href={'/analytics/nft/' + id}
-                    component={NextLink}
-                    noHover
-                  >
-                    <MiniNftCard
-                      price={
-                        ethSalePrice
-                          ? formatNumber(ethSalePrice, {
-                              fromWei: true,
-                              decimals: 2,
-                              prefix: 'ETHER',
-                            })
-                          : undefined
-                      }
-                      linkComponent={NextLink}
-                      to={shortenAddress(txToAddress, 2, 4)}
-                      toLink={`/analytics/user/${txToAddress}`}
-                      from={shortenAddress(txFromAddress, 2, 4)}
-                      fromLink={`/analytics/user/${txFromAddress}`}
-                      rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
-                      image={mediaUrl}
-                      date={formatDistance(txAt * 1000)}
-                      pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
-                      link={`/analytics/collection/${collection?.id}`}
-                    />
-                  </Link>
+                    price={
+                      ethSalePrice
+                        ? formatNumber(ethSalePrice, {
+                            fromWei: true,
+                            decimals: 2,
+                            prefix: 'ETHER',
+                          })
+                        : undefined
+                    }
+                    linkComponent={NextLink}
+                    to={shortenAddress(txToAddress, 2, 4)}
+                    toLink={`/analytics/user/${txToAddress}`}
+                    from={shortenAddress(txFromAddress, 2, 4)}
+                    fromLink={`/analytics/user/${txFromAddress}`}
+                    rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
+                    image={mediaUrl}
+                    date={formatDistance(txAt * 1000)}
+                    pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
+                    collectionLink={`/analytics/collection/${collection?.id}`}
+                    nftLink={'/analytics/nft/' + id}
+                  />
                 )
               )}
             </>
@@ -322,49 +318,45 @@ export default function TopSellingCollectionNFTs({
             <>
               {collectionData?.searchCollectionByMetric.assetSets?.map(
                 ({ id, name, imageUrl, latestStats }) => (
-                  <Link
+                  <MiniNftCard
                     key={id}
-                    href={`/analytics/collection/${id}`}
-                    component={NextLink}
-                    noHover
-                  >
-                    <MiniNftCard
-                      tooltip={`volume / ${period}`}
-                      price={
-                        getPeriodPrice(latestStats)
-                          ? formatNumber(getPeriodPrice(latestStats), {
-                              fromWei: true,
-                              kmbUnits: true,
-                              decimals: 2,
-                              prefix: 'ETHER',
-                            })
-                          : undefined
-                      }
-                      linkComponent={NextLink}
-                      name={name}
-                      type="collection"
-                      image={imageUrl}
-                      floorPrice={
-                        latestStats?.floor
-                          ? formatNumber(latestStats.floor, { fromWei: true })
-                          : undefined
-                      }
-                      sales={
-                        getSalesNumber(latestStats) +
-                        ' / ' +
-                        (period === '1 month'
-                          ? '1 mth'
-                          : period === '1 week'
-                          ? '1 wk'
-                          : '1 d')
-                      }
-                      link={`/analytics/collection/${id}`}
-                    />
-                  </Link>
+                    tooltip={`volume / ${period}`}
+                    price={
+                      getPeriodPrice(latestStats)
+                        ? formatNumber(getPeriodPrice(latestStats), {
+                            fromWei: true,
+                            kmbUnits: true,
+                            decimals: 2,
+                            prefix: 'ETHER',
+                          })
+                        : undefined
+                    }
+                    linkComponent={NextLink}
+                    name={name}
+                    type="collection"
+                    image={imageUrl}
+                    floorPrice={
+                      latestStats?.floor
+                        ? formatNumber(latestStats.floor, { fromWei: true })
+                        : undefined
+                    }
+                    sales={
+                      getSalesNumber(latestStats) +
+                      ' / ' +
+                      (period === '1 month'
+                        ? '1 mth'
+                        : period === '1 week'
+                        ? '1 wk'
+                        : '1 d')
+                    }
+                    collectionLink={`/analytics/collection/${id}`}
+                    nftLink={`/analytics/collection/${id}`}
+                  />
                 )
               )}
             </>
           )}
+          </Flex>
         </MiniNFTContainer>
       </Box>
     </>
