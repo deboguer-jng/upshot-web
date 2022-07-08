@@ -1719,7 +1719,7 @@ export default function UserView() {
                                                           {`${parseUint256(
                                                             rowData.price,
                                                             rowData.currency
-                                                              .decimals,
+                                                              ?.decimals ?? 18,
                                                             2
                                                           )}
                                                       ${
@@ -2006,7 +2006,7 @@ export default function UserView() {
                                                           {`${parseUint256(
                                                             rowData.price,
                                                             rowData.currency
-                                                              .decimals,
+                                                              ?.decimals ?? 18,
                                                             2
                                                           )} ${
                                                             rowData?.currency
