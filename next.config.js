@@ -30,8 +30,8 @@ module.exports = {
       },
       {
         source: '/analytics/user/:address/settings',
-        destination: '/dashboard/user/:address/settings'
-      }
+        destination: '/dashboard/user/:address/settings',
+      },
     ]
   },
 }

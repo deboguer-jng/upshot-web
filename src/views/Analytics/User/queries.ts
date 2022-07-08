@@ -579,8 +579,20 @@ export type GetFollowedCollectionsData = {
 }
 
 export const GET_FOLLOWED_COLLECTIONS = gql`
-  query GetFollowedCollections($userId: Int!, $limit: Int!, $offset: Int!, $orderColumn: CollectionSortOption!, $orderDirection: OrderDirection!) {
-    collectionsFollowedByUser(userId: $userId, limit: $limit, offset: $offset, orderColumn: $orderColumn, orderDirection: $orderDirection) {
+  query GetFollowedCollections(
+    $userId: Int!
+    $limit: Int!
+    $offset: Int!
+    $orderColumn: CollectionSortOption!
+    $orderDirection: OrderDirection!
+  ) {
+    collectionsFollowedByUser(
+      userId: $userId
+      limit: $limit
+      offset: $offset
+      orderColumn: $orderColumn
+      orderDirection: $orderDirection
+    ) {
       id
       description
       name
@@ -628,8 +640,20 @@ export type GetFollowedNFTsData = {
 }
 
 export const GET_FOLLOWED_NFTS = gql`
-  query GetFollowedNFTs($userId: Int!, $limit: Int!, $offset: Int!, $orderColumn: AssetSearchSortOption, $orderDirection: OrderDirection) {
-    assetsFollowedByUser(userId: $userId, limit: $limit, offset: $offset, orderColumn: $orderColumn, orderDirection: $orderDirection) {
+  query GetFollowedNFTs(
+    $userId: Int!
+    $limit: Int!
+    $offset: Int!
+    $orderColumn: AssetSearchSortOption
+    $orderDirection: OrderDirection
+  ) {
+    assetsFollowedByUser(
+      userId: $userId
+      limit: $limit
+      offset: $offset
+      orderColumn: $orderColumn
+      orderDirection: $orderDirection
+    ) {
       id
       name
       contractAddress
