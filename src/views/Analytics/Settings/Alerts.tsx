@@ -133,7 +133,9 @@ export default function AlertsSettings() {
   const [email, setEmail] = useState<string>('')
   const [enabledAlerts, setEnabledAlerts] =
     useState<EnabledAlertsType>(enabledAlertsDefault)
-  const [alertVals, setAlertVals] = useState<AlertThresholds>(alertThresholdDefaults)
+  const [alertVals, setAlertVals] = useState<AlertThresholds>(
+    alertThresholdDefaults
+  )
 
   useEffect(() => {
     if (!isAuthed) triggerAuth({ onError: () => router.push('/analytics') })

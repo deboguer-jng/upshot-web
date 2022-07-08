@@ -98,4 +98,3 @@ The general recommended flow is to build the UI dependency first under a new ver
 ### Rollbacks
 
 Should a critical error be discovered immediately following deployment, navigate to the Production Deploys page for the app.upshot.xyz Site, select a previous (safe) build, then "Publish deploy."
-

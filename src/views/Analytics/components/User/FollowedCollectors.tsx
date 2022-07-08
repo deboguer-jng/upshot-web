@@ -10,7 +10,7 @@ import {
   Skeleton,
   TableCell,
   Text,
-  useBreakpointIndex
+  useBreakpointIndex,
 } from '@upshot-tech/upshot-ui'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
@@ -19,17 +19,17 @@ import { useDispatch } from 'react-redux'
 import { setAlertState } from 'redux/reducers/layout'
 import { shortenAddress } from 'utils/address'
 import {
-GET_USER_OWNED_ASSETS,
+  GET_USER_OWNED_ASSETS,
   GetUserOwnedAssetsData,
-  GetUserOwnedAssetsVars} from 'views/Analytics/queries'
+  GetUserOwnedAssetsVars,
+} from 'views/Analytics/queries'
 import {
-GET_FOLLOWED_COLLECTORS,
+  GET_FOLLOWED_COLLECTORS,
   GetFollowedCollectorsData,
-  GetFollowedCollectorsVars} from 'views/Analytics/User/queries'
+  GetFollowedCollectorsVars,
+} from 'views/Analytics/User/queries'
 
 import { PAGE_SIZE, PIXELATED_CONTRACTS } from '../../../../constants'
-
-
 
 const FollowedCollectors = ({
   userId,
@@ -133,9 +133,14 @@ const FollowedCollectors = ({
           <CollectorAccordion>
             {data?.usersFollowedByUser
               ?.sort((owner1, owner2) => {
-                if (owner1.firstAssetPurchaseTime < owner2.firstAssetPurchaseTime)
+                if (
+                  owner1.firstAssetPurchaseTime < owner2.firstAssetPurchaseTime
+                )
                   return 1
-                if (owner1.firstAssetPurchaseTime === owner2.firstAssetPurchaseTime)
+                if (
+                  owner1.firstAssetPurchaseTime ===
+                  owner2.firstAssetPurchaseTime
+                )
                   return 0
                 return -1
               })
@@ -216,8 +221,8 @@ const FollowedCollectors = ({
             />
           </Flex>
         </>
-      ): (
-        <Text sx={{textAlign: 'center'}} as="h4">
+      ) : (
+        <Text sx={{ textAlign: 'center' }} as="h4">
           This user is not currently following any other collectors.
         </Text>
       )}

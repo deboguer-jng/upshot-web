@@ -174,42 +174,42 @@ export default function TopSellingNFTs({
           }}
         ></Box>
         <MiniNFTContainer sx={{ paddingTop: '80px', height: '255px' }}>
-          <Flex sx={{minWidth: 'auto', gap: 'inherit'}}>
-          {data.topSales.map(
-            (
-              {
-                txAt,
-                txFromAddress,
-                txToAddress,
-                ethSalePrice,
-                asset: { id, contractAddress, mediaUrl, rarity, collection },
-              },
-              key
-            ) => (
-              <MiniNftCard
-                key={key}
-                price={
-                  ethSalePrice
-                    ? formatNumber(ethSalePrice, {
-                        fromWei: true,
-                        decimals: 2,
-                        prefix: 'ETHER',
-                      })
-                    : undefined
-                }
-                linkComponent={NextLink}
-                to={shortenAddress(txToAddress, 2, 4)}
-                toLink={`/analytics/user/${txToAddress}`}
-                from={shortenAddress(txFromAddress, 2, 4)}
-                fromLink={`/analytics/user/${txFromAddress}`}
-                rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
-                image={mediaUrl}
-                date={formatDistance(txAt * 1000)}
-                pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
-                nftLink={'/analytics/nft/' + id}
-              />
-            )
-          )}
+          <Flex sx={{ minWidth: 'auto', gap: 'inherit' }}>
+            {data.topSales.map(
+              (
+                {
+                  txAt,
+                  txFromAddress,
+                  txToAddress,
+                  ethSalePrice,
+                  asset: { id, contractAddress, mediaUrl, rarity, collection },
+                },
+                key
+              ) => (
+                <MiniNftCard
+                  key={key}
+                  price={
+                    ethSalePrice
+                      ? formatNumber(ethSalePrice, {
+                          fromWei: true,
+                          decimals: 2,
+                          prefix: 'ETHER',
+                        })
+                      : undefined
+                  }
+                  linkComponent={NextLink}
+                  to={shortenAddress(txToAddress, 2, 4)}
+                  toLink={`/analytics/user/${txToAddress}`}
+                  from={shortenAddress(txFromAddress, 2, 4)}
+                  fromLink={`/analytics/user/${txFromAddress}`}
+                  rarity={rarity ? rarity.toFixed(2) + '%' : '-'}
+                  image={mediaUrl}
+                  date={formatDistance(txAt * 1000)}
+                  pixelated={PIXELATED_CONTRACTS.includes(contractAddress)}
+                  nftLink={'/analytics/nft/' + id}
+                />
+              )
+            )}
           </Flex>
         </MiniNFTContainer>
       </Box>

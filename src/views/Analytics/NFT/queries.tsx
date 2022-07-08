@@ -63,7 +63,7 @@ export type GetAssetData = {
     txHistory: {
       type: string
       price: string
-      currency: {
+      currency?: {
         symbol: string
         decimals: number
       }

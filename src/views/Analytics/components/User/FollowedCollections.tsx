@@ -7,7 +7,7 @@ import {
   Grid,
   Pagination,
   Text,
-  useBreakpointIndex
+  useBreakpointIndex,
 } from '@upshot-tech/upshot-ui'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
@@ -15,19 +15,18 @@ import React, { useState } from 'react'
 import { getPriceChangeColor } from 'utils/color'
 import { getPriceChangeLabel } from 'utils/number'
 import {
-GET_FOLLOWED_COLLECTIONS,
+  GET_FOLLOWED_COLLECTIONS,
   GetFollowedCollectionsData,
-  GetFollowedCollectionsVars} from 'views/Analytics/User/queries'
+  GetFollowedCollectionsVars,
+} from 'views/Analytics/User/queries'
 
 import { PAGE_SIZE } from '../../../../constants/index'
 import { ExplorePanelSkeleton } from '../ExplorePanel/NFTs'
 import {
   CollectionItemsWrapper,
   CollectionTableHead,
-  OrderedAssetColumns
+  OrderedAssetColumns,
 } from '../ExplorePanel/TopCollections'
-
-
 
 export const collectionColumns: Partial<OrderedAssetColumns> = {
   PAST_WEEK_VOLUME: 'Volume',

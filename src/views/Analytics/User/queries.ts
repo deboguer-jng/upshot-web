@@ -298,7 +298,7 @@ export type GetCollectorTxHistoryData = {
           id: number
           name: string
         }
-        currency: {
+        currency?: {
           symbol: string
           decimals: number
         }
