@@ -28,13 +28,11 @@ export default function AlertSettingsModal(props) {
 
   useEffect(() => {
     document.addEventListener('click', (e) => {
-      console.log()
       if ((e.target as HTMLDivElement).classList.contains('popperButton'))
         return
     })
   }, [])
 
-  // console.log(open, 'open');
   return (
     <>
       <IconButton ref={elRef} onClick={() => setOpen(!open)}>

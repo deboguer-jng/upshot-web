@@ -48,7 +48,7 @@ export default function SettingsView() {
     UpdateUserData,
     UpdateUserVars
   >(UPDATE_USER, {
-    onError: (err) => console.log(err),
+    onError: (err) => console.error(err),
   })
 
   const handleSignIn = useCallback(() => {

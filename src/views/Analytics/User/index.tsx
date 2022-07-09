@@ -1,15 +1,17 @@
 /** @jsxImportSource theme-ui */
 
-import { useQuery } from '@apollo/client'
+import { useLazyQuery, useQuery } from '@apollo/client'
 import {
   Avatar,
   Box,
+  Button,
   CollectionCard,
   CollectionCardExpanded,
   CollectionRow,
   CollectionTable,
   Container,
   Flex,
+  FollowerModal,
   formatNumber,
   Grid,
   Icon,
@@ -38,6 +40,7 @@ import { OPENSEA_REFERRAL_LINK, PIXELATED_CONTRACTS } from 'constants/'
 import { format } from 'date-fns'
 import makeBlockie from 'ethereum-blockies-base64'
 import { ethers } from 'ethers'
+import { useAuth } from 'hooks/auth'
 import { Masonry, useInfiniteLoader } from 'masonic'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
@@ -56,6 +59,8 @@ import Breadcrumbs from '../components/Breadcrumbs'
 import FollowedCollections from '../components/User/FollowedCollections'
 import FollowedCollectors from '../components/User/FollowedCollectors'
 import FollowedNFTs from '../components/User/FollowedNFTs'
+import FollowerUser from '../components/User/FollowerUser'
+import FollowUser from '../components/User/FollowUser'
 import {
   GET_ALL_OWNED_COLLECTIONS_WRAPPER,
   GET_COLLECTION_ASSETS,
@@ -195,14 +200,17 @@ function Layout({
 function Header({
   address,
   displayName,
+  userId,
+  userAddress,
 }: {
   address: string
-  displayName?: string
+  userAddress: string
+  displayName: string
+  userId: any
 }) {
   const shortAddress = shortenAddress(address)
   const { theme } = useTheme()
   const dispatch = useDispatch()
-
   useEffect(() => {
     if (!displayName) return
 
@@ -214,48 +222,55 @@ function Header({
   }, [displayName])
 
   return (
-    <Flex sx={{ alignItems: 'center', gap: 4 }}>
-      <Avatar size="lg" src={makeBlockie(address)} />
-      <Flex sx={{ flexDirection: 'column', gap: 1 }}>
-        <Text variant="h1Primary" sx={{ lineHeight: 1 }}>
-          {displayName}&apos;s Collection
-        </Text>
-        <Flex sx={{ alignItems: 'center', gap: 1 }}>
-          <Text color="grey-400" sx={{ lineHeight: 1 }}>
-            {shortAddress}
-          </Text>
-          <Tooltip
-            tooltip={'Copy to clipboard'}
-            placement="top"
-            sx={{
-              marginLeft: '0',
-              height: '13px',
-              '&:hover': {
-                svg: {
-                  color: theme.colors['grey-500'],
-                },
-              },
-            }}
-          >
-            <Icon
-              icon="copy"
-              size="13"
-              color="grey-400"
-              sx={{ cursor: 'pointer' }}
-              onClick={() => {
-                dispatch(
-                  setAlertState({
-                    showAlert: true,
-                    alertText: 'Address copied to clipboard!',
-                  })
-                )
-                navigator.clipboard.writeText(address)
-              }}
-            />
-          </Tooltip>
+    <>
+      <Flex
+        sx={{ alignItems: 'center', gap: 4, justifyContent: 'space-between' }}
+      >
+        <Flex>
+          <Avatar size="lg" src={makeBlockie(address)} />
+          <Flex sx={{ flexDirection: 'column', gap: 1 }}>
+            <Text variant="h1Primary" sx={{ lineHeight: 1 }}>
+              {displayName}&apos;s Collection
+            </Text>
+            <Flex sx={{ alignItems: 'center', gap: 1 }}>
+              <Text color="grey-400" sx={{ lineHeight: 1 }}>
+                {shortAddress}
+              </Text>
+              <Tooltip
+                tooltip={'Copy to clipboard'}
+                placement="top"
+                sx={{
+                  marginLeft: '0',
+                  height: '13px',
+                  '&:hover': {
+                    svg: {
+                      color: theme.colors['grey-500'],
+                    },
+                  },
+                }}
+              >
+                <Icon
+                  icon="copy"
+                  size="13"
+                  color="grey-400"
+                  sx={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    dispatch(
+                      setAlertState({
+                        showAlert: true,
+                        alertText: 'Address copied to clipboard!',
+                      })
+                    )
+                    navigator.clipboard.writeText(address)
+                  }}
+                />
+              </Tooltip>
+            </Flex>
+          </Flex>
         </Flex>
+        {userAddress !== address && <FollowUser userId={userId} />}
       </Flex>
-    </Flex>
+    </>
   )
 }
 
@@ -459,6 +474,7 @@ export default function UserView() {
     'Followed NFTs',
     'Followed Collectors',
   ]
+
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
@@ -1091,6 +1107,9 @@ export default function UserView() {
     }
     return extractEns(data?.getUser?.addresses, address) ?? shortAddress
   }
+  const getUserId = () => {
+    return data?.getUser?.id
+  }
 
   const getGmiNum = () => {
     const gmi = data?.getUser?.addresses[0]?.gmi
@@ -1172,12 +1191,14 @@ export default function UserView() {
     <>
       <Layout title={getDisplayName()}>
         <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-          {!!address && (
+          {!!address && !!data?.getUser && (
             <Header
               key={address}
               {...{
                 address,
                 displayName: getDisplayName(),
+                userId: getUserId(),
+                userAddress,
               }}
             />
           )}

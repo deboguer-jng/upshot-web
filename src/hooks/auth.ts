@@ -23,7 +23,9 @@ import {
   selectAddress,
   selectAuthToken,
   setAuthToken,
+  setUserId,
 } from 'redux/reducers/web3'
+import { getAuthPayload } from 'utils/auth'
 import { logEvent } from 'utils/googleAnalytics'
 
 export interface useAuthType {
@@ -90,11 +92,10 @@ export function useAuth(): useAuthType {
         let signature
 
         try {
-          // const payload = getAuthPayload({
-          //   address: address,
-          //   nonce: nonceData?.getNonce?.nonce,
-          // })
-          const payload = `${nonceData?.getNonce?.nonce}`
+          const payload = getAuthPayload({
+            address: address,
+            nonce: nonceData?.getNonce?.nonce,
+          })
           if (
             connector instanceof WalletConnectConnector &&
             connector?.walletConnectProvider
@@ -134,6 +135,7 @@ export function useAuth(): useAuthType {
           return params?.onError?.('no auth token')
 
         dispatch(setAuthToken(signInData.signIn.authToken))
+        dispatch(setUserId(signInData.signIn.id))
 
         const authed = !!(address && signInData.signIn.authToken)
         setIsAuthed(authed)
