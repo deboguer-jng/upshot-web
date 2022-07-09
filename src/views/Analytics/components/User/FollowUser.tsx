@@ -14,7 +14,7 @@ import {
   GetUserFollowingsVars,
 } from 'graphql/queries'
 import { useAuth } from 'hooks/auth'
-import {  useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAppSelector } from 'redux/hooks'
 import { selectAddress } from 'redux/reducers/web3'
 import { selectSignedUserId } from 'redux/reducers/web3'
@@ -99,7 +99,7 @@ export default function FollowUSer({ userId }: { userId: number }) {
       false
     )
   }
-  if (loading || !followings) return <></>
+  if (loading) return <></>
   if (isFollowing())
     return (
       <Button
